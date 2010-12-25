@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Joiz\Main\Tests\Functional;
+namespace App\Main\Tests\Functional;
 
 use Bundle\Liip\FunctionalTestBundle\Test\Html5WebTestCase;
 
