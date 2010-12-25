@@ -1,0 +1,5 @@
+parameters:
+    html5validationurl: http://validator.nu/
+    authentication:
+        username: foo@bar.com
+        password: 12341234
