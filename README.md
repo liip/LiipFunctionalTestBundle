@@ -106,8 +106,7 @@ validation succeeds, execution silently continues, otherwise the calling test wi
 validation errors.
 
 assertIsValidHtml5AjaxResponse:
-This will validate an AJAX response in JOIZ format. If the validation succeeds, execution silently continues, otherwise
-the calling test will fail and display a list of validation errors.
+This will validate an AJAX response in a specific format (probably not generic enough). If the validation succeeds, execution silently continues, otherwise the calling test will fail and display a list of validation errors.
 
 setHtml5Wrapper:
 Allow to change the default HTML5 code that is used as a wrapper around snippets to validate
