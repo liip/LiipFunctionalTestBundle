@@ -13,7 +13,12 @@ namespace App\Main\Tests\Functional;
 
 use Bundle\Liip\FunctionalTestBundle\Test\Html5WebTestCase;
 
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Tester\ApplicationTester;
+use Symfony\Component\Console\Output\Output;
+
 /**
+ * @author Lukas Smith
  * @author Daniel Barsotti
  */
 class Html5Test extends Html5WebTestCase
@@ -31,5 +36,22 @@ class Html5Test extends Html5WebTestCase
 
         $client->request('GET', '/');
         $this->assertEquals('Hello!', $client->getResponse()->getContent());
+    }
+
+    public function testListRoutesMissingDir()
+    {
+        $kernel = $this->createKernel();
+
+        $command = new \Application\MyBundle\Command\FooCommand();
+        $application = new Application($kernel);
+        $application->setAutoExit(false);
+        $tester = new ApplicationTester($application);
+
+        $tester->run(array(
+            'command'  => $command->getFullName(),
+            '..' => '..',
+        ), array('interactive' => false, 'decorated' => false, 'verbosity' => Output::VERBOSITY_VERBOSE));
+
+        $this->assertFalse('..');
     }
 }
