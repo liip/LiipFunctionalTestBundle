@@ -21,7 +21,7 @@ use Symfony\Component\Console\Output\Output;
  * @author Lukas Smith
  * @author Daniel Barsotti
  */
-class Html5Test extends Html5WebTestCase
+class ExampleTest extends Html5WebTestCase
 {
     public function testIndex()
     {
