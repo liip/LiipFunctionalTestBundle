@@ -1,5 +1,10 @@
-Installation
+Introduction
 ============
+
+This Bundle provides base classes for functional tests to assist in loading fixtures and html5 validation.
+
+Installation
+------------
 
   1. Add this bundle to your project as Git submodules:
 
