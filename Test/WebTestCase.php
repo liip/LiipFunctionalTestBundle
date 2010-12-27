@@ -114,15 +114,11 @@ class WebTestCase extends \Symfony\Bundle\FrameworkBundle\Test\WebTestCase
 
         if ($connection->getDriver() instanceOf \Doctrine\DBAL\Driver\PDOSqlite\Driver) {
             $params = $connection->getParams();
-            $params['driver'] = 'pdo_sqlite';
             $name = isset($params['path']) ? $params['path'] : $params['dbname'];
-            unset($params['dbname']);
-
-            $tmpConnection = \Doctrine\DBAL\DriverManager::getConnection($params);
-            $tmpConnection->getSchemaManager()->dropDatabase($name);
+            // TODO: handle case when using persistent connections. Fail loudly?
+            $connection->getSchemaManager()->dropDatabase($name);
 
             $metadatas = $em->getMetadataFactory()->getAllMetadata();
-
             if (!empty($metadatas)) {
                 $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($em);
                 $schemaTool->createSchema($metadatas);
