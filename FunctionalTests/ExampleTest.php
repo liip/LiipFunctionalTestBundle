@@ -38,20 +38,9 @@ class ExampleTest extends Html5WebTestCase
         $this->assertEquals('Hello!', $client->getResponse()->getContent());
     }
 
-    public function testListRoutesMissingDir()
+    public function testGenerateInMissingDir()
     {
-        $kernel = $this->createKernel();
-
-        $command = new \Application\MyBundle\Command\FooCommand();
-        $application = new Application($kernel);
-        $application->setAutoExit(false);
-        $tester = new ApplicationTester($application);
-
-        $tester->run(array(
-            'command'  => $command->getFullName(),
-            '..' => '..',
-        ), array('interactive' => false, 'decorated' => false, 'verbosity' => Output::VERBOSITY_VERBOSE));
-
-        $this->assertFalse('..');
+        $this->runCommand('main:generate-html', array('output-dir' => './doesntexist'));
+        $this->assertFalse(file_exists($this->dir.'/index.html'));
     }
 }

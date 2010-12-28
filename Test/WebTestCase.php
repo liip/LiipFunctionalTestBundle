@@ -15,6 +15,11 @@ use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Command\Command;
+
 /**
  * @author Lea Haensenberger
  * @author Lukas Kahwe Smith <smith@pooteeweet.org>
@@ -85,6 +90,24 @@ class WebTestCase extends \Symfony\Bundle\FrameworkBundle\Test\WebTestCase
             isset($options['environment']) ? $options['environment'] : 'test',
             isset($options['debug']) ? $options['debug'] : true
         );
+    }
+
+    protected function runCommand($name, array $params = array())
+    {
+        array_unshift($params, $name);
+
+        $kernel = $this->createKernel(array('environment' => 'test'));
+        $kernel->boot();
+
+        $application = new Application($kernel);
+        $application->setAutoExit(false);
+
+        $input = new ArrayInput($params);
+        $input->setInteractive(false);
+
+        $ouput = new NullOutput(0);
+
+        $application->run($input, $ouput);
     }
 
     /**
