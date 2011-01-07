@@ -17,7 +17,7 @@ use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\Console\Command\Command;
 
 /**
@@ -105,9 +105,13 @@ class WebTestCase extends \Symfony\Bundle\FrameworkBundle\Test\WebTestCase
         $input = new ArrayInput($params);
         $input->setInteractive(false);
 
-        $ouput = new NullOutput(0);
+        $fp = fopen('php://temp/maxmemory:'.(5 * 1024 * 1024), 'r+');
+        $output = new StreamOutput($fp);
 
-        $application->run($input, $ouput);
+        $application->run($input, $output);
+
+        rewind($fp);
+        return stream_get_contents($fp);
     }
 
     /**
