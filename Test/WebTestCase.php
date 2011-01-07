@@ -188,4 +188,23 @@ class WebTestCase extends \Symfony\Bundle\FrameworkBundle\Test\WebTestCase
 
         return $this->createClient(array('environment' => 'test'), $params);
     }
+
+    /**
+     * Helper function to get a page content by creating a test client. Used to
+     * avoid duplicating the same code again and again. This method also asserts
+     * the request was successful.
+     *
+     * @param string $relativeUrl The relative URL of the requested page (i.e. the part after index.php)
+     * @param string $method The HTTP method to use (GET by default)
+     * @return string
+     */
+    public function getPage($relativeUrl, $method = 'GET', $authentication = false) {
+
+        $client = $this->makeClient($authentication);
+        $client->request($method, $relativeUrl);
+
+        $this->assertTrue($client->getResponse()->isSuccessful());
+
+        return $client->getResponse()->getContent();
+    }
 }

@@ -164,52 +164,7 @@ HTML;
      */
     public function assertIsValidHtml5Snippet($snippet, $message = '')
     {
-
         $content = str_replace('<<CONTENT>>', $snippet, $this->html5Wrapper);
         $this->assertIsValidHtml5($content, $message);
-    }
-
-    /**
-     * Assert a JSON return from an AJAX call contains a valid HTML5 content.
-     *
-     * @param array $json_response The JSON Ajax reply
-     * @param string $message An additional message to display when the test fails
-     */
-    public function assertIsValidHtml5AjaxResponse($json_response, $message = '')
-    {
-
-        $decoded_json = json_decode($json_response);
-
-        // Check the $json_response could be decoded and that it actually contains the expected HTML.
-        if ($decoded_json === null
-            || ! isset($decoded_json->response)
-            || count($decoded_json->response) == 0
-            || ! isset($decoded_json->response[0]->html)
-        ) {
-
-            // Display an error message in the PHPUnit log in all the cases (assert true = false)
-            $this->assertTrue(false, 'Invalid JSON response!');
-        }
-
-        $this->assertIsValidHtml5Snippet($decoded_json->response[0]->html, $message);
-    }
-
-    /**
-     * Helper function to get a page content by creating a test client. Used to
-     * avoid duplicating the same code again and again. This method also asserts
-     * the request was successful.
-     *
-     * @param string $relativeUrl The relative URL of the requested page (i.e. the part after index.php)
-     * @param string $method The HTTP method to use (GET by default)
-     * @return string
-     */
-    public function getPage($relativeUrl, $method = 'GET') {
-
-        $client = $this->createClient(array('environment' => 'test'));
-        $client->request($method, $relativeUrl);
-
-        $this->assertTrue($client->getResponse()->isSuccessful());
-
-        return $client->getResponse()->getContent();
     }
 }
