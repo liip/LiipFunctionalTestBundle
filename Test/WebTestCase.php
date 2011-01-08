@@ -142,6 +142,13 @@ class WebTestCase extends \Symfony\Bundle\FrameworkBundle\Test\WebTestCase
         if ($connection->getDriver() instanceOf \Doctrine\DBAL\Driver\PDOSqlite\Driver) {
             $params = $connection->getParams();
             $name = isset($params['path']) ? $params['path'] : $params['dbname'];
+
+            $backup = $this->getContainer()->getParameter('kernel.cache_dir').'/test_'.md5(serialize($classnames)).'.db';
+            if (file_exists($backup)) {
+                copy($backup, $name);
+                return;
+            }
+
             // TODO: handle case when using persistent connections. Fail loudly?
             $connection->getSchemaManager()->dropDatabase($name);
 
@@ -173,6 +180,10 @@ class WebTestCase extends \Symfony\Bundle\FrameworkBundle\Test\WebTestCase
         }
 
         $connection->close();
+
+        if (isset($backup)) {
+            copy($name, $backup);
+        }
     }
 
     protected function makeClient($authentication = false)
