@@ -68,7 +68,7 @@ class WebTestCase extends \Symfony\Bundle\FrameworkBundle\Test\WebTestCase
         } elseif (preg_match('/\-c +([^ ]+)/', $cli, $matches)) {
             $dir = $dir.'/'.$matches[1];
         } else {
-            throw new \RuntimeException('Unable to guess the Kernel directory.');
+            return parent::createKernel($options);
         }
 
         if (!is_dir($dir)) {
@@ -80,10 +80,6 @@ class WebTestCase extends \Symfony\Bundle\FrameworkBundle\Test\WebTestCase
 
         $class = $appname.'Kernel';
         $file = $dir.'/'.strtolower($appname).'/'.$class.'.php';
-        // TODO: this fallback could probably be detected nicer and earlier, but well not important right :)
-        if (!file_exists($file)) {
-            return parent::createKernel($options);
-        }
         require_once $file;
 
         return new $class(
