@@ -131,7 +131,7 @@ class WebTestCase extends \Symfony\Bundle\FrameworkBundle\Test\WebTestCase
         return $this->container;
     }
 
-    protected function loadFixtures($classnames)
+    protected function loadFixtures($classnames = array())
     {
         $kernel = $this->createKernel(array('environment' => 'test'));
         $kernel->boot();
@@ -158,14 +158,17 @@ class WebTestCase extends \Symfony\Bundle\FrameworkBundle\Test\WebTestCase
                 $schemaTool->createSchema($metadatas);
             }
 
-            $purger = null;
-            $append = true;
+            $executor = new ORMExecutor($em);
         } else {
             $purger = new ORMPurger();
-            $append = false;
+
+            $executor = new ORMExecutor($em, $purger);
+            $executor->purge();
         }
 
-        $executor = new ORMExecutor($em, $purger);
+        if (empty($classnames)) {
+            return;
+        }
 
         $classnames = (array)$classnames;
         foreach ($classnames as $classname) {
@@ -175,8 +178,7 @@ class WebTestCase extends \Symfony\Bundle\FrameworkBundle\Test\WebTestCase
 
             $loader = new Loader();
             $loader->addFixture(new $classname());
-            $executor->execute($loader->getFixtures(), $append);
-            $append = true;
+            $executor->execute($loader->getFixtures(), true);
         }
 
         $connection->close();
