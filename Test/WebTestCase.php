@@ -15,6 +15,7 @@ use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\StreamOutput;
@@ -24,7 +25,7 @@ use Symfony\Component\Console\Command\Command;
  * @author Lea Haensenberger
  * @author Lukas Kahwe Smith <smith@pooteeweet.org>
  */
-class WebTestCase extends \Symfony\Bundle\FrameworkBundle\Test\WebTestCase
+class WebTestCase extends BaseWebTestCase
 {
     protected $container;
 
@@ -80,6 +81,9 @@ class WebTestCase extends \Symfony\Bundle\FrameworkBundle\Test\WebTestCase
 
         $class = $appname.'Kernel';
         $file = $dir.'/'.strtolower($appname).'/'.$class.'.php';
+        if (!file_exists($file)) {
+            return parent::createKernel($options);
+        }
         require_once $file;
 
         return new $class(
