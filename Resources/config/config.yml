@@ -1,5 +1,6 @@
 parameters:
-    html5validationurl: http://validator.nu/
-    authentication:
+    functionaltest.cache_sqlite_db: false
+    functionaltest.html5validationurl: http://validator.nu/
+    functionaltest.authentication:
         username: foo@bar.com
         password: 12341234
