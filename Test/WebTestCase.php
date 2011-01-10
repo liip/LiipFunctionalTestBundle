@@ -28,6 +28,7 @@ use Symfony\Component\Console\Command\Command;
 class WebTestCase extends BaseWebTestCase
 {
     protected $container;
+    protected $kernelDir;
 
     /**
      * Avoid the issues with
@@ -94,17 +95,9 @@ class WebTestCase extends BaseWebTestCase
 
     protected function getServiceMockBuilder($id)
     {
-        if (isset($this->kernelDir)) {
-            $tmp_kernel_dir = isset($_SERVER['KERNEL_DIR']) ? $_SERVER['KERNEL_DIR'] : null;
-            $_SERVER['KERNEL_DIR'] = getcwd().$this->kernelDir;
-        }
         $service = $this->getContainer()->get($id);
         $class = get_class($service);
-        $mockBuilder = $this->getMockBuilder($class)->disableOriginalConstructor();
-        if (isset($tmp_kernel_dir)) {
-            $_SERVER['KERNEL_DIR'] = $tmp_kernel_dir;
-        }
-        return $mockBuilder;
+        return $this->getMockBuilder($class)->disableOriginalConstructor();
     }
 
     protected function runCommand($name, array $params = array())
@@ -136,14 +129,23 @@ class WebTestCase extends BaseWebTestCase
      */
     protected function getContainer()
     {
-        if (is_null($this->container)) {
+        if (isset($this->kernelDir)) {
+            $tmp_kernel_dir = isset($_SERVER['KERNEL_DIR']) ? $_SERVER['KERNEL_DIR'] : null;
+            $_SERVER['KERNEL_DIR'] = getcwd().$this->kernelDir;
+        }
+
+        $key = md5($this->kernelDir);
+        if (empty($this->container[$key])) {
             $options = array();
             $kernel = $this->createKernel($options);
             $kernel->boot();
 
-            $this->container = $kernel->getContainer();
+            $this->container[$key] = $kernel->getContainer();
         }
-        return $this->container;
+        if (isset($tmp_kernel_dir)) {
+            $_SERVER['KERNEL_DIR'] = $tmp_kernel_dir;
+        }
+        return $this->container[$key];
     }
 
     protected function loadFixtures($classnames = array())
