@@ -92,6 +92,21 @@ class WebTestCase extends BaseWebTestCase
         );
     }
 
+    protected function getServiceMockBuilder($id)
+    {
+        if (isset($this->kernelDir)) {
+            $tmp_kernel_dir = isset($_SERVER['KERNEL_DIR']) ? $_SERVER['KERNEL_DIR'] : null;
+            $_SERVER['KERNEL_DIR'] = getcwd().$this->kernelDir;
+        }
+        $service = $this->getContainer()->get($id);
+        $class = get_class($service);
+        $mockBuilder = $this->getMockBuilder($class)->disableOriginalConstructor();
+        if (isset($tmp_kernel_dir)) {
+            $_SERVER['KERNEL_DIR'] = $tmp_kernel_dir;
+        }
+        return $mockBuilder;
+    }
+
     protected function runCommand($name, array $params = array())
     {
         array_unshift($params, $name);

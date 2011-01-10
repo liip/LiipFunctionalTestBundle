@@ -23,6 +23,8 @@ use Symfony\Component\Console\Output\Output;
  */
 class ExampleTest extends Html5WebTestCase
 {
+    protected $kernelDir = '/app/main';
+
     public function testIndex()
     {
         $content = $this->getPage('/');
@@ -42,5 +44,24 @@ class ExampleTest extends Html5WebTestCase
     {
         $this->runCommand('main:generate-html', array('output-dir' => './doesntexist'));
         $this->assertFalse(file_exists($this->dir.'/index.html'));
+    }
+
+    public function testIndexAction()
+    {
+        $view = $this->getServiceMockBuilder('FooView')->getMock();
+        $view->expects($this->once())
+            ->method('setTemplate')
+            ->with('FooBundle:Default:index.twig')
+            ->will($this->returnValue(null))
+        ;
+
+        $view->expects($this->once())
+            ->method('handle')
+            ->with()
+            ->will($this->returnValue('success'))
+        ;
+        $controller = new DefaultController($view);
+
+        $this->assertEquals('success', $controller->indexAction());
     }
 }
