@@ -58,6 +58,10 @@ class WebTestCase extends BaseWebTestCase
      */
     protected function createKernel(array $options = array())
     {
+        if (!empty($_SERVER['KERNEL_DIR'])) {
+            return parent::createKernel($options);
+        }
+
         $dir = getcwd();
         if (!isset($_SERVER['argv']) || false === strpos($_SERVER['argv'][0], 'phpunit')) {
             throw new \RuntimeException('You must override the WebTestCase::createKernel() method.');
@@ -129,23 +133,24 @@ class WebTestCase extends BaseWebTestCase
      */
     protected function getContainer()
     {
-        if (isset($this->kernelDir)) {
+        if (!empty($this->kernelDir)) {
             $tmp_kernel_dir = isset($_SERVER['KERNEL_DIR']) ? $_SERVER['KERNEL_DIR'] : null;
             $_SERVER['KERNEL_DIR'] = getcwd().$this->kernelDir;
         }
 
-        $key = md5($this->kernelDir);
-        if (empty($this->container[$key])) {
+        if (empty($this->container[$this->kernelDir])) {
             $options = array();
             $kernel = $this->createKernel($options);
             $kernel->boot();
 
-            $this->container[$key] = $kernel->getContainer();
+            $this->container[$this->kernelDir] = $kernel->getContainer();
         }
+
         if (isset($tmp_kernel_dir)) {
             $_SERVER['KERNEL_DIR'] = $tmp_kernel_dir;
         }
-        return $this->container[$key];
+
+        return $this->container[$this->kernelDir];
     }
 
     protected function loadFixtures($classnames = array())
