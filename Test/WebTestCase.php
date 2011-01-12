@@ -40,7 +40,7 @@ class WebTestCase extends BaseWebTestCase
      * It only sets libxml to use internal errors.
      *
      */
-    public function __construct() 
+    public function __construct()
     {
         libxml_use_internal_errors(true);
     }
@@ -226,22 +226,48 @@ class WebTestCase extends BaseWebTestCase
         return $this->createClient(array('environment' => 'test'), $params);
     }
 
+    protected function getUrl($route, $params)
+    {
+        return $this->getContainer()->get('router')->generate($route, $params);
+    }
+
     /**
-     * Helper function to get a page content by creating a test client. Used to
-     * avoid duplicating the same code again and again. This method also asserts
-     * the request was successful.
+     * Executes a request on the given url and returns the response contents.
      *
-     * @param string $relativeUrl The relative URL of the requested page (i.e. the part after index.php)
-     * @param string $method The HTTP method to use (GET by default)
+     * This method also asserts the request was successful.
+     *
+     * @param string $path path of the requested page
+     * @param string $method The HTTP method to use, defaults to GET
+     * @param bool $authentication Whether to use authentication, defaults to false
      * @return string
      */
-    public function getPage($relativeUrl, $method = 'GET', $authentication = false) {
+    public function fetchContent($path, $method = 'GET', $authentication = false) {
 
         $client = $this->makeClient($authentication);
-        $client->request($method, $relativeUrl);
+        $client->request($method, $path);
 
         $this->assertTrue($client->getResponse()->isSuccessful());
 
         return $client->getResponse()->getContent();
+    }
+
+    /**
+     * Executes a request on the given url and returns a Crawler object.
+     *
+     * This method also asserts the request was successful.
+     *
+     * @param string $path path of the requested page
+     * @param string $method The HTTP method to use, defaults to GET
+     * @param bool $authentication Whether to use authentication, defaults to false
+     * @return Crawler
+     */
+    public function fetchCrawler($path, $method = 'GET', $authentication = false) {
+
+        $client = $this->makeClient($authentication);
+        $crawler = $client->request($method, $path);
+
+        $this->assertTrue($client->getResponse()->isSuccessful());
+
+        return $crawler;
     }
 }
