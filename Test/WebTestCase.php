@@ -241,12 +241,12 @@ class WebTestCase extends BaseWebTestCase
      * @param bool $authentication Whether to use authentication, defaults to false
      * @return string
      */
-    public function fetchContent($path, $method = 'GET', $authentication = false) {
-
+    public function fetchContent($path, $method = 'GET', $authentication = false)
+    {
         $client = $this->makeClient($authentication);
         $client->request($method, $path);
 
-        $this->assertTrue($client->getResponse()->isSuccessful());
+        $this->assertTrue($client->getResponse()->isSuccessful(), 'The Response was not successful');
 
         return $client->getResponse()->getContent();
     }
@@ -261,12 +261,12 @@ class WebTestCase extends BaseWebTestCase
      * @param bool $authentication Whether to use authentication, defaults to false
      * @return Crawler
      */
-    public function fetchCrawler($path, $method = 'GET', $authentication = false) {
-
+    public function fetchCrawler($path, $method = 'GET', $authentication = false)
+    {
         $client = $this->makeClient($authentication);
         $crawler = $client->request($method, $path);
 
-        $this->assertTrue($client->getResponse()->isSuccessful());
+        $this->assertTrue($client->getResponse()->isSuccessful(), 'The Response was not successful');
 
         return $crawler;
     }
