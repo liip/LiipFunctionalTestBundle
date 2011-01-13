@@ -45,41 +45,9 @@ class WebTestCase extends BaseWebTestCase
         libxml_use_internal_errors(true);
     }
 
-    /**
-     * Override the original createKernel method to accommodate the directory
-     * additional level in the app directory:
-     * app/main/MainKernel.php
-     * app/mobile/MobileKernel.php
-     * etc.
-     *
-     * @see Symfony\Bundle\FrameworkBundle\Test\WebTestCase
-     * @param array $options
-     * @return object
-     */
-    protected function createKernel(array $options = array())
+    protected function getKernelClass()
     {
-        if (!empty($_SERVER['KERNEL_DIR'])) {
-            return parent::createKernel($options);
-        }
-
-        $dir = getcwd();
-        if (!isset($_SERVER['argv']) || false === strpos($_SERVER['argv'][0], 'phpunit')) {
-            throw new \RuntimeException('You must override the WebTestCase::createKernel() method.');
-        }
-
-        // find the --configuration flag from PHPUnit
-        $cli = implode(' ', $_SERVER['argv']);
-        if (preg_match('/\-\-configuration[= ]+([^ ]+)/', $cli, $matches)) {
-            $dir = $dir.'/'.$matches[1];
-        } elseif (preg_match('/\-c +([^ ]+)/', $cli, $matches)) {
-            $dir = $dir.'/'.$matches[1];
-        } else {
-            return parent::createKernel($options);
-        }
-
-        if (!is_dir($dir)) {
-            $dir = dirname($dir);
-        }
+        $dir = isset($_SERVER['KERNEL_DIR']) ? $_SERVER['KERNEL_DIR'] : $this->getPhpUnitXmlDir();
 
         $appname = explode('\\', get_class($this));
         $appname = $appname[1];
@@ -87,14 +55,11 @@ class WebTestCase extends BaseWebTestCase
         $class = $appname.'Kernel';
         $file = $dir.'/'.strtolower($appname).'/'.$class.'.php';
         if (!file_exists($file)) {
-            return parent::createKernel($options);
+            return parent::getKernelClass();
         }
         require_once $file;
 
-        return new $class(
-            isset($options['environment']) ? $options['environment'] : 'test',
-            isset($options['debug']) ? $options['debug'] : true
-        );
+        return $class;
     }
 
     protected function getServiceMockBuilder($id)
