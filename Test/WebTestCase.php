@@ -204,14 +204,19 @@ class WebTestCase extends BaseWebTestCase
      * @param string $path path of the requested page
      * @param string $method The HTTP method to use, defaults to GET
      * @param bool $authentication Whether to use authentication, defaults to false
+     * @param bool $success to define whether the response is expected to be successful
      * @return string
      */
-    public function fetchContent($path, $method = 'GET', $authentication = false)
+    public function fetchContent($path, $method = 'GET', $authentication = false, $success = true)
     {
         $client = $this->makeClient($authentication);
         $client->request($method, $path);
 
-        $this->assertTrue($client->getResponse()->isSuccessful(), 'The Response was not successful');
+        if ($success) {
+            $this->assertTrue($client->getResponse()->isSuccessful(), 'The Response was not successful');
+        } else {
+            $this->assertFalse($client->getResponse()->isSuccessful(), 'The Response was successful');
+        }
 
         return $client->getResponse()->getContent();
     }
