@@ -33,7 +33,7 @@ class FunctionalTestExtension extends Extension
      */
     public function configLoad($config, ContainerBuilder $container)
     {
-        if (!$container->hasDefinition($this->getAlias())) {
+        if (!$container->hasParameter($this->getAlias().'.loaded')) {
             $loader = $this->getFileLoader($container);
             $loader->load($this->resources['config']);
         }

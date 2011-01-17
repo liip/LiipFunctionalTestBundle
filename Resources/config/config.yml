@@ -1,4 +1,5 @@
 parameters:
+    functionaltest.loaded: true
     functionaltest.cache_sqlite_db: false
     functionaltest.html5validationurl: http://validator.nu/
     functionaltest.authentication:
