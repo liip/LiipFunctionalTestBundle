@@ -43,20 +43,6 @@ class WebTestCase extends BaseWebTestCase
     public function __construct()
     {
         libxml_use_internal_errors(true);
-
-        $container = $this->getContainer();
-        if ($container->has('doctrine.orm.entity_manager')) {
-            $connection = $container->get('doctrine.orm.entity_manager')->getConnection();
-
-            if ($connection->getDriver() instanceOf \Doctrine\DBAL\Driver\PDOSqlite\Driver) {
-                $params = $connection->getParams();
-                $name = isset($params['path']) ? $params['path'] : $params['dbname'];
-
-                if (!file_exists($name)) {
-                    $this->loadFixtures();
-                }
-            }
-        }
     }
 
     protected function getKernelClass()
