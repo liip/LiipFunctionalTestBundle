@@ -208,14 +208,18 @@ class WebTestCase extends BaseWebTestCase
      */
     public function isSuccessful($response, $success = true, $type = 'text/html')
     {
-        $crawler = new Crawler();
-        $crawler->addContent($response->getContent(), $type);
-        $title = $crawler->filter('title')->text();
+        try {
+            $crawler = new Crawler();
+            $crawler->addContent($response->getContent(), $type);
+            $title = ': '.$crawler->filter('title')->text();
+        } catch (\Exception $e) {
+            $title = '';
+        }
 
         if ($success) {
-            $this->assertTrue($response->isSuccessful(), 'The Response was not successful: '.$title);
+            $this->assertTrue($response->isSuccessful(), 'The Response was not successful'.$title);
         } else {
-            $this->assertFalse($response->isSuccessful(), 'The Response was successful: '.$title);
+            $this->assertFalse($response->isSuccessful(), 'The Response was successful'.$title);
         }
     }
 
