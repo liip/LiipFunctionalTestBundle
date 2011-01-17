@@ -43,6 +43,20 @@ class WebTestCase extends BaseWebTestCase
     public function __construct()
     {
         libxml_use_internal_errors(true);
+
+        $container = $this->getContainer();
+        if ($container->has('doctrine.orm.entity_manager')) {
+            $connection = $container->get('doctrine.orm.entity_manager')->getConnection();
+
+            if ($connection->getDriver() instanceOf \Doctrine\DBAL\Driver\PDOSqlite\Driver) {
+                $params = $connection->getParams();
+                $name = isset($params['path']) ? $params['path'] : $params['dbname'];
+
+                if (!file_exists($name)) {
+                    $this->loadFixtures();
+                }
+            }
+        }
     }
 
     protected function getKernelClass()
@@ -123,15 +137,17 @@ class WebTestCase extends BaseWebTestCase
         $kernel = $this->createKernel(array('environment' => 'test'));
         $kernel->boot();
 
-        $em = $kernel->getContainer()->get('doctrine.orm.entity_manager');
+        $container = $kernel->getContainer();
+
+        $em = $container->get('doctrine.orm.entity_manager');
         $connection = $em->getConnection();
 
         if ($connection->getDriver() instanceOf \Doctrine\DBAL\Driver\PDOSqlite\Driver) {
             $params = $connection->getParams();
             $name = isset($params['path']) ? $params['path'] : $params['dbname'];
 
-            if ($this->getContainer()->getParameter('functionaltest.cache_sqlite_db')) {
-                $backup = $this->getContainer()->getParameter('kernel.cache_dir').'/test_'.md5(serialize($classnames)).'.db';
+            if ($container->getParameter('functionaltest.cache_sqlite_db')) {
+                $backup = $container->getParameter('kernel.cache_dir').'/test_'.md5(serialize($classnames)).'.db';
                 if (file_exists($backup)) {
                     copy($backup, $name);
                     return;
