@@ -20,6 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * @author Lea Haensenberger
@@ -199,6 +200,26 @@ class WebTestCase extends BaseWebTestCase
     }
 
     /**
+     * Checks the success state of a response
+     *
+     * @param Response $response Response object
+     * @param bool $success to define whether the response is expected to be successful
+     * @return void
+     */
+    public function isSuccessful($response, $success = true, $type = 'text/html')
+    {
+        $crawler = new Crawler();
+        $crawler->addContent($response->getContent(), $type);
+        $title = $crawler->filter('title')->text();
+
+        if ($success) {
+            $this->assertTrue($response->isSuccessful(), 'The Response was not successful: '.$title);
+        } else {
+            $this->assertFalse($response->isSuccessful(), 'The Response was successful: '.$title);
+        }
+    }
+
+    /**
      * Executes a request on the given url and returns the response contents.
      *
      * This method also asserts the request was successful.
@@ -214,13 +235,10 @@ class WebTestCase extends BaseWebTestCase
         $client = $this->makeClient($authentication);
         $client->request($method, $path);
 
-        if ($success) {
-            $this->assertTrue($client->getResponse()->isSuccessful(), 'The Response was not successful');
-        } else {
-            $this->assertFalse($client->getResponse()->isSuccessful(), 'The Response was successful');
-        }
+        $content = $client->getResponse()->getContent();
+        $this->isSuccessful($client->getResponse(), $success);
 
-        return $client->getResponse()->getContent();
+        return $content;
     }
 
     /**
@@ -239,11 +257,7 @@ class WebTestCase extends BaseWebTestCase
         $client = $this->makeClient($authentication);
         $crawler = $client->request($method, $path);
 
-        if ($success) {
-            $this->assertTrue($client->getResponse()->isSuccessful(), 'The Response was not successful');
-        } else {
-            $this->assertFalse($client->getResponse()->isSuccessful(), 'The Response was successful');
-        }
+        $this->isSuccessful($client->getResponse(), $success);
 
         return $crawler;
     }
