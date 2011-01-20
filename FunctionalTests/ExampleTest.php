@@ -27,17 +27,16 @@ class ExampleTest extends Html5WebTestCase
 
     public function testIndex()
     {
-        $content = $this->getPage('/');
+        $content = $this->fetchContent('/');
         $this->assertIsValidHtml5($content, '/');
     }
 
     public function testBasicAuthentication()
     {
         $this->loadFixtures(array('App\Main\Tests\Fixtures\LoadUserData'));
-        $client = $this->makeClient(true);
 
-        $client->request('GET', '/');
-        $this->assertEquals('Hello!', $client->getResponse()->getContent());
+        $content = $this->fetchContent('/', 'GET', true);
+        $this->assertEquals('Hello!', $content);
     }
 
     public function testGenerateInMissingDir()
@@ -49,6 +48,7 @@ class ExampleTest extends Html5WebTestCase
     public function testIndexAction()
     {
         $view = $this->getServiceMockBuilder('FooView')->getMock();
+
         $view->expects($this->once())
             ->method('setTemplate')
             ->with('FooBundle:Default:index.twig')
@@ -60,6 +60,7 @@ class ExampleTest extends Html5WebTestCase
             ->with()
             ->will($this->returnValue('success'))
         ;
+
         $controller = new DefaultController($view);
 
         $this->assertEquals('success', $controller->indexAction());
