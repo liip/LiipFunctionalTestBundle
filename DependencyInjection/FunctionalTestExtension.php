@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Bundle\Liip\FunctionalTestBundle\DependencyInjection;
+namespace Liip\FunctionalTestBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;

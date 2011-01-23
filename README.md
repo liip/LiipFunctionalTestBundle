@@ -17,7 +17,7 @@ Installation
           {
               return array(
                   // ...
-                  new Bundle\Liip\FunctionalTestBundle\LiipFunctionalTestBundle(),
+                  new Liip\FunctionalTestBundle\LiipFunctionalTestBundle(),
                   // ...
               );
           }
@@ -91,7 +91,7 @@ Once the validator has been compiled, it can be run with the following command:
 Using the validator in functional tests
 ---------------------------------------
 
-The Bundle\Liip\FunctionalTestBundle\Test\Html5WebTestCase class allows to write functional tests that validate content
+The Liip\FunctionalTestBundle\Test\Html5WebTestCase class allows to write functional tests that validate content
 against the HTML5 validator. In order to work the validator service must be running on the machine where the tests are executed.
 
 This class provides the following testing methods:

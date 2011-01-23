@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Bundle\Liip\FunctionalTestBundle\Test;
+namespace Liip\FunctionalTestBundle\Test;
 
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;

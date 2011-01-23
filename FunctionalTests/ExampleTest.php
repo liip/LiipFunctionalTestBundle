@@ -11,7 +11,7 @@
 
 namespace App\Main\Tests\Functional;
 
-use Bundle\Liip\FunctionalTestBundle\Test\Html5WebTestCase;
+use Liip\FunctionalTestBundle\Test\Html5WebTestCase;
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\ApplicationTester;
