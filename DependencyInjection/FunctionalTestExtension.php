@@ -33,6 +33,9 @@ class FunctionalTestExtension extends Extension
      */
     public function configLoad($config, ContainerBuilder $container)
     {
+        // TODO: merge configs
+        $config = reset($config);
+
         if (!$container->hasParameter($this->getAlias().'.loaded')) {
             $loader = $this->getFileLoader($container);
             $loader->load($this->resources['config']);
