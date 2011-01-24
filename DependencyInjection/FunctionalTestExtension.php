@@ -33,9 +33,9 @@ class FunctionalTestExtension extends Extension
      */
     public function configLoad($configs, ContainerBuilder $container)
     {
-        $config = array_pop($configs);
+        $config = array_shift($configs);
         foreach ($configs as $tmp) {
-            $config = array_merge($config, $tmp);
+            $config = array_replace_recursive($config, $tmp);
         }
 
         $loader = $this->getFileLoader($container);
@@ -77,6 +77,6 @@ class FunctionalTestExtension extends Extension
      */
     public function getAlias()
     {
-        return 'functionaltest';
+        return 'liip_functionaltest';
     }
 }
