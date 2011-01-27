@@ -145,9 +145,7 @@ HTML;
         foreach($res->messages as $row) {
             if ($row->type == 'error') {
                 // TODO: make this ugly hack to ignore fbml validation errors more generic :-/
-                if (preg_match('/.*(fb:login-button).*/', $row->message) ||
-                    preg_match('/.*(fb:live-stream).*/', $row->message)
-                ) {
+                if (preg_match('/.*fb(:|-).*/', $row->message)) {
                     continue;
                 }
                 $err_count++;
