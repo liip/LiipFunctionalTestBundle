@@ -144,8 +144,10 @@ HTML;
 
         foreach($res->messages as $row) {
             if ($row->type == 'error') {
-                // TODO: make this ugly hack to ignore fb:login-button validation errors more generic :-/
-                if (preg_match('/.*(fb:login-button).*/', $row->message)) {
+                // TODO: make this ugly hack to ignore fbml validation errors more generic :-/
+                if (preg_match('/.*(fb:login-button).*/', $row->message) ||
+                    preg_match('/.*(fb:live-stream).*/', $row->message)
+                ) {
                     continue;
                 }
                 $err_count++;
