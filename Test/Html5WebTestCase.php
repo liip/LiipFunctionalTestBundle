@@ -66,7 +66,7 @@ HTML;
      */
     protected function getHtml5ValidatorServiceUrl()
     {
-        return $this->getContainer()->getParameter('functionaltest.html5validationurl');
+        return $this->getContainer()->getParameter('liip_functionaltest.html5validation.url');
     }
 
     /**
@@ -142,11 +142,13 @@ HTML;
         }
         $err_msg .= ":\n";
 
+        $ignores = $this->getContainer()->getParameter('liip.functionaltest.html5validation.ignores');
         foreach($res->messages as $row) {
             if ($row->type == 'error') {
-                // TODO: make this ugly hack to ignore fb:login-button validation errors more generic :-/
-                if (preg_match('/.*(fb:login-button).*/', $row->message)) {
-                    continue;
+                foreach ($ignores as $ignore) {
+                    if (preg_match($ignore, $row->message)) {
+                        continue 2;
+                    }
                 }
                 $err_count++;
                 $err_msg .= "  Line {$row->lastLine}: {$row->message}\n";
