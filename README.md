@@ -8,7 +8,7 @@ Installation
 
   1. Add this bundle to your project as Git submodules:
 
-          $ git submodule add git://github.com/liip/FunctionalTestBundle.git src/Bundle/Liip/FunctionalTestBundle
+          $ git submodule add git://github.com/liip/FunctionalTestBundle.git src/Liip/FunctionalTestBundle
 
   2. Add this bundle to your application's kernel:
 

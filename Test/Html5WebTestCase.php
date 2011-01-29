@@ -143,7 +143,7 @@ HTML;
         $err_msg .= ":\n";
 
         $ignores = $this->getContainer()->getParameter('liip_functionaltest.html5validation.ignores');
-        foreach($res->messages as $row) {
+        foreach ($res->messages as $row) {
             if ($row->type == 'error') {
                 foreach ($ignores as $ignore) {
                     if (preg_match($ignore, $row->message)) {
