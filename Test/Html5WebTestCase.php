@@ -152,11 +152,16 @@ HTML;
         foreach ($res->messages as $row) {
             if ($row->type == 'error') {
                 foreach ($ignores as $ignore) {
-                    if (preg_match($ignore, $row->message) ||
-                        preg_match($ignore_extract, $row->extract)) {
+                    if (preg_match($ignore, $row->message)) {
                         continue 2;
                     }
                 }
+                foreach ($ignores_extract as $ignore_extract) {
+                    if (preg_match($ignore_extract, $row->extract)) {
+                        continue 2;
+                    }
+                }
+
                 $err_count++;
                 if (empty({$row->message})) {
                     $err_msg .= "  Line {$row->lastLine}: Empty error message about {$row->extract}\n";
