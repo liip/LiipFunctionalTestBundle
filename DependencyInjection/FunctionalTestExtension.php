@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Bundle\Liip\FunctionalTestBundle\DependencyInjection;
+namespace Liip\FunctionalTestBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -28,15 +28,18 @@ class FunctionalTestExtension extends Extension
     /**
      * Loads the services based on your application configuration.
      *
-     * @param array $config
+     * @param array $configs
      * @param ContainerBuilder $container
      */
-    public function configLoad($config, ContainerBuilder $container)
+    public function configLoad($configs, ContainerBuilder $container)
     {
-        if (!$container->hasParameter($this->getAlias().'.loaded')) {
-            $loader = $this->getFileLoader($container);
-            $loader->load($this->resources['config']);
+        $config = array_shift($configs);
+        foreach ($configs as $tmp) {
+            $config = array_replace_recursive($config, $tmp);
         }
+
+        $loader = $this->getFileLoader($container);
+        $loader->load($this->resources['config']);
 
         foreach ($config as $key => $value) {
             $container->setParameter($this->getAlias().'.'.$key, $value);
@@ -74,6 +77,6 @@ class FunctionalTestExtension extends Extension
      */
     public function getAlias()
     {
-        return 'functionaltest';
+        return 'liip_functionaltest';
     }
 }
