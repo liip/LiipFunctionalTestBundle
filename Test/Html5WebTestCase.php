@@ -163,7 +163,7 @@ HTML;
                 }
 
                 $err_count++;
-                if (empty({$row->message})) {
+                if (empty($row->message)) {
                     $err_msg .= "  Line {$row->lastLine}: Empty error message about {$row->extract}\n";
                 } else {
                     $err_msg .= "  Line {$row->lastLine}: {$row->message}\n";
