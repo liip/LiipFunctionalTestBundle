@@ -158,7 +158,11 @@ HTML;
                     }
                 }
                 $err_count++;
-                $err_msg .= "  Line {$row->lastLine}: {$row->message}\n";
+                if (empty({$row->message})) {
+                    $err_msg .= "  Line {$row->lastLine}: Empty error message about {$row->extract}\n";
+                } else {
+                    $err_msg .= "  Line {$row->lastLine}: {$row->message}\n";
+                }
             }
         }
         $this->assertTrue($err_count == 0, $err_msg);
