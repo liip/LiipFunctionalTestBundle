@@ -211,9 +211,13 @@ class WebTestCase extends BaseWebTestCase
         try {
             $crawler = new Crawler();
             $crawler->addContent($response->getContent(), $type);
-            $title = ': '.$crawler->filter('title')->text();
+            if (! count($crawler->filter('title'))) {
+                $title = ': ['.$response->getStatusCode().'] - '.$response->getContent();
+            } else {
+                $title = ': '.$crawler->filter('title')->text();
+            }
         } catch (\Exception $e) {
-            $title = '';
+            $title = ': '. $e;
         }
 
         if ($success) {
