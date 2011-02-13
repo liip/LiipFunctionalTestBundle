@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://www.symfony-project.org/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.symfony-project.org/schema/dic/services http://www.symfony-project.org/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+
+        <parameter key="liip_functionaltest.cache_sqlite_db">false</parameter>
+
+        <parameter key="liip_functionaltest.html5validation.url">http://validator.nu/</parameter>
+
+        <parameter key="liip_functionaltest.html5validation.ignores" type="collection" />
+
+        <parameter key="liip_functionaltest.authentication" type="collection">
+            <parameter key="username"></parameter>
+            <parameter key="password"></parameter>
+        </parameter>
+
+    </parameters>
+</container>
