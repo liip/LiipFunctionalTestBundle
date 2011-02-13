@@ -129,7 +129,7 @@ HTML;
     {
         if (! $this->validationServiceAvailable) {
             $url = $this->getHtml5ValidatorServiceUrl();
-            $this->markTestIncomplete("HTML5 Validator service not found at '$url' !");
+            $this->markTestSkipped("HTML5 Validator service not found at '$url' !");
             return;
         }
 

@@ -1,7 +1,0 @@
-parameters:
-    liip_functionaltest.cache_sqlite_db: false
-    liip_functionaltest.html5validation.url: http://validator.nu/
-    liip_functionaltest.html5validation.ignores: []
-    liip_functionaltest.authentication:
-        username: ~
-        password: ~
