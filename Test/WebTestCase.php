@@ -164,10 +164,6 @@ class WebTestCase extends BaseWebTestCase
 
         $classnames = (array)$classnames;
         foreach ($classnames as $classname) {
-            $namespace = explode('\\', $classname);
-            // TODO should we rather handle this via the autoloader?
-            require_once $kernel->registerRootDir().'/tests/Fixtures/'.array_pop($namespace).'.php';
-
             $loader = new Loader();
             $loader->addFixture(new $classname());
             $executor->execute($loader->getFixtures(), true);
