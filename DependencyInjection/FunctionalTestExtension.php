@@ -11,7 +11,7 @@
 
 namespace Liip\FunctionalTestBundle\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\Extension\Extension;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
@@ -55,22 +55,6 @@ class FunctionalTestExtension extends Extension
     public function getFileLoader($container)
     {
         return new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getXsdValidationBasePath()
-    {
-        return __DIR__.'/../Resources/config/schema';
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getNamespace()
-    {
-        return 'http://liip.ch/schema/dic/functionaltest';
     }
 
     /**
