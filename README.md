@@ -25,7 +25,7 @@ Installation
   3. Configure the `functionalTest` service in your config:
 
           # application/config/config.yml
-          functionalTest.config: ~
+          liip_functional_test: ~
 
   4. Copy the fixtures to your projects functional tests
 
