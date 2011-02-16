@@ -39,6 +39,12 @@ Installation
 
          More information see below
 
+Database tests
+--------------
+
+In case tests require database access make sure that the DB is created and proxies are generated.
+For tests that also require fixtures simply call ``loadFixtures`` from the bundled WebTestCase class.
+
 HTML5 validator
 ---------------
 
