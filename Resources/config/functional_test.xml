@@ -6,13 +6,13 @@
 
     <parameters>
 
-        <parameter key="liip_functionaltest.cache_sqlite_db">false</parameter>
+        <parameter key="liip_functional_test.cache_sqlite_db">false</parameter>
 
-        <parameter key="liip_functionaltest.html5validation.url">http://validator.nu/</parameter>
+        <parameter key="liip_functional_test.html5validation.url">http://validator.nu/</parameter>
 
-        <parameter key="liip_functionaltest.html5validation.ignores" type="collection" />
+        <parameter key="liip_functional_test.html5validation.ignores" type="collection" />
 
-        <parameter key="liip_functionaltest.authentication" type="collection">
+        <parameter key="liip_functional_test.authentication" type="collection">
             <parameter key="username"></parameter>
             <parameter key="password"></parameter>
         </parameter>

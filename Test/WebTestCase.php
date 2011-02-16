@@ -133,7 +133,7 @@ class WebTestCase extends BaseWebTestCase
             $params = $connection->getParams();
             $name = isset($params['path']) ? $params['path'] : $params['dbname'];
 
-            if ($container->getParameter('liip_functionaltest.cache_sqlite_db')) {
+            if ($container->getParameter('liip_functional_test.cache_sqlite_db')) {
                 $backup = $container->getParameter('kernel.cache_dir').'/test_'.md5(serialize($classnames)).'.db';
                 if (file_exists($backup)) {
                     copy($backup, $name);
@@ -186,7 +186,7 @@ class WebTestCase extends BaseWebTestCase
         $params = array();
         if ($authentication) {
             if ($authentication === true) {
-                $authentication = $this->getContainer()->getParameter('liip_functionaltest.authentication');
+                $authentication = $this->getContainer()->getParameter('liip_functional_test.authentication');
             }
 
             $params = array('PHP_AUTH_USER' => $authentication['username'], 'PHP_AUTH_PW' => $authentication['password']);

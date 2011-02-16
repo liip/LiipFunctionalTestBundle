@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 
-class FunctionalTestExtension extends Extension
+class LiipFunctionalTestExtension extends Extension
 {
     /**
      * Yaml config files to load
@@ -32,7 +32,7 @@ class FunctionalTestExtension extends Extension
      * @param array $configs
      * @param ContainerBuilder $container
      */
-    public function configLoad($configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container)
     {
         $config = array_shift($configs);
         foreach ($configs as $tmp) {
@@ -62,6 +62,6 @@ class FunctionalTestExtension extends Extension
      */
     public function getAlias()
     {
-        return 'liip_functionaltest';
+        return 'liip_functional_test';
     }
 }
