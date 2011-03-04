@@ -26,7 +26,7 @@ use Symfony\Component\DomCrawler\Crawler;
  * @author Lea Haensenberger
  * @author Lukas Kahwe Smith <smith@pooteeweet.org>
  */
-class WebTestCase extends BaseWebTestCase
+abstract class WebTestCase extends BaseWebTestCase
 {
     protected $container;
     protected $kernelDir;

@@ -18,7 +18,7 @@ namespace Liip\FunctionalTestBundle\Test;
  * The documentation: http://about.validator.nu/
  * Documentation about the web service: http://wiki.whatwg.org/wiki/Validator.nu_Web_Service_Interface
  */
-class Html5WebTestCase extends WebTestCase
+abstract class Html5WebTestCase extends WebTestCase
 {
     protected $html5Wrapper = <<<'HTML'
 <!DOCTYPE html>
