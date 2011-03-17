@@ -8,9 +8,17 @@ Installation
 
   1. Add this bundle to your project as Git submodules:
 
-          $ git submodule add git://github.com/liip/FunctionalTestBundle.git src/Liip/FunctionalTestBundle
+          $ git submodule add git://github.com/liip/FunctionalTestBundle.git vendor/bundles/Liip/FunctionalTestBundle
 
-  2. Add this bundle to your application's kernel:
+  2. Add the Liip namespace to your autoloader:
+
+          // app/autoload.php
+          $loader->registerNamespaces(array(
+                'Liip' => __DIR__.'/../vendor/bundles',
+                // your other namespaces
+          ));
+
+  3. Add this bundle to your application's kernel:
 
           // application/ApplicationKernel.php
           public function registerBundles()
@@ -22,20 +30,20 @@ Installation
               );
           }
 
-  3. Configure the `functionalTest` service in your config:
+  4. Configure the `functionalTest` service in your config:
 
           # application/config/config.yml
           liip_functional_test: ~
 
-  4. Copy the fixtures to your projects functional tests
+  5. Copy the fixtures to your projects functional tests
 
          $ cp Fixtures/LoadUserData.php ..
 
-  5. Copy the functional tests to your projects functional tests
+  6. Copy the functional tests to your projects functional tests
 
          $ cp FunctionalTests/ExampleTest.php ..
 
-  6. Install local copy of the HTML5 validator
+  7. Install local copy of the HTML5 validator
 
          More information see below
 
