@@ -127,13 +127,15 @@ HTML;
      */
     public function assertIsValidHtml5($content, $message = '')
     {
-        if (! $this->validationServiceAvailable) {
+        if ($this->validationServiceAvailable) {
+            $res = $this->validateHtml5($content);
+        }
+
+        if (empty($res->messages)) {
             $url = $this->getHtml5ValidatorServiceUrl();
             $this->markTestSkipped("HTML5 Validator service not found at '$url' !");
             return;
         }
-
-        $res = $this->validateHtml5($content);
 
         $err_count = 0;
         $err_msg = 'HTML5 validation failed';
