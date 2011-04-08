@@ -41,7 +41,7 @@ abstract class WebTestCase extends BaseWebTestCase
      * It only sets libxml to use internal errors.
      *
      */
-    public function __construct($name = NULL, array $data = array(), $dataName = '')
+    public function __construct($name = null, array $data = array(), $dataName = '')
     {
         libxml_use_internal_errors(true);
         parent::__construct($name, $data, $dataName);
