@@ -31,22 +31,6 @@ abstract class WebTestCase extends BaseWebTestCase
     protected $container;
     protected $kernelDir;
 
-    /**
-     * Avoid the issues with
-     *
-     *   DOMDocument::loadHTML(): Namespace prefix fb is not defined in Entity
-     *
-     * when running on Debian machines (likely a libxml 2.6.x issue).
-     *
-     * It only sets libxml to use internal errors.
-     *
-     */
-    public function __construct($name = null, array $data = array(), $dataName = '')
-    {
-        libxml_use_internal_errors(true);
-        parent::__construct($name, $data, $dataName);
-    }
-
     protected function getKernelClass()
     {
         $dir = isset($_SERVER['KERNEL_DIR']) ? $_SERVER['KERNEL_DIR'] : $this->getPhpUnitXmlDir();
@@ -64,6 +48,12 @@ abstract class WebTestCase extends BaseWebTestCase
         return $class;
     }
 
+    /**
+     * Creates a mock object of a service identified by its id.
+     *
+     * @param string $id
+     * @return PHPUnit_Framework_MockObject_MockBuilder
+     */
     protected function getServiceMockBuilder($id)
     {
         $service = $this->getContainer()->get($id);
@@ -71,6 +61,13 @@ abstract class WebTestCase extends BaseWebTestCase
         return $this->getMockBuilder($class)->disableOriginalConstructor();
     }
 
+    /**
+     * Builds up the environment to run the given command.
+     *
+     * @param string $name
+     * @param array $params
+     * @return string
+     */
     protected function runCommand($name, array $params = array())
     {
         array_unshift($params, $name);
@@ -101,7 +98,7 @@ abstract class WebTestCase extends BaseWebTestCase
     protected function getContainer()
     {
         if (!empty($this->kernelDir)) {
-            $tmp_kernel_dir = isset($_SERVER['KERNEL_DIR']) ? $_SERVER['KERNEL_DIR'] : null;
+            $tmpKernelDir = isset($_SERVER['KERNEL_DIR']) ? $_SERVER['KERNEL_DIR'] : null;
             $_SERVER['KERNEL_DIR'] = getcwd().$this->kernelDir;
         }
 
@@ -113,8 +110,8 @@ abstract class WebTestCase extends BaseWebTestCase
             $this->container[$this->kernelDir] = $kernel->getContainer();
         }
 
-        if (isset($tmp_kernel_dir)) {
-            $_SERVER['KERNEL_DIR'] = $tmp_kernel_dir;
+        if (isset($tmpKernelDir)) {
+            $_SERVER['KERNEL_DIR'] = $tmpKernelDir;
         }
 
         return $this->container[$this->kernelDir];
@@ -163,7 +160,7 @@ abstract class WebTestCase extends BaseWebTestCase
             return;
         }
 
-        $classnames = (array)$classnames;
+        $classnames = (array) $classnames;
         foreach ($classnames as $classname) {
             if ($require) {
                 $namespace = explode('\\', $classname);
@@ -182,6 +179,16 @@ abstract class WebTestCase extends BaseWebTestCase
         }
     }
 
+    /**
+     * Creates an instance of a lightweight Http client.
+     *
+     * If $authentication is set to 'true' it will use the content of
+     * 'liip_functional_test.authentication' to log in.
+     *
+     * @param boolean $authentication
+     *
+     * @return Client
+     */
     protected function makeClient($authentication = false)
     {
         $params = array();
@@ -196,6 +203,13 @@ abstract class WebTestCase extends BaseWebTestCase
         return $this->createClient(array('environment' => 'test'), $params);
     }
 
+    /**
+     * Extracts the location from the given route.
+     *
+     * @param string $route  The name of the route
+     * @param array $params  Set of parameters
+     * @return string
+     */
     protected function getUrl($route, $params)
     {
         return $this->getContainer()->get('router')->generate($route, $params);
