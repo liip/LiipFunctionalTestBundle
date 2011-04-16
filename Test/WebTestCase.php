@@ -117,7 +117,7 @@ abstract class WebTestCase extends BaseWebTestCase
         return $this->container[$this->kernelDir];
     }
 
-    protected function loadFixtures($classnames = array(), $require = true)
+    protected function loadFixtures($classnames = array())
     {
         $kernel = $this->createKernel(array('environment' => 'test'));
         $kernel->boot();
@@ -162,11 +162,6 @@ abstract class WebTestCase extends BaseWebTestCase
 
         $classnames = (array) $classnames;
         foreach ($classnames as $classname) {
-            if ($require) {
-                $namespace = explode('\\', $classname);
-                require_once $kernel->registerRootDir().'/tests/Fixtures/'.array_pop($namespace).'.php';
-            }
-
             $loader = new Loader();
             $loader->addFixture(new $classname());
             $executor->execute($loader->getFixtures(), true);
