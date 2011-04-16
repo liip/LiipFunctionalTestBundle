@@ -32,7 +32,7 @@ Installation
 
   4. Configure the `functionalTest` service in your config:
 
-          # application/config/config.yml
+          # application/config/config_test.yml
           liip_functional_test: ~
 
   5. Copy the fixtures to your projects functional tests
@@ -41,7 +41,8 @@ Installation
 
   6. Copy the functional tests to your projects functional tests
 
-         $ cp FunctionalTests/ExampleTest.php ..
+         $ cp FunctionalTests/ExampleFunctionalTest.php ..
+         $ cp FunctionalTests/ExampleHtml5FunctionalTest.php ..
 
   7. Install local copy of the HTML5 validator
 
@@ -52,6 +53,28 @@ Database tests
 
 In case tests require database access make sure that the DB is created and proxies are generated.
 For tests that also require fixtures simply call ``loadFixtures`` from the bundled WebTestCase class.
+
+Tips for fixture loading tests
+------------------------------
+
+1. Create fixtures in a sqlite test database for faster testing.
+
+    Add this to your `app/config_test.yml`:
+
+        doctrine:
+            dbal:
+                default_connection: default
+                connections:
+                    default:
+                        driver:   pdo_sqlite
+                        path:     %kernel.cache_dir%/test.db
+
+2. Use LiipFunctionalBundle's cached database feature, so that your tests run even faster:
+
+    Modify this on your `app/config_test.yml`
+
+        liip_functional_test:
+            cache_sqlite_db: true
 
 HTML5 validator
 ---------------
