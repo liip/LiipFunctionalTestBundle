@@ -9,9 +9,9 @@
  * with this source code in the file LICENSE.
  */
 
-namespace App\Main\Tests\Functional;
+namespace Liip\FooBundle\Tests\Functional;
 
-use Liip\FunctionalTestBundle\Test\Html5WebTestCase;
+use Liip\FunctionalTestBundle\Test\WebTestCase;
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\ApplicationTester;
@@ -20,29 +20,30 @@ use Symfony\Component\Console\Output\Output;
 /**
  * @author Lukas Smith
  * @author Daniel Barsotti
+ * @author Albert Jessurum
  */
-class ExampleTest extends Html5WebTestCase
+class ExampleFunctionalTest extends WebTestCase
 {
-    protected $kernelDir = '/app/main';
 
-    public function testIndex()
+    public function testUserFooIndex()
     {
-        $content = $this->fetchContent('/');
-        $this->assertIsValidHtml5($content, '/');
+        $this->loadFixtures(array('Liip\FooBundle\Tests\Fixtures\LoadUserData'));
+
+        $client = $this->createClient();
+        $crawler = $client->request('GET', '/users/foo');
+
+        $this->assertTrue($crawler->filter('html:contains("Email: foo@bar.com")')->count() > 0);
     }
 
+   /**
+    * Example using LiipFunctionalBundle WebTestCase helpers and with authentication
+    */
     public function testBasicAuthentication()
     {
-        $this->loadFixtures(array('App\Main\Tests\Fixtures\LoadUserData'));
+        $this->loadFixtures(array('Liip\FooBundle\Tests\Fixtures\LoadUserData'));
 
-        $content = $this->fetchContent('/', 'GET', true);
-        $this->assertEquals('Hello!', $content);
-    }
-
-    public function testGenerateInMissingDir()
-    {
-        $this->runCommand('main:generate-html', array('output-dir' => './doesntexist'));
-        $this->assertFalse(file_exists($this->dir.'/index.html'));
+        $content = $this->fetchContent('/users/foo', 'GET', true);
+        $this->assertEquals('Hello foo!', $content);
     }
 
     public function testIndexAction()

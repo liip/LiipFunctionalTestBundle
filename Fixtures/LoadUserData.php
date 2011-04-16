@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace App\Main\Tests\Fixtures;
+namespace Liip\FooBundle\Tests\Fixtures;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\DataFixtures\FixtureInterface;
@@ -22,7 +22,8 @@ class LoadUserData implements FixtureInterface {
 
     public function load($manager)
     {
-        $user = new \Application\MyBundle\Entity\User();
+        $user = new \Liip\FooBundle\Entity\User();
+        $user->setName('foo');
         $user->setEmail('foo@bar.com');
         // Set according to your security context settings
         $encoder = new MessageDigestPasswordEncoder('sha1', true, 3);
