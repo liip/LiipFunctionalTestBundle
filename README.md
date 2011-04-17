@@ -2,6 +2,7 @@ Introduction
 ============
 
 This Bundle provides base classes for functional tests to assist in loading fixtures and html5 validation.
+It also provides a DI aware mock builder for unit tests.
 
 Installation
 ------------
@@ -9,6 +10,7 @@ Installation
   1. Add this bundle to your project as Git submodules:
 
           $ git submodule add git://github.com/liip/FunctionalTestBundle.git vendor/bundles/Liip/FunctionalTestBundle
+          $ git submodule add git://github.com/doctrine/data-fixtures.git vendor/doctrine-data-fixtures
 
   2. Add the Liip namespace to your autoloader:
 
@@ -39,8 +41,9 @@ Installation
 
          $ cp Fixtures/LoadUserData.php ..
 
-  6. Copy the functional tests to your projects functional tests
+  6. Copy example unit and functional tests to your projects functional tests
 
+         $ cp Tests/ExampleUnitTest.php ..
          $ cp FunctionalTests/ExampleFunctionalTest.php ..
          $ cp FunctionalTests/ExampleHtml5FunctionalTest.php ..
 
@@ -99,7 +102,8 @@ Compilation and execution
 
 Before starting:
 * Set the JAVA_HOME environment variable to the root of the installed JDK
-* Add the location of "javac" to your PATH ($JAVA_HOME/bin). Alternatively you can use the --javac=/usr/bin/javac parameter of the build.py script.
+* Add the location of "javac" to your PATH ($JAVA_HOME/bin).
+* Alternatively you can use the --javac=/usr/bin/javac parameter of the build.py script.
 
 Then:
 
@@ -109,9 +113,11 @@ Then:
     python build/build.py all
     python build/build.py all
 
-Note: Yes, the last line is there twice intentionally. Running the script twice tends to fix a ClassCastException on the first run.
+Note: Yes, the last line is there twice intentionally. Running the script twice tends to fix a ClassCastException
+on the first run.
 
-Note: If at some point for some reason the compilation fails and you are forced to re-run it, it may be necessary to manually remove the htmlparser directory from your disk (the compilation process will complain about that).
+Note: If at some point for some reason the compilation fails and you are forced to re-run it, it may be necessary to
+manually remove the htmlparser directory from your disk (the compilation process will complain about that).
 
 This will download the necessary components, compile the validator and run it. This will require about 10min on the first run.
 
@@ -128,8 +134,9 @@ Once the validator has been compiled, it can be run with the following command:
 Using the validator in functional tests
 ---------------------------------------
 
-The Liip\FunctionalTestBundle\Test\Html5WebTestCase class allows to write functional tests that validate content
-against the HTML5 validator. In order to work the validator service must be running on the machine where the tests are executed.
+The Liip\FunctionalTestBundle\Test\Html5WebTestCase class allows to write functional tests that validate
+content against the HTML5 validator. In order to work the validator service must be running on the machine
+where the tests are executed.
 
 This class provides the following testing methods:
 
@@ -148,7 +155,8 @@ validation succeeds, execution silently continues, otherwise the calling test wi
 validation errors.
 
 assertIsValidHtml5AjaxResponse:
-This will validate an AJAX response in a specific format (probably not generic enough). If the validation succeeds, execution silently continues, otherwise the calling test will fail and display a list of validation errors.
+This will validate an AJAX response in a specific format (probably not generic enough). If the validation succeeds,
+execution silently continues, otherwise the calling test will fail and display a list of validation errors.
 
 setHtml5Wrapper:
 Allow to change the default HTML5 code that is used as a wrapper around snippets to validate

@@ -24,7 +24,9 @@ use Symfony\Component\Console\Output\Output;
  */
 class ExampleFunctionalTest extends WebTestCase
 {
-
+    /**
+     * Example using LiipFunctionalBundle the fixture loader
+     */
     public function testUserFooIndex()
     {
         $this->loadFixtures(array('Liip\FooBundle\Tests\Fixtures\LoadUserData'));
@@ -44,26 +46,5 @@ class ExampleFunctionalTest extends WebTestCase
 
         $content = $this->fetchContent('/users/foo', 'GET', true);
         $this->assertEquals('Hello foo!', $content);
-    }
-
-    public function testIndexAction()
-    {
-        $view = $this->getServiceMockBuilder('FooView')->getMock();
-
-        $view->expects($this->once())
-            ->method('setTemplate')
-            ->with('FooBundle:Default:index.twig')
-            ->will($this->returnValue(null))
-        ;
-
-        $view->expects($this->once())
-            ->method('handle')
-            ->with()
-            ->will($this->returnValue('success'))
-        ;
-
-        $controller = new DefaultController($view);
-
-        $this->assertEquals('success', $controller->indexAction());
     }
 }
