@@ -19,7 +19,7 @@ use Symfony\Component\Config\FileLocator;
 class LiipFunctionalTestExtension extends Extension
 {
     /**
-     * Yaml config files to load
+     * XML config files to load
      * @var array
      */
     protected $resources = array(
