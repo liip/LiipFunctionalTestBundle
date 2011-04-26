@@ -7,10 +7,15 @@ It also provides a DI aware mock builder for unit tests.
 Installation
 ------------
 
+  If you plan on loading fixtures with your tests, make sure you have the
+  DoctrineFixturesBundle installed and configured first.
+
+  [Doctrine Fixtures setup and configuration instructions]
+  (http://symfony.com/doc/2.0/cookbook/doctrine/doctrine_fixtures.html#setup-and-configuration)
+
   1. Add this bundle to your project as Git submodules:
 
           $ git submodule add git://github.com/liip/FunctionalTestBundle.git vendor/bundles/Liip/FunctionalTestBundle
-          $ git submodule add git://github.com/doctrine/data-fixtures.git vendor/doctrine-data-fixtures
 
   2. Add the Liip namespace to your autoloader:
 
