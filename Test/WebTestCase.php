@@ -11,7 +11,7 @@
 
 namespace Liip\FunctionalTestBundle\Test;
 
-use Symfony\Bundle\DoctrineAbstractBundle\Common\DataFixtures\Loader;
+use Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 
