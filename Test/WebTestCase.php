@@ -11,7 +11,7 @@
 
 namespace Liip\FunctionalTestBundle\Test;
 
-use Doctrine\Common\DataFixtures\Loader;
+use Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 
@@ -162,7 +162,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
         $classnames = (array) $classnames;
         foreach ($classnames as $classname) {
-            $loader = new Loader();
+            $loader = new Loader($container);
             $loader->addFixture(new $classname());
             $executor->execute($loader->getFixtures(), true);
         }
