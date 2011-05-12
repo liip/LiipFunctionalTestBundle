@@ -117,6 +117,17 @@ abstract class WebTestCase extends BaseWebTestCase
         return $this->container[$this->kernelDir];
     }
 
+    /**
+     * Create a fixture of the given class.  By default, instantiates the 
+     * class with a no-argument constructor; may be overriden for more complex
+     * behavior.
+     * @param string $classname The fixture class.
+     * @return \Doctrine\Common\DataFixtures\FixtureInterface The fixture.
+     */
+    protected function createFixture($classname) {
+        return new $classname();
+    }
+
     protected function loadFixtures($classnames = array())
     {
         $kernel = $this->createKernel(array('environment' => 'test'));
@@ -163,7 +174,7 @@ abstract class WebTestCase extends BaseWebTestCase
         $classnames = (array) $classnames;
         foreach ($classnames as $classname) {
             $loader = new Loader($container);
-            $loader->addFixture(new $classname());
+            $loader->addFixture($this->createFixture($classname));
             $executor->execute($loader->getFixtures(), true);
         }
 
