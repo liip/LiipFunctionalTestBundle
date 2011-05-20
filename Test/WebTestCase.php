@@ -28,7 +28,7 @@ use Symfony\Component\DomCrawler\Crawler;
  */
 abstract class WebTestCase extends BaseWebTestCase
 {
-    protected $container;
+    protected $containers;
     protected $kernelDir;
 
     protected function getKernelClass()
@@ -102,19 +102,19 @@ abstract class WebTestCase extends BaseWebTestCase
             $_SERVER['KERNEL_DIR'] = getcwd().$this->kernelDir;
         }
 
-        if (empty($this->container[$this->kernelDir])) {
+        if (empty($this->containers[$this->kernelDir])) {
             $options = array();
             $kernel = $this->createKernel($options);
             $kernel->boot();
 
-            $this->container[$this->kernelDir] = $kernel->getContainer();
+            $this->containers[$this->kernelDir] = $kernel->getContainer();
         }
 
         if (isset($tmpKernelDir)) {
             $_SERVER['KERNEL_DIR'] = $tmpKernelDir;
         }
 
-        return $this->container[$this->kernelDir];
+        return $this->containers[$this->kernelDir];
     }
 
     protected function loadFixtures($classnames = array())
