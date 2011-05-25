@@ -165,3 +165,42 @@ execution silently continues, otherwise the calling test will fail and display a
 
 setHtml5Wrapper:
 Allow to change the default HTML5 code that is used as a wrapper around snippets to validate
+
+
+Mailer Mock
+-----------
+
+If you want to use the mailer mock insted of the official mailer service follow these steps:
+
+  1. Add the following lines in yout config_test.yml file:
+
+          parameters:
+            mailer_spool_type: file
+            mailer_spool_path: /tmp/mail
+
+          services:
+            mailer:
+              class: Liip\FunctionalTestBundle\Test\Mailer\SwiftMailerMock
+              arguments: [%mailer_spool_path%]
+
+  2. Sende a message:
+
+          $message->setSubject('Subject')
+                  ->setBody($this->renderView('IdeatoWebsiteBundle:Frontend:email.txt.twig',
+                                              array('name' => $contact->getName(),
+                                                    'message' => $contact->getMessage(),
+                                                    'email' => $contact->getEmail()))
+                               )
+                      ->setFrom(array('example@example.com' => 'Exemple'))
+                      ->setTo(array('example@example.com' => 'Example'));
+
+  3. Test that the message has been sent:
+
+          ...
+          $message = $this->getContainer()->get('mailer')->getMessage('info@ideato.info');
+
+          $this->assertEquals('Subject', $message->getSubject());
+          $this->assertRegExp('/body content/', $message->getBody());
+          ....
+
+At the moment the SwiftMessageMock is really simple, but still enough for generic emails.
