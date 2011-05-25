@@ -4,57 +4,57 @@ namespace Liip\FunctionalTestBundle\Test\Mailer;
 
 class SwiftMessageMock
 {
-  protected $subject;
-  protected $from;
-  protected $to;
-  protected $body;
+    protected $subject;
+    protected $from;
+    protected $to;
+    protected $body;
 
-  public function setSubject($subject)
-  {
-    $this->subject = $subject;
+    public function setSubject($subject)
+    {
+        $this->subject = $subject;
 
-    return $this;
-  }
+        return $this;
+    }
 
-  public function setFrom($from)
-  {
-    $this->from = $from;
+    public function setFrom($from)
+    {
+        $this->from = $from;
 
-    return $this;
-  }
+        return $this;
+    }
 
-  public function setTo($to)
-  {
-    $this->to = $to;
+    public function setTo($to)
+    {
+        $this->to = $to;
 
-    return $this;
-  }
+        return $this;
+    }
 
-  public function setBody($body)
-  {
-    $this->body = $body;
+    public function setBody($body)
+    {
+        $this->body = $body;
 
-    return $this;
-  }
+        return $this;
+    }
 
-  public function getSubject()
-  {
-    return $this->subject;
-  }
+    public function getSubject()
+    {
+        return $this->subject;
+    }
 
-  public function getFrom()
-  {
-    return $this->from;
-  }
+    public function getFrom()
+    {
+        return $this->from;
+    }
 
-  public function getTo()
-  {
-    return $this->to;
-  }
+    public function getTo()
+    {
+        return $this->to;
+    }
 
-  public function getBody()
-  {
-    return $this->body;
-  }
+    public function getBody()
+    {
+        return $this->body;
+    }
 
 }
