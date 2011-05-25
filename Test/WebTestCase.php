@@ -124,7 +124,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
         $container = $kernel->getContainer();
 
-        $em = $container->get('doctrine.orm.entity_manager');
+        $em = $container->get('doctrine')->getEntityManager();
         $connection = $em->getConnection();
 
         if ($connection->getDriver() instanceOf \Doctrine\DBAL\Driver\PDOSqlite\Driver) {
