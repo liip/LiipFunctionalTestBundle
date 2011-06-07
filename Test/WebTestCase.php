@@ -161,11 +161,11 @@ abstract class WebTestCase extends BaseWebTestCase
         }
 
         $classnames = (array) $classnames;
+        $loader = new Loader($container);
         foreach ($classnames as $classname) {
-            $loader = new Loader($container);
             $loader->addFixture(new $classname());
-            $executor->execute($loader->getFixtures(), true);
         }
+        $executor->execute($loader->getFixtures(), true);
 
         $connection->close();
 
