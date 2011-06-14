@@ -26,7 +26,7 @@ class ExampleFunctionalTest extends WebTestCase
      */
     public function testUserInfo()
     {
-        $this->loadFixtures(array('Liip\FunctionalTestBundle\Tests\Fixtures\LoadUserData'));
+        $this->loadFixtures(array('Liip\FooBundle\Tests\Fixtures\LoadUserData'));
 
         // test if the user's name is shown on the start page if the user is authenticated authenticated
         $content = $this->fetchContent('/', 'GET', true);
