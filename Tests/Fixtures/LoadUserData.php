@@ -13,7 +13,7 @@ namespace Liip\FooBundle\Tests\Fixtures;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\DataFixtures\FixtureInterface;
-use Symfony\Component\Security\Encoder\MessageDigestPasswordEncoder;
+use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
 
 /**
  * @author Lea Haensenberger
@@ -23,7 +23,7 @@ class LoadUserData implements FixtureInterface {
     public function load($manager)
     {
         $user = new \Liip\FooBundle\Entity\User();
-        $user->setName('foo');
+        $user->setName('foo bar');
         $user->setEmail('foo@bar.com');
         // Set according to your security context settings
         $encoder = new MessageDigestPasswordEncoder('sha1', true, 3);
