@@ -31,12 +31,11 @@ abstract class WebTestCase extends BaseWebTestCase
     protected $containers;
     protected $kernelDir;
 
-    protected function getKernelClass()
+    static protected function getKernelClass()
     {
-        $dir = isset($_SERVER['KERNEL_DIR']) ? $_SERVER['KERNEL_DIR'] : $this->getPhpUnitXmlDir();
+        $dir = isset($_SERVER['KERNEL_DIR']) ? $_SERVER['KERNEL_DIR'] : self::getPhpUnitXmlDir();
 
-        $appname = explode('\\', get_class($this));
-        $appname = $appname[1];
+        list($appname) = explode('\\', get_called_class());
 
         $class = $appname.'Kernel';
         $file = $dir.'/'.strtolower($appname).'/'.$class.'.php';
