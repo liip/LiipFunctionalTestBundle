@@ -15,7 +15,7 @@ Installation
 
   1. Add this bundle to your project as Git submodules:
 
-          $ git submodule add git://github.com/liip/FunctionalTestBundle.git vendor/bundles/Liip/FunctionalTestBundle
+          $ git submodule add git://github.com/liip/LiipFunctionalTestBundle.git vendor/bundles/Liip/FunctionalTestBundle
 
   2. Add the Liip namespace to your autoloader:
 
