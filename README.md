@@ -37,10 +37,16 @@ Installation
               );
           }
 
-  4. Configure the `functionalTest` service in your config:
+  4. Configure the `functionalTest` service, and ensure that the framework is using the filesystem for session storage:
 
           # application/config/config_test.yml
+          framework:
+              test: ~
+                  session:
+                          storage_id: session.storage.filesystem
+
           liip_functional_test: ~
+
 
   5. Copy the fixtures to your projects functional tests
 
