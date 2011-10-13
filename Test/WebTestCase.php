@@ -254,7 +254,9 @@ abstract class WebTestCase extends BaseWebTestCase
         $client->request($method, $path);
 
         $content = $client->getResponse()->getContent();
-        $this->isSuccessful($client->getResponse(), $success);
+        if (is_bool($success)) {
+            $this->isSuccessful($client->getResponse(), $success);
+        }
 
         return $content;
     }
