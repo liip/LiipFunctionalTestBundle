@@ -21,10 +21,13 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
 
 /**
  * @author Lea Haensenberger
  * @author Lukas Kahwe Smith <smith@pooteeweet.org>
+ * @author Benjamin Eberlei <kontakt@beberlei.de>
  */
 abstract class WebTestCase extends BaseWebTestCase
 {
@@ -33,6 +36,11 @@ abstract class WebTestCase extends BaseWebTestCase
     protected $kernelDir;
     // 5 * 1024 * 1024 KB
     protected $maxMemory = 5242880;
+
+    /**
+     * @var array
+     */
+    private $firewallLogins = array();
 
     static protected function getKernelClass()
     {
@@ -197,7 +205,20 @@ abstract class WebTestCase extends BaseWebTestCase
             $params = array('PHP_AUTH_USER' => $authentication['username'], 'PHP_AUTH_PW' => $authentication['password']);
         }
 
-        return $this->createClient(array('environment' => 'test'), $params);
+        $client = $this->createClient(array('environment' => 'test'), $params);
+
+        if ($this->firewallLogins) {
+            // has to be set otherwise "hasPreviousSession" in Request returns false.
+            $client->getCookieJar()->set(new \Symfony\Component\BrowserKit\Cookie(session_name(), true));
+
+            $session = self::$kernel->getContainer()->get('session');
+            foreach ($this->firewallLogins AS $firewallName => $user) {
+                $token = new PreAuthenticatedToken($user, null, $firewallName, $user->getRoles());
+                $session->set('_security_' . $firewallName, serialize($token));
+            }
+        }
+
+        return $client;
     }
 
     /**
@@ -283,5 +304,15 @@ abstract class WebTestCase extends BaseWebTestCase
         $this->isSuccessful($client->getResponse(), $success);
 
         return $crawler;
+    }
+
+    /**
+     * @param UserInterface $user
+     * @return WebTestCase
+     */
+    public function loginAs(UserInterface $user, $firewallName)
+    {
+        $this->firewallLogins[$firewallName] = $user;
+        return $this;
     }
 }
