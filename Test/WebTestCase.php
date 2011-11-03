@@ -28,8 +28,11 @@ use Symfony\Component\DomCrawler\Crawler;
  */
 abstract class WebTestCase extends BaseWebTestCase
 {
+    protected $environment = 'test';
     protected $containers;
     protected $kernelDir;
+    // 5 * 1024 * 1024 KB
+    protected $maxMemory = 5242880;
 
     static protected function getKernelClass()
     {
@@ -71,7 +74,7 @@ abstract class WebTestCase extends BaseWebTestCase
     {
         array_unshift($params, $name);
 
-        $kernel = $this->createKernel(array('environment' => 'test'));
+        $kernel = $this->createKernel(array('environment' => $this->environment));
         $kernel->boot();
 
         $application = new Application($kernel);
@@ -80,7 +83,7 @@ abstract class WebTestCase extends BaseWebTestCase
         $input = new ArrayInput($params);
         $input->setInteractive(false);
 
-        $fp = fopen('php://temp/maxmemory:'.(5 * 1024 * 1024), 'r+');
+        $fp = fopen('php://temp/maxmemory:'.$this->maxMemory, 'r+');
         $output = new StreamOutput($fp);
 
         $application->run($input, $output);
@@ -118,7 +121,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
     protected function loadFixtures($classnames = array())
     {
-        $kernel = $this->createKernel(array('environment' => 'test'));
+        $kernel = $this->createKernel(array('environment' => $this->environment));
         $kernel->boot();
 
         $container = $kernel->getContainer();
