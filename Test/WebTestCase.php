@@ -37,7 +37,7 @@ abstract class WebTestCase extends BaseWebTestCase
     /**
      * @var array
      */
-    private $firewallLogins;
+    private $firewallLogins = array();
 
     static protected function getKernelClass()
     {
@@ -309,7 +309,7 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     public function loginAs(UserInterface $user, $firewallName)
     {
-        $this->firewalls[$firewallName] = $user;
+        $this->firewallLogins[$firewallName] = $user;
         return $this;
     }
 }
