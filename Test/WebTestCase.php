@@ -21,6 +21,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
 
@@ -205,11 +206,11 @@ abstract class WebTestCase extends BaseWebTestCase
             $params = array('PHP_AUTH_USER' => $authentication['username'], 'PHP_AUTH_PW' => $authentication['password']);
         }
 
-        $client = $this->createClient(array('environment' => 'test'), $params);
+        $client = $this->createClient(array('environment' => $this->environment), $params);
 
         if ($this->firewallLogins) {
             // has to be set otherwise "hasPreviousSession" in Request returns false.
-            $client->getCookieJar()->set(new \Symfony\Component\BrowserKit\Cookie(session_name(), true));
+            $client->getCookieJar()->set(new Cookie(session_name(), true));
 
             $session = self::$kernel->getContainer()->get('session');
             foreach ($this->firewallLogins AS $firewallName => $user) {
