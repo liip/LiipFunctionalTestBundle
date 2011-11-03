@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Liip\FooBundle\Tests\Functional;
+namespace Liip\FooBundle\Tests;
 
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 
@@ -46,5 +46,19 @@ class ExampleFunctionalTest extends WebTestCase
 
         $content = $this->fetchContent('/users/foo', 'GET', true);
         $this->assertEquals('Hello foo!', $content);
+
+        // check if the logout button is shown
+        $this->assertContains('logout', $content);
+    }
+
+    public function test404Page()
+    {
+        $this->fetchContent('/asdasdas', 'GET', false, false);
+    }
+
+    public function testLoginPage()
+    {
+        $content = $this->fetchContent('/', 'GET', false);
+        $this->assertContains('login', $content);
     }
 }

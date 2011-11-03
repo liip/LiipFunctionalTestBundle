@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Liip\FooBundle\Tests\Functional;
+namespace Liip\FooBundle\Tests;
 
 use Liip\FunctionalTestBundle\Test\Html5WebTestCase;
 
