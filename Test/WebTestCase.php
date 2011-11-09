@@ -151,11 +151,10 @@ abstract class WebTestCase extends BaseWebTestCase
             }
 
             // TODO: handle case when using persistent connections. Fail loudly?
-            $connection->getSchemaManager()->dropDatabase($name);
-
+            $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($em);
+            $schemaTool->dropDatabase($name);
             $metadatas = $em->getMetadataFactory()->getAllMetadata();
             if (!empty($metadatas)) {
-                $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($em);
                 $schemaTool->createSchema($metadatas);
             }
 
