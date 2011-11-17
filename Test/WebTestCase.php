@@ -128,6 +128,21 @@ abstract class WebTestCase extends BaseWebTestCase
         return $this->containers[$this->kernelDir];
     }
 
+    /**
+     * Set the database to the provided fixtures.
+     *
+     * Drops the current database and then loads fixtures using the specified
+     * classes. The parameter is a list of fully qualified class names of
+     * classes that implement Doctrine\Common\DataFixtures\FixtureInterface
+     * so that they can be loaded by the DataFixtures Loader::addFixture
+     *
+     * Depends on the doctrine data-fixtures library being available in the
+     * class path.
+     *
+     * @param array $classname strings with the fully qualified class names
+     *
+     * @see Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader::addFixture
+     */
     protected function loadFixtures($classnames = array())
     {
         $kernel = $this->createKernel(array('environment' => $this->environment));

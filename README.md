@@ -66,7 +66,9 @@ Database tests
 --------------
 
 In case tests require database access make sure that the DB is created and proxies are generated.
-For tests that also require fixtures simply call ``loadFixtures`` from the bundled WebTestCase class.
+For tests that rely on a specific database, write fixture classes and call ``loadFixtures`` from
+the bundled Test\WebTestCase class. This will replace the database configured in config_text.yml
+with the specified fixtures.
 
 Tips for fixture loading tests
 ------------------------------
