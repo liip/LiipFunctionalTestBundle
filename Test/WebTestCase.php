@@ -330,4 +330,18 @@ abstract class WebTestCase extends BaseWebTestCase
         $this->firewallLogins[$firewallName] = $user;
         return $this;
     }
+
+    public function tearDown()
+    {
+        $kernel = $this->getContainer()->get('kernel');
+        $this->shutdownKernel($kernel);
+        unset($this->containers[$this->kernelDir]);
+    }
+
+    protected function shutdownKernel($kernel)
+    {
+        $kernel->getContainer()->get('doctrine_phpcr.default_session')->logout();
+        $kernel->getContainer()->get('monolog.handler.main')->close();
+        $kernel->shutdown();
+    }
 }
