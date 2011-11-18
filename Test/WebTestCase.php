@@ -333,15 +333,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
     public function tearDown()
     {
-        $kernel = $this->getContainer()->get('kernel');
-        $this->shutdownKernel($kernel);
+        $this->getContainer()->get('kernel')->shutdown();
         unset($this->containers[$this->kernelDir]);
-    }
-
-    protected function shutdownKernel($kernel)
-    {
-        $kernel->getContainer()->get('doctrine_phpcr.default_session')->logout();
-        $kernel->getContainer()->get('monolog.handler.main')->close();
-        $kernel->shutdown();
     }
 }
