@@ -23,7 +23,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 /**
  * @author Lea Haensenberger
@@ -228,7 +228,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
             $session = self::$kernel->getContainer()->get('session');
             foreach ($this->firewallLogins AS $firewallName => $user) {
-                $token = new PreAuthenticatedToken($user, null, $firewallName, $user->getRoles());
+                $token = new UsernamePasswordToken($user, null, $firewallName, $user->getRoles());
                 $session->set('_security_' . $firewallName, serialize($token));
             }
         }
