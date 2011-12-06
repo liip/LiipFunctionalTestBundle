@@ -140,10 +140,11 @@ abstract class WebTestCase extends BaseWebTestCase
      * class path.
      *
      * @param array $classname strings with the fully qualified class names
+     * @param int $purgeMode Sets the ORM purge mode
      *
      * @see Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader::addFixture
      */
-    protected function loadFixtures($classnames = array())
+    protected function loadFixtures($classnames = array(), $purgeMode = null)
     {
         $kernel = $this->createKernel(array('environment' => $this->environment));
         $kernel->boot();
@@ -176,6 +177,9 @@ abstract class WebTestCase extends BaseWebTestCase
             $executor = new ORMExecutor($em);
         } else {
             $purger = new ORMPurger();
+            if ($purgeMode !== null) {
+                $purger->setPurgeMode($purgeMode);
+            }
 
             $executor = new ORMExecutor($em, $purger);
             $executor->purge();
