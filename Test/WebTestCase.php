@@ -228,7 +228,12 @@ abstract class WebTestCase extends BaseWebTestCase
 
         if ($this->firewallLogins) {
             // has to be set otherwise "hasPreviousSession" in Request returns false.
-            $client->getCookieJar()->set(new Cookie(session_name(), true));
+            $options = self::$kernel->getContainer()->getParameter('session.storage.options');
+            if (!$options || !isset($options['name'])) {
+                throw new \InvalidArgumentException("Missing session.storage.options#name");
+            }
+
+            $client->getCookieJar()->set(new Cookie($options['name'], true));
 
             $session = self::$kernel->getContainer()->get('session');
             foreach ($this->firewallLogins AS $firewallName => $user) {
