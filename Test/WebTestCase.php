@@ -141,17 +141,29 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @param array $classname strings with the fully qualified class names
      * @param int $purgeMode Sets the ORM purge mode
+     * @param string $emName Name of the entityManager to use
      *
      * @see Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader::addFixture
      */
-    protected function loadFixtures($classnames = array(), $purgeMode = null)
+    protected function loadFixtures($classnames = array(), $purgeMode = null, $emName = null)
     {
         $kernel = $this->createKernel(array('environment' => $this->environment));
         $kernel->boot();
 
         $container = $kernel->getContainer();
 
-        $em = $container->get('doctrine.orm.entity_manager');
+        $emPrefix = $emName ? $emName . '_' : null;
+        $emServiceName = sprintf('doctrine.orm.%sentity_manager', $emPrefix);
+        if (!$container->has($emServiceName)) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Could not find an entity manager configured with the name "%s". Check your '.
+                    'application configuration to configure your Doctrine entity managers.', $emName
+                )
+            );
+        }
+
+        $em = $container->get($emServiceName);
         $connection = $em->getConnection();
 
         if ($connection->getDriver() instanceOf \Doctrine\DBAL\Driver\PDOSqlite\Driver) {
