@@ -20,7 +20,7 @@
     },
     "autoload": {
         "psr-0": {
-            "Liiip\\FunctionalTestBundle\\": ""
+            "Liip\\FunctionalTestBundle\\": ""
         }
     },
     "target-dir" : "Liip/FunctionalTestBundle"
