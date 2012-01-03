@@ -11,7 +11,7 @@
         },
         {
             "name": "Community contributions",
-            "homepage": "https://github.com/liip/LiipThemeBundle/contributors"
+            "homepage": "https://github.com/liip/LiipFunctionalTestBundle/contributors"
         }
     ],
     "require": {
