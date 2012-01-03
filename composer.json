@@ -1,0 +1,27 @@
+{
+    "name": "liip/functional-test-bundle",
+    "description": "This bundles provides additional functional test-cases for Symfony2 applications",
+    "keywords": ["symfony2"],
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Liip AG",
+            "homepage": "http://www.liip.ch/"
+        },
+        {
+            "name": "Community contributions",
+            "homepage": "https://github.com/liip/LiipThemeBundle/contributors"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "symfony/symfony" : ">=2.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "Liiip\\FunctionalTestBundle\\": ""
+        }
+    },
+    "target-dir" : "Liip/FunctionalTestBundle"
+}
