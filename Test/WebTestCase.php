@@ -12,9 +12,6 @@
 namespace Liip\FunctionalTestBundle\Test;
 
 use Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader;
-use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
-use Doctrine\Common\DataFixtures\Purger\ORMPurger;
-
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -136,79 +133,71 @@ abstract class WebTestCase extends BaseWebTestCase
      * classes that implement Doctrine\Common\DataFixtures\FixtureInterface
      * so that they can be loaded by the DataFixtures Loader::addFixture
      *
+     * When using SQLite this method will automatically make a copy of the
+     * loaded schema and fixtures which will be restored automatically in
+     * case the same fixture classes are to be loaded again.
+     *
      * Depends on the doctrine data-fixtures library being available in the
      * class path.
      *
-     * @param array $classname strings with the fully qualified class names
+     * @param array $classNames List of fully qualified class names of fixtures to load
+     * @param string $omName The name of object manager to use
+     * @param string $registryName The service id of manager registry to use
      * @param int $purgeMode Sets the ORM purge mode
-     * @param string $emName Name of the entityManager to use
      *
      * @see Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader::addFixture
      */
-    protected function loadFixtures($classnames = array(), $purgeMode = null, $emName = null)
+    protected function loadFixtures(array $classNames, $omName = null, $registryName = 'doctrine', $purgeMode = null)
     {
-        $kernel = $this->createKernel(array('environment' => $this->environment));
-        $kernel->boot();
+        $container = $this->getContainer();
+        $registry = $container->get($registryName);
+        $om = $registry->getManager($omName);
+        $type = $registry->getName();
+        $executorClass = 'Doctrine\\Common\\DataFixtures\Executor\\'.$type.'Executor';
 
-        $container = $kernel->getContainer();
+        if ('orm' === $type) {
+            $connection = $om->getConnection();
+            if ($connection->getDriver() instanceOf \Doctrine\DBAL\Driver\PDOSqlite\Driver) {
+                $params = $connection->getParams();
+                $name = isset($params['path']) ? $params['path'] : $params['dbname'];
 
-        $emPrefix = $emName ? $emName . '_' : null;
-        $emServiceName = sprintf('doctrine.orm.%sentity_manager', $emPrefix);
-        if (!$container->has($emServiceName)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'Could not find an entity manager configured with the name "%s". Check your '.
-                    'application configuration to configure your Doctrine entity managers.', $emName
-                )
-            );
+                if ($container->getParameter('liip_functional_test.cache_sqlite_db')) {
+                    $backup = $container->getParameter('kernel.cache_dir') . '/test_' . md5(serialize($classNames)) . '.db';
+                    if (file_exists($backup)) {
+                        copy($backup, $name);
+                        return;
+                    }
+                }
+
+                // TODO: handle case when using persistent connections. Fail loudly?
+                $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($om);
+                $schemaTool->dropDatabase($name);
+                $metadatas = $om->getMetadataFactory()->getAllMetadata();
+                if (!empty($metadatas)) {
+                    $schemaTool->createSchema($metadatas);
+                }
+
+                $executor = new $executorClass($om);
+            }
         }
 
-        $em = $container->get($emServiceName);
-        $connection = $em->getConnection();
-
-        if ($connection->getDriver() instanceOf \Doctrine\DBAL\Driver\PDOSqlite\Driver) {
-            $params = $connection->getParams();
-            $name = isset($params['path']) ? $params['path'] : $params['dbname'];
-
-            if ($container->getParameter('liip_functional_test.cache_sqlite_db')) {
-                $backup = $container->getParameter('kernel.cache_dir').'/test_'.md5(serialize($classnames)).'.db';
-                if (file_exists($backup)) {
-                    copy($backup, $name);
-                    return;
-                }
-            }
-
-            // TODO: handle case when using persistent connections. Fail loudly?
-            $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($em);
-            $schemaTool->dropDatabase($name);
-            $metadatas = $em->getMetadataFactory()->getAllMetadata();
-            if (!empty($metadatas)) {
-                $schemaTool->createSchema($metadatas);
-            }
-
-            $executor = new ORMExecutor($em);
-        } else {
-            $purger = new ORMPurger();
-            if ($purgeMode !== null) {
+        if (empty($executor)) {
+            $purgerClass = 'Doctrine\\Common\\DataFixtures\Purger\\'.$type.'Purger';
+            $purger = new $purgerClass();
+            if (null !== $purgeMode) {
                 $purger->setPurgeMode($purgeMode);
             }
 
-            $executor = new ORMExecutor($em, $purger);
+            $executor = new $executorClass($om, $purger);
             $executor->purge();
         }
 
-        if (empty($classnames)) {
-            return;
-        }
-
-        $classnames = (array) $classnames;
         $loader = new Loader($container);
-        foreach ($classnames as $classname) {
-            $loader->addFixture(new $classname());
+        foreach ($classNames as $className) {
+            $loader->addFixture(new $className());
         }
-        $executor->execute($loader->getFixtures(), true);
 
-        $connection->close();
+        $executor->execute($loader->getFixtures(), true);
 
         if (isset($backup)) {
             copy($name, $backup);
