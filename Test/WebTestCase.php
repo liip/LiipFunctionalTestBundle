@@ -151,8 +151,14 @@ abstract class WebTestCase extends BaseWebTestCase
     {
         $container = $this->getContainer();
         $registry = $container->get($registryName);
-        $om = $registry->getManager($omName);
-        $type = $registry->getName();
+        if ($registry instanceof \Doctrine\Common\Persistence\ManagerRegistry) {
+            $om = $registry->getManager($omName);
+            $type = $registry->getName();
+        } else {
+            $om = $registry->getEntityManager($omName);
+            $type = 'ORM';
+        }
+
         $executorClass = 'Doctrine\\Common\\DataFixtures\Executor\\'.$type.'Executor';
 
         if ('orm' === $type) {
