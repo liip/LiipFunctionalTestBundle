@@ -161,7 +161,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
         $executorClass = 'Doctrine\\Common\\DataFixtures\Executor\\'.$type.'Executor';
 
-        if ('orm' === $type) {
+        if ('ORM' === $type) {
             $connection = $om->getConnection();
             if ($connection->getDriver() instanceOf \Doctrine\DBAL\Driver\PDOSqlite\Driver) {
                 $params = $connection->getParams();
