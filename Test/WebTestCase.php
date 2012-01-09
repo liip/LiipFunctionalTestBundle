@@ -143,6 +143,8 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param string $omName The name of object manager to use
      * @param string $registryName The service id of manager registry to use
      * @param int $purgeMode Sets the ORM purge mode
+     *
+     * @return null|Doctrine\Common\DataFixtures\Executor\AbstractExecutor
      */
     protected function loadFixtures(array $classNames, $omName = null, $registryName = 'doctrine', $purgeMode = null)
     {
@@ -210,6 +212,8 @@ abstract class WebTestCase extends BaseWebTestCase
         if (isset($backup)) {
             copy($name, $backup);
         }
+
+        return $executor;
     }
 
     /**
