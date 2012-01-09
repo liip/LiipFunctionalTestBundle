@@ -11,7 +11,6 @@
 
 namespace Liip\FunctionalTestBundle\Test;
 
-use Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -144,8 +143,6 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param string $omName The name of object manager to use
      * @param string $registryName The service id of manager registry to use
      * @param int $purgeMode Sets the ORM purge mode
-     *
-     * @see Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader::addFixture
      */
     protected function loadFixtures(array $classNames, $omName = null, $registryName = 'doctrine', $purgeMode = null)
     {
@@ -198,7 +195,12 @@ abstract class WebTestCase extends BaseWebTestCase
             $executor->purge();
         }
 
-        $loader = new Loader($container);
+        if (class_exists('Doctrine\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader')) {
+            $loader = new Doctrine\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader($container);
+        } else {
+            $loader = new Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader($container);
+        }
+
         foreach ($classNames as $className) {
             $loader->addFixture(new $className());
         }
