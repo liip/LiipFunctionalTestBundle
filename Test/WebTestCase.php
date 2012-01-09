@@ -195,8 +195,8 @@ abstract class WebTestCase extends BaseWebTestCase
             $executor->purge();
         }
 
-        if (class_exists('Doctrine\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader')) {
-            $loader = new \Doctrine\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader($container);
+        if (class_exists('Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader')) {
+            $loader = new \Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader($container);
         } else {
             $loader = new \Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader($container);
         }
