@@ -196,9 +196,9 @@ abstract class WebTestCase extends BaseWebTestCase
         }
 
         if (class_exists('Doctrine\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader')) {
-            $loader = new Doctrine\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader($container);
+            $loader = new \Doctrine\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader($container);
         } else {
-            $loader = new Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader($container);
+            $loader = new \Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader($container);
         }
 
         foreach ($classNames as $className) {
