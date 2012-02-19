@@ -92,6 +92,30 @@ Tips for fixture loading tests
         liip_functional_test:
             cache_sqlite_db: true
 
+3. Load your doctrine fixtures:
+
+        use Liip\FunctionalTestBundle\Test\WebTestCase;
+
+        class MyControllerTest extends WebTestCase
+        {
+            public function testIndex()
+            {
+                $client = static::createClient();
+
+                // add all your doctrine fixtures classes
+                $classes = array(
+                    // classes implementing Doctrine\Common\DataFixtures\FixtureInterface
+                    'Bamarni\MainBundle\DataFixtures\ORM\LoadData',
+                    'Me\MyBundle\DataFixtures\ORM\LoadData'
+                );
+
+                $this->loadFixtures($classes);
+
+                // you can now run your functional tests with a populated database
+                // ...
+            }
+        }
+
 HTML5 validator
 ---------------
 
