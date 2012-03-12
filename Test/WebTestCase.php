@@ -166,8 +166,10 @@ abstract class WebTestCase extends BaseWebTestCase
                 $params = $connection->getParams();
                 $name = isset($params['path']) ? $params['path'] : $params['dbname'];
 
+                $metadatas = $om->getMetadataFactory()->getAllMetadata();
+
                 if ($container->getParameter('liip_functional_test.cache_sqlite_db')) {
-                    $backup = $container->getParameter('kernel.cache_dir') . '/test_' . md5(serialize($classNames)) . '.db';
+                    $backup = $container->getParameter('kernel.cache_dir') . '/test_' . md5(serialize($metadatas) . serialize($classNames)) . '.db';
                     if (file_exists($backup)) {
                         copy($backup, $name);
                         return;
@@ -177,7 +179,6 @@ abstract class WebTestCase extends BaseWebTestCase
                 // TODO: handle case when using persistent connections. Fail loudly?
                 $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($om);
                 $schemaTool->dropDatabase($name);
-                $metadatas = $om->getMetadataFactory()->getAllMetadata();
                 if (!empty($metadatas)) {
                     $schemaTool->createSchema($metadatas);
                 }
