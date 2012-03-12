@@ -1,8 +1,9 @@
 Introduction
 ============
 
-This Bundle provides base classes for functional tests to assist in loading fixtures and html5 validation.
-It also provides a DI aware mock builder for unit tests.
+This Bundle provides base classes for functional tests to assist in setting up
+test-databases, loading fixtures and html5 validation.  It also provides a DI
+aware mock builder for unit tests.
 
 Installation
 ------------
@@ -10,12 +11,18 @@ Installation
   If you plan on loading fixtures with your tests, make sure you have the
   DoctrineFixturesBundle installed and configured first.
 
-  [Doctrine Fixtures setup and configuration instructions]
-  (http://symfony.com/doc/2.0/cookbook/doctrine/doctrine_fixtures.html#setup-and-configuration)
+  [Doctrine Fixtures setup and configuration instructions](http://symfony.com/doc/2.0/cookbook/doctrine/doctrine_fixtures.html#setup-and-configuration)
 
-  1. Add this bundle to your project as Git submodules:
+  1. Add this bundle to your project as Git submodule:
 
           $ git submodule add git://github.com/liip/LiipFunctionalTestBundle.git vendor/bundles/Liip/FunctionalTestBundle
+
+     Or configure your ``deps`` to include the bundle:
+
+          [LiipFunctionalTestBundle]
+              git=git://github.com/liip/LiipFunctionalTestBundle.git
+              target=bundles/Liip/FunctionalTestBundle
+
 
   2. Add the Liip namespace to your autoloader:
 
@@ -65,15 +72,22 @@ Installation
 Database tests
 --------------
 
-In case tests require database access make sure that the DB is created and proxies are generated.
-For tests that rely on a specific database, write fixture classes and call ``loadFixtures`` from
-the bundled Test\WebTestCase class. This will replace the database configured in config_text.yml
-with the specified fixtures.
+In case tests require database access make sure that the DB is created and
+proxies are generated.  For tests that rely on specific database contents,
+write fixture classes and call ``loadFixtures`` from the bundled
+``Test\WebTestCase`` class. This will replace the database configured in
+``config_test.yml`` with the specified fixtures. Please note that you should be
+using a designated test-database if you're using test-fixtures, since
+``loadFixtures`` will delete the contents from the database before loading the
+fixtures.
 
 Tips for fixture loading tests
 ------------------------------
 
-1. Create fixtures in a sqlite test database for faster testing.
+1. If you want your tests to run against a completely isolated database (which is
+   recommended for most functional-tests), you can configure your
+   test-environment to use a sqlite-database. This will make your tests run
+   faster and will create a fresh, predictable database for every test you run.
 
     Add this to your `app/config_test.yml`:
 
@@ -85,14 +99,16 @@ Tips for fixture loading tests
                         driver:   pdo_sqlite
                         path:     %kernel.cache_dir%/test.db
 
-2. Use LiipFunctionalBundle's cached database feature, so that your tests run even faster:
+2. Use LiipFunctionalBundle's cached database feature, so that your tests run even 
+   faster. This will create backups of the initial databases (with all fixtures
+   loaded) and re-load them when required.
 
-    Modify this on your `app/config_test.yml`
+    Add this to your `app/config_test.yml`
 
         liip_functional_test:
             cache_sqlite_db: true
 
-3. Load your doctrine fixtures:
+3. Load your doctrine fixtures in your tests:
 
         use Liip\FunctionalTestBundle\Test\WebTestCase;
 
@@ -112,6 +128,25 @@ Tips for fixture loading tests
                 $this->loadFixtures($classes);
 
                 // you can now run your functional tests with a populated database
+                // ...
+            }
+        }
+
+4. If you don't need any fixtures to be loaded and just want to start off with
+   an empty database (initialized with your schema), you can simply pass an
+   empty array to ``loadFixtures``.
+
+        use Liip\FunctionalTestBundle\Test\WebTestCase;
+
+        class MyControllerTest extends WebTestCase
+        {
+            public function testIndex()
+            {
+                $client = static::createClient();
+
+                $this->loadFixtures(array());
+
+                // you can now run your functional tests with an empty database
                 // ...
             }
         }
