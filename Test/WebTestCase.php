@@ -110,7 +110,9 @@ abstract class WebTestCase extends BaseWebTestCase
         }
 
         if (empty($this->containers[$this->kernelDir])) {
-            $options = array();
+            $options = array(
+                'environment' => $this->environment
+            );
             $kernel = $this->createKernel($options);
             $kernel->boot();
 
