@@ -13,6 +13,9 @@ namespace Liip\FunctionalTestBundle\Test;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
+
+use Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader as SymfonyFixturesLoader;
+
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\Console\Command\Command;
@@ -20,6 +23,16 @@ use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+
+use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
+
+use Doctrine\ORM\Tools\SchemaTool;
+
+use Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader as DoctrineFixturesLoader;
 
 /**
  * @author Lea Haensenberger
@@ -136,7 +149,8 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * When using SQLite this method will automatically make a copy of the
      * loaded schema and fixtures which will be restored automatically in
-     * case the same fixture classes are to be loaded again.
+     * case the same fixture classes are to be loaded again, but no executor
+     * instance will be returned in this case.
      *
      * Depends on the doctrine data-fixtures library being available in the
      * class path.
@@ -152,7 +166,7 @@ abstract class WebTestCase extends BaseWebTestCase
     {
         $container = $this->getContainer();
         $registry = $container->get($registryName);
-        if ($registry instanceof \Doctrine\Common\Persistence\ManagerRegistry) {
+        if ($registry instanceof ManagerRegistry) {
             $om = $registry->getManager($omName);
             $type = $registry->getName();
         } else {
@@ -164,7 +178,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
         if ('ORM' === $type) {
             $connection = $om->getConnection();
-            if ($connection->getDriver() instanceOf \Doctrine\DBAL\Driver\PDOSqlite\Driver) {
+            if ($connection->getDriver() instanceOf SqliteDriver) {
                 $params = $connection->getParams();
                 $name = isset($params['path']) ? $params['path'] : $params['dbname'];
 
@@ -179,7 +193,7 @@ abstract class WebTestCase extends BaseWebTestCase
                 }
 
                 // TODO: handle case when using persistent connections. Fail loudly?
-                $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($om);
+                $schemaTool = new SchemaTool($om);
                 $schemaTool->dropDatabase($name);
                 if (!empty($metadatas)) {
                     $schemaTool->createSchema($metadatas);
@@ -200,7 +214,7 @@ abstract class WebTestCase extends BaseWebTestCase
             $executor->purge();
         }
 
-        $loader = $this->getFixtureLoader($classNames);
+        $loader = $this->getFixtureLoader($container, $classNames);
 
         $executor->execute($loader->getFixtures(), true);
 
@@ -214,16 +228,16 @@ abstract class WebTestCase extends BaseWebTestCase
     /**
      * Retrieve Doctrine DataFixtures loader.
      *
+     * @param ContainerInterface $container
      * @param array $classNames
      *
      * @return \Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader
      */
-    protected function getFixtureLoader(array $classNames)
+    protected function getFixtureLoader(ContainerInterface $container, array $classNames)
     {
-        $container = $this->getContainer();
         $loader    = class_exists('Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader')
-            ? new \Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader($container)
-            : new \Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader($container);
+            ? new DoctrineFixturesLoader($container)
+            : new SymfonyFixturesLoader($container);
 
         foreach ($classNames as $className) {
             $this->loadFixtureClass($loader, $className);
@@ -244,7 +258,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
         $loader->addFixture($fixture);
 
-        if ($fixture instanceof \Doctrine\Common\DataFixtures\DependentFixtureInterface) {
+        if ($fixture instanceof DependentFixtureInterface) {
             foreach ($fixture->getDependencies() as $dependency) {
                 $this->loadFixtureClass($loader, $dependency);
             }
