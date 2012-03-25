@@ -200,15 +200,7 @@ abstract class WebTestCase extends BaseWebTestCase
             $executor->purge();
         }
 
-        if (class_exists('Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader')) {
-            $loader = new \Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader($container);
-        } else {
-            $loader = new \Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader($container);
-        }
-
-        foreach ($classNames as $className) {
-            $loader->addFixture(new $className());
-        }
+        $loader = $this->getFixtureLoader($classNames);
 
         $executor->execute($loader->getFixtures(), true);
 
@@ -217,6 +209,46 @@ abstract class WebTestCase extends BaseWebTestCase
         }
 
         return $executor;
+    }
+
+    /**
+     * Retrieve Doctrine DataFixtures loader.
+     *
+     * @param array $classNames
+     *
+     * @return \Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader
+     */
+    protected function getFixtureLoader(array $classNames)
+    {
+        $container = $this->getContainer();
+        $loader    = class_exists('Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader')
+            ? new \Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader($container)
+            : new \Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader($container);
+
+        foreach ($classNames as $className) {
+            $this->loadFixtureClass($loader, $className);
+        }
+
+        return $loader;
+    }
+
+    /**
+     * Load a data fixture class.
+     *
+     * @param \Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader $loader
+     * @param string $className
+     */
+    protected function loadFixtureClass($loader, $className)
+    {
+        $fixture = new $className();
+
+        $loader->addFixture($fixture);
+
+        if ($fixture instanceof \Doctrine\Common\DataFixtures\DependentFixtureInterface) {
+            foreach ($fixture->getDependencies() as $dependency) {
+                $this->loadFixtureClass($loader, $dependency);
+            }
+        }
     }
 
     /**
