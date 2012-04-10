@@ -37,11 +37,11 @@ Installation
           // application/ApplicationKernel.php
           public function registerBundles()
           {
-              return array(
-                  // ...
-                  new Liip\FunctionalTestBundle\LiipFunctionalTestBundle(),
-                  // ...
+              // ...
+              if (in_array($this->getEnvironment(), array('dev', 'test'))) {              
+                  $bundles[] = new Liip\FunctionalTestBundle\LiipFunctionalTestBundle();
               );
+              return $bundles;
           }
 
   4. Configure the `functionalTest` service, and ensure that the framework is using the filesystem for session storage:
