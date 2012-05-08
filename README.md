@@ -49,8 +49,8 @@ Installation
           # application/config/config_test.yml
           framework:
               test: ~
-                  session:
-                          storage_id: session.storage.filesystem
+              session:
+                  storage_id: session.storage.filesystem
 
           liip_functional_test: ~
 
