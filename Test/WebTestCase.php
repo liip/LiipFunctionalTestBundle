@@ -27,6 +27,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Doctrine\Common\DataFixtures\ProxyReferenceRepository;
 
 use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
 
@@ -149,8 +150,8 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * When using SQLite this method will automatically make a copy of the
      * loaded schema and fixtures which will be restored automatically in
-     * case the same fixture classes are to be loaded again, but no executor
-     * instance will be returned in this case.
+     * case the same fixture classes are to be loaded again. Caveat: changes
+     * to references and/or identities may go undetected.
      *
      * Depends on the doctrine data-fixtures library being available in the
      * class path.
@@ -174,7 +175,8 @@ abstract class WebTestCase extends BaseWebTestCase
             $type = 'ORM';
         }
 
-        $executorClass = 'Doctrine\\Common\\DataFixtures\Executor\\'.$type.'Executor';
+        $executorClass = 'Doctrine\\Common\\DataFixtures\\Executor\\'.$type.'Executor';
+        $referenceRepository = new ProxyReferenceRepository($om);
 
         if ('ORM' === $type) {
             $connection = $om->getConnection();
@@ -186,9 +188,17 @@ abstract class WebTestCase extends BaseWebTestCase
 
                 if ($container->getParameter('liip_functional_test.cache_sqlite_db')) {
                     $backup = $container->getParameter('kernel.cache_dir') . '/test_' . md5(serialize($metadatas) . serialize($classNames)) . '.db';
-                    if (file_exists($backup)) {
+                    if (file_exists($backup) && file_exists($backup.'.ser')) {
+                        $om->flush();
+                        $om->clear();
+
+                        $executor = new $executorClass($om);
+                        $executor->setReferenceRepository($referenceRepository);
+                        $executor->getReferenceRepository()->load($backup);
+
                         copy($backup, $name);
-                        return;
+
+                        return $executor;
                     }
                 }
 
@@ -200,17 +210,19 @@ abstract class WebTestCase extends BaseWebTestCase
                 }
 
                 $executor = new $executorClass($om);
+                $executor->setReferenceRepository($referenceRepository);
             }
         }
 
         if (empty($executor)) {
-            $purgerClass = 'Doctrine\\Common\\DataFixtures\Purger\\'.$type.'Purger';
+            $purgerClass = 'Doctrine\\Common\\DataFixtures\\Purger\\'.$type.'Purger';
             $purger = new $purgerClass();
             if (null !== $purgeMode) {
                 $purger->setPurgeMode($purgeMode);
             }
 
             $executor = new $executorClass($om, $purger);
+            $executor->setReferenceRepository($referenceRepository);
             $executor->purge();
         }
 
@@ -219,6 +231,7 @@ abstract class WebTestCase extends BaseWebTestCase
         $executor->execute($loader->getFixtures(), true);
 
         if (isset($backup)) {
+            $executor->getReferenceRepository()->save($backup);
             copy($name, $backup);
         }
 
@@ -235,7 +248,7 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     protected function getFixtureLoader(ContainerInterface $container, array $classNames)
     {
-        $loader    = class_exists('Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader')
+        $loader = class_exists('Doctrine\\Bundle\\FixturesBundle\\Common\\DataFixtures\\Loader')
             ? new DoctrineFixturesLoader($container)
             : new SymfonyFixturesLoader($container);
 
@@ -255,6 +268,11 @@ abstract class WebTestCase extends BaseWebTestCase
     protected function loadFixtureClass($loader, $className)
     {
         $fixture = new $className();
+
+        if ($loader->hasFixture($fixture)) {
+            unset($fixture);
+            return;
+        }
 
         $loader->addFixture($fixture);
 
