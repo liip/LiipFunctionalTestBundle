@@ -102,6 +102,7 @@ Tips for fixture loading tests
 2. Use LiipFunctionalBundle's cached database feature, so that your tests run even 
    faster. This will create backups of the initial databases (with all fixtures
    loaded) and re-load them when required.
+
    **Attention: you need Doctrine >= 2.2 to use this feature.**
 
     Add this to your `app/config_test.yml`
