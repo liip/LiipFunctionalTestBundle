@@ -208,6 +208,7 @@ abstract class WebTestCase extends BaseWebTestCase
                 if (!empty($metadatas)) {
                     $schemaTool->createSchema($metadatas);
                 }
+                $this->postFixtureSetup();
 
                 $executor = new $executorClass($om);
                 $executor->setReferenceRepository($referenceRepository);
@@ -236,6 +237,15 @@ abstract class WebTestCase extends BaseWebTestCase
         }
 
         return $executor;
+    }
+
+    /**
+     * Callback function to be executed after Schema Execution.
+     * Use this to execute acl:init or other things necessary.
+     */
+    protected function postFixtureSetup()
+    {
+
     }
 
     /**
