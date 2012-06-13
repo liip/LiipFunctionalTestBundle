@@ -314,22 +314,27 @@ abstract class WebTestCase extends BaseWebTestCase
             $params = array('PHP_AUTH_USER' => $authentication['username'], 'PHP_AUTH_PW' => $authentication['password']);
         }
 
-        $client = $this->createClient(array('environment' => $this->environment), $params);
+        $client = static::createClient(array('environment' => $this->environment), $params);
 
         if ($this->firewallLogins) {
             // has to be set otherwise "hasPreviousSession" in Request returns false.
-            $options = self::$kernel->getContainer()->getParameter('session.storage.options');
+            $options = $client->getContainer()->getParameter('session.storage.options');
+
             if (!$options || !isset($options['name'])) {
                 throw new \InvalidArgumentException("Missing session.storage.options#name");
             }
 
-            $client->getCookieJar()->set(new Cookie($options['name'], true));
+            $session = $client->getContainer()->get('session');
 
-            $session = self::$kernel->getContainer()->get('session');
+            $client->getCookieJar()->set(new Cookie($options['name'], $session->getId()));
+
             foreach ($this->firewallLogins AS $firewallName => $user) {
                 $token = new UsernamePasswordToken($user, null, $firewallName, $user->getRoles());
+
                 $session->set('_security_' . $firewallName, serialize($token));
             }
+
+            $session->save();
         }
 
         return $client;
