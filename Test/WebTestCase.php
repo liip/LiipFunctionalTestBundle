@@ -14,8 +14,6 @@ namespace Liip\FunctionalTestBundle\Test;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 
-use Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader as SymfonyFixturesLoader;
-
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\Console\Command\Command;
@@ -33,6 +31,8 @@ use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
 
 use Doctrine\ORM\Tools\SchemaTool;
 
+use Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader as DataFixturesLoader;
+use Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader as SymfonyFixturesLoader;
 use Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader as DoctrineFixturesLoader;
 
 /**
@@ -258,9 +258,11 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     protected function getFixtureLoader(ContainerInterface $container, array $classNames)
     {
-        $loader = class_exists('Doctrine\\Bundle\\FixturesBundle\\Common\\DataFixtures\\Loader')
-            ? new DoctrineFixturesLoader($container)
-            : new SymfonyFixturesLoader($container);
+        $loader = class_exists('Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader')
+            ? new DataFixturesLoader($container)
+            : (class_exists('Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader')
+                ? new DoctrineFixturesLoader($container)
+                : new SymfonyFixturesLoader($container));
 
         foreach ($classNames as $className) {
             $this->loadFixtureClass($loader, $className);
