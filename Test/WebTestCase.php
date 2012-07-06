@@ -301,11 +301,16 @@ abstract class WebTestCase extends BaseWebTestCase
      * If $authentication is set to 'true' it will use the content of
      * 'liip_functional_test.authentication' to log in.
      *
+     * $params can be used to pass headers to the client, note tat they have
+     * to be follow the $_SERVER format.
+     * Example: 'HTTP_X_REQUESTED_WITH' instead of 'X-Requested-With'
+     *
      * @param boolean $authentication
+     * @param array   $params
      *
      * @return Client
      */
-    protected function makeClient($authentication = false)
+    protected function makeClient($authentication = false, array $params = array())
     {
         $params = array();
         if ($authentication) {
@@ -313,7 +318,10 @@ abstract class WebTestCase extends BaseWebTestCase
                 $authentication = $this->getContainer()->getParameter('liip_functional_test.authentication');
             }
 
-            $params = array('PHP_AUTH_USER' => $authentication['username'], 'PHP_AUTH_PW' => $authentication['password']);
+            $params = array_merge($params, array(
+                'PHP_AUTH_USER' => $authentication['username'],
+                'PHP_AUTH_PW'   => $authentication['password']
+            ));
         }
 
         $client = static::createClient(array('environment' => $this->environment), $params);
