@@ -312,7 +312,6 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     protected function makeClient($authentication = false, array $params = array())
     {
-        $params = array();
         if ($authentication) {
             if ($authentication === true) {
                 $authentication = $this->getContainer()->getParameter('liip_functional_test.authentication');
