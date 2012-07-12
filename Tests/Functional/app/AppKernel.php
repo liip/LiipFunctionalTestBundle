@@ -30,6 +30,7 @@ class AppKernel extends Kernel
     {
         return array(
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
+            new \Symfony\Bundle\SecurityBundle\SecurityBundle(),
             new \Liip\FunctionalTestBundle\LiipFunctionalTestBundle(),
             new \TestBundle\TestBundle()
         );
