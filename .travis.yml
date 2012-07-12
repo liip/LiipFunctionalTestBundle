@@ -17,3 +17,7 @@ script: phpunit --coverage-text
 notifications:
   email:
     - david.jeanmonod@liip.ch
+
+branches:
+  only:
+    - testing
