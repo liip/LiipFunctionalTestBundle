@@ -8,4 +8,5 @@ use Symfony\Component\ClassLoader\UniversalClassLoader;
 $loader = new UniversalClassLoader();
 $loader->registerNamespace('Symfony', $symfonyDir);
 $loader->registerNamespace('Liip', __DIR__.'/../../..');
+$loader->registerNamespace('TestBundle', __DIR__.'/Functional/app/src');
 $loader->register();
