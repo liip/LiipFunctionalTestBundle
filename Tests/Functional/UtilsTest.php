@@ -11,7 +11,7 @@ class UtilsTest extends BaseFunctionalTestCase
 
     function testGetKernelClass()
     {
-        $this->markTestSkipped('Not working due to inheritance issue...');
+        $this->markTestSkipped('Not working due to inheritance issue... Need to look deeper');
         $this->assertEquals('toto', $this->getKernelClass());
     }
 
