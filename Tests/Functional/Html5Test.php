@@ -93,10 +93,4 @@ HTML;
         $this->assertIsValidHtml5Snippet('<h1>I\'m valid</h1>');
     }
 
-    function testAssertIsValidHtml5SnippetWithCustomWrapper()
-    {
-        $this->setHtml5Wrapper('<html><body><<CONTENT>></body></html>');
-        $this->assertIsValidHtml5Snippet('<h1>I\'m valid</h1>');
-    }
-
 }
