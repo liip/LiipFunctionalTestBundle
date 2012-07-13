@@ -83,7 +83,7 @@ HTML;
     /**
      * Run the HTML5 validation on the content and returns the results as an array
      * @param string $content The HTML content to validate
-     * @return array
+     * @return object
      */
     public function validateHtml5($content)
     {

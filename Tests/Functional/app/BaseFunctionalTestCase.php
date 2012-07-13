@@ -2,9 +2,9 @@
 
 namespace Liip\FunctionalTestBundle\Tests\Functional\app;
 
-use Liip\FunctionalTestBundle\Test\WebTestCase;
+use Liip\FunctionalTestBundle\Test\Html5WebTestCase;
 
-class BaseFunctionalTestCase extends WebTestCase
+class BaseFunctionalTestCase extends Html5WebTestCase
 {
     static protected function createKernel(array $options = array())
     {
