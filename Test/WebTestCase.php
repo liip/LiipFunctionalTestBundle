@@ -22,6 +22,7 @@ use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -334,7 +335,10 @@ abstract class WebTestCase extends BaseWebTestCase
             }
 
             $session = $client->getContainer()->get('session');
-            $session->setId(uniqid());
+            // Since the namespace of the session changed in symfony 2.1, instanceof can be used to check the version.
+            if ($session instanceof Session) {
+                $session->setId(uniqid());
+            }
 
             $client->getCookieJar()->set(new Cookie($options['name'], $session->getId()));
 
