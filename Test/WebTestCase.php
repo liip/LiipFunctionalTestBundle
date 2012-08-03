@@ -124,21 +124,22 @@ abstract class WebTestCase extends BaseWebTestCase
             $_SERVER['KERNEL_DIR'] = getcwd().$this->kernelDir;
         }
 
-        if (empty($this->containers[$this->kernelDir])) {
+        $cacheKey = $this->kernelDir.'|'.$this->environment;
+        if (empty($this->containers[$cacheKey])) {
             $options = array(
                 'environment' => $this->environment
             );
             $kernel = $this->createKernel($options);
             $kernel->boot();
 
-            $this->containers[$this->kernelDir] = $kernel->getContainer();
+            $this->containers[$cacheKey] = $kernel->getContainer();
         }
 
         if (isset($tmpKernelDir)) {
             $_SERVER['KERNEL_DIR'] = $tmpKernelDir;
         }
 
-        return $this->containers[$this->kernelDir];
+        return $this->containers[$cacheKey];
     }
 
     /**
