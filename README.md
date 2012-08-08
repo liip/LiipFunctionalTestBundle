@@ -11,7 +11,7 @@ Installation
   If you plan on loading fixtures with your tests, make sure you have the
   DoctrineFixturesBundle installed and configured first.
 
-  [Doctrine Fixtures setup and configuration instructions](http://symfony.com/doc/2.0/cookbook/doctrine/doctrine_fixtures.html#setup-and-configuration)
+  [Doctrine Fixtures setup and configuration instructions](http://symfony.com/doc/master/bundles/DoctrineFixturesBundle/index.html#setup-and-configuration)
 
   1. Add this bundle to your project as Git submodule:
 
