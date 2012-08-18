@@ -14,13 +14,14 @@ namespace Liip\FooBundle\Tests\Fixtures;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
+use Doctrine\Common\Persistence\ObjectManager
 
 /**
  * @author Lea Haensenberger
  */
 class LoadUserData implements FixtureInterface {
 
-    public function load($manager)
+    public function load(ObjectManager $manager)
     {
         $user = new \Liip\FooBundle\Entity\User();
         $user->setName('foo bar');
