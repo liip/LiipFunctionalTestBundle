@@ -1,0 +1,6 @@
+foo_page:
+  pattern:  /foo
+  defaults: { _controller: TestBundle:Test:foo }
+secure_page:
+  pattern:  /secure
+  defaults: { _controller: TestBundle:Test:secure }

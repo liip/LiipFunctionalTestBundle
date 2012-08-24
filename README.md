@@ -234,3 +234,25 @@ execution silently continues, otherwise the calling test will fail and display a
 
 setHtml5Wrapper:
 Allow to change the default HTML5 code that is used as a wrapper around snippets to validate
+
+Test of the plugin itself
+-------------------------
+
+  This plugin in fully tested with PHPUnit, the tests suit can be run standalone or in a SF2 project context. Here are the
+  instructions on how to run them:
+
+  1. Standalone mode:
+
+          curl -s http://getcomposer.org/installer | php --
+          php composer.phar require symfony/framework-bundle:2.0.*
+          phpunit
+
+     Or for symfony 2.1
+
+         curl -s http://getcomposer.org/installer | php --
+         php composer.phar require symfony/framework-bundle:dev-master
+         phpunit
+
+  2. Or from a project context
+
+      Register le bundle in TODO

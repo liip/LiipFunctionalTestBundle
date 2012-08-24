@@ -1,0 +1,41 @@
+framework:
+    secret: test
+    test: ~
+    session:
+        storage_id: session.storage.filesystem
+        name:       test_session
+    form:            true
+    csrf_protection: true
+    validation:
+        enabled: true
+        enable_annotations: true
+    router:
+        resource: %kernel.root_dir%/config/routing.yml
+
+security:
+    firewalls:
+        main:
+            pattern:    ^/
+            anonymous: ~
+            http_basic:
+                realm: "Secured Demo Area"
+    access_control:
+        - { path: ^/secure, roles: ROLE_ADMIN }
+    providers:
+<?php if (SYMFONY_VERSION == '2.0'): ?>
+        memory:
+            users:
+                ryan:  { password: ryanpass, roles: 'ROLE_USER' }
+<?php else: ?>
+        in_memory:
+            memory:
+                users:
+                    ryan:  { password: ryanpass, roles: 'ROLE_USER' }
+<?php endif; ?>
+    encoders:
+        Symfony\Component\Security\Core\User\User: plaintext
+
+services:
+    test_service:
+        class: TestBundle\TestService
+

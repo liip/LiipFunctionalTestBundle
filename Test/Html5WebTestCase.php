@@ -66,7 +66,7 @@ HTML;
      */
     protected function getHtml5ValidatorServiceUrl()
     {
-        return $this->getContainer()->getParameter('liip_functional_test.html5validation.url');
+        return $this->getHtml5ValidationParameter('url');
     }
 
     /**
@@ -83,7 +83,7 @@ HTML;
     /**
      * Run the HTML5 validation on the content and returns the results as an array
      * @param string $content The HTML content to validate
-     * @return array
+     * @return object
      */
     public function validateHtml5($content)
     {
@@ -144,12 +144,12 @@ HTML;
         }
         $err_msg .= ":\n";
 
-        $ignores = $this->getContainer()->getParameter('liip_functional_test.html5validation.ignores');
+        $ignores = $this->getHtml5ValidationParameter('ignores', array());
         /*
          * unfortunately, the bamboo html5 validator.nu gives back an empty "message" about the error with brightcove object, but we have to ignore the error
          * if our local validator.nu instance is fixed, this stuff should go away
          */
-        $ignores_extract = $this->getContainer()->getParameter('liip_functional_test.html5validation.ignores_extract');
+        $ignores_extract = $this->getHtml5ValidationParameter('ignores_extract', array());
 
         foreach ($res->messages as $row) {
             if ($row->type == 'error') {
@@ -186,5 +186,13 @@ HTML;
     {
         $content = str_replace('<<CONTENT>>', $snippet, $this->html5Wrapper);
         $this->assertIsValidHtml5($content, $message);
+    }
+
+    protected function getHtml5ValidationParameter($name, $default = null) {
+        $name = 'liip_functional_test.html5validation.'.$name;
+        if (!$this->getContainer()->hasParameter($name) && $default !== null){
+            return $default;
+        }
+        return $this->getContainer()->getParameter($name);
     }
 }
