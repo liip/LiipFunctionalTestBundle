@@ -2,7 +2,7 @@
 
 namespace Liip\FunctionalTestBundle\Tests\Functional\app;
 
-use Symfony\Component\HttpKernel\Util\Filesystem;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Kernel;
 

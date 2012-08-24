@@ -22,9 +22,16 @@ security:
     access_control:
         - { path: ^/secure, roles: ROLE_ADMIN }
     providers:
-        in_memory:
+<?php if (SYMFONY_VERSION == '2.0'): ?>
+        memory:
             users:
-                john:  { password: ryanpass, roles: 'ROLE_USER' }
+                ryan:  { password: ryanpass, roles: 'ROLE_USER' }
+<?php else: ?>
+        in_memory:
+            memory:
+                users:
+                    ryan:  { password: ryanpass, roles: 'ROLE_USER' }
+<?php endif; ?>
     encoders:
         Symfony\Component\Security\Core\User\User: plaintext
 
