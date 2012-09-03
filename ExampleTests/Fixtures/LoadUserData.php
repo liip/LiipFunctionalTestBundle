@@ -14,7 +14,7 @@ namespace Liip\FooBundle\Tests\Fixtures;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
-use Doctrine\Common\Persistence\ObjectManager
+use Doctrine\Common\Persistence\ObjectManager;
 
 /**
  * @author Lea Haensenberger
