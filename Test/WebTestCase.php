@@ -54,7 +54,10 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     private $firewallLogins = array();
 
-    static private $matadatas;
+    /**
+     * @var array
+     */
+    static private $cachedMetadatas = array();
 
     static protected function getKernelClass()
     {
@@ -188,10 +191,10 @@ abstract class WebTestCase extends BaseWebTestCase
                 $params = $connection->getParams();
                 $name = isset($params['path']) ? $params['path'] : $params['dbname'];
 
-                if (!self::$matadatas) {
-                    self::$matadatas = $om->getMetadataFactory()->getAllMetadata();
+                if (!isset(self::$cachedMetadatas[$omName])) {
+                    self::$cachedMetadatas[$omName] = $om->getMetadataFactory()->getAllMetadata();
                 }
-                $metadatas = self::$matadatas;
+                $metadatas = self::$cachedMetadatas[$omName];
 
                 if ($container->getParameter('liip_functional_test.cache_sqlite_db')) {
                     $backup = $container->getParameter('kernel.cache_dir') . '/test_' . md5(serialize($metadatas) . serialize($classNames)) . '.db';
