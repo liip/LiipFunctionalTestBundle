@@ -208,6 +208,8 @@ abstract class WebTestCase extends BaseWebTestCase
 
                         copy($backup, $name);
 
+                        $this->postFixtureRestore();
+
                         return $executor;
                     }
                 }
@@ -241,7 +243,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
         $executor->execute($loader->getFixtures(), true);
 
-        if (isset($backup)) {
+        if (isset($name) && isset($backup)) {
             $executor->getReferenceRepository()->save($backup);
             copy($name, $backup);
         }
@@ -250,10 +252,18 @@ abstract class WebTestCase extends BaseWebTestCase
     }
 
     /**
-     * Callback function to be executed after Schema Execution.
+     * Callback function to be executed after Schema creation.
      * Use this to execute acl:init or other things necessary.
      */
     protected function postFixtureSetup()
+    {
+
+    }
+
+    /**
+     * Callback function to be executed after Schema restore.
+     */
+    protected function postFixtureRestore()
     {
 
     }
