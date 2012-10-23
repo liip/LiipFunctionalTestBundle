@@ -184,6 +184,11 @@ abstract class WebTestCase extends BaseWebTestCase
 
         $executorClass = 'Doctrine\\Common\\DataFixtures\\Executor\\'.$type.'Executor';
         $referenceRepository = new ProxyReferenceRepository($om);
+        $cacheDriver = $om->getMetadataFactory()->getCacheDriver();
+
+        if ($cacheDriver) {
+            $cacheDriver->deleteAll();
+        }
 
         if ('ORM' === $type) {
             $connection = $om->getConnection();
