@@ -1,0 +1,63 @@
+<?php
+
+namespace Liip\FunctionalTestBundle;
+
+use Doctrine\Common\Annotations\Reader;
+use Liip\FunctionalTestBundle\Annotations\QueryCount;
+use Liip\FunctionalTestBundle\Exception\AllowedQueriesExceededException;
+
+class QueryCounter
+{
+    /** @var integer */
+    private $defaultMaxCount;
+
+    /** @var \Doctrine\Common\Annotations\AnnotationReader */
+    private $annotationReader;
+
+    public function __construct($defaultMaxCount, Reader $annotationReader)
+    {
+        $this->defaultMaxCount = $defaultMaxCount;
+        $this->annotationReader = $annotationReader;
+    }
+
+    public function checkQueryCount($actualQueryCount)
+    {
+        $maxQueryCount = $this->getMaxQueryCount();
+
+        if ($actualQueryCount > $maxQueryCount) {
+            throw new AllowedQueriesExceededException(
+                "Allowed amount of queries ($maxQueryCount) exceeded (actual: $actualQueryCount)."
+            );
+        }
+    }
+
+    private function getMaxQueryCount()
+    {
+        if ($maxQueryCount = $this->getMaxQueryAnnotation()) {
+            return $maxQueryCount;
+        }
+
+        return $this->defaultMaxCount;
+    }
+
+    private function getMaxQueryAnnotation()
+    {
+        foreach (debug_backtrace() as $step) {
+            if ('test' === substr($step['function'], 0, 4)) { //TODO: handle tests with the @test annotation
+                $annotations = $this->annotationReader->getMethodAnnotations(
+                    new \ReflectionMethod($step['class'], $step['function'])
+                );
+
+                foreach ($annotations as $annotationClass) {
+                    if ($annotationClass instanceof QueryCount AND isset($annotationClass->maxQueries)) {
+                        /** @var $annotations \Liip\FunctionalTestBundle\Annotations\QueryCount */
+
+                        return $annotationClass->maxQueries;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+}

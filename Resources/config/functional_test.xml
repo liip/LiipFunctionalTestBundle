@@ -22,15 +22,20 @@
     </parameters>
 
     <services>
-        <service id="liip_functional_test.query_count.query_count_client" class="Liip\FunctionalTestBundle\Test\QueryCountClient" scope="prototype">
+        <service id="liip_functional_test.query_count.query_count_client" class="Liip\FunctionalTestBundle\QueryCountClient" scope="prototype">
             <argument type="service" id="kernel" />
             <argument>%test.client.parameters%</argument>
             <argument type="service" id="test.client.history" />
             <argument type="service" id="test.client.cookiejar" />
 
-            <call method="setDefaultQueryCount">
-                <argument>%liip_functional_test.query_count.max_query_count%</argument>
+            <call method="setQueryCounter">
+                <argument type="service" id="liip_functional_test.query_count.query_counter" />
             </call>
+        </service>
+
+        <service id="liip_functional_test.query_count.query_counter" class="Liip\FunctionalTestBundle\QueryCounter">
+            <argument>%liip_functional_test.query_count.max_query_count%</argument>
+            <argument type="service" id="annotation_reader" />
         </service>
     </services>
 </container>
