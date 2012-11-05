@@ -24,6 +24,10 @@ class QueryCounter
     {
         $maxQueryCount = $this->getMaxQueryCount();
 
+        if (null === $maxQueryCount) {
+            return;
+        }
+
         if ($actualQueryCount > $maxQueryCount) {
             throw new AllowedQueriesExceededException(
                 "Allowed amount of queries ($maxQueryCount) exceeded (actual: $actualQueryCount)."

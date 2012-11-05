@@ -17,7 +17,7 @@
             <parameter key="password"></parameter>
         </parameter>
 
-        <parameter key="liip_functional_test.query_count.max_query_count">100</parameter>
+        <parameter key="liip_functional_test.query_count.max_query_count">null</parameter>
 
     </parameters>
 
