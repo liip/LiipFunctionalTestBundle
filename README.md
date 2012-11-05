@@ -269,4 +269,4 @@ To do that, include the Liip\FunctionalTestBundle\Annotations\QueryCount namespa
 
 Caveats
 -------
-* Annotations currently only work for tests that have a method name of testFooBla() (with a test prefix). The @test annotation isn't supported at the moment.
+* QueryCount annotations currently only work for tests that have a method name of testFooBla() (with a test prefix). The @test annotation isn't supported at the moment.
