@@ -9,6 +9,8 @@ class SetTestClientPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $container->setAlias('test.client', 'liip_functional_test.query_count.query_count_client');
+        if (null !== $container->getParameter('liip_functional_test.query_count.max_query_count')) {
+            $container->setAlias('test.client', 'liip_functional_test.query_count.query_count_client');
+        }
     }
 }
