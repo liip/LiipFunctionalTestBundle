@@ -32,13 +32,13 @@ Installation
                 // your other namespaces
           ));
 
-  3. Add this bundle to your application's kernel:
+  3. Add this bundle to your application's kernel for the test environment:
 
           // application/ApplicationKernel.php
           public function registerBundles()
           {
               // ...
-              if (in_array($this->getEnvironment(), array('dev', 'test'))) {              
+              if (in_array($this->getEnvironment(), array('test'))) {
                   $bundles[] = new Liip\FunctionalTestBundle\LiipFunctionalTestBundle();
               );
               return $bundles;
@@ -266,6 +266,18 @@ To do that, include the Liip\FunctionalTestBundle\Annotations\QueryCount namespa
             $this->assertTrue($crawler->filter('html:contains("Demo")')->count() > 0);
         }
     }
+
+Only in Test Environment
+------------------------
+
+All the functionality of this bundle is primarily for use in the test environment. The query counter specifically requires services that are only loaded in the test environment, so the service will only be loaded there. If you want to use the query counter in a different environment, you'll need to make sure the bundle is loaded in that environment in your AppKernel.php file, and load the test services by adding `test` to the framework configuration in the config.yml (or the configuration file for your environment):
+
+    framework:
+        [...]
+        test: ~
+
+If that's not what you want to do, and you're getting an exception about this, check that you're really only loading this bundle in your `test` environment (See step 3 of the [installation](#installation))
+
 
 Caveats
 -------
