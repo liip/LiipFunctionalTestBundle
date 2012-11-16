@@ -32,7 +32,7 @@ Installation
                 // your other namespaces
           ));
 
-  3. <a id="addToKernel"></a>Add this bundle to your application's kernel:
+  3. Add this bundle to your application's kernel:
 
           // application/ApplicationKernel.php
           public function registerBundles()
@@ -276,7 +276,7 @@ All the functionality of this bundle is primarily for use in the test environmen
         [...]
         test: ~
 
-If that's not what you want to do, and you're getting an exception about this, check that you're really only loading this bundle in your `test` environment (see [Add this bundle to your application's kernel](#addToKernel)
+If that's not what you want to do, and you're getting an exception about this, check that you're really only loading this bundle in your `test` environment (See step 3 of the [installation](#installation))
 
 
 Caveats
