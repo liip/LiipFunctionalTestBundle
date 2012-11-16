@@ -32,7 +32,7 @@ Installation
                 // your other namespaces
           ));
 
-  3. Add this bundle to your application's kernel:
+  3. Add this bundle to your application's kernel for the test environment:
 
           // application/ApplicationKernel.php
           public function registerBundles()
