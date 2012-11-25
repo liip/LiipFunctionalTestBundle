@@ -23,6 +23,11 @@ Installation
               git=git://github.com/liip/LiipFunctionalTestBundle.git
               target=bundles/Liip/FunctionalTestBundle
 
+     Or configure your ``composer.json`` (for Symfony 2.1 or later) to include the bundle:
+
+          "require": {
+              "liip/functional-test-bundle": "dev-master"
+          }
 
   2. Add the Liip namespace to your autoloader:
 
