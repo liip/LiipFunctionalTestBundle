@@ -19,6 +19,9 @@
         "symfony/framework-bundle": ">=2.0,<2.3-dev",
         "doctrine/common": "2.*"
     },
+    "suggest": {
+        "doctrine/doctrine-fixtures-bundle": "Required when using the fixture loading functionality"
+    },
     "autoload": {
         "psr-0": {
             "Liip\\FunctionalTestBundle": ""
