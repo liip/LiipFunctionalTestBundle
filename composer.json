@@ -20,7 +20,9 @@
         "doctrine/common": "2.*"
     },
     "suggest": {
-        "doctrine/doctrine-fixtures-bundle": "Required when using the fixture loading functionality"
+        "doctrine/doctrine-fixtures-bundle": "Required when using the fixture loading functionality",
+        "doctrine/orm": "Required when using the fixture loading functionality with an ORM and SQLite",
+        "doctrine/dbal": "Required when using the fixture loading functionality with an ORM and SQLite"
     },
     "autoload": {
         "psr-0": {
