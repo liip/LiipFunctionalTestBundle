@@ -80,6 +80,7 @@ abstract class WebTestCase extends BaseWebTestCase
      * Creates a mock object of a service identified by its id.
      *
      * @param string $id
+     *
      * @return PHPUnit_Framework_MockObject_MockBuilder
      */
     protected function getServiceMockBuilder($id)
@@ -94,6 +95,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @param string $name
      * @param array $params
+     *
      * @return string
      */
     protected function runCommand($name, array $params = array())
@@ -121,6 +123,7 @@ abstract class WebTestCase extends BaseWebTestCase
     /**
      * Get an instance of the dependency injection container.
      * (this creates a kernel *without* parameters).
+     *
      * @return object
      */
     protected function getContainer()
@@ -327,8 +330,8 @@ abstract class WebTestCase extends BaseWebTestCase
      * If $authentication is set to 'true' it will use the content of
      * 'liip_functional_test.authentication' to log in.
      *
-     * $params can be used to pass headers to the client, note tat they have
-     * to be follow the $_SERVER format.
+     * $params can be used to pass headers to the client, note that they have
+     * to follow the naming format used in $_SERVER.
      * Example: 'HTTP_X_REQUESTED_WITH' instead of 'X-Requested-With'
      *
      * @param boolean $authentication
@@ -367,7 +370,8 @@ abstract class WebTestCase extends BaseWebTestCase
 
             $client->getCookieJar()->set(new Cookie($options['name'], $session->getId()));
 
-            foreach ($this->firewallLogins AS $firewallName => $user) {
+            /** @var $user UserInterface */
+            foreach ($this->firewallLogins as $firewallName => $user) {
                 $token = new UsernamePasswordToken($user, null, $firewallName, $user->getRoles());
 
                 $session->set('_security_' . $firewallName, serialize($token));
@@ -384,6 +388,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @param string $route  The name of the route
      * @param array $params  Set of parameters
+     *
      * @return string
      */
     protected function getUrl($route, $params = array())
@@ -396,6 +401,8 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @param Response $response Response object
      * @param bool $success to define whether the response is expected to be successful
+     * @param string $type
+     *
      * @return void
      */
     public function isSuccessful($response, $success = true, $type = 'text/html')
@@ -428,6 +435,7 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param string $method The HTTP method to use, defaults to GET
      * @param bool $authentication Whether to use authentication, defaults to false
      * @param bool $success to define whether the response is expected to be successful
+     *
      * @return string
      */
     public function fetchContent($path, $method = 'GET', $authentication = false, $success = true)
@@ -451,7 +459,8 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param string $path path of the requested page
      * @param string $method The HTTP method to use, defaults to GET
      * @param bool $authentication Whether to use authentication, defaults to false
-     * @param bool $success to define whether the response is expected to be successful
+     * @param bool $success Whether the response is expected to be successful
+     *
      * @return Crawler
      */
     public function fetchCrawler($path, $method = 'GET', $authentication = false, $success = true)
@@ -466,6 +475,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
     /**
      * @param UserInterface $user
+     *
      * @return WebTestCase
      */
     public function loginAs(UserInterface $user, $firewallName)
