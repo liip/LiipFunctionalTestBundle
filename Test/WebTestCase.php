@@ -374,6 +374,7 @@ abstract class WebTestCase extends BaseWebTestCase
             foreach ($this->firewallLogins as $firewallName => $user) {
                 $token = new UsernamePasswordToken($user, null, $firewallName, $user->getRoles());
 
+                $client->getContainer()->get('security.context')->setToken($token);
                 $session->set('_security_' . $firewallName, serialize($token));
             }
 
