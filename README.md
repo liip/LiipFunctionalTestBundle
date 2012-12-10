@@ -45,7 +45,8 @@ Installation
               // ...
               if (in_array($this->getEnvironment(), array('test'))) {
                   $bundles[] = new Liip\FunctionalTestBundle\LiipFunctionalTestBundle();
-              );
+              }
+
               return $bundles;
           }
 
