@@ -389,12 +389,13 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @param string $route  The name of the route
      * @param array $params  Set of parameters
+     * @param boolean $absolute
      *
      * @return string
      */
-    protected function getUrl($route, $params = array())
+    protected function getUrl($route, $params = array(), $absolute = false)
     {
-        return $this->getContainer()->get('router')->generate($route, $params);
+        return $this->getContainer()->get('router')->generate($route, $params, $absolute);
     }
 
     /**
