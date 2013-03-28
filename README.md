@@ -13,29 +13,15 @@ Installation
 
   [Doctrine Fixtures setup and configuration instructions](http://symfony.com/doc/master/bundles/DoctrineFixturesBundle/index.html#setup-and-configuration)
 
-  1. Add this bundle to your project as Git submodule:
-
-          $ git submodule add git://github.com/liip/LiipFunctionalTestBundle.git vendor/bundles/Liip/FunctionalTestBundle
-
-     Or configure your ``deps`` to include the bundle:
-
-          [LiipFunctionalTestBundle]
-              git=git://github.com/liip/LiipFunctionalTestBundle.git
-              target=bundles/Liip/FunctionalTestBundle
-
-     Or configure your ``composer.json`` (for Symfony 2.1 or later) to include the bundle:
+  1. Add package to composer.json:
 
           "require": {
               "liip/functional-test-bundle": "dev-master"
           }
 
-  2. Add the Liip namespace to your autoloader:
+  2. Install package:
 
-          // app/autoload.php
-          $loader->registerNamespaces(array(
-                'Liip' => __DIR__.'/../vendor/bundles',
-                // your other namespaces
-          ));
+          $ php composer.phar install liip/functional-test-bundle
 
   3. Add this bundle to your application's kernel for the test environment:
 
