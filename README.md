@@ -13,9 +13,9 @@ Installation
 
   [Doctrine Fixtures setup and configuration instructions](http://symfony.com/doc/master/bundles/DoctrineFixturesBundle/index.html#setup-and-configuration)
 
-  1. Add package to composer.json:
+  1. Add package to require-dev in composer.json:
 
-          "require": {
+          "require-dev": {
               "liip/functional-test-bundle": "dev-master"
           }
 
