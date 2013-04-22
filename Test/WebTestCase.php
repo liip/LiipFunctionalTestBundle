@@ -153,36 +153,6 @@ abstract class WebTestCase extends BaseWebTestCase
     }
 
     /**
-     * Find the autoloader class that is used by the test environment. If an
-     * instance of DebugClassLoader is not registered with the SPL then it is
-     * probable this is not the testing environment. Therefore, the fixtures
-     * should not be loaded anyway.
-     *
-     * In the event that DebugClassLoader cannot be found as a registered
-     * autoloader a RuntimeException is raised.
-     *
-     * @return \Symfony\Component\ClassLoader\DebugClassLoader Class finder
-     * used by the test environment
-     * @throws \RuntimeException
-     * @see \Symfony\Component\ClassLoader\DebugClassLoader
-     * @see spl_autoload_functions
-     */
-    protected function getDebugClassLoaderInstance()
-    {
-        $autoloads = spl_autoload_functions();
-
-        foreach ($autoloads as $position => &$autoload) {
-            if (is_array($autoload) && $autoload[0] instanceof DebugClassLoader) {
-                return $autoload[0];
-            }
-        }
-
-        throw new \RuntimeException(
-            'The DebugClassLoader was not registered. Is this the test environment?'
-        );
-    }
-
-    /**
      * This function finds the time when the data blocks of a class definition
      * file were being written to, that is, the time when the content of the
      * file was changed.
@@ -195,9 +165,9 @@ abstract class WebTestCase extends BaseWebTestCase
     protected function getFixtureLastModified($class)
     {
         $lastModifiedDateTime = null;
-        $classLoader = $this->getDebugClassLoaderInstance();
 
-        $classFileName = $classLoader->findFile($class);
+        $reflClass = new \ReflectionClass($class);
+        $classFileName = $reflClass->getFileName();
 
         if (file_exists($classFileName)) {
             $lastModifiedDateTime = new \DateTime();
