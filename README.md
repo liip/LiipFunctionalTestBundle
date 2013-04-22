@@ -145,6 +145,24 @@ Tips for fixture loading tests
             }
         }
 
+5. This bundle uses Doctrine ORM by default. If you are using another driver just specify the service id of the registry manager
+
+        use Liip\FunctionalTestBundle\Test\WebTestCase;
+
+        class MyControllerTest extends WebTestCase
+        {
+            public function testIndex()
+            {
+                $client = static::createClient();
+
+                $classes = array(
+                    'Me\MyBundle\DataFixtures\MongoDB\LoadData'
+                );
+
+                $this->loadFixtures($classes, null, 'doctrine_mongodb');
+            }
+        }
+
 HTML5 validator
 ---------------
 
