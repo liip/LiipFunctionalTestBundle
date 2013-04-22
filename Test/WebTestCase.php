@@ -18,6 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\ClassLoader\DebugClassLoader;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -152,6 +153,86 @@ abstract class WebTestCase extends BaseWebTestCase
     }
 
     /**
+     * Find the autoloader class that is used by the test environment. If an
+     * instance of DebugClassLoader is not registered with the SPL then it is
+     * probable this is not the testing environment. Therefore, the fixtures
+     * should not be loaded anyway.
+     *
+     * In the event that DebugClassLoader cannot be found as a registered
+     * autoloader a RuntimeException is raised.
+     *
+     * @return \Symfony\Component\ClassLoader\DebugClassLoader Class finder
+     * used by the test environment
+     * @throws \RuntimeException
+     * @see \Symfony\Component\ClassLoader\DebugClassLoader
+     * @see spl_autoload_functions
+     */
+    protected function getDebugClassLoaderInstance()
+    {
+        $autoloads = spl_autoload_functions();
+
+        foreach ($autoloads as $position => &$autoload) {
+            if (is_array($autoload) && $autoload[0] instanceof DebugClassLoader) {
+                return $autoload[0];
+            }
+        }
+
+        throw new \RuntimeException(
+            'The DebugClassLoader was not registered. Is this the test environment?'
+        );
+    }
+
+    /**
+     * This function finds the time when the data blocks of a class definition
+     * file were being written to, that is, the time when the content of the
+     * file was changed.
+     *
+     * @param string $class The fully qualified class name of the fixture class to
+     * check modification date on.
+     *
+     * @return \DateTime|null
+     */
+    protected function getFixtureLastModified($class)
+    {
+        $lastModifiedDateTime = null;
+        $classLoader = $this->getDebugClassLoaderInstance();
+
+        $classFileName = $classLoader->findFile($class);
+
+        if (file_exists($classFileName)) {
+            $lastModifiedDateTime = new \DateTime();
+            $lastModifiedDateTime->setTimestamp(filemtime($classFileName));
+        }
+
+        return $lastModifiedDateTime;
+    }
+
+    /**
+     * Determine if the Fixtures that define a database backup have been
+     * modified since the backup was made.
+     *
+     * @param array  $classNames The fixture classnames to check
+     * @param string $backup     The fixture backup SQLite database file path
+     *
+     * @return bool TRUE if the backup was made since the modifications to the
+     * fixtures; FALSE otherwise
+     */
+    protected function isBackupUpToDate(array $classNames, $backup)
+    {
+        $backupLastModifiedDateTime = new \DateTime();
+        $backupLastModifiedDateTime->setTimestamp(filemtime($backup));
+
+        foreach ($classNames as &$className) {
+            $fixtureLastModifiedDateTime = $this->getFixtureLastModified($className);
+            if ($backupLastModifiedDateTime < $fixtureLastModifiedDateTime) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Set the database to the provided fixtures.
      *
      * Drops the current database and then loads fixtures using the specified
@@ -207,7 +288,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
                 if ($container->getParameter('liip_functional_test.cache_sqlite_db')) {
                     $backup = $container->getParameter('kernel.cache_dir') . '/test_' . md5(serialize($metadatas) . serialize($classNames)) . '.db';
-                    if (file_exists($backup) && file_exists($backup.'.ser')) {
+                    if (file_exists($backup) && file_exists($backup.'.ser') && $this->isBackupUpToDate($classNames, $backup)) {
                         $om->flush();
                         $om->clear();
 
