@@ -235,6 +235,9 @@ abstract class WebTestCase extends BaseWebTestCase
         } else {
             $om = $registry->getEntityManager($omName);
             $type = 'ORM';
+            if ($purgeMode === null) {
+                $purgeMode = Doctrine\Common\DataFixtures\Purger\ORMPurger::PURGE_MODE_TRUNCATE;
+            }            
         }
 
         $executorClass = 'Doctrine\\Common\\DataFixtures\\Executor\\'.$type.'Executor';
