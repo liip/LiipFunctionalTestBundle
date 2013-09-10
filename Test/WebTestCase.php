@@ -238,10 +238,8 @@ abstract class WebTestCase extends BaseWebTestCase
             $type = 'ORM';
         }
         
-        if ($type == 'ORM') {
-            if ($purgeMode === null) {
-                $purgeMode = ORMPurger::PURGE_MODE_TRUNCATE;
-            }
+        if (($type == 'ORM') && ($purgeMode === null)) {
+            $purgeMode = ORMPurger::PURGE_MODE_TRUNCATE;
         }        
 
         $executorClass = 'Doctrine\\Common\\DataFixtures\\Executor\\'.$type.'Executor';
