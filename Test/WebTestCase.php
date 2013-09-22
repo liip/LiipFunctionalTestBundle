@@ -37,7 +37,6 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader as DataFixturesLoader;
 use Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader as SymfonyFixturesLoader;
 use Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader as DoctrineFixturesLoader;
-use Doctrine\Common\DataFixtures\Purger\ORMPurger as ORMPurger;
 
 /**
  * @author Lea Haensenberger
@@ -237,10 +236,6 @@ abstract class WebTestCase extends BaseWebTestCase
             $om = $registry->getEntityManager($omName);
             $type = 'ORM';
         }
-        
-        if (($type == 'ORM') && ($purgeMode === null)) {
-            $purgeMode = ORMPurger::PURGE_MODE_TRUNCATE;
-        }        
 
         $executorClass = 'Doctrine\\Common\\DataFixtures\\Executor\\'.$type.'Executor';
         $referenceRepository = new ProxyReferenceRepository($om);
