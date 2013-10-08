@@ -247,7 +247,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
         if ('ORM' === $type) {
             $connection = $om->getConnection();
-            if ($connection->getDriver() instanceOf SqliteDriver) {
+            if ($connection->getDriver() instanceof SqliteDriver) {
                 $params = $connection->getParams();
                 if (isset($params['master'])) {
                     $params = $params['master'];
