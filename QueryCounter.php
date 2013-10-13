@@ -37,7 +37,9 @@ class QueryCounter
 
     private function getMaxQueryCount()
     {
-        if ($maxQueryCount = $this->getMaxQueryAnnotation()) {
+        $maxQueryCount = $this->getMaxQueryAnnotation();
+
+        if (false !== $maxQueryCount) {
             return $maxQueryCount;
         }
 
