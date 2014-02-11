@@ -103,7 +103,11 @@ abstract class WebTestCase extends BaseWebTestCase
     {
         array_unshift($params, $name);
 
-        $kernel = $this->createKernel(array('environment' => $this->environment));
+        if (null !== static::$kernel) {
+            static::$kernel->shutdown();
+        }
+
+        $kernel = static::$kernel = $this->createKernel(array('environment' => $this->environment));
         $kernel->boot();
 
         $application = new Application($kernel);
