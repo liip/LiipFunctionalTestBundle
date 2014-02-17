@@ -292,3 +292,16 @@ If that's not what you want to do, and you're getting an exception about this, c
 Caveats
 -------
 * QueryCount annotations currently only work for tests that have a method name of testFooBla() (with a test prefix). The @test annotation isn't supported at the moment.
+* Enabling the Query Counter currently breaks PHPUnit's built-in annotations, e.g. `@dataProvider`, `@depends` etc. To fix this, you need to hide the appropriate PHPUnit annotation from Doctrine's annotation reader using the `@IgnoreAnnotation` annotation:
+
+        Liip\FunctionalTestBundle\Test\WebTestCase;
+
+        /**
+         * @IgnoreAnnotation("dataProvider")
+         * @IgnoreAnnotation("depends")
+         */
+        class DemoTest extends WebTestCase
+        {
+            // ...
+        }
+
