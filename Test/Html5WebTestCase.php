@@ -40,13 +40,13 @@ HTML;
     {
         parent::__construct();
 
-        $this->testValidationServiceAvailability();
+        $this->validationServiceAvailable = $this->isValidationServiceAvailable();
     }
 
     /**
      * Check if the HTML5 validation service is available
      */
-    public function testValidationServiceAvailability() {
+    public function isValidationServiceAvailable() {
 
         $validationUrl = $this->getHtml5ValidatorServiceUrl();
 
@@ -57,7 +57,7 @@ HTML;
 
         curl_close($ch);
 
-        $this->validationServiceAvailable = ($res !== false);
+        return $res !== false;
     }
 
     /**
@@ -127,14 +127,13 @@ HTML;
      */
     public function assertIsValidHtml5($content, $message = '')
     {
-        if ($this->validationServiceAvailable) {
-            $res = $this->validateHtml5($content);
+        if (!$this->validationServiceAvailable) {
+            return $this->skipTestWithInvalidService();
         }
 
+        $res = $this->validateHtml5($content);
         if (false === $res->messages) {
-            $url = $this->getHtml5ValidatorServiceUrl();
-            $this->markTestSkipped("HTML5 Validator service not found at '$url' !");
-            return;
+            return $this->skipTestWithInvalidService();
         }
 
         $err_count = 0;
@@ -186,5 +185,14 @@ HTML;
     {
         $content = str_replace('<<CONTENT>>', $snippet, $this->html5Wrapper);
         $this->assertIsValidHtml5($content, $message);
+    }
+
+    /**
+     * Marks test as skipped with validation server error message
+     */
+    protected function skipTestWithInvalidService()
+    {
+        $url = $this->getHtml5ValidatorServiceUrl();
+        $this->markTestSkipped("HTML5 Validator service not found at '$url' !");
     }
 }
