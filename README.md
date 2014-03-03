@@ -15,48 +15,55 @@ Installation
 
   1. Add package to require-dev in composer.json:
 
-          "require-dev": {
-              "liip/functional-test-bundle": "dev-master"
-          }
-
+```json
+"require-dev": {
+    "liip/functional-test-bundle": "dev-master"
+}
+```
   2. Install package:
 
-          $ php composer.phar install liip/functional-test-bundle
-
+```sh
+$ php composer.phar install liip/functional-test-bundle
+```
   3. Add this bundle to your application's kernel for the test environment:
 
-          // application/ApplicationKernel.php
-          public function registerBundles()
-          {
-              // ...
-              if (in_array($this->getEnvironment(), array('test'))) {
-                  $bundles[] = new Liip\FunctionalTestBundle\LiipFunctionalTestBundle();
-              }
+```php
+// application/ApplicationKernel.php
+public function registerBundles()
+{
+    // ...
+    if (in_array($this->getEnvironment(), array('test'))) {
+        $bundles[] = new Liip\FunctionalTestBundle\LiipFunctionalTestBundle();
+    }
 
-              return $bundles;
-          }
+    return $bundles;
+}
+```
 
   4. Configure the `functionalTest` service, and ensure that the framework is using the filesystem for session storage:
 
-          # application/config/config_test.yml
-          framework:
-              test: ~
-              session:
-                  storage_id: session.storage.filesystem
+```yaml
+# application/config/config_test.yml
+framework:
+    test: ~
+    session:
+        storage_id: session.storage.filesystem
 
-          liip_functional_test: ~
-
+liip_functional_test: ~
+```
 
   5. Copy the fixtures to your projects functional tests
 
-         $ cp Fixtures/LoadUserData.php ..
-
+```sh
+$ cp Fixtures/LoadUserData.php ..
+```
   6. Copy example unit and functional tests to your projects functional tests
 
-         $ cp Tests/ExampleUnitTest.php ..
-         $ cp FunctionalTests/ExampleFunctionalTest.php ..
-         $ cp FunctionalTests/ExampleHtml5FunctionalTest.php ..
-
+```sh
+$ cp Tests/ExampleUnitTest.php ..
+$ cp FunctionalTests/ExampleFunctionalTest.php ..
+$ cp FunctionalTests/ExampleHtml5FunctionalTest.php ..
+```
   7. Install local copy of the HTML5 validator
 
          More information see below
@@ -83,13 +90,15 @@ Tips for fixture loading tests
 
     Add this to your `app/config_test.yml`:
 
-        doctrine:
-            dbal:
-                default_connection: default
-                connections:
-                    default:
-                        driver:   pdo_sqlite
-                        path:     %kernel.cache_dir%/test.db
+```yaml
+doctrine:
+    dbal:
+        default_connection: default
+        connections:
+            default:
+                driver:   pdo_sqlite
+                path:     %kernel.cache_dir%/test.db
+```
 
 2. Use LiipFunctionalBundle's cached database feature, so that your tests run even 
    faster. This will create backups of the initial databases (with all fixtures
@@ -99,69 +108,77 @@ Tips for fixture loading tests
 
     Add this to your `app/config_test.yml`
 
-        liip_functional_test:
-            cache_sqlite_db: true
+```yaml
+liip_functional_test:
+    cache_sqlite_db: true
+```
 
 3. Load your doctrine fixtures in your tests:
 
-        use Liip\FunctionalTestBundle\Test\WebTestCase;
+use Liip\FunctionalTestBundle\Test\WebTestCase;
 
-        class MyControllerTest extends WebTestCase
-        {
-            public function testIndex()
-            {
-                $client = static::createClient();
+```php
+class MyControllerTest extends WebTestCase
+{
+    public function testIndex()
+    {
+        $client = static::createClient();
 
-                // add all your doctrine fixtures classes
-                $classes = array(
-                    // classes implementing Doctrine\Common\DataFixtures\FixtureInterface
-                    'Bamarni\MainBundle\DataFixtures\ORM\LoadData',
-                    'Me\MyBundle\DataFixtures\ORM\LoadData'
-                );
+        // add all your doctrine fixtures classes
+        $classes = array(
+            // classes implementing Doctrine\Common\DataFixtures\FixtureInterface
+            'Bamarni\MainBundle\DataFixtures\ORM\LoadData',
+            'Me\MyBundle\DataFixtures\ORM\LoadData'
+        );
 
-                $this->loadFixtures($classes);
+        $this->loadFixtures($classes);
 
-                // you can now run your functional tests with a populated database
-                // ...
-            }
-        }
+        // you can now run your functional tests with a populated database
+        // ...
+    }
+}
+```
 
 4. If you don't need any fixtures to be loaded and just want to start off with
    an empty database (initialized with your schema), you can simply pass an
    empty array to ``loadFixtures``.
 
-        use Liip\FunctionalTestBundle\Test\WebTestCase;
+```php
+use Liip\FunctionalTestBundle\Test\WebTestCase;
 
-        class MyControllerTest extends WebTestCase
-        {
-            public function testIndex()
-            {
-                $client = static::createClient();
+class MyControllerTest extends WebTestCase
+{
+    public function testIndex()
+    {
+        $client = static::createClient();
 
-                $this->loadFixtures(array());
+        $this->loadFixtures(array());
 
-                // you can now run your functional tests with an empty database
-                // ...
-            }
-        }
+        // you can now run your functional tests with an empty database
+        // ...
+    }
+}
+```
 
 5. This bundle uses Doctrine ORM by default. If you are using another driver just specify the service id of the registry manager
 
-        use Liip\FunctionalTestBundle\Test\WebTestCase;
+```php
+use Liip\FunctionalTestBundle\Test\WebTestCase;
 
-        class MyControllerTest extends WebTestCase
-        {
-            public function testIndex()
-            {
-                $client = static::createClient();
+class MyControllerTest extends WebTestCase
+{
+    public function testIndex()
+    {
+        $client = static::createClient();
 
-                $classes = array(
-                    'Me\MyBundle\DataFixtures\MongoDB\LoadData'
-                );
+        $classes = array(
+            'Me\MyBundle\DataFixtures\MongoDB\LoadData'
+        );
 
-                $this->loadFixtures($classes, null, 'doctrine_mongodb');
-            }
-        }
+        $this->loadFixtures($classes, null, 'doctrine_mongodb');
+    }
+}
+```
 
 HTML5 validator
 ---------------
@@ -191,11 +208,13 @@ Before starting:
 
 Then:
 
-    mkdir checker
-    cd checker
-    svn co https://whattf.svn.cvsdude.com/build/trunk/ build
-    python build/build.py all
-    python build/build.py all
+```sh
+$ mkdir checker
+$ cd checker
+$ svn co https://whattf.svn.cvsdude.com/build/trunk/ build
+$ python build/build.py all
+$ python build/build.py all
+```
 
 Note: Yes, the last line is there twice intentionally. Running the script twice tends to fix a ClassCastException
 on the first run.
@@ -212,8 +231,10 @@ Execution
 
 Once the validator has been compiled, it can be run with the following command:
 
-    cd checker
-    python build/build.py run
+```sh
+cd checker
+python build/build.py run
+```
 
 Using the validator in functional tests
 ---------------------------------------
@@ -250,8 +271,10 @@ Query Counter
 To catch pages that use way too many database queries, you can enable the query counter for tests. This will check the profiler for each request made in the test using the client, and fail the test if the number of queries executed is larger than the number of queries allowed in the configuration.
 To enable the query counter, adjust the config_test.yml file, setting the liip_functional_test.query_count.max_query_count setting, like this:
 
-    liip_functional_test:
-        query_count.max_query_count: 50
+```yaml
+liip_functional_test:
+    query_count.max_query_count: 50
+```
 
 That will limit each request executed within a functional test to 50 queries.
 
@@ -261,30 +284,34 @@ The default value set in the config file should be reasonable to catch pages wit
 
 To do that, include the Liip\FunctionalTestBundle\Annotations\QueryCount namespace and add the `@QueryCount(100)` annotation, where 100 is the maximum amount of queries allowed for each request, like this:
 
-    use Liip\FunctionalTestBundle\Annotations\QueryCount;
+```php
+use Liip\FunctionalTestBundle\Annotations\QueryCount;
 
-    class DemoTest extends WebTestCase
+class DemoTest extends WebTestCase
+{
+    /**
+     * @QueryCount(100)
+     */
+    public function testDoDemoStuff()
     {
-        /**
-         * @QueryCount(100)
-         */
-        public function testDoDemoStuff()
-        {
-            $client = static::createClient();
-            $crawler = $client->request('GET', '/demoPage');
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/demoPage');
 
-            $this->assertTrue($crawler->filter('html:contains("Demo")')->count() > 0);
-        }
+        $this->assertTrue($crawler->filter('html:contains("Demo")')->count() > 0);
     }
+}
+```
 
 Only in Test Environment
 ------------------------
 
 All the functionality of this bundle is primarily for use in the test environment. The query counter specifically requires services that are only loaded in the test environment, so the service will only be loaded there. If you want to use the query counter in a different environment, you'll need to make sure the bundle is loaded in that environment in your AppKernel.php file, and load the test services by adding `test` to the framework configuration in the config.yml (or the configuration file for your environment):
 
-    framework:
-        [...]
-        test: ~
+```yaml
+framework:
+    [...]
+    test: ~
+```
 
 If that's not what you want to do, and you're getting an exception about this, check that you're really only loading this bundle in your `test` environment (See step 3 of the [installation](#installation))
 
@@ -294,14 +321,15 @@ Caveats
 * QueryCount annotations currently only work for tests that have a method name of testFooBla() (with a test prefix). The @test annotation isn't supported at the moment.
 * Enabling the Query Counter currently breaks PHPUnit's built-in annotations, e.g. `@dataProvider`, `@depends` etc. To fix this, you need to hide the appropriate PHPUnit annotation from Doctrine's annotation reader using the `@IgnoreAnnotation` annotation:
 
-        Liip\FunctionalTestBundle\Test\WebTestCase;
+```php
+Liip\FunctionalTestBundle\Test\WebTestCase;
 
-        /**
-         * @IgnoreAnnotation("dataProvider")
-         * @IgnoreAnnotation("depends")
-         */
-        class DemoTest extends WebTestCase
-        {
-            // ...
-        }
-
+/**
+ * @IgnoreAnnotation("dataProvider")
+ * @IgnoreAnnotation("depends")
+ */
+class DemoTest extends WebTestCase
+{
+    // ...
+}
+```
