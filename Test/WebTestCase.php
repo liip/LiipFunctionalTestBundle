@@ -241,7 +241,9 @@ abstract class WebTestCase extends BaseWebTestCase
             $type = 'ORM';
         }
 
-        $executorClass = 'Doctrine\\Common\\DataFixtures\\Executor\\'.$type.'Executor';
+        $executorClass = 'PHPCR' === $type && class_exists('Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor')
+            ? 'Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor'
+            : 'Doctrine\\Common\\DataFixtures\\Executor\\'.$type.'Executor';
         $referenceRepository = new ProxyReferenceRepository($om);
         $cacheDriver = $om->getMetadataFactory()->getCacheDriver();
 
@@ -300,12 +302,22 @@ abstract class WebTestCase extends BaseWebTestCase
 
         if (empty($executor)) {
             $purgerClass = 'Doctrine\\Common\\DataFixtures\\Purger\\'.$type.'Purger';
-            $purger = new $purgerClass();
-            if (null !== $purgeMode) {
-                $purger->setPurgeMode($purgeMode);
+            if ('PHPCR' === $type) {
+                $purger = new $purgerClass($om);
+                $initManager = $container->has('doctrine_phpcr.initializer_manager')
+                    ? $container->get('doctrine_phpcr.initializer_manager')
+                    : null;
+
+                $executor = new $executorClass($om, $purger, $initManager);
+            } else {
+                $purger = new $purgerClass();
+                if (null !== $purgeMode) {
+                    $purger->setPurgeMode($purgeMode);
+                }
+
+                $executor = new $executorClass($om, $purger);
             }
 
-            $executor = new $executorClass($om, $purger);
             $executor->setReferenceRepository($referenceRepository);
             $executor->purge();
         }
