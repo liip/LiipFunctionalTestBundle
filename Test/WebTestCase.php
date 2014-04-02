@@ -96,19 +96,24 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @param string $name
      * @param array $params
+     * @param boolean $reuseKernel
      *
      * @return string
      */
-    protected function runCommand($name, array $params = array())
+    protected function runCommand($name, array $params = array(), $reuseKernel = false)
     {
         array_unshift($params, $name);
 
-        if (null !== static::$kernel) {
-            static::$kernel->shutdown();
-        }
+        if (!$reuseKernel) {
+            if (null !== static::$kernel) {
+                static::$kernel->shutdown();
+            }
 
-        $kernel = static::$kernel = $this->createKernel(array('environment' => $this->environment));
-        $kernel->boot();
+            $kernel = static::$kernel = $this->createKernel(array('environment' => $this->environment));
+            $kernel->boot();
+        } else {
+            $kernel = $this->getContainer()->get('kernel');
+        }
 
         $application = new Application($kernel);
         $application->setAutoExit(false);
