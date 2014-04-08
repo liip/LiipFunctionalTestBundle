@@ -96,19 +96,24 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @param string $name
      * @param array $params
+     * @param boolean $reuseKernel
      *
      * @return string
      */
-    protected function runCommand($name, array $params = array())
+    protected function runCommand($name, array $params = array(), $reuseKernel = false)
     {
         array_unshift($params, $name);
 
-        if (null !== static::$kernel) {
-            static::$kernel->shutdown();
-        }
+        if (!$reuseKernel) {
+            if (null !== static::$kernel) {
+                static::$kernel->shutdown();
+            }
 
-        $kernel = static::$kernel = $this->createKernel(array('environment' => $this->environment));
-        $kernel->boot();
+            $kernel = static::$kernel = $this->createKernel(array('environment' => $this->environment));
+            $kernel->boot();
+        } else {
+            $kernel = $this->getContainer()->get('kernel');
+        }
 
         $application = new Application($kernel);
         $application->setAutoExit(false);
@@ -241,7 +246,9 @@ abstract class WebTestCase extends BaseWebTestCase
             $type = 'ORM';
         }
 
-        $executorClass = 'Doctrine\\Common\\DataFixtures\\Executor\\'.$type.'Executor';
+        $executorClass = 'PHPCR' === $type && class_exists('Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor')
+            ? 'Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor'
+            : 'Doctrine\\Common\\DataFixtures\\Executor\\'.$type.'Executor';
         $referenceRepository = new ProxyReferenceRepository($om);
         $cacheDriver = $om->getMetadataFactory()->getCacheDriver();
 
@@ -300,12 +307,22 @@ abstract class WebTestCase extends BaseWebTestCase
 
         if (empty($executor)) {
             $purgerClass = 'Doctrine\\Common\\DataFixtures\\Purger\\'.$type.'Purger';
-            $purger = new $purgerClass();
-            if (null !== $purgeMode) {
-                $purger->setPurgeMode($purgeMode);
+            if ('PHPCR' === $type) {
+                $purger = new $purgerClass($om);
+                $initManager = $container->has('doctrine_phpcr.initializer_manager')
+                    ? $container->get('doctrine_phpcr.initializer_manager')
+                    : null;
+
+                $executor = new $executorClass($om, $purger, $initManager);
+            } else {
+                $purger = new $purgerClass();
+                if (null !== $purgeMode) {
+                    $purger->setPurgeMode($purgeMode);
+                }
+
+                $executor = new $executorClass($om, $purger);
             }
 
-            $executor = new $executorClass($om, $purger);
             $executor->setReferenceRepository($referenceRepository);
             $executor->purge();
         }
