@@ -25,7 +25,11 @@ class QueryCountClient extends Client
     ) {
         $crawler = parent::request($method, $uri, $parameters, $files, $server, $content, $changeHistory);
 
-        $this->queryCounter->checkQueryCount($this->getProfile()->getCollector('db')->getQueryCount());
+        if ($this->getProfile()) {
+            $this->queryCounter->checkQueryCount(
+                $this->getProfile()->getCollector('db')->getQueryCount()
+            );
+        }
 
         return $crawler;
     }
