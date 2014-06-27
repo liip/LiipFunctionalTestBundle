@@ -87,6 +87,8 @@ fixtures.
 Tips for Fixture Loading Tests
 ------------------------------
 
+### SQLite
+
  1. If you want your tests to run against a completely isolated database (which is
     recommended for most functional-tests), you can configure your
     test-environment to use a sqlite-database. This will make your tests run
@@ -184,6 +186,41 @@ Tips for Fixture Loading Tests
         }
     }
     ```
+
+### Non-SQLite
+
+Liip will not automatically create your schema for you unless you use SQLite. If you prefer to use another database but want your schema/fixtures loaded automatically, you'll need to do that yourself. For example, you could write a setUp function in your test, like so:
+
+
+    ```php
+    use Liip\FunctionalTestBundle\Test\WebTestCase;
+    
+    class AccountControllerTest extends WebTestCase
+    {
+        public function setUp()
+        {
+            $em = $this->getContainer()->get('doctrine')->getManager();
+            if (!isset($metadatas)) {
+                $metadatas = $em->getMetadataFactory()->getAllMetadata();
+            }
+            $schemaTool = new SchemaTool($em);
+            $schemaTool->dropDatabase();
+            if (!empty($metadatas)) {
+                $schemaTool->createSchema($metadatas);
+            }
+            $this->postFixtureSetup();
+
+            $classes = array(
+                'Acme\MyBundle\DataFixtures\ORM\LoadUserData',
+            );
+            $this->loadFixtures($classes);
+        }
+    //...
+    }
+    ```
+    
+Without something like this in place, you'll have to load the schema into your test database manually, for your tests to pass.
+
 
 HTML5 Validator
 ---------------
