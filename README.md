@@ -192,32 +192,32 @@ Tips for Fixture Loading Tests
 The Bundle will not automatically create your schema for you unless you use SQLite. If you prefer to use another database but want your schema/fixtures loaded automatically, you'll need to do that yourself. For example, you could write a setUp function in your test, like so
 
 
-    ```php
-    use Liip\FunctionalTestBundle\Test\WebTestCase;
+```php
+use Liip\FunctionalTestBundle\Test\WebTestCase;
     
-    class AccountControllerTest extends WebTestCase
+class AccountControllerTest extends WebTestCase
+{
+    public function setUp()
     {
-        public function setUp()
-        {
-            $em = $this->getContainer()->get('doctrine')->getManager();
-            if (!isset($metadatas)) {
-                $metadatas = $em->getMetadataFactory()->getAllMetadata();
-            }
-            $schemaTool = new SchemaTool($em);
-            $schemaTool->dropDatabase();
-            if (!empty($metadatas)) {
-                $schemaTool->createSchema($metadatas);
-            }
-            $this->postFixtureSetup();
-
-            $classes = array(
-                'Acme\MyBundle\DataFixtures\ORM\LoadUserData',
-            );
-            $this->loadFixtures($classes);
+        $em = $this->getContainer()->get('doctrine')->getManager();
+        if (!isset($metadatas)) {
+            $metadatas = $em->getMetadataFactory()->getAllMetadata();
         }
-    //...
+        $schemaTool = new SchemaTool($em);
+        $schemaTool->dropDatabase();
+        if (!empty($metadatas)) {
+            $schemaTool->createSchema($metadatas);
+        }
+        $this->postFixtureSetup();
+
+        $classes = array(
+            'Acme\MyBundle\DataFixtures\ORM\LoadUserData',
+        );
+        $this->loadFixtures($classes);
     }
-    ```
+//...
+}
+```
     
 Without something like this in place, you'll have to load the schema into your test database manually, for your tests to pass.
 
