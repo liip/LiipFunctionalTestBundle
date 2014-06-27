@@ -189,7 +189,7 @@ Tips for Fixture Loading Tests
 
 ### Non-SQLite
 
-Liip will not automatically create your schema for you unless you use SQLite. If you prefer to use another database but want your schema/fixtures loaded automatically, you'll need to do that yourself. For example, you could write a setUp function in your test, like so:
+The Bundle will not automatically create your schema for you unless you use SQLite. If you prefer to use another database but want your schema/fixtures loaded automatically, you'll need to do that yourself. For example, you could write a setUp function in your test, like so
 
 
     ```php
