@@ -21,6 +21,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\ClassLoader\DebugClassLoader;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\BrowserKit\Cookie;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -451,7 +452,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
             /** @var $user UserInterface */
             foreach ($this->firewallLogins as $firewallName => $user) {
-                $token = new UsernamePasswordToken($user, null, $firewallName, $user->getRoles());
+                $token = $this->createUserToken($user, $firewallName);
 
                 $client->getContainer()->get('security.context')->setToken($token);
                 $session->set('_security_' . $firewallName, serialize($token));
@@ -461,6 +462,29 @@ abstract class WebTestCase extends BaseWebTestCase
         }
 
         return $client;
+    }
+
+    /**
+     * Create User Token
+     *
+     * Factory method for creating a User Token object for the firewall based on
+     * the user object provided. By default it will be a Username/Password
+     * Token based on the user's credentials, but may be overridden for custom
+     * tokens in your applications.
+     *
+     * @param UserInterface $user The user object to base the token off of
+     * @param string $firewallName name of the firewall provider to use
+     * 
+     * @return TokenInterface The token to be used in the security context
+     */
+    protected function createUserToken(UserInterface $user, $firewallName)
+    {
+        return new UsernamePasswordToken(
+            $user,
+            null,
+            $firewallName,
+            $user->getRoles()
+        );
     }
 
     /**
