@@ -135,7 +135,7 @@ abstract class WebTestCase extends BaseWebTestCase
      * Get an instance of the dependency injection container.
      * (this creates a kernel *without* parameters).
      *
-     * @return object
+     * @return ContainerInterface
      */
     protected function getContainer()
     {
