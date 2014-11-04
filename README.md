@@ -24,7 +24,7 @@ DoctrineFixturesBundle installed and configured first.
  2. Install package:
 
     ```sh
-        $ php composer.phar install liip/functional-test-bundle
+        $ php composer.phar require liip/functional-test-bundle
     ```
 
  3. Add this bundle to your application's kernel for the test environment:
