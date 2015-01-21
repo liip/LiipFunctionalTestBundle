@@ -9,7 +9,7 @@ Installation
 ------------
 
  1. Download the Bundle
- 
+
     Open a command console, enter your project directory and execute the
     following command to download the latest stable version of this bundle:
 
@@ -25,11 +25,11 @@ Installation
 
     Add the following line in the `app/AppKernel.php` file to enable this bundle only
     for the `test` environment:
-   
+
     ```php
     <?php
     // app/AppKernel.php
-   
+
     // ...
     class AppKernel extends Kernel
     {
@@ -39,10 +39,10 @@ Installation
             if (in_array($this->getEnvironment(), array('dev', 'test'))) {
                 $bundles[] = new Liip\FunctionalTestBundle\LiipFunctionalTestBundle();
             }
-    
+
             return $bundles
         }
-    
+
         // ...
     }
     ```
@@ -54,7 +54,7 @@ Installation
     liip_functional_test: ~
     ```
     Ensure that the framework is using the filesystem for session storage:
- 
+
     ```yaml
     # app/config/config_test.yml
     framework:
@@ -115,7 +115,7 @@ Tips for Fixture Loading Tests
 
     ```php
     use Liip\FunctionalTestBundle\Test\WebTestCase;
-    
+
     class MyControllerTest extends WebTestCase
     {
         public function testIndex()
@@ -126,7 +126,7 @@ Tips for Fixture Loading Tests
                 'Bamarni\MainBundle\DataFixtures\ORM\LoadData',
                 'Me\MyBundle\DataFixtures\ORM\LoadData'
             ));
-    
+
             // you can now run your functional tests with a populated database
             $client = static::createClient();
             // ...
@@ -140,13 +140,13 @@ Tips for Fixture Loading Tests
 
     ```php
     use Liip\FunctionalTestBundle\Test\WebTestCase;
-    
+
     class MyControllerTest extends WebTestCase
     {
         public function testIndex()
         {
             $this->loadFixtures(array());
-    
+
             // you can now run your functional tests with a populated database
             $client = static::createClient();
             // ...
@@ -159,7 +159,7 @@ Tips for Fixture Loading Tests
 
     ```php
     use Liip\FunctionalTestBundle\Test\WebTestCase;
-    
+
     class MyControllerTest extends WebTestCase
     {
         public function testIndex()
@@ -167,7 +167,7 @@ Tips for Fixture Loading Tests
             $fixtures = array(
                 'Me\MyBundle\DataFixtures\MongoDB\LoadData'
             );
-    
+
             $this->loadFixtures($fixtures, null, 'doctrine_mongodb');
 
             $client = static::createClient();
@@ -185,7 +185,7 @@ automatically, you'll need to do that yourself. For example, you could write a
 
 ```php
 use Liip\FunctionalTestBundle\Test\WebTestCase;
-    
+
 class AccountControllerTest extends WebTestCase
 {
     public function setUp()
@@ -209,14 +209,14 @@ class AccountControllerTest extends WebTestCase
 //...
 }
 ```
-    
+
 Without something like this in place, you'll have to load the schema into your
 test database manually, for your tests to pass.
 
 HTML5 Validator
 ---------------
 
-The on-line validator: http://validator.nu/
+The online validator: http://validator.nu/
 The documentation: http://about.validator.nu/
 Documentation about the web service: http://wiki.whatwg.org/wiki/Validator.nu_Web_Service_Interface
 
@@ -244,11 +244,10 @@ Before starting:
 Then:
 
 ```sh
-$ mkdir checker
-$ cd checker
-$ svn co https://whattf.svn.cvsdude.com/build/trunk/ build
-$ python build/build.py all
-$ python build/build.py all
+$ mkdir checker; cd checker
+$ git clone https://github.com/validator/validator.git
+$ cd validator
+$ python ./build/build.py all; python ./build/build.py all
 ```
 
 Note: Yes, the last line is there twice intentionally. Running the script twice tends to fix
@@ -261,7 +260,7 @@ process will complain about that).
 This will download the necessary components, compile the validator and run it. This will require
 about 10 minutes on the first run.
 
-Once the validator is executed it can be reached at http://localhost:8888/
+Once the validator is executed it can be reached at http://localhost:8888/ Further instructions on how to build the validator can be found at http://validator.github.io/validator/#build-instructions.
 
 Execution
 ---------
@@ -383,7 +382,7 @@ Caveats
 
  * QueryCount annotations currently only work for tests that have a method name
    of `testFooBla()` (with a test prefix). The `@test` annotation isn't
-   supported at the moment. 
+   supported at the moment.
  * Enabling the Query Counter currently breaks PHPUnit's built-in annotations,
    e.g. `@dataProvider`, `@depends` etc. To fix this, you need to hide the
    appropriate PHPUnit annotation from Doctrine's annotation reader using the
