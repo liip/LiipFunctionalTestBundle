@@ -29,7 +29,6 @@ use Symfony\Component\HttpFoundation\Session\Session;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
-use Doctrine\Common\DataFixtures\ProxyReferenceRepository;
 
 use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
 
@@ -209,7 +208,6 @@ abstract class WebTestCase extends BaseWebTestCase
         $om = $registry->getManager($omName);
         $type = $registry->getName();
 
-        $referenceRepository = new ProxyReferenceRepository($om);
         $cacheDriver = $om->getMetadataFactory()->getCacheDriver();
 
         if ($cacheDriver) {
@@ -241,8 +239,7 @@ abstract class WebTestCase extends BaseWebTestCase
                         $om->flush();
                         $om->clear();
 
-                        $executor = $dbPreparator->getExecutor($type, $om);
-                        $executor->setReferenceRepository($referenceRepository);
+                        $executor = $dbPreparator->getExecutorWithReferenceRepository($type, $om);
                         $executor->getReferenceRepository()->load($backup);
 
                         copy($backup, $name);
@@ -261,14 +258,12 @@ abstract class WebTestCase extends BaseWebTestCase
                 }
                 $this->postFixtureSetup();
 
-                $executor = $dbPreparator->getExecutor($type, $om);
-                $executor->setReferenceRepository($referenceRepository);
+                $executor = $dbPreparator->getExecutorWithReferenceRepository($type, $om);
             }
         }
 
         if (empty($executor)) {
-            $executor = $dbPreparator->getExecutor($type, $om, $purgeMode);
-            $executor->setReferenceRepository($referenceRepository);
+            $executor = $dbPreparator->getExecutorWithReferenceRepository($type, $om, $purgeMode);
             $executor->purge();
         }
 

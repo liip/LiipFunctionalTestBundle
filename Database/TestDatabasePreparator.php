@@ -11,6 +11,7 @@
 
 namespace Liip\FunctionalTestBundle\Database;
 
+use Doctrine\Common\DataFixtures\ProxyReferenceRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\Container;
 use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
@@ -30,7 +31,7 @@ class TestDatabasePreparator
      * @param int $purgeMode see Doctrine\Common\DataFixtures\Purger\ORMPurger
      * @return AbstractExecutor
      */
-    public function getExecutor($type, ObjectManager $om, $purgeMode = null)
+    private function getExecutor($type, ObjectManager $om, $purgeMode = null)
     {
         $executorClass = 'PHPCR' === $type && class_exists('Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor')
         ? 'Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor'
@@ -57,5 +58,14 @@ class TestDatabasePreparator
         }
 
         return new $executorClass($om, $purger);
+    }
+
+    public function getExecutorWithReferenceRepository($type, ObjectManager $om, $purgeMode = null)
+    {
+        $executor = $this->getExecutor($type, $om, $purgeMode);
+        $referenceRepository = new ProxyReferenceRepository($om);
+        $executor->setReferenceRepository($referenceRepository);
+
+        return $executor;
     }
 }
