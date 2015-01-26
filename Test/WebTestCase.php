@@ -35,10 +35,6 @@ use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
 
 use Doctrine\ORM\Tools\SchemaTool;
 
-use Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader as DataFixturesLoader;
-use Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader as SymfonyFixturesLoader;
-use Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader as DoctrineFixturesLoader;
-
 /**
  * @author Lea Haensenberger
  * @author Lukas Kahwe Smith <smith@pooteeweet.org>
@@ -367,11 +363,13 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     protected function getFixtureLoader(ContainerInterface $container, array $classNames)
     {
-        $loader = class_exists('Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader')
-            ? new DataFixturesLoader($container)
+        $loaderClass = class_exists('Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader')
+            ? 'Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader'
             : (class_exists('Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader')
-                ? new DoctrineFixturesLoader($container)
-                : new SymfonyFixturesLoader($container));
+                ? 'Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader'
+                : 'Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader');
+
+        $loader = new $loaderClass($container);
 
         foreach ($classNames as $className) {
             $this->loadFixtureClass($loader, $className);
@@ -474,7 +472,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @param UserInterface $user The user object to base the token off of
      * @param string $firewallName name of the firewall provider to use
-     * 
+     *
      * @return TokenInterface The token to be used in the security context
      */
     protected function createUserToken(UserInterface $user, $firewallName)
