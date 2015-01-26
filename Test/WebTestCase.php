@@ -36,6 +36,7 @@ use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
 use Doctrine\ORM\Tools\SchemaTool;
 
 use Liip\FunctionalTestBundle\Database\TestDatabaseCache;
+use Liip\FunctionalTestBundle\Database\TestDatabasePreparator;
 
 /**
  * @author Lea Haensenberger
@@ -203,13 +204,11 @@ abstract class WebTestCase extends BaseWebTestCase
     protected function loadFixtures(array $classNames, $omName = null, $registryName = 'doctrine', $purgeMode = null)
     {
         $container = $this->getContainer();
+        $dbPreparator = new TestDatabasePreparator($container);
         $registry = $this->getRegistry($registryName);
         $om = $registry->getManager($omName);
         $type = $registry->getName();
 
-        $executorClass = 'PHPCR' === $type && class_exists('Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor')
-            ? 'Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor'
-            : 'Doctrine\\Common\\DataFixtures\\Executor\\'.$type.'Executor';
         $referenceRepository = new ProxyReferenceRepository($om);
         $cacheDriver = $om->getMetadataFactory()->getCacheDriver();
 
@@ -242,7 +241,7 @@ abstract class WebTestCase extends BaseWebTestCase
                         $om->flush();
                         $om->clear();
 
-                        $executor = new $executorClass($om);
+                        $executor = $dbPreparator->getExecutor($type, $om);
                         $executor->setReferenceRepository($referenceRepository);
                         $executor->getReferenceRepository()->load($backup);
 
@@ -262,29 +261,13 @@ abstract class WebTestCase extends BaseWebTestCase
                 }
                 $this->postFixtureSetup();
 
-                $executor = new $executorClass($om);
+                $executor = $dbPreparator->getExecutor($type, $om);
                 $executor->setReferenceRepository($referenceRepository);
             }
         }
 
         if (empty($executor)) {
-            $purgerClass = 'Doctrine\\Common\\DataFixtures\\Purger\\'.$type.'Purger';
-            if ('PHPCR' === $type) {
-                $purger = new $purgerClass($om);
-                $initManager = $container->has('doctrine_phpcr.initializer_manager')
-                    ? $container->get('doctrine_phpcr.initializer_manager')
-                    : null;
-
-                $executor = new $executorClass($om, $purger, $initManager);
-            } else {
-                $purger = new $purgerClass();
-                if (null !== $purgeMode) {
-                    $purger->setPurgeMode($purgeMode);
-                }
-
-                $executor = new $executorClass($om, $purger);
-            }
-
+            $executor = $dbPreparator->getExecutor($type, $om, $purgeMode);
             $executor->setReferenceRepository($referenceRepository);
             $executor->purge();
         }
