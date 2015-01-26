@@ -168,7 +168,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return \DateTime|null
      */
-    protected function getFixtureLastModified($class)
+    protected function getClassLastModified($class)
     {
         $lastModifiedDateTime = null;
 
@@ -199,7 +199,7 @@ abstract class WebTestCase extends BaseWebTestCase
         $backupLastModifiedDateTime->setTimestamp(filemtime($backup));
 
         foreach ($classNames as &$className) {
-            $fixtureLastModifiedDateTime = $this->getFixtureLastModified($className);
+            $fixtureLastModifiedDateTime = $this->getClassLastModified($className);
             if ($backupLastModifiedDateTime < $fixtureLastModifiedDateTime) {
                 return false;
             }
