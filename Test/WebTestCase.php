@@ -209,6 +209,23 @@ abstract class WebTestCase extends BaseWebTestCase
     }
 
     /**
+     * @param string $registryName, e.g. 'doctrine'
+     * @return ManagerRegistry
+     */
+    private function getRegistry($registryName)
+    {
+        $registry = $this->getContainer()->get($registryName);
+        if(!$registry instanceof ManagerRegistry) {
+            throw new \Exception(
+                'Expected service ' . $registryName
+                . ' to be instance of ManagerRegistry, got: ' . get_class($registry)
+            );
+        }
+
+        return $registry;
+    }
+
+    /**
      * Set the database to the provided fixtures.
      *
      * Drops the current database and then loads fixtures using the specified
@@ -234,14 +251,9 @@ abstract class WebTestCase extends BaseWebTestCase
     protected function loadFixtures(array $classNames, $omName = null, $registryName = 'doctrine', $purgeMode = null)
     {
         $container = $this->getContainer();
-        $registry = $container->get($registryName);
-        if ($registry instanceof ManagerRegistry) {
-            $om = $registry->getManager($omName);
-            $type = $registry->getName();
-        } else {
-            $om = $registry->getEntityManager($omName);
-            $type = 'ORM';
-        }
+        $registry = $this->getRegistry($registryName);
+        $om = $registry->getManager($omName);
+        $type = $registry->getName();
 
         $executorClass = 'PHPCR' === $type && class_exists('Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor')
             ? 'Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor'
