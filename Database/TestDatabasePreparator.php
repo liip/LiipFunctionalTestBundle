@@ -15,6 +15,7 @@ use Doctrine\Common\DataFixtures\ProxyReferenceRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\Container;
 use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class TestDatabasePreparator
 {
@@ -81,5 +82,54 @@ class TestDatabasePreparator
         }
 
         return self::$cachedMetadatas[$omName];
+    }
+
+    /**
+     * Retrieve Doctrine DataFixtures loader.
+     *
+     * @param ContainerInterface $container
+     * @param array $classNames
+     *
+     * @return \Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader
+     */
+    public function getFixtureLoader(ContainerInterface $container, array $classNames)
+    {
+        $loaderClass = class_exists('Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader')
+        ? 'Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader'
+            : (class_exists('Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader')
+                ? 'Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader'
+                : 'Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader');
+
+        $loader = new $loaderClass($container);
+
+        foreach ($classNames as $className) {
+            $this->loadFixtureClass($loader, $className);
+        }
+
+        return $loader;
+    }
+
+    /**
+     * Load a data fixture class.
+     *
+     * @param \Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader $loader
+     * @param string $className
+     */
+    private function loadFixtureClass($loader, $className)
+    {
+        $fixture = new $className();
+
+        if ($loader->hasFixture($fixture)) {
+            unset($fixture);
+            return;
+        }
+
+        $loader->addFixture($fixture);
+
+        if ($fixture instanceof DependentFixtureInterface) {
+            foreach ($fixture->getDependencies() as $dependency) {
+                $this->loadFixtureClass($loader, $dependency);
+            }
+        }
     }
 }
