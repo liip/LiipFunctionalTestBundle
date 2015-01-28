@@ -20,6 +20,11 @@ class TestDatabasePreparator
 {
     private $container;
 
+    /**
+     * @var array
+     */
+    static private $cachedMetadatas = [];
+
     public function __construct(Container $container)
     {
         $this->container = $container;
@@ -67,5 +72,14 @@ class TestDatabasePreparator
         $executor->setReferenceRepository($referenceRepository);
 
         return $executor;
+    }
+
+    public function getMetaDatas(ObjectManager $om, $omName)
+    {
+        if (!isset(self::$cachedMetadatas[$omName])) {
+            self::$cachedMetadatas[$omName] = $om->getMetadataFactory()->getAllMetadata();
+        }
+
+        return self::$cachedMetadatas[$omName];
     }
 }

@@ -55,11 +55,6 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     private $firewallLogins = array();
 
-    /**
-     * @var array
-     */
-    static private $cachedMetadatas = array();
-
     static protected function getKernelClass()
     {
         $dir = isset($_SERVER['KERNEL_DIR']) ? $_SERVER['KERNEL_DIR'] : self::getPhpUnitXmlDir();
@@ -218,10 +213,7 @@ abstract class WebTestCase extends BaseWebTestCase
             $connection = $om->getConnection();
             if ($connection->getDriver() instanceof SqliteDriver) {
 
-                if (!isset(self::$cachedMetadatas[$omName])) {
-                    self::$cachedMetadatas[$omName] = $om->getMetadataFactory()->getAllMetadata();
-                }
-                $metadatas = self::$cachedMetadatas[$omName];
+                $metadatas = $dbPreparator->getMetaDatas($om, $omName);
 
                 $dbCache = new TestDatabaseCache($container);
                 $name = $dbCache->getSQLiteName($connection->getParams());
