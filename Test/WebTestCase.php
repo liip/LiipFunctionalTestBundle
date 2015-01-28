@@ -207,23 +207,12 @@ abstract class WebTestCase extends BaseWebTestCase
             $connection = $om->getConnection();
             if ($connection->getDriver() instanceof SqliteDriver) {
 
-                $metadatas = $dbPreparator->getMetaDatas();
-
                 $dbCache = new TestDatabaseCache($container);
                 $name = $dbCache->getSQLiteName($connection->getParams());
                 if ($dbCache->isCacheEnabled()) {
-                    $backup = $dbCache->buildCacheFilePath($metadatas, $classNames);
-                    if ($dbCache->isBackupUpToDate($classNames, $backup)) {
-                        $om->flush();
-                        $om->clear();
-
-                        $executor = $dbPreparator->getExecutorWithReferenceRepository();
-                        $executor->getReferenceRepository()->load($backup);
-
-                        copy($backup, $name);
-
+                    $executor = $dbCache->getCachedExecutor($dbPreparator, $classNames);
+                    if(!is_null($executor)) {
                         $this->postFixtureRestore();
-
                         return $executor;
                     }
                 }
@@ -244,9 +233,8 @@ abstract class WebTestCase extends BaseWebTestCase
 
         $executor->execute($loader->getFixtures(), true);
 
-        if (isset($name) && isset($backup)) {
-            $executor->getReferenceRepository()->save($backup);
-            copy($name, $backup);
+        if (isset($dbCache) && $dbCache->isCacheEnabled()) {
+            $dbCache->storeToCache($executor, $dbPreparator, $classNames);
         }
 
         return $executor;

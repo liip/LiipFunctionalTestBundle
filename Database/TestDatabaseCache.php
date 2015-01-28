@@ -12,6 +12,7 @@
 namespace Liip\FunctionalTestBundle\Database;
 
 use Symfony\Component\DependencyInjection\Container;
+use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
 
 class TestDatabaseCache
 {
@@ -20,6 +21,30 @@ class TestDatabaseCache
     public function __construct(Container $container)
     {
         $this->container = $container;
+    }
+
+    public function getCachedExecutor(TestDatabasePreparator $dbPreparator, array $classNames)
+    {
+        $backup = $this->buildCacheFilePath($dbPreparator->getMetaDatas(), $classNames);
+        if ($this->isBackupUpToDate($classNames, $backup)) {
+            $om = $dbPreparator->getObjectManager();
+            $om->flush();
+            $om->clear();
+
+            $executor = $dbPreparator->getExecutorWithReferenceRepository();
+            $executor->getReferenceRepository()->load($backup);
+
+            copy($backup, $this->getSQLiteName($om->getConnection()->getParams()));
+
+            return $executor;
+        }
+    }
+
+    public function storeToCache(AbstractExecutor $executor, TestDatabasePreparator $dbPreparator, array $classNames)
+    {
+        $backup = $this->buildCacheFilePath($dbPreparator->getMetaDatas(), $classNames);
+        $executor->getReferenceRepository()->save($backup);
+        copy($this->getSQLiteName($dbPreparator->getObjectManager()->getConnection()->getParams()), $backup);
     }
 
     /**
@@ -60,7 +85,7 @@ class TestDatabaseCache
      * @return bool TRUE if the backup was made since the modifications to the
      *         fixtures; FALSE otherwise
      */
-    public function isBackupUpToDate(array $classNames, $backup)
+    private function isBackupUpToDate(array $classNames, $backup)
     {
         if(!file_exists($backup) || !file_exists($backup.'.ser')) {
             return false;
@@ -85,7 +110,7 @@ class TestDatabaseCache
      * @param array $classNames
      * @return string full path to the database cache file
      */
-    public function buildCacheFilePath(array $metadatas, array $classNames)
+    private function buildCacheFilePath(array $metadatas, array $classNames)
     {
         return $this->container->getParameter('kernel.cache_dir') . '/test_' . md5(serialize($metadatas) . serialize($classNames)) . '.db';
     }
