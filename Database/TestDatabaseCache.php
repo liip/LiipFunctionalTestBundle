@@ -91,6 +91,27 @@ class TestDatabaseCache
     }
 
     /**
+     * Get Filename of file base SQLite database
+     *
+     * @param array $params see Doctrine\DBAL\Connection->getParams()
+     * @throws \InvalidArgumentException
+     * @return string
+     */
+    public function getSQLiteName(array $params)
+    {
+        if (isset($params['master'])) {
+            $params = $params['master'];
+        }
+
+        $name = isset($params['path']) ? $params['path'] : (isset($params['dbname']) ? $params['dbname'] : false);
+        if (!$name) {
+            throw new \InvalidArgumentException("Connection does not contain a 'path' or 'dbname' parameter and cannot be dropped.");
+        }
+
+        return $name;
+    }
+
+    /**
      * Is caching of SQLite Database instances enabled?
      *
      * Caching can be enabled in app/config/config_test.yml:

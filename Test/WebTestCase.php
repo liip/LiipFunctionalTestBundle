@@ -217,15 +217,6 @@ abstract class WebTestCase extends BaseWebTestCase
         if ('ORM' === $type) {
             $connection = $om->getConnection();
             if ($connection->getDriver() instanceof SqliteDriver) {
-                $params = $connection->getParams();
-                if (isset($params['master'])) {
-                    $params = $params['master'];
-                }
-
-                $name = isset($params['path']) ? $params['path'] : (isset($params['dbname']) ? $params['dbname'] : false);
-                if (!$name) {
-                    throw new \InvalidArgumentException("Connection does not contain a 'path' or 'dbname' parameter and cannot be dropped.");
-                }
 
                 if (!isset(self::$cachedMetadatas[$omName])) {
                     self::$cachedMetadatas[$omName] = $om->getMetadataFactory()->getAllMetadata();
@@ -233,6 +224,7 @@ abstract class WebTestCase extends BaseWebTestCase
                 $metadatas = self::$cachedMetadatas[$omName];
 
                 $dbCache = new TestDatabaseCache($container);
+                $name = $dbCache->getSQLiteName($connection->getParams());
                 if ($dbCache->isCacheEnabled()) {
                     $backup = $dbCache->buildCacheFilePath($metadatas, $classNames);
                     if ($dbCache->isBackupUpToDate($classNames, $backup)) {
