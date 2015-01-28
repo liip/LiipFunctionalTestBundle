@@ -30,8 +30,6 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
-
 use Liip\FunctionalTestBundle\Database\TestDatabaseCache;
 use Liip\FunctionalTestBundle\Database\TestDatabasePreparator;
 
@@ -198,46 +196,17 @@ abstract class WebTestCase extends BaseWebTestCase
         $container = $this->getContainer();
         $registry = $this->getRegistry($registryName);
         $dbPreparator = new TestDatabasePreparator($container, $registry, $omName);
-        $om = $dbPreparator->getObjectManager();
-        $type = $registry->getName();
 
-        $dbPreparator->deleteAllCaches();
+        return $dbPreparator->loadFixtures(
+            $classNames,
+            $purgeMode,
+            [$this, 'loadFixturesEventCallback']
+        );
+    }
 
-        if ('ORM' === $type) {
-            $connection = $om->getConnection();
-            if ($connection->getDriver() instanceof SqliteDriver) {
-
-                $dbCache = new TestDatabaseCache($container);
-                $name = $dbCache->getSQLiteName($connection->getParams());
-                if ($dbCache->isCacheEnabled()) {
-                    $executor = $dbCache->getCachedExecutor($dbPreparator, $classNames);
-                    if(!is_null($executor)) {
-                        $this->postFixtureRestore();
-                        return $executor;
-                    }
-                }
-
-                $dbPreparator->createSchema($name);
-                $this->postFixtureSetup();
-
-                $executor = $dbPreparator->getExecutorWithReferenceRepository();
-            }
-        }
-
-        if (empty($executor)) {
-            $executor = $dbPreparator->getExecutorWithReferenceRepository($purgeMode);
-            $executor->purge();
-        }
-
-        $loader = $dbPreparator->getFixtureLoader($classNames);
-
-        $executor->execute($loader->getFixtures(), true);
-
-        if (isset($dbCache) && $dbCache->isCacheEnabled()) {
-            $dbCache->storeToCache($executor, $dbPreparator, $classNames);
-        }
-
-        return $executor;
+    public function loadFixturesEventCallback($methodName)
+    {
+        call_user_func([$this, $methodName]);
     }
 
     /**

@@ -18,9 +18,13 @@ use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
 
 class TestDatabasePreparator
 {
+    const POST_FIXTURE_RESTORE = 'postFixtureRestore';
+    const POST_FIXTURE_SETUP = 'postFixtureSetup';
+
     private $container;
 
     /**
@@ -57,6 +61,74 @@ class TestDatabasePreparator
     public function getObjectManager()
     {
         return $this->om;
+    }
+
+    /**
+     * Set the database to the provided fixtures.
+     *
+     * Drops the current database and then loads fixtures using the specified
+     * classes. The parameter is a list of fully qualified class names of
+     * classes that implement Doctrine\Common\DataFixtures\FixtureInterface
+     * so that they can be loaded by the DataFixtures Loader::addFixture
+     *
+     * When using SQLite this method will automatically make a copy of the
+     * loaded schema and fixtures which will be restored automatically in
+     * case the same fixture classes are to be loaded again. Caveat: changes
+     * to references and/or identities may go undetected.
+     *
+     * Depends on the doctrine data-fixtures library being available in the
+     * class path.
+     *
+     * @param array $classNames List of fully qualified class names of fixtures to load
+     * @param int $purgeMode Sets the ORM purge mode
+     * @param callable $callback
+     *
+     * @return null|Doctrine\Common\DataFixtures\Executor\AbstractExecutor
+     */
+    public function loadFixtures(array $classNames, $purgeMode = null, $callback = null)
+    {
+        $this->deleteAllCaches();
+
+        if ('ORM' === $this->type) {
+            $connection = $this->om->getConnection();
+            if ($connection->getDriver() instanceof SqliteDriver) {
+
+                $dbCache = new TestDatabaseCache($this->container);
+                $name = $dbCache->getSQLiteName($connection->getParams());
+                if ($dbCache->isCacheEnabled()) {
+                    $executor = $dbCache->getCachedExecutor($this, $classNames);
+                    if(!is_null($executor)) {
+                        if(is_callable($callback)) {
+                            call_user_func($callback, self::POST_FIXTURE_RESTORE);
+                        }
+
+                        return $executor;
+                    }
+                }
+
+                $this->createSchema($name);
+                if(is_callable($callback)) {
+                    call_user_func($callback, self::POST_FIXTURE_SETUP);
+                }
+
+                $executor = $this->getExecutorWithReferenceRepository();
+            }
+        }
+
+        if (empty($executor)) {
+            $executor = $this->getExecutorWithReferenceRepository($purgeMode);
+            $executor->purge();
+        }
+
+        $loader = $this->getFixtureLoader($classNames);
+
+        $executor->execute($loader->getFixtures(), true);
+
+        if (isset($dbCache) && $dbCache->isCacheEnabled()) {
+            $dbCache->storeToCache($executor, $this, $classNames);
+        }
+
+        return $executor;
     }
 
     /**
@@ -103,7 +175,7 @@ class TestDatabasePreparator
         return $executor;
     }
 
-    public function createSchema($name)
+    private function createSchema($name)
     {
         // TODO: handle case when using persistent connections. Fail loudly?
         $schemaTool = new SchemaTool($this->om);
@@ -114,7 +186,7 @@ class TestDatabasePreparator
         }
     }
 
-    public function deleteAllCaches()
+    private function deleteAllCaches()
     {
         $cacheDriver = $this->om->getMetadataFactory()->getCacheDriver();
 
@@ -122,7 +194,6 @@ class TestDatabasePreparator
             $cacheDriver->deleteAll();
         }
     }
-
 
     public function getMetaDatas()
     {
@@ -140,7 +211,7 @@ class TestDatabasePreparator
      *
      * @return \Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader
      */
-    public function getFixtureLoader(array $classNames)
+    private function getFixtureLoader(array $classNames)
     {
         $loaderClass = class_exists('Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader')
         ? 'Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader'
