@@ -89,30 +89,25 @@ class TestDatabasePreparator
     {
         $this->deleteAllCaches();
 
-        if ('ORM' === $this->type) {
-            $connection = $this->om->getConnection();
-            if ($connection->getDriver() instanceof SqliteDriver) {
-
-                $dbCache = new TestDatabaseCache($this->container);
-                $name = $dbCache->getSQLiteName($connection->getParams());
-                if ($dbCache->isCacheEnabled()) {
-                    $executor = $dbCache->getCachedExecutor($this, $classNames);
-                    if(!is_null($executor)) {
-                        if(is_callable($callback)) {
-                            call_user_func($callback, self::POST_FIXTURE_RESTORE);
-                        }
-
-                        return $executor;
+        if ($this->isSQLite()) {
+            $dbCache = new TestDatabaseCache($this->container);
+            if ($dbCache->isCacheEnabled()) {
+                $executor = $dbCache->getCachedExecutor($this, $classNames);
+                if (!is_null($executor)) {
+                    if (is_callable($callback)) {
+                        call_user_func($callback, self::POST_FIXTURE_RESTORE);
                     }
-                }
 
-                $this->createSchema($name);
-                if(is_callable($callback)) {
-                    call_user_func($callback, self::POST_FIXTURE_SETUP);
+                    return $executor;
                 }
-
-                $executor = $this->getExecutorWithReferenceRepository();
             }
+
+            $this->createSchema($dbCache->getSQLiteName($this->om->getConnection()->getParams()));
+            if(is_callable($callback)) {
+                call_user_func($callback, self::POST_FIXTURE_SETUP);
+            }
+
+            $executor = $this->getExecutorWithReferenceRepository();
         }
 
         if (empty($executor)) {
@@ -154,7 +149,7 @@ class TestDatabasePreparator
             return new $executorClass($this->om, $purger, $initManager);
         }
 
-        if($this->type === 'ORM' && $this->om->getConnection()->getDriver() instanceof SqliteDriver) {
+        if($this->isSQLite()) {
             return new $executorClass($this->om);
         }
 
@@ -173,6 +168,11 @@ class TestDatabasePreparator
         $executor->setReferenceRepository($referenceRepository);
 
         return $executor;
+    }
+
+    private function isSQLite()
+    {
+        return $this->type === 'ORM' && $this->om->getConnection()->getDriver() instanceof SqliteDriver;
     }
 
     private function createSchema($name)
