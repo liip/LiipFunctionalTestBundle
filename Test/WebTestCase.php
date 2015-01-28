@@ -240,7 +240,7 @@ abstract class WebTestCase extends BaseWebTestCase
             $executor->purge();
         }
 
-        $loader = $dbPreparator->getFixtureLoader($container, $classNames);
+        $loader = $dbPreparator->getFixtureLoader($classNames);
 
         $executor->execute($loader->getFixtures(), true);
 
