@@ -20,6 +20,9 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
 
+/**
+ * This class is experimental!
+ */
 class TestDatabasePreparator
 {
     const POST_FIXTURE_RESTORE = 'postFixtureRestore';

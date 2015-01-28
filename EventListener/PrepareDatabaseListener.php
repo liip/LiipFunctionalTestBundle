@@ -18,6 +18,9 @@ use Liip\FunctionalTestBundle\Database\TestDatabasePreparator;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * This class is experimental!
+ */
 class PrepareDatabaseListener implements EventSubscriberInterface
 {
     private $container;

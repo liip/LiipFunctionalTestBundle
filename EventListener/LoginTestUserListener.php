@@ -5,6 +5,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
+/**
+ * This class is experimental!
+ */
 class LoginTestUserListener implements EventSubscriberInterface
 {
     const FAKEPASS = 'fakePass_42!';
