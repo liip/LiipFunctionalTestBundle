@@ -196,18 +196,18 @@ abstract class WebTestCase extends BaseWebTestCase
     protected function loadFixtures(array $classNames, $omName = null, $registryName = 'doctrine', $purgeMode = null)
     {
         $container = $this->getContainer();
-        $dbPreparator = new TestDatabasePreparator($container);
         $registry = $this->getRegistry($registryName);
-        $om = $registry->getManager($omName);
+        $dbPreparator = new TestDatabasePreparator($container, $registry, $omName);
+        $om = $dbPreparator->getObjectManager();
         $type = $registry->getName();
 
-        $dbPreparator->deleteAllCaches($om);
+        $dbPreparator->deleteAllCaches();
 
         if ('ORM' === $type) {
             $connection = $om->getConnection();
             if ($connection->getDriver() instanceof SqliteDriver) {
 
-                $metadatas = $dbPreparator->getMetaDatas($om, $omName);
+                $metadatas = $dbPreparator->getMetaDatas();
 
                 $dbCache = new TestDatabaseCache($container);
                 $name = $dbCache->getSQLiteName($connection->getParams());
@@ -217,7 +217,7 @@ abstract class WebTestCase extends BaseWebTestCase
                         $om->flush();
                         $om->clear();
 
-                        $executor = $dbPreparator->getExecutorWithReferenceRepository($type, $om);
+                        $executor = $dbPreparator->getExecutorWithReferenceRepository();
                         $executor->getReferenceRepository()->load($backup);
 
                         copy($backup, $name);
@@ -228,15 +228,15 @@ abstract class WebTestCase extends BaseWebTestCase
                     }
                 }
 
-                $dbPreparator->createSchema($name, $om, $omName);
+                $dbPreparator->createSchema($name);
                 $this->postFixtureSetup();
 
-                $executor = $dbPreparator->getExecutorWithReferenceRepository($type, $om);
+                $executor = $dbPreparator->getExecutorWithReferenceRepository();
             }
         }
 
         if (empty($executor)) {
-            $executor = $dbPreparator->getExecutorWithReferenceRepository($type, $om, $purgeMode);
+            $executor = $dbPreparator->getExecutorWithReferenceRepository($purgeMode);
             $executor->purge();
         }
 

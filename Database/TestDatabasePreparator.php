@@ -17,19 +17,46 @@ use Symfony\Component\DependencyInjection\Container;
 use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 class TestDatabasePreparator
 {
     private $container;
 
     /**
+     * @var ObjectManager
+     */
+    private $om;
+
+    /**
+     * @var string storage Type, e.g. 'ORM' or 'PHPRC'
+     */
+    private $type;
+
+    /**
+     * @var string
+     */
+    private $omName;
+
+    /**
      * @var array
      */
     static private $cachedMetadatas = [];
 
-    public function __construct(Container $container)
+    public function __construct(Container $container, ManagerRegistry $registry, $omName = null)
     {
         $this->container = $container;
+        $this->omName = $omName;
+        $this->om = $registry->getManager($omName);
+        $this->type = $registry->getName();
+    }
+
+    /**
+     * @return \Doctrine\Common\Persistence\ObjectManager
+     */
+    public function getObjectManager()
+    {
+        return $this->om;
     }
 
     /**
@@ -38,25 +65,25 @@ class TestDatabasePreparator
      * @param int $purgeMode see Doctrine\Common\DataFixtures\Purger\ORMPurger
      * @return AbstractExecutor
      */
-    private function getExecutor($type, ObjectManager $om, $purgeMode = null)
+    private function getExecutor($purgeMode = null)
     {
-        $executorClass = 'PHPCR' === $type && class_exists('Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor')
+        $executorClass = 'PHPCR' === $this->type && class_exists('Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor')
         ? 'Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor'
-            : 'Doctrine\\Common\\DataFixtures\\Executor\\'.$type.'Executor';
+            : 'Doctrine\\Common\\DataFixtures\\Executor\\'.$this->type.'Executor';
 
-        $purgerClass = 'Doctrine\\Common\\DataFixtures\\Purger\\'.$type.'Purger';
+        $purgerClass = 'Doctrine\\Common\\DataFixtures\\Purger\\'.$this->type.'Purger';
 
-        if ('PHPCR' === $type) {
-            $purger = new $purgerClass($om);
+        if ('PHPCR' === $this->type) {
+            $purger = new $purgerClass($this->om);
             $initManager = $this->container->has('doctrine_phpcr.initializer_manager')
                 ? $this->container->get('doctrine_phpcr.initializer_manager')
                 : null;
 
-            return new $executorClass($om, $purger, $initManager);
+            return new $executorClass($this->om, $purger, $initManager);
         }
 
-        if($type === 'ORM' && $om->getConnection()->getDriver() instanceof SqliteDriver) {
-            return new $executorClass($om);
+        if($this->type === 'ORM' && $this->om->getConnection()->getDriver() instanceof SqliteDriver) {
+            return new $executorClass($this->om);
         }
 
         $purger = new $purgerClass();
@@ -64,32 +91,32 @@ class TestDatabasePreparator
             $purger->setPurgeMode($purgeMode);
         }
 
-        return new $executorClass($om, $purger);
+        return new $executorClass($this->om, $purger);
     }
 
-    public function getExecutorWithReferenceRepository($type, ObjectManager $om, $purgeMode = null)
+    public function getExecutorWithReferenceRepository($purgeMode = null)
     {
-        $executor = $this->getExecutor($type, $om, $purgeMode);
-        $referenceRepository = new ProxyReferenceRepository($om);
+        $executor = $this->getExecutor($purgeMode);
+        $referenceRepository = new ProxyReferenceRepository($this->om);
         $executor->setReferenceRepository($referenceRepository);
 
         return $executor;
     }
 
-    public function createSchema($name, ObjectManager $om, $omName)
+    public function createSchema($name)
     {
         // TODO: handle case when using persistent connections. Fail loudly?
-        $schemaTool = new SchemaTool($om);
+        $schemaTool = new SchemaTool($this->om);
         $schemaTool->dropDatabase($name);
-        $metadatas = $this->getMetaDatas($om, $omName);
+        $metadatas = $this->getMetaDatas();
         if (!empty($metadatas)) {
             $schemaTool->createSchema($metadatas);
         }
     }
 
-    public function deleteAllCaches(ObjectManager $om)
+    public function deleteAllCaches()
     {
-        $cacheDriver = $om->getMetadataFactory()->getCacheDriver();
+        $cacheDriver = $this->om->getMetadataFactory()->getCacheDriver();
 
         if ($cacheDriver) {
             $cacheDriver->deleteAll();
@@ -97,13 +124,13 @@ class TestDatabasePreparator
     }
 
 
-    public function getMetaDatas(ObjectManager $om, $omName)
+    public function getMetaDatas()
     {
-        if (!isset(self::$cachedMetadatas[$omName])) {
-            self::$cachedMetadatas[$omName] = $om->getMetadataFactory()->getAllMetadata();
+        if (!isset(self::$cachedMetadatas[$this->omName])) {
+            self::$cachedMetadatas[$this->omName] = $this->om->getMetadataFactory()->getAllMetadata();
         }
 
-        return self::$cachedMetadatas[$omName];
+        return self::$cachedMetadatas[$this->omName];
     }
 
     /**
