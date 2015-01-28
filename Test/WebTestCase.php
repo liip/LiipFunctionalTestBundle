@@ -32,8 +32,6 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
 use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
 
-use Doctrine\ORM\Tools\SchemaTool;
-
 use Liip\FunctionalTestBundle\Database\TestDatabaseCache;
 use Liip\FunctionalTestBundle\Database\TestDatabasePreparator;
 
@@ -203,11 +201,7 @@ abstract class WebTestCase extends BaseWebTestCase
         $om = $registry->getManager($omName);
         $type = $registry->getName();
 
-        $cacheDriver = $om->getMetadataFactory()->getCacheDriver();
-
-        if ($cacheDriver) {
-            $cacheDriver->deleteAll();
-        }
+        $dbPreparator->deleteAllCaches($om);
 
         if ('ORM' === $type) {
             $connection = $om->getConnection();
@@ -234,12 +228,7 @@ abstract class WebTestCase extends BaseWebTestCase
                     }
                 }
 
-                // TODO: handle case when using persistent connections. Fail loudly?
-                $schemaTool = new SchemaTool($om);
-                $schemaTool->dropDatabase($name);
-                if (!empty($metadatas)) {
-                    $schemaTool->createSchema($metadatas);
-                }
+                $dbPreparator->createSchema($name, $om, $omName);
                 $this->postFixtureSetup();
 
                 $executor = $dbPreparator->getExecutorWithReferenceRepository($type, $om);

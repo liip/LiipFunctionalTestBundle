@@ -16,6 +16,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\Container;
 use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Doctrine\ORM\Tools\SchemaTool;
 
 class TestDatabasePreparator
 {
@@ -74,6 +75,27 @@ class TestDatabasePreparator
 
         return $executor;
     }
+
+    public function createSchema($name, ObjectManager $om, $omName)
+    {
+        // TODO: handle case when using persistent connections. Fail loudly?
+        $schemaTool = new SchemaTool($om);
+        $schemaTool->dropDatabase($name);
+        $metadatas = $this->getMetaDatas($om, $omName);
+        if (!empty($metadatas)) {
+            $schemaTool->createSchema($metadatas);
+        }
+    }
+
+    public function deleteAllCaches(ObjectManager $om)
+    {
+        $cacheDriver = $om->getMetadataFactory()->getCacheDriver();
+
+        if ($cacheDriver) {
+            $cacheDriver->deleteAll();
+        }
+    }
+
 
     public function getMetaDatas(ObjectManager $om, $omName)
     {
