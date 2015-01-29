@@ -112,7 +112,8 @@ class TestDatabaseCache
      */
     private function buildCacheFilePath(array $metadatas, array $classNames)
     {
-        return $this->container->getParameter('kernel.cache_dir') . '/test_' . md5(serialize($metadatas) . serialize($classNames)) . '.db';
+        return $this->container->getParameter('kernel.cache_dir') . '/test_' .
+            md5(serialize($metadatas) . serialize($classNames)) . '.db';
     }
 
     /**
@@ -130,7 +131,9 @@ class TestDatabaseCache
 
         $name = isset($params['path']) ? $params['path'] : (isset($params['dbname']) ? $params['dbname'] : false);
         if (!$name) {
-            throw new \InvalidArgumentException("Connection does not contain a 'path' or 'dbname' parameter and cannot be dropped.");
+            throw new \InvalidArgumentException(
+                "Connection does not contain a 'path' or 'dbname' parameter and cannot be dropped."
+            );
         }
 
         return $name;

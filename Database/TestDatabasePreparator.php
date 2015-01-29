@@ -137,9 +137,11 @@ class TestDatabasePreparator
      */
     private function getExecutor($purgeMode = null)
     {
-        $executorClass = 'PHPCR' === $this->type && class_exists('Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor')
-        ? 'Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor'
-            : 'Doctrine\\Common\\DataFixtures\\Executor\\'.$this->type.'Executor';
+        $executorClass =
+            'PHPCR' === $this->type
+            && class_exists('Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor')
+                ? 'Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor'
+                : 'Doctrine\\Common\\DataFixtures\\Executor\\'.$this->type.'Executor';
 
         $purgerClass = 'Doctrine\\Common\\DataFixtures\\Purger\\'.$this->type.'Purger';
 
