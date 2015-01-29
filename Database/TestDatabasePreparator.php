@@ -106,7 +106,7 @@ class TestDatabasePreparator
             }
 
             $this->createSchema($dbCache->getSQLiteName($this->om->getConnection()->getParams()));
-            if(is_callable($callback)) {
+            if (is_callable($callback)) {
                 call_user_func($callback, self::POST_FIXTURE_SETUP);
             }
 
@@ -152,7 +152,7 @@ class TestDatabasePreparator
             return new $executorClass($this->om, $purger, $initManager);
         }
 
-        if($this->isSQLite()) {
+        if ($this->isSQLite()) {
             return new $executorClass($this->om);
         }
 

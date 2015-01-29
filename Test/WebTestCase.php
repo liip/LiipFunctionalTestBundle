@@ -51,7 +51,7 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     private $firewallLogins = array();
 
-    static protected function getKernelClass()
+    protected static function getKernelClass()
     {
         $dir = isset($_SERVER['KERNEL_DIR']) ? $_SERVER['KERNEL_DIR'] : self::getPhpUnitXmlDir();
 
@@ -158,7 +158,7 @@ abstract class WebTestCase extends BaseWebTestCase
     private function getRegistry($registryName)
     {
         $registry = $this->getContainer()->get($registryName);
-        if(!$registry instanceof ManagerRegistry) {
+        if (!$registry instanceof ManagerRegistry) {
             throw new \Exception(
                 'Expected service ' . $registryName
                 . ' to be instance of ManagerRegistry, got: ' . get_class($registry)

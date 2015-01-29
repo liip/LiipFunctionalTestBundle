@@ -19,7 +19,7 @@ class LoginTestUserListener implements EventSubscriberInterface
         // @TODO make the query parameter name configurable
         $login = $request->query->get('_login');
 
-        if(is_null($login)) {
+        if (is_null($login)) {
             return;
         }
 

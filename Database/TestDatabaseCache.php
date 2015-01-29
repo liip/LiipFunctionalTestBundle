@@ -87,7 +87,7 @@ class TestDatabaseCache
      */
     private function isBackupUpToDate(array $classNames, $backup)
     {
-        if(!file_exists($backup) || !file_exists($backup.'.ser')) {
+        if (!file_exists($backup) || !file_exists($backup.'.ser')) {
             return false;
         }
 

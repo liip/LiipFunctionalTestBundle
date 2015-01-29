@@ -46,7 +46,8 @@ HTML;
     /**
      * Check if the HTML5 validation service is available
      */
-    public function isValidationServiceAvailable() {
+    public function isValidationServiceAvailable()
+    {
 
         $validationUrl = $this->getHtml5ValidatorServiceUrl();
 
