@@ -27,12 +27,12 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 
+use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\DataFixtures\ProxyReferenceRepository;
 
 use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
-
 use Doctrine\ORM\Tools\SchemaTool;
 
 /**
@@ -277,6 +277,8 @@ abstract class WebTestCase extends BaseWebTestCase
                         $om->flush();
                         $om->clear();
 
+                        $this->preFixtureRestore($om, $referenceRepository);
+
                         $executor = new $executorClass($om);
                         $executor->setReferenceRepository($referenceRepository);
                         $executor->getReferenceRepository()->load($backup);
@@ -349,6 +351,18 @@ abstract class WebTestCase extends BaseWebTestCase
      * Callback function to be executed after Schema restore.
      */
     protected function postFixtureRestore()
+    {
+
+    }
+
+    /**
+     * Callback function to be executed before Schema restore
+     *
+     * @param ObjectManager $manager The object manager
+     * @param ProxyReferenceRepository $referenceRepository The reference repository
+     * @return WebTestCase
+     */
+    protected function preFixtureRestore(ObjectManager $manager, ProxyReferenceRepository $referenceRepository)
     {
 
     }
