@@ -30,6 +30,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
 use Doctrine\Common\DataFixtures\ProxyReferenceRepository;
 
 use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
@@ -330,8 +331,13 @@ abstract class WebTestCase extends BaseWebTestCase
         $executor->execute($loader->getFixtures(), true);
 
         if (isset($name) && isset($backup)) {
+            $om = $executor->getObjectManager();
+            $this->preReferenceSave($om, $executor, $backup);
+
             $executor->getReferenceRepository()->save($backup);
             copy($name, $backup);
+
+            $this->postReferenceSave($om, $executor, $backup);
         }
 
         return $executor;
@@ -366,6 +372,32 @@ abstract class WebTestCase extends BaseWebTestCase
      * @return WebTestCase
      */
     protected function preFixtureRestore(ObjectManager $manager, ProxyReferenceRepository $referenceRepository)
+    {
+
+    }
+
+    /**
+     * Callback function to be executed after save of references
+     *
+     * @param ObjectManager $manager The object manager
+     * @param AbstractExecutor $executor Executor of the data fixtures
+     * @param string $backupFilePath Path of file used to backup the references of the data fixtures
+     * @return WebTestCase
+     */
+    protected function postReferenceSave(ObjectManager $manager, AbstractExecutor $executor, $backupFilePath)
+    {
+
+    }
+
+    /**
+     * Callback function to be executed before save of references
+     *
+     * @param ObjectManager $manager The object manager
+     * @param AbstractExecutor $executor Executor of the data fixtures
+     * @param string $backupFilePath Path of file used to backup the references of the data fixtures
+     * @return WebTestCase
+     */
+    protected function preReferenceSave(ObjectManager $manager, AbstractExecutor $executor, $backupFilePath)
     {
 
     }
