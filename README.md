@@ -213,6 +213,41 @@ class AccountControllerTest extends WebTestCase
 Without something like this in place, you'll have to load the schema into your
 test database manually, for your tests to pass.
 
+Created already logged client
+-----------------------------
+
+The `WebTestCase` provides a conveniency method to create an already logged client
+using `$client = static::makeClient(true);`
+
+and providing in your `config_test.yml` the following
+
+```yaml
+liip_functional_test:
+    authentication:
+        username: "a valid username"
+        password: "the password of that user"
+```
+
+Note: the `makeClient` support more parameters if you need to log with different user
+(for example to test with one user that is Admin, one that is normal user etc.)
+
+As recommended by the Symfony guide, it is already recommended to use HTTP Basic Auth
+for you test by putting in `config_test.yml` :
+
+```yaml
+#the best practice in symfony is to put a HTTP basic auth
+#for the firewall in test env, so that not to have to
+#make a request to the login form every single time
+#http://symfony.com/doc/current/cookbook/testing/http_authentication.html
+security:
+    firewalls:
+        NAME_OF_YOUR_FIREWALL:
+            http_basic: ~
+```
+
+for more details, you can check the implementation of `WebTestCase` in that bundle
+
+
 HTML5 Validator
 ---------------
 
