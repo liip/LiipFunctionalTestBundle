@@ -26,14 +26,13 @@
         "doctrine/dbal": "Required when using the fixture loading functionality with an ORM and SQLite"
     },
     "autoload": {
-        "psr-0": {
-            "Liip\\FunctionalTestBundle": ""
+        "psr-4": {
+            "Liip\\FunctionalTestBundle\\": ""
         }
     },
     "extra": {
         "branch-alias": {
             "dev-master": "1.0.x-dev"
         }
-    },
-    "target-dir" : "Liip/FunctionalTestBundle"
+    }
 }
