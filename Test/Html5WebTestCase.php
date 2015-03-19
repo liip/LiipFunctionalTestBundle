@@ -46,7 +46,8 @@ HTML;
     /**
      * Check if the HTML5 validation service is available
      */
-    public function isValidationServiceAvailable() {
+    public function isValidationServiceAvailable()
+    {
 
         $validationUrl = $this->getHtml5ValidatorServiceUrl();
 
@@ -145,7 +146,8 @@ HTML;
 
         $ignores = $this->getContainer()->getParameter('liip_functional_test.html5validation.ignores');
         /*
-         * unfortunately, the bamboo html5 validator.nu gives back an empty "message" about the error with brightcove object, but we have to ignore the error
+         * unfortunately, the bamboo html5 validator.nu gives back an empty "message" about the error
+         * with brightcove object, but we have to ignore the error
          * if our local validator.nu instance is fixed, this stuff should go away
          */
         $ignores_extract = $this->getContainer()->getParameter('liip_functional_test.html5validation.ignores_extract');

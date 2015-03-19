@@ -49,13 +49,14 @@ class QueryCounter
     private function getMaxQueryAnnotation()
     {
         foreach (debug_backtrace() as $step) {
-            if ('test' === substr($step['function'], 0, 4)) { //TODO: handle tests with the @test annotation
+            if ('test' === substr($step['function'], 0, 4)) {
+                //TODO: handle tests with the @test annotation
                 $annotations = $this->annotationReader->getMethodAnnotations(
                     new \ReflectionMethod($step['class'], $step['function'])
                 );
 
                 foreach ($annotations as $annotationClass) {
-                    if ($annotationClass instanceof QueryCount AND isset($annotationClass->maxQueries)) {
+                    if ($annotationClass instanceof QueryCount and isset($annotationClass->maxQueries)) {
                         /** @var $annotations \Liip\FunctionalTestBundle\Annotations\QueryCount */
 
                         return $annotationClass->maxQueries;

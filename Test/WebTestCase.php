@@ -29,11 +29,9 @@ use Symfony\Component\HttpFoundation\Session\Session;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
-use Doctrine\Common\DataFixtures\ProxyReferenceRepository;
 
-use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
-
-use Doctrine\ORM\Tools\SchemaTool;
+use Liip\FunctionalTestBundle\Database\TestDatabaseCache;
+use Liip\FunctionalTestBundle\Database\TestDatabasePreparator;
 
 /**
  * @author Lea Haensenberger
@@ -53,12 +51,7 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     private $firewallLogins = array();
 
-    /**
-     * @var array
-     */
-    static private $cachedMetadatas = array();
-
-    static protected function getKernelClass()
+    protected static function getKernelClass()
     {
         $dir = isset($_SERVER['KERNEL_DIR']) ? $_SERVER['KERNEL_DIR'] : self::getPhpUnitXmlDir();
 
@@ -159,53 +152,20 @@ abstract class WebTestCase extends BaseWebTestCase
     }
 
     /**
-     * This function finds the time when the data blocks of a class definition
-     * file were being written to, that is, the time when the content of the
-     * file was changed.
-     *
-     * @param string $class The fully qualified class name of the fixture class to
-     * check modification date on.
-     *
-     * @return \DateTime|null
+     * @param string $registryName, e.g. 'doctrine'
+     * @return ManagerRegistry
      */
-    protected function getFixtureLastModified($class)
+    private function getRegistry($registryName)
     {
-        $lastModifiedDateTime = null;
-
-        $reflClass = new \ReflectionClass($class);
-        $classFileName = $reflClass->getFileName();
-
-        if (file_exists($classFileName)) {
-            $lastModifiedDateTime = new \DateTime();
-            $lastModifiedDateTime->setTimestamp(filemtime($classFileName));
+        $registry = $this->getContainer()->get($registryName);
+        if (!$registry instanceof ManagerRegistry) {
+            throw new \Exception(
+                'Expected service ' . $registryName
+                . ' to be instance of ManagerRegistry, got: ' . get_class($registry)
+            );
         }
 
-        return $lastModifiedDateTime;
-    }
-
-    /**
-     * Determine if the Fixtures that define a database backup have been
-     * modified since the backup was made.
-     *
-     * @param array  $classNames The fixture classnames to check
-     * @param string $backup     The fixture backup SQLite database file path
-     *
-     * @return bool TRUE if the backup was made since the modifications to the
-     * fixtures; FALSE otherwise
-     */
-    protected function isBackupUpToDate(array $classNames, $backup)
-    {
-        $backupLastModifiedDateTime = new \DateTime();
-        $backupLastModifiedDateTime->setTimestamp(filemtime($backup));
-
-        foreach ($classNames as &$className) {
-            $fixtureLastModifiedDateTime = $this->getFixtureLastModified($className);
-            if ($backupLastModifiedDateTime < $fixtureLastModifiedDateTime) {
-                return false;
-            }
-        }
-
-        return true;
+        return $registry;
     }
 
     /**
@@ -234,106 +194,19 @@ abstract class WebTestCase extends BaseWebTestCase
     protected function loadFixtures(array $classNames, $omName = null, $registryName = 'doctrine', $purgeMode = null)
     {
         $container = $this->getContainer();
-        $registry = $container->get($registryName);
-        if ($registry instanceof ManagerRegistry) {
-            $om = $registry->getManager($omName);
-            $type = $registry->getName();
-        } else {
-            $om = $registry->getEntityManager($omName);
-            $type = 'ORM';
-        }
+        $registry = $this->getRegistry($registryName);
+        $dbPreparator = new TestDatabasePreparator($container, $registry, $omName);
 
-        $executorClass = 'PHPCR' === $type && class_exists('Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor')
-            ? 'Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor'
-            : 'Doctrine\\Common\\DataFixtures\\Executor\\'.$type.'Executor';
-        $referenceRepository = new ProxyReferenceRepository($om);
-        $cacheDriver = $om->getMetadataFactory()->getCacheDriver();
+        return $dbPreparator->loadFixtures(
+            $classNames,
+            $purgeMode,
+            [$this, 'loadFixturesEventCallback']
+        );
+    }
 
-        if ($cacheDriver) {
-            $cacheDriver->deleteAll();
-        }
-
-        if ('ORM' === $type) {
-            $connection = $om->getConnection();
-            if ($connection->getDriver() instanceof SqliteDriver) {
-                $params = $connection->getParams();
-                if (isset($params['master'])) {
-                    $params = $params['master'];
-                }
-
-                $name = isset($params['path']) ? $params['path'] : (isset($params['dbname']) ? $params['dbname'] : false);
-                if (!$name) {
-                    throw new \InvalidArgumentException("Connection does not contain a 'path' or 'dbname' parameter and cannot be dropped.");
-                }
-
-                if (!isset(self::$cachedMetadatas[$omName])) {
-                    self::$cachedMetadatas[$omName] = $om->getMetadataFactory()->getAllMetadata();
-                }
-                $metadatas = self::$cachedMetadatas[$omName];
-
-                if ($container->getParameter('liip_functional_test.cache_sqlite_db')) {
-                    $backup = $container->getParameter('kernel.cache_dir') . '/test_' . md5(serialize($metadatas) . serialize($classNames)) . '.db';
-                    if (file_exists($backup) && file_exists($backup.'.ser') && $this->isBackupUpToDate($classNames, $backup)) {
-                        $om->flush();
-                        $om->clear();
-
-                        $executor = new $executorClass($om);
-                        $executor->setReferenceRepository($referenceRepository);
-                        $executor->getReferenceRepository()->load($backup);
-
-                        copy($backup, $name);
-
-                        $this->postFixtureRestore();
-
-                        return $executor;
-                    }
-                }
-
-                // TODO: handle case when using persistent connections. Fail loudly?
-                $schemaTool = new SchemaTool($om);
-                $schemaTool->dropDatabase($name);
-                if (!empty($metadatas)) {
-                    $schemaTool->createSchema($metadatas);
-                }
-                $this->postFixtureSetup();
-
-                $executor = new $executorClass($om);
-                $executor->setReferenceRepository($referenceRepository);
-            }
-        }
-
-        if (empty($executor)) {
-            $purgerClass = 'Doctrine\\Common\\DataFixtures\\Purger\\'.$type.'Purger';
-            if ('PHPCR' === $type) {
-                $purger = new $purgerClass($om);
-                $initManager = $container->has('doctrine_phpcr.initializer_manager')
-                    ? $container->get('doctrine_phpcr.initializer_manager')
-                    : null;
-
-                $executor = new $executorClass($om, $purger, $initManager);
-            } else {
-                $purger = new $purgerClass();
-                if (null !== $purgeMode) {
-                    $purger->setPurgeMode($purgeMode);
-                }
-
-                $executor = new $executorClass($om, $purger);
-            }
-
-            $executor->setReferenceRepository($referenceRepository);
-            $executor->purge();
-        }
-
-        $loader = $this->getFixtureLoader($container, $classNames);
-
-        $executor->execute($loader->getFixtures(), true);
-
-        if (isset($name) && isset($backup)) {
-            $executor->getReferenceRepository()->save($backup);
-            copy($name, $backup);
-        }
-
-        return $executor;
+    public function loadFixturesEventCallback($methodName)
+    {
+        call_user_func([$this, $methodName]);
     }
 
     /**
@@ -351,55 +224,6 @@ abstract class WebTestCase extends BaseWebTestCase
     protected function postFixtureRestore()
     {
 
-    }
-
-    /**
-     * Retrieve Doctrine DataFixtures loader.
-     *
-     * @param ContainerInterface $container
-     * @param array $classNames
-     *
-     * @return \Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader
-     */
-    protected function getFixtureLoader(ContainerInterface $container, array $classNames)
-    {
-        $loaderClass = class_exists('Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader')
-            ? 'Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader'
-            : (class_exists('Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader')
-                ? 'Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader'
-                : 'Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader');
-
-        $loader = new $loaderClass($container);
-
-        foreach ($classNames as $className) {
-            $this->loadFixtureClass($loader, $className);
-        }
-
-        return $loader;
-    }
-
-    /**
-     * Load a data fixture class.
-     *
-     * @param \Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader $loader
-     * @param string $className
-     */
-    protected function loadFixtureClass($loader, $className)
-    {
-        $fixture = new $className();
-
-        if ($loader->hasFixture($fixture)) {
-            unset($fixture);
-            return;
-        }
-
-        $loader->addFixture($fixture);
-
-        if ($fixture instanceof DependentFixtureInterface) {
-            foreach ($fixture->getDependencies() as $dependency) {
-                $this->loadFixtureClass($loader, $dependency);
-            }
-        }
     }
 
     /**
