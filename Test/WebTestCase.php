@@ -285,7 +285,7 @@ abstract class WebTestCase extends BaseWebTestCase
                         $executor->getReferenceRepository()->load($backup);
 
                         copy($backup, $name);
-                        $this->postFixtureRestore($om, $referenceRepository);
+                        $this->postFixtureRestore();
 
                         return $executor;
                     }
@@ -354,12 +354,9 @@ abstract class WebTestCase extends BaseWebTestCase
 
     /**
      * Callback function to be executed after Schema restore
-     *
-     * @param ObjectManager $manager The object manager
-     * @param ProxyReferenceRepository $referenceRepository The reference repository
      * @return WebTestCase
      */
-    protected function postFixtureRestore(ObjectManager $manager, ProxyReferenceRepository $referenceRepository)
+    protected function postFixtureRestore()
     {
 
     }
