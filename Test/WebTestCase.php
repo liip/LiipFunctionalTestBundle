@@ -25,6 +25,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 use Doctrine\Common\Persistence\ObjectManager;
@@ -80,7 +81,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @param string $id
      *
-     * @return PHPUnit_Framework_MockObject_MockBuilder
+     * @return \PHPUnit_Framework_MockObject_MockBuilder
      */
     protected function getServiceMockBuilder($id)
     {
@@ -230,7 +231,7 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param string $registryName The service id of manager registry to use
      * @param int $purgeMode Sets the ORM purge mode
      *
-     * @return null|Doctrine\Common\DataFixtures\Executor\AbstractExecutor
+     * @return null|\Doctrine\Common\DataFixtures\Executor\AbstractExecutor
      */
     protected function loadFixtures(array $classNames, $omName = null, $registryName = 'doctrine', $purgeMode = null)
     {
@@ -554,7 +555,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return void
      */
-    public function isSuccessful($response, $success = true, $type = 'text/html')
+    public function isSuccessful(Response $response, $success = true, $type = 'text/html')
     {
         try {
             $crawler = new Crawler();
@@ -624,6 +625,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
     /**
      * @param UserInterface $user
+     * @param string $firewallName
      *
      * @return WebTestCase
      */
