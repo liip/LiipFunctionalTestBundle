@@ -364,12 +364,18 @@ abstract class WebTestCase extends BaseWebTestCase
 
     /**
      * @param array $paths
-     * @param bool  $append
+     * @param bool $append
+     * @param null $omName
+     * @param string $registryName
      *
-     * @return $this
+     * @throws \BadMethodCallException
      */
     public function loadFixtureFiles(array $paths = [], $append = false, $omName = null, $registryName = 'doctrine')
     {
+        if (!class_exists('Nelmio\Alice\Fixtures')) {
+            throw new \BadMethodCallException('nelmio/alice should be installed to use this method.');
+        }
+
         $om = $this->getObjectManager($omName, $registryName);
 
         if ($append == false) {

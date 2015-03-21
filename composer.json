@@ -18,13 +18,13 @@
         "php": ">=5.3.2",
         "symfony/framework-bundle": "~2.0",
         "symfony/browser-kit": "~2.0",
-        "doctrine/common": "2.*",
-        "nelmio/alice": "~1.7"
+        "doctrine/common": "2.*"
     },
     "suggest": {
         "doctrine/doctrine-fixtures-bundle": "Required when using the fixture loading functionality",
         "doctrine/orm": "Required when using the fixture loading functionality with an ORM and SQLite",
-        "doctrine/dbal": "Required when using the fixture loading functionality with an ORM and SQLite"
+        "doctrine/dbal": "Required when using the fixture loading functionality with an ORM and SQLite",
+        "nelmio/alice": "Required when using loadFixtureFiles functionality"
     },
     "autoload": {
         "psr-4": {
