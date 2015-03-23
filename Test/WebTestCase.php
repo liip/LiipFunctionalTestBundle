@@ -34,7 +34,10 @@ use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
 use Doctrine\Common\DataFixtures\ProxyReferenceRepository;
 
 use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
+use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\ORM\Tools\SchemaTool;
+
+use Nelmio\Alice\Fixtures;
 
 /**
  * @author Lea Haensenberger
@@ -157,6 +160,22 @@ abstract class WebTestCase extends BaseWebTestCase
         }
 
         return $this->containers[$cacheKey];
+    }
+
+    /**
+     * @param string $omName
+     * @param string $registryName
+     *
+     * @return ObjectManager
+     */
+    protected function getObjectManager($omName = null, $registryName = 'doctrine')
+    {
+        $registry = $this->getContainer()->get($registryName);
+        if ($registry instanceof ManagerRegistry) {
+            return  $registry->getManager($omName);
+        }
+
+        return $registry->getEntityManager($omName);
     }
 
     /**
@@ -341,6 +360,45 @@ abstract class WebTestCase extends BaseWebTestCase
         }
 
         return $executor;
+    }
+
+    /**
+     * @param array $paths
+     * @param bool $append
+     * @param null $omName
+     * @param string $registryName
+     *
+     * @throws \BadMethodCallException
+     */
+    public function loadFixtureFiles(array $paths = [], $append = false, $omName = null, $registryName = 'doctrine')
+    {
+        if (!class_exists('Nelmio\Alice\Fixtures')) {
+            throw new \BadMethodCallException('nelmio/alice should be installed to use this method.');
+        }
+
+        $om = $this->getObjectManager($omName, $registryName);
+
+        if ($append == false) {
+            //Clean database
+            $connection = $om->getConnection();
+            if ($connection->getDatabasePlatform() instanceof MySqlPlatform) {
+                $connection->query('SET FOREIGN_KEY_CHECKS=0');
+            }
+
+            $this->loadFixtures([]);
+
+            if ($connection->getDatabasePlatform() instanceof MySqlPlatform) {
+                $connection->query('SET FOREIGN_KEY_CHECKS=1');
+            }
+        }
+
+        $files  = [];
+        $kernel = $this->getContainer()->get('kernel');
+        foreach ($paths as $path) {
+            $files[] = $kernel->locateResource($path);
+        }
+
+        Fixtures::load($files, $om);
     }
 
     /**
