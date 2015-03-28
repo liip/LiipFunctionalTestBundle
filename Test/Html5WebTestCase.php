@@ -36,9 +36,9 @@ HTML;
     protected $validationServiceAvailable = false;
 
 
-    public function __construct()
+    public function __construct($name = null, array $data = array(), $dataName = '')
     {
-        parent::__construct();
+        parent::__construct($name, $data, $dataName);
 
         $this->validationServiceAvailable = $this->isValidationServiceAvailable();
     }
