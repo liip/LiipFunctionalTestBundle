@@ -370,7 +370,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @throws \BadMethodCallException
      */
-    public function loadFixtureFiles(array $paths = [], $append = false, $omName = null, $registryName = 'doctrine')
+    public function loadFixtureFiles(array $paths = array(), $append = false, $omName = null, $registryName = 'doctrine')
     {
         if (!class_exists('Nelmio\Alice\Fixtures')) {
             throw new \BadMethodCallException('nelmio/alice should be installed to use this method.');
@@ -385,14 +385,14 @@ abstract class WebTestCase extends BaseWebTestCase
                 $connection->query('SET FOREIGN_KEY_CHECKS=0');
             }
 
-            $this->loadFixtures([]);
+            $this->loadFixtures(array());
 
             if ($connection->getDatabasePlatform() instanceof MySqlPlatform) {
                 $connection->query('SET FOREIGN_KEY_CHECKS=1');
             }
         }
 
-        $files  = [];
+        $files  = array();
         $kernel = $this->getContainer()->get('kernel');
         foreach ($paths as $path) {
             $files[] = $kernel->locateResource($path);
