@@ -516,8 +516,8 @@ abstract class WebTestCase extends BaseWebTestCase
      * to follow the naming format used in $_SERVER.
      * Example: 'HTTP_X_REQUESTED_WITH' instead of 'X-Requested-With'
      *
-     * @param boolean $authentication
-     * @param array   $params
+     * @param boolean|array $authentication
+     * @param array $params
      *
      * @return Client
      */
