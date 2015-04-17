@@ -184,6 +184,7 @@ automatically, you'll need to do that yourself. For example, you could write a
 
 
 ```php
+use Doctrine\ORM\Tools\SchemaTool;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 
 class AccountControllerTest extends WebTestCase
