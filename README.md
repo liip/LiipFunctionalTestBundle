@@ -254,7 +254,7 @@ HTML5 Validator
 
 The online validator: http://validator.nu/
 The documentation: http://about.validator.nu/
-Documentation about the web service: http://wiki.whatwg.org/wiki/Validator.nu_Web_Service_Interface
+Documentation about the web service: https://github.com/validator/validator/wiki/Service:-HTTP-interface
 
 Dependencies
 ------------
