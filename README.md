@@ -214,6 +214,40 @@ class AccountControllerTest extends WebTestCase
 Without something like this in place, you'll have to load the schema into your
 test database manually, for your tests to pass.
 
+### Referencing fixtures in tests
+
+In some cases you need to know for example the row ID of an object in order to write a functional test for it, e.g. 
+`$crawler = $client->request('GET', "/profiles/$accountId");` but since the `$accountId` keeps changing each test run, you need to figure out its current value. Instead of going via the entity manager repository and querying for the entity, you can use `setReference()/getReference()` from the fixture executor directly, as such:
+
+In your fixtures class:
+
+```php
+...
+class LoadMemberAccounts extends AbstractFixture 
+{
+    public function load() 
+    {
+        $account1 = new MemberAccount();
+        $account->setName('Alpha');
+        $account1->setReference('account-alpha');
+        ...
+```    
+and then in the test case setup:
+```php
+...
+    public function setUp()
+    {
+        $this->fixtures = $this->loadFixtures([
+            'AppBundle\Tests\Fixtures\LoadMemberAccounts'
+        ])->getReferenceRepository();
+    ...
+```
+and finally, in the test:
+```php
+        $accountId = $this->fixtures->getReference('account-alpha');
+        $crawler = $client->request('GET', "/profiles/$accountId");
+```
+
 Created already logged client
 -----------------------------
 
