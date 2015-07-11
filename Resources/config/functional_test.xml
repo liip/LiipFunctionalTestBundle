@@ -17,24 +17,24 @@
             <parameter key="password"></parameter>
         </parameter>
 
-        <parameter key="liip_functional_test.query_count.max_query_count">null</parameter>
+        <parameter key="liip_functional_test.query.max_query_count">null</parameter>
 
     </parameters>
 
     <services>
-        <service id="liip_functional_test.query_count.query_count_client" class="Liip\FunctionalTestBundle\QueryCountClient" scope="prototype">
+        <service id="liip_functional_test.query.count_client" class="Liip\FunctionalTestBundle\QueryCountClient" scope="prototype">
             <argument type="service" id="kernel" />
             <argument>%test.client.parameters%</argument>
             <argument type="service" id="test.client.history" />
             <argument type="service" id="test.client.cookiejar" />
 
             <call method="setQueryCounter">
-                <argument type="service" id="liip_functional_test.query_count.query_counter" />
+                <argument type="service" id="liip_functional_test.query.counter" />
             </call>
         </service>
 
-        <service id="liip_functional_test.query_count.query_counter" class="Liip\FunctionalTestBundle\QueryCounter">
-            <argument>%liip_functional_test.query_count.max_query_count%</argument>
+        <service id="liip_functional_test.query.counter" class="Liip\FunctionalTestBundle\QueryCounter">
+            <argument>%liip_functional_test.query.max_query_count%</argument>
             <argument type="service" id="annotation_reader" />
         </service>
     </services>

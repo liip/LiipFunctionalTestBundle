@@ -382,12 +382,12 @@ To catch pages that use way too many database queries, you can enable the query
 counter for tests. This will check the profiler for each request made in the
 test using the client, and fail the test if the number of queries executed is
 larger than the number of queries allowed in the configuration. To enable the
-query counter, adjust the `config_test.yml` file, setting the
-`liip_functional_test.query_count.max_query_count` setting, like this:
+query counter, adjust the `config_test.yml` file like this:
 
 ```yaml
 liip_functional_test:
-    query_count.max_query_count: 50
+    query:
+        max_query_count: 50
 ```
 
 That will limit each request executed within a functional test to 50 queries.

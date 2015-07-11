@@ -19,14 +19,6 @@ use Symfony\Component\Config\FileLocator;
 class LiipFunctionalTestExtension extends Extension
 {
     /**
-     * XML config files to load
-     * @var array
-     */
-    protected $resources = array(
-        'config' => 'functional_test.xml',
-    );
-
-    /**
      * Loads the services based on your application configuration.
      *
      * @param array $configs
@@ -34,26 +26,13 @@ class LiipFunctionalTestExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $config = array_shift($configs);
-        foreach ($configs as $tmp) {
-            $config = array_replace_recursive($config, $tmp);
-        }
+        $config = $this->processConfiguration(new Configuration(), $configs);
 
-        $loader = $this->getFileLoader($container);
-        $loader->load($this->resources['config']);
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('functional_test.xml');
 
         foreach ($config as $key => $value) {
             $container->setParameter($this->getAlias().'.'.$key, $value);
         }
-    }
-
-    /**
-     * Get File Loader
-     *
-     * @param ContainerBuilder $container
-     */
-    public function getFileLoader($container)
-    {
-        return new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
     }
 }
