@@ -228,8 +228,8 @@ class LoadMemberAccounts extends AbstractFixture
     public function load() 
     {
         $account1 = new MemberAccount();
-        $account->setName('Alpha');
-        $account1->setReference('account-alpha');
+        $account1->setName('Alpha');
+        $this->setReference('account-alpha', $account1);
         ...
 ```    
 and then in the test case setup:
@@ -244,7 +244,7 @@ and then in the test case setup:
 ```
 and finally, in the test:
 ```php
-        $accountId = $this->fixtures->getReference('account-alpha');
+        $accountId = $this->fixtures->getReference('account-alpha')->getId();
         $crawler = $client->request('GET', "/profiles/$accountId");
 ```
 
