@@ -99,6 +99,8 @@ Tips for Fixture Loading Tests
                     path:     %kernel.cache_dir%/test.db
     ```
 
+    NB: If you have an existing Doctrine configuration which uses slaves be sure to separate out the configuration for the slaves. Further detail is provided at the bottom of this README.
+
  2. In order to run your tests even faster, use LiipFunctionalBundle cached database.
     This will create backups of the initial databases (with all fixtures loaded)
     and re-load them when required.
@@ -446,6 +448,18 @@ If that's not what you want to do, and you're getting an exception about this,
 check that you're really only loading this bundle in your `test` environment
 (See step 3 of the [installation](#installation))
 
+Doctrine Slaves and SQLite
+--------------------------
+
+If your main configuration for Doctrine uses Slaves, you need to ensure that the configuration for your SQLite test environment does not include the slave configuration.
+
+The following error can occur in the case where a Doctrine Slave configuration is included:
+
+    SQLSTATE[HY000]: General error: 1 no such table NameOfTheTable
+
+This may also manifest itself in the command `doctrine:create:schema` doing nothing.
+
+To resolve the issue, it is recommended to configure your Doctrine slaves  specifically for the environments that require them.
 
 Caveats
 -------
