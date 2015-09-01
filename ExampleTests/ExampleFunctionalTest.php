@@ -29,6 +29,7 @@ class ExampleFunctionalTest extends WebTestCase
 
         $client = $this->createClient();
         $crawler = $client->request('GET', '/users/foo');
+        $this->assertStatusCode(200, $client);
 
         $this->assertTrue($crawler->filter('html:contains("Email: foo@bar.com")')->count() > 0);
     }
@@ -56,5 +57,15 @@ class ExampleFunctionalTest extends WebTestCase
     {
         $content = $this->fetchContent('/', 'GET', false);
         $this->assertContains('login', $content);
+    }
+
+    public function testValidationErrors()
+    {
+        $client = $this->makeClient(true);
+        $crawler = $client->request('GET', '/users/1/edit');
+
+        $client->submit($crawler->selectButton('Save')->form());
+
+        $this->assertValidationErrors(array('data.username', 'data.email'), $client->getContainer());
     }
 }
