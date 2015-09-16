@@ -60,7 +60,7 @@ Installation
     framework:
         test: ~
         session:
-            storage_id: session.storage.filesystem
+            storage_id: session.storage.mock_file
     ```
 
 Database Tests
