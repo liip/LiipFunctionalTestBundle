@@ -369,6 +369,8 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param null $omName
      * @param string $registryName
      *
+     * @return array
+     *
      * @throws \BadMethodCallException
      */
     public function loadFixtureFiles(array $paths = array(), $append = false, $omName = null, $registryName = 'doctrine')
@@ -399,7 +401,7 @@ abstract class WebTestCase extends BaseWebTestCase
             $files[] = $kernel->locateResource($path);
         }
 
-        Fixtures::load($files, $om);
+        return Fixtures::load($files, $om);
     }
 
     /**

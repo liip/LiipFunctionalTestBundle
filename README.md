@@ -177,6 +177,20 @@ Tips for Fixture Loading Tests
     }
     ```
 
+### Loading Fixtures Using Alice
+If you would like to setup your fixtures with yml files using [Alice](https://github.com/nelmio/alice),
+[`Liip\FunctionalTestBundle\Test\WebTestCase`](Test/WebTestCase.php) has a helper function `loadFixtureFiles`
+which takes an array of resources and returns an array of objects.
+This method uses the [Alice Loader](https://github.com/nelmio/alice/blob/master/src/Nelmio/Alice/Fixtures/Loader.php)
+rather than the FunctionalTestBundle's load methods. You should be aware that there are some difference between the ways these two libraries handle loading.
+
+```php
+$fixtures = $this->loadFixtureFiles(array(
+    '@AcmeBundle/DataFixtures/ORM/ObjectData.yml',
+    '@AcmeBundle/DataFixtures/ORM/AnotherObjectData.yml'
+));
+```
+
 ### Non-SQLite
 
 The Bundle will not automatically create your schema for you unless you use SQLite.
