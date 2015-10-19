@@ -63,6 +63,27 @@ Installation
             storage_id: session.storage.mock_file
     ```
 
+Basic usage
+-----------
+
+Use `static::makeClient` to create a Client object. Client is a Symfony class that can simulate HTTP requests to your controllers and then inspect the results. It is covered by the [functional tests](http://symfony.com/doc/current/book/testing.html#functional-tests) section of the Symfony documentation.
+
+After making a request, use `assertStatusCode` to verify the HTTP status code. If it fails it will display the last exception message or validation errors encountered by the Client object.
+
+```php
+use Liip\FunctionalTestBundle\Test\WebTestCase;
+
+class MyControllerTest extends WebTestCase
+{
+    public function testIndex()
+    {
+        $client = static::makeClient();
+        $crawler = $client->request('GET', '/');
+        $this->assertStatusCode(200, $client);
+    }
+}
+```
+
 Database Tests
 --------------
 
