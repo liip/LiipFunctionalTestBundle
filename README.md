@@ -66,20 +66,40 @@ Installation
 Basic usage
 -----------
 
-Use `static::makeClient` to create a Client object. Client is a Symfony class that can simulate HTTP requests to your controllers and then inspect the results. It is covered by the [functional tests](http://symfony.com/doc/current/book/testing.html#functional-tests) section of the Symfony documentation.
+Use `static::makeClient` to create a Client object. Client is a Symfony class
+that can simulate HTTP requests to your controllers and then inspect the
+results. It is covered by the [functional tests](http://symfony.com/doc/current/book/testing.html#functional-tests)
+section of the Symfony documentation.
 
-After making a request, use `assertStatusCode` to verify the HTTP status code. If it fails it will display the last exception message or validation errors encountered by the Client object.
+After making a request, use `assertStatusCode` to verify the HTTP status code.
+If it fails it will display the last exception message or validation errors
+encountered by the Client object.
+
+If you are expecting validation errors, test them with `assertValidationErrors`.
 
 ```php
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 
 class MyControllerTest extends WebTestCase
 {
-    public function testIndex()
+    public function testContact()
     {
         $client = static::makeClient();
-        $crawler = $client->request('GET', '/');
+        $crawler = $client->request('GET', '/contact');
         $this->assertStatusCode(200, $client);
+
+        $form = $crawler->selectButton('Submit')->form();
+        $crawler = $client->submit($form);
+
+        // We should get a validation error for the empty fields.
+        $this->assertStatusCode(200, $client);
+        $this->assertValidationErrors(['data.email', 'data.message'], $client->getContainer());
+
+        // Try again with with the fields filled out.
+        $form = $crawler->selectButton('Submit')->form();
+        $form->setValues(['contact[email]' => 'nobody@example.com', 'contact[message]' => 'Hello']);
+        $client->submit($form);
+        $this->assertStatusCode(302, $client);
     }
 }
 ```

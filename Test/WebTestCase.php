@@ -727,7 +727,7 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param array $expected A flat array of field names
      * @param ContainerInterface $container
      */
-    public static function assertValidationErrors(array $expected, ContainerInterface $container)
+    public function assertValidationErrors(array $expected, ContainerInterface $container)
     {
         self::assertThat(
             $container->get('liip_functional_test.validator')->getLastErrors(),
