@@ -248,11 +248,17 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param string $omName The name of object manager to use
      * @param string $registryName The service id of manager registry to use
      * @param int $purgeMode Sets the ORM purge mode
+     * @param bool $append Append the fixtures to the existing database or start clean
      *
      * @return null|Doctrine\Common\DataFixtures\Executor\AbstractExecutor
      */
-    protected function loadFixtures(array $classNames, $omName = null, $registryName = 'doctrine', $purgeMode = null)
-    {
+    protected function loadFixtures(
+        array $classNames,
+        $omName = null,
+        $registryName = 'doctrine',
+        $purgeMode = null,
+        $append = false
+    ) {
         $container = $this->getContainer();
         $registry = $container->get($registryName);
         if ($registry instanceof ManagerRegistry) {
@@ -292,7 +298,7 @@ abstract class WebTestCase extends BaseWebTestCase
                 }
                 $metadatas = self::$cachedMetadatas[$omName];
 
-                if ($container->getParameter('liip_functional_test.cache_sqlite_db')) {
+                if (!$append && $container->getParameter('liip_functional_test.cache_sqlite_db')) {
                     $backup = $container->getParameter('kernel.cache_dir') . '/test_' . md5(serialize($metadatas) . serialize($classNames)) . '.db';
                     if (file_exists($backup) && file_exists($backup.'.ser') && $this->isBackupUpToDate($classNames, $backup)) {
                         $om->flush();
@@ -309,6 +315,16 @@ abstract class WebTestCase extends BaseWebTestCase
 
                         return $executor;
                     }
+                } elseif ($append) {
+                    $executor = new $executorClass($om);
+                    $executor->setReferenceRepository($referenceRepository);
+
+                    $loader = $this->getFixtureLoader($container, $classNames);
+                    $executor->execute($loader->getFixtures(), true);
+
+                    $this->postFixtureSetup();
+
+                    return $executor;
                 }
 
                 // TODO: handle case when using persistent connections. Fail loudly?
@@ -343,7 +359,9 @@ abstract class WebTestCase extends BaseWebTestCase
             }
 
             $executor->setReferenceRepository($referenceRepository);
-            $executor->purge();
+            if (!$append) {
+                $executor->purge();
+            }
         }
 
         $loader = $this->getFixtureLoader($container, $classNames);
@@ -361,6 +379,21 @@ abstract class WebTestCase extends BaseWebTestCase
         }
 
         return $executor;
+    }
+
+    /**
+     * A wrapper for loadFixtures to provide a cleaner interface
+     *
+     * @param array $classNames List of fully qualified class names of fixtures to load
+     * @param string $omName The name of object manager to use
+     * @param string $registryName The service id of manager registry to use
+     * @param int $purgeMode Sets the ORM purge mode
+     *
+     * @return null|Doctrine\Common\DataFixtures\Executor\AbstractExecutor
+     */
+    protected function appendFixtures(array $classNames, $omName = null, $registryName = 'doctrine', $purgeMode = null)
+    {
+        return $this->loadFixtures($classNames, $omName, $registryName, $purgeMode, true);
     }
 
     /**
