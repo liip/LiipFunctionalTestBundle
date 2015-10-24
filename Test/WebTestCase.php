@@ -11,33 +11,28 @@
 
 namespace Liip\FunctionalTestBundle\Test;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Bundle\FrameworkBundle\Client;
-
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\StreamOutput;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\ClassLoader\DebugClassLoader;
-use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\BrowserKit\Cookie;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
-
-use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
 use Doctrine\Common\DataFixtures\ProxyReferenceRepository;
-
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\ORM\Tools\SchemaTool;
-
 use Nelmio\Alice\Fixtures;
+use Symfony\Bundle\FrameworkBundle\Client;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
+use Symfony\Component\BrowserKit\Cookie;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\StreamOutput;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @author Lea Haensenberger
@@ -55,14 +50,14 @@ abstract class WebTestCase extends BaseWebTestCase
     /**
      * @var array
      */
-    private $firewallLogins = array();
+    private $firewallLogins = [];
 
     /**
      * @var array
      */
-    static private $cachedMetadatas = array();
+    private static $cachedMetadatas = [];
 
-    static protected function getKernelClass()
+    protected static function getKernelClass()
     {
         $dir = isset($_SERVER['KERNEL_DIR']) ? $_SERVER['KERNEL_DIR'] : self::getPhpUnitXmlDir();
 
@@ -89,6 +84,7 @@ abstract class WebTestCase extends BaseWebTestCase
     {
         $service = $this->getContainer()->get($id);
         $class = get_class($service);
+
         return $this->getMockBuilder($class)->disableOriginalConstructor();
     }
 
@@ -96,12 +92,12 @@ abstract class WebTestCase extends BaseWebTestCase
      * Builds up the environment to run the given command.
      *
      * @param string $name
-     * @param array $params
-     * @param boolean $reuseKernel
+     * @param array  $params
+     * @param bool   $reuseKernel
      *
      * @return string
      */
-    protected function runCommand($name, array $params = array(), $reuseKernel = false)
+    protected function runCommand($name, array $params = [], $reuseKernel = false)
     {
         array_unshift($params, $name);
 
@@ -110,7 +106,7 @@ abstract class WebTestCase extends BaseWebTestCase
                 static::$kernel->shutdown();
             }
 
-            $kernel = static::$kernel = $this->createKernel(array('environment' => $this->environment));
+            $kernel = static::$kernel = $this->createKernel(['environment' => $this->environment]);
             $kernel->boot();
         } else {
             $kernel = $this->getContainer()->get('kernel');
@@ -128,6 +124,7 @@ abstract class WebTestCase extends BaseWebTestCase
         $application->run($input, $output);
 
         rewind($fp);
+
         return stream_get_contents($fp);
     }
 
@@ -146,9 +143,9 @@ abstract class WebTestCase extends BaseWebTestCase
 
         $cacheKey = $this->kernelDir.'|'.$this->environment;
         if (empty($this->containers[$cacheKey])) {
-            $options = array(
-                'environment' => $this->environment
-            );
+            $options = [
+                'environment' => $this->environment,
+            ];
             $kernel = $this->createKernel($options);
             $kernel->boot();
 
@@ -184,7 +181,7 @@ abstract class WebTestCase extends BaseWebTestCase
      * file was changed.
      *
      * @param string $class The fully qualified class name of the fixture class to
-     * check modification date on.
+     *                      check modification date on.
      *
      * @return \DateTime|null
      */
@@ -211,7 +208,7 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param string $backup     The fixture backup SQLite database file path
      *
      * @return bool TRUE if the backup was made since the modifications to the
-     * fixtures; FALSE otherwise
+     *              fixtures; FALSE otherwise
      */
     protected function isBackupUpToDate(array $classNames, $backup)
     {
@@ -244,10 +241,10 @@ abstract class WebTestCase extends BaseWebTestCase
      * Depends on the doctrine data-fixtures library being available in the
      * class path.
      *
-     * @param array $classNames List of fully qualified class names of fixtures to load
-     * @param string $omName The name of object manager to use
+     * @param array  $classNames   List of fully qualified class names of fixtures to load
+     * @param string $omName       The name of object manager to use
      * @param string $registryName The service id of manager registry to use
-     * @param int $purgeMode Sets the ORM purge mode
+     * @param int    $purgeMode    Sets the ORM purge mode
      *
      * @return null|Doctrine\Common\DataFixtures\Executor\AbstractExecutor
      */
@@ -288,12 +285,12 @@ abstract class WebTestCase extends BaseWebTestCase
 
                 if (!isset(self::$cachedMetadatas[$omName])) {
                     self::$cachedMetadatas[$omName] = $om->getMetadataFactory()->getAllMetadata();
-                    usort(self::$cachedMetadatas[$omName], function($a, $b) { return strcmp($a->name, $b->name); });
+                    usort(self::$cachedMetadatas[$omName], function ($a, $b) { return strcmp($a->name, $b->name); });
                 }
                 $metadatas = self::$cachedMetadatas[$omName];
 
                 if ($container->getParameter('liip_functional_test.cache_sqlite_db')) {
-                    $backup = $container->getParameter('kernel.cache_dir') . '/test_' . md5(serialize($metadatas) . serialize($classNames)) . '.db';
+                    $backup = $container->getParameter('kernel.cache_dir').'/test_'.md5(serialize($metadatas).serialize($classNames)).'.db';
                     if (file_exists($backup) && file_exists($backup.'.ser') && $this->isBackupUpToDate($classNames, $backup)) {
                         $om->flush();
                         $om->clear();
@@ -364,16 +361,16 @@ abstract class WebTestCase extends BaseWebTestCase
     }
 
     /**
-     * @param array $paths
-     * @param bool $append
-     * @param null $omName
+     * @param array  $paths
+     * @param bool   $append
+     * @param null   $omName
      * @param string $registryName
      *
-     * @return array
-     *
      * @throws \BadMethodCallException
+     *
+     * @return array
      */
-    public function loadFixtureFiles(array $paths = array(), $append = false, $omName = null, $registryName = 'doctrine')
+    public function loadFixtureFiles(array $paths = [], $append = false, $omName = null, $registryName = 'doctrine')
     {
         if (!class_exists('Nelmio\Alice\Fixtures')) {
             throw new \BadMethodCallException('nelmio/alice should be installed to use this method.');
@@ -388,14 +385,14 @@ abstract class WebTestCase extends BaseWebTestCase
                 $connection->query('SET FOREIGN_KEY_CHECKS=0');
             }
 
-            $this->loadFixtures(array());
+            $this->loadFixtures([]);
 
             if ($connection->getDatabasePlatform() instanceof MySqlPlatform) {
                 $connection->query('SET FOREIGN_KEY_CHECKS=1');
             }
         }
 
-        $files  = array();
+        $files = [];
         $kernel = $this->getContainer()->get('kernel');
         foreach ($paths as $path) {
             $files[] = $kernel->locateResource($path);
@@ -410,61 +407,60 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     protected function postFixtureSetup()
     {
-
     }
 
     /**
-     * Callback function to be executed after Schema restore
+     * Callback function to be executed after Schema restore.
+     *
      * @return WebTestCase
      */
     protected function postFixtureRestore()
     {
-
     }
 
     /**
-     * Callback function to be executed before Schema restore
+     * Callback function to be executed before Schema restore.
      *
-     * @param ObjectManager $manager The object manager
+     * @param ObjectManager            $manager             The object manager
      * @param ProxyReferenceRepository $referenceRepository The reference repository
+     *
      * @return WebTestCase
      */
     protected function preFixtureRestore(ObjectManager $manager, ProxyReferenceRepository $referenceRepository)
     {
-
     }
 
     /**
-     * Callback function to be executed after save of references
+     * Callback function to be executed after save of references.
      *
-     * @param ObjectManager $manager The object manager
-     * @param AbstractExecutor $executor Executor of the data fixtures
-     * @param string $backupFilePath Path of file used to backup the references of the data fixtures
+     * @param ObjectManager    $manager        The object manager
+     * @param AbstractExecutor $executor       Executor of the data fixtures
+     * @param string           $backupFilePath Path of file used to backup the references of the data fixtures
+     *
      * @return WebTestCase
      */
     protected function postReferenceSave(ObjectManager $manager, AbstractExecutor $executor, $backupFilePath)
     {
-
     }
 
     /**
-     * Callback function to be executed before save of references
+     * Callback function to be executed before save of references.
      *
-     * @param ObjectManager $manager The object manager
-     * @param AbstractExecutor $executor Executor of the data fixtures
-     * @param string $backupFilePath Path of file used to backup the references of the data fixtures
+     * @param ObjectManager    $manager        The object manager
+     * @param AbstractExecutor $executor       Executor of the data fixtures
+     * @param string           $backupFilePath Path of file used to backup the references of the data fixtures
+     *
      * @return WebTestCase
      */
     protected function preReferenceSave(ObjectManager $manager, AbstractExecutor $executor, $backupFilePath)
     {
-
     }
 
     /**
      * Retrieve Doctrine DataFixtures loader.
      *
      * @param ContainerInterface $container
-     * @param array $classNames
+     * @param array              $classNames
      *
      * @return \Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader
      */
@@ -489,7 +485,7 @@ abstract class WebTestCase extends BaseWebTestCase
      * Load a data fixture class.
      *
      * @param \Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader $loader
-     * @param string $className
+     * @param string                                                            $className
      */
     protected function loadFixtureClass($loader, $className)
     {
@@ -497,6 +493,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
         if ($loader->hasFixture($fixture)) {
             unset($fixture);
+
             return;
         }
 
@@ -519,32 +516,32 @@ abstract class WebTestCase extends BaseWebTestCase
      * to follow the naming format used in $_SERVER.
      * Example: 'HTTP_X_REQUESTED_WITH' instead of 'X-Requested-With'
      *
-     * @param boolean|array $authentication
-     * @param array $params
+     * @param bool|array $authentication
+     * @param array      $params
      *
      * @return Client
      */
-    protected function makeClient($authentication = false, array $params = array())
+    protected function makeClient($authentication = false, array $params = [])
     {
         if ($authentication) {
             if ($authentication === true) {
                 $authentication = $this->getContainer()->getParameter('liip_functional_test.authentication');
             }
 
-            $params = array_merge($params, array(
+            $params = array_merge($params, [
                 'PHP_AUTH_USER' => $authentication['username'],
-                'PHP_AUTH_PW'   => $authentication['password']
-            ));
+                'PHP_AUTH_PW'   => $authentication['password'],
+            ]);
         }
 
-        $client = static::createClient(array('environment' => $this->environment), $params);
+        $client = static::createClient(['environment' => $this->environment], $params);
 
         if ($this->firewallLogins) {
             // has to be set otherwise "hasPreviousSession" in Request returns false.
             $options = $client->getContainer()->getParameter('session.storage.options');
 
             if (!$options || !isset($options['name'])) {
-                throw new \InvalidArgumentException("Missing session.storage.options#name");
+                throw new \InvalidArgumentException('Missing session.storage.options#name');
             }
 
             $session = $client->getContainer()->get('session');
@@ -560,7 +557,7 @@ abstract class WebTestCase extends BaseWebTestCase
                 $token = $this->createUserToken($user, $firewallName);
 
                 $client->getContainer()->get('security.context')->setToken($token);
-                $session->set('_security_' . $firewallName, serialize($token));
+                $session->set('_security_'.$firewallName, serialize($token));
             }
 
             $session->save();
@@ -570,15 +567,15 @@ abstract class WebTestCase extends BaseWebTestCase
     }
 
     /**
-     * Create User Token
+     * Create User Token.
      *
      * Factory method for creating a User Token object for the firewall based on
      * the user object provided. By default it will be a Username/Password
      * Token based on the user's credentials, but may be overridden for custom
      * tokens in your applications.
      *
-     * @param UserInterface $user The user object to base the token off of
-     * @param string $firewallName name of the firewall provider to use
+     * @param UserInterface $user         The user object to base the token off of
+     * @param string        $firewallName name of the firewall provider to use
      *
      * @return TokenInterface The token to be used in the security context
      */
@@ -595,23 +592,23 @@ abstract class WebTestCase extends BaseWebTestCase
     /**
      * Extracts the location from the given route.
      *
-     * @param string $route  The name of the route
-     * @param array $params  Set of parameters
-     * @param boolean $absolute
+     * @param string $route    The name of the route
+     * @param array  $params   Set of parameters
+     * @param bool   $absolute
      *
      * @return string
      */
-    protected function getUrl($route, $params = array(), $absolute = false)
+    protected function getUrl($route, $params = [], $absolute = false)
     {
         return $this->getContainer()->get('router')->generate($route, $params, $absolute);
     }
 
     /**
-     * Checks the success state of a response
+     * Checks the success state of a response.
      *
      * @param Response $response Response object
-     * @param bool $success to define whether the response is expected to be successful
-     * @param string $type
+     * @param bool     $success  to define whether the response is expected to be successful
+     * @param string   $type
      *
      * @return void
      */
@@ -620,7 +617,7 @@ abstract class WebTestCase extends BaseWebTestCase
         try {
             $crawler = new Crawler();
             $crawler->addContent($response->getContent(), $type);
-            if (! count($crawler->filter('title'))) {
+            if (!count($crawler->filter('title'))) {
                 $title = '['.$response->getStatusCode().'] - '.$response->getContent();
             } else {
                 $title = $crawler->filter('title')->text();
@@ -641,10 +638,10 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * This method also asserts the request was successful.
      *
-     * @param string $path path of the requested page
-     * @param string $method The HTTP method to use, defaults to GET
-     * @param bool $authentication Whether to use authentication, defaults to false
-     * @param bool $success to define whether the response is expected to be successful
+     * @param string $path           path of the requested page
+     * @param string $method         The HTTP method to use, defaults to GET
+     * @param bool   $authentication Whether to use authentication, defaults to false
+     * @param bool   $success        to define whether the response is expected to be successful
      *
      * @return string
      */
@@ -666,10 +663,10 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * This method also asserts the request was successful.
      *
-     * @param string $path path of the requested page
-     * @param string $method The HTTP method to use, defaults to GET
-     * @param bool $authentication Whether to use authentication, defaults to false
-     * @param bool $success Whether the response is expected to be successful
+     * @param string $path           path of the requested page
+     * @param string $method         The HTTP method to use, defaults to GET
+     * @param bool   $authentication Whether to use authentication, defaults to false
+     * @param bool   $success        Whether the response is expected to be successful
      *
      * @return Crawler
      */
@@ -691,6 +688,7 @@ abstract class WebTestCase extends BaseWebTestCase
     public function loginAs(UserInterface $user, $firewallName)
     {
         $this->firewallLogins[$firewallName] = $user;
+
         return $this;
     }
 }

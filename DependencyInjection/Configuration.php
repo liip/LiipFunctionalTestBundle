@@ -11,11 +11,11 @@
 
 namespace Liip\FunctionalTestBundle\DependencyInjection;
 
-use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
- * This class contains the configuration information for the bundle
+ * This class contains the configuration information for the bundle.
  */
 class Configuration implements ConfigurationInterface
 {
@@ -28,7 +28,12 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('liip_functional_test', 'array');
         $rootNode
             ->beforeNormalization()
-                ->ifArray()->then(function($v) { if (!empty($v['query_count.max_query_count'])) { $v['query']['max_query_count'] = $v['query_count.max_query_count']; unset($v['query_count.max_query_count']); } return $v; })
+                ->ifArray()->then(function ($v) { if (!empty($v['query_count.max_query_count'])) {
+     $v['query']['max_query_count'] = $v['query_count.max_query_count'];
+     unset($v['query_count.max_query_count']);
+ }
+
+return $v; })
             ->end()
             ->children()
                 ->booleanNode('cache_sqlite_db')->defaultFalse()->end()
@@ -43,8 +48,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('password')->end()
                     ->end()
                 ->end()
-            ->end()
-        ;
+            ->end();
 
         return $treeBuilder;
     }

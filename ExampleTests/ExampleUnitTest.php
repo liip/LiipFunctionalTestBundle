@@ -20,7 +20,7 @@ use Liip\FunctionalTestBundle\Test\WebTestCase;
 class ExampleUnitTest extends WebTestCase
 {
     /**
-     * Example using LiipFunctionalBundle the service mock builder
+     * Example using LiipFunctionalBundle the service mock builder.
      */
     public function testIndexAction()
     {
@@ -29,14 +29,12 @@ class ExampleUnitTest extends WebTestCase
         $view->expects($this->once())
             ->method('setTemplate')
             ->with('FooBundle:Default:index.twig')
-            ->will($this->returnValue(null))
-        ;
+            ->will($this->returnValue(null));
 
         $view->expects($this->once())
             ->method('handle')
             ->with()
-            ->will($this->returnValue('success'))
-        ;
+            ->will($this->returnValue('success'));
 
         $controller = new DefaultController($view);
 

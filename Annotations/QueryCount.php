@@ -8,7 +8,7 @@ namespace Liip\FunctionalTestBundle\Annotations;
  */
 class QueryCount
 {
-    /** @var integer */
+    /** @var int */
     public $maxQueries;
 
     public function __construct(array $values)

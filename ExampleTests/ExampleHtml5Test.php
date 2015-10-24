@@ -12,9 +12,6 @@
 namespace Liip\FooBundle\Tests;
 
 use Liip\FunctionalTestBundle\Test\Html5WebTestCase;
-
-use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Console\Output\Output;
 
 /**
@@ -33,7 +30,7 @@ class ExampleHtml5Test extends Html5WebTestCase
 
     public function testBasicAuthentication()
     {
-        $this->loadFixtures(array('Liip\FooBundle\Tests\Fixtures\LoadUserData'));
+        $this->loadFixtures(['Liip\FooBundle\Tests\Fixtures\LoadUserData']);
 
         $content = $this->fetchContent('/', 'GET', true);
         $this->assertEquals('Hello foo!', $content);
@@ -41,7 +38,7 @@ class ExampleHtml5Test extends Html5WebTestCase
 
     public function testGenerateInMissingDir()
     {
-        $this->runCommand('main:generate-html', array('output-dir' => './doesntexist'));
+        $this->runCommand('main:generate-html', ['output-dir' => './doesntexist']);
         $this->assertFalse(file_exists($this->dir.'/index.html'));
     }
 
@@ -52,14 +49,12 @@ class ExampleHtml5Test extends Html5WebTestCase
         $view->expects($this->once())
             ->method('setTemplate')
             ->with('FooBundle:Default:index.twig')
-            ->will($this->returnValue(null))
-        ;
+            ->will($this->returnValue(null));
 
         $view->expects($this->once())
             ->method('handle')
             ->with()
-            ->will($this->returnValue('success'))
-        ;
+            ->will($this->returnValue('success'));
 
         $controller = new DefaultController($view);
 

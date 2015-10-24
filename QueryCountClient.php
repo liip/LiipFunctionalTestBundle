@@ -17,9 +17,9 @@ class QueryCountClient extends Client
     public function request(
         $method,
         $uri,
-        array $parameters = array(),
-        array $files = array(),
-        array $server = array(),
+        array $parameters = [],
+        array $files = [],
+        array $server = [],
         $content = null,
         $changeHistory = true
     ) {
