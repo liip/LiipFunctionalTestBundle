@@ -55,7 +55,7 @@ class QueryCounter
                 );
 
                 foreach ($annotations as $annotationClass) {
-                    if ($annotationClass instanceof QueryCount and isset($annotationClass->maxQueries)) {
+                    if ($annotationClass instanceof QueryCount && isset($annotationClass->maxQueries)) {
                         /* @var $annotations \Liip\FunctionalTestBundle\Annotations\QueryCount */
 
                         return $annotationClass->maxQueries;
