@@ -2,9 +2,9 @@
 
 namespace Liip\FunctionalTestBundle\DependencyInjection\Compiler;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Alias;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class SetTestClientPass implements CompilerPassInterface
 {
@@ -12,6 +12,7 @@ class SetTestClientPass implements CompilerPassInterface
     {
         if (null === $container->getParameter('liip_functional_test.query.max_query_count')) {
             $container->removeDefinition('liip_functional_test.query.count_client');
+
             return;
         }
 
@@ -29,7 +30,7 @@ class SetTestClientPass implements CompilerPassInterface
                 new Alias((string) $container->getAlias('test.client'), false)
             );
         } else {
-            throw new \Exception('The LiipFunctionalTestBundle\'s Query Counter can only be used in the test environment.' . PHP_EOL . 'See https://github.com/liip/LiipFunctionalTestBundle#only-in-test-environment');
+            throw new \Exception('The LiipFunctionalTestBundle\'s Query Counter can only be used in the test environment.'.PHP_EOL.'See https://github.com/liip/LiipFunctionalTestBundle#only-in-test-environment');
         }
 
         $container->setAlias('test.client', 'liip_functional_test.query.count_client');
