@@ -20,7 +20,7 @@ use Liip\FunctionalTestBundle\Test\WebTestCase;
 class ExampleUnitTest extends WebTestCase
 {
     /**
-     * Example using LiipFunctionalBundle the service mock builder
+     * Example using LiipFunctionalBundle the service mock builder.
      */
     public function testIndexAction()
     {

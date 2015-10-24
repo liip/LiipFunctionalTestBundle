@@ -8,7 +8,7 @@ use Liip\FunctionalTestBundle\Exception\AllowedQueriesExceededException;
 
 class QueryCounter
 {
-    /** @var integer */
+    /** @var int */
     private $defaultMaxCount;
 
     /** @var \Doctrine\Common\Annotations\AnnotationReader */
@@ -55,8 +55,8 @@ class QueryCounter
                 );
 
                 foreach ($annotations as $annotationClass) {
-                    if ($annotationClass instanceof QueryCount AND isset($annotationClass->maxQueries)) {
-                        /** @var $annotations \Liip\FunctionalTestBundle\Annotations\QueryCount */
+                    if ($annotationClass instanceof QueryCount and isset($annotationClass->maxQueries)) {
+                        /* @var $annotations \Liip\FunctionalTestBundle\Annotations\QueryCount */
 
                         return $annotationClass->maxQueries;
                     }

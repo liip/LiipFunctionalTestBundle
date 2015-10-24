@@ -12,7 +12,6 @@
 namespace Liip\FunctionalTestBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Liip\FunctionalTestBundle\DependencyInjection\Compiler\SetTestClientPass;
 

@@ -13,10 +13,6 @@ namespace Liip\FooBundle\Tests;
 
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 
-use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\Console\Tester\ApplicationTester;
-use Symfony\Component\Console\Output\Output;
-
 /**
  * @author Lukas Smith
  * @author Daniel Barsotti
@@ -25,7 +21,7 @@ use Symfony\Component\Console\Output\Output;
 class ExampleFunctionalTest extends WebTestCase
 {
     /**
-     * Example using LiipFunctionalBundle the fixture loader
+     * Example using LiipFunctionalBundle the fixture loader.
      */
     public function testUserFooIndex()
     {
@@ -37,9 +33,9 @@ class ExampleFunctionalTest extends WebTestCase
         $this->assertTrue($crawler->filter('html:contains("Email: foo@bar.com")')->count() > 0);
     }
 
-   /**
-    * Example using LiipFunctionalBundle WebTestCase helpers and with authentication
-    */
+    /**
+     * Example using LiipFunctionalBundle WebTestCase helpers and with authentication.
+     */
     public function testBasicAuthentication()
     {
         $this->loadFixtures(array('Liip\FooBundle\Tests\Fixtures\LoadUserData'));
