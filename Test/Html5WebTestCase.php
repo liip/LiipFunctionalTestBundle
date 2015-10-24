@@ -35,7 +35,6 @@ HTML;
 
     protected $validationServiceAvailable = false;
 
-
     public function __construct($name = null, array $data = array(), $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
@@ -44,10 +43,10 @@ HTML;
     }
 
     /**
-     * Check if the HTML5 validation service is available
+     * Check if the HTML5 validation service is available.
      */
-    public function isValidationServiceAvailable() {
-
+    public function isValidationServiceAvailable()
+    {
         $validationUrl = $this->getHtml5ValidatorServiceUrl();
 
         $ch = curl_init();
@@ -61,7 +60,8 @@ HTML;
     }
 
     /**
-     * Get the URL of the HTML5 validation service from the config
+     * Get the URL of the HTML5 validation service from the config.
+     *
      * @return string
      */
     protected function getHtml5ValidatorServiceUrl()
@@ -73,6 +73,7 @@ HTML;
      * Allows a subclass to set a custom HTML5 wrapper to test validity of HTML snippets.
      * The $wrapper may contain valid HTML5 code + the <<CONTENT>> placeholder.
      * This placeholder will be replaced by the tested snippet before validation.
+     *
      * @param string $wrapper The custom HTML5 wrapper.
      */
     protected function setHtml5Wrapper($wrapper)
@@ -81,8 +82,10 @@ HTML;
     }
 
     /**
-     * Run the HTML5 validation on the content and returns the results as an array
+     * Run the HTML5 validation on the content and returns the results as an array.
+     *
      * @param string $content The HTML content to validate
+     *
      * @return array
      */
     public function validateHtml5($content)
@@ -163,7 +166,7 @@ HTML;
                     }
                 }
 
-                $err_count++;
+                ++$err_count;
                 if (empty($row->message)) {
                     $err_msg .= "  Line {$row->lastLine}: Empty error message about {$row->extract}\n";
                 } else {
@@ -188,7 +191,7 @@ HTML;
     }
 
     /**
-     * Marks test as skipped with validation server error message
+     * Marks test as skipped with validation server error message.
      */
     protected function skipTestWithInvalidService()
     {
