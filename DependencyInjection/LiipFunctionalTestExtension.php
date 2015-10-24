@@ -34,5 +34,12 @@ class LiipFunctionalTestExtension extends Extension
         foreach ($config as $key => $value) {
             $container->setParameter($this->getAlias().'.'.$key, $value);
         }
+
+        $definition = $container->getDefinition('liip_functional_test.query.count_client');
+        if (method_exists($definition, 'setShared')) {
+            $definition->setShared(false);
+        } else {
+            $definition->setScope('prototype');
+        }
     }
 }
