@@ -15,10 +15,10 @@
         }
     ],
     "require": {
-        "php": ">=5.3.2",
-        "symfony/framework-bundle": "~2.0",
-        "symfony/browser-kit": "~2.0",
-        "doctrine/common": "2.*"
+        "php": ">=5.3.9",
+        "symfony/framework-bundle": "~2.3|~3.0",
+        "symfony/browser-kit": "~2.3|~3.0",
+        "doctrine/common": "~2.0"
     },
     "suggest": {
         "doctrine/doctrine-fixtures-bundle": "Required when using the fixture loading functionality",
