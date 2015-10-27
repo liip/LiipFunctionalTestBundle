@@ -19,6 +19,7 @@ class ValidationErrorsConstraint extends \PHPUnit_Framework_Constraint
 
     /**
      * ValidationErrorsConstraint constructor.
+     *
      * @param $expect
      */
     public function __construct(array $expect)
@@ -30,8 +31,9 @@ class ValidationErrorsConstraint extends \PHPUnit_Framework_Constraint
 
     /**
      * @param ConstraintViolationList $other
-     * @param string $description
-     * @param bool $returnResult
+     * @param string                  $description
+     * @param bool                    $returnResult
+     *
      * @return mixed
      */
     public function evaluate($other, $description = '', $returnResult = false)
@@ -64,15 +66,15 @@ class ValidationErrorsConstraint extends \PHPUnit_Framework_Constraint
         foreach ($mismatchedKeys as $key) {
             if (isset($actual[$key])) {
                 foreach ($actual[$key] as $unexpectedErrorMessage) {
-                    $lines[] = '+ ' . $key . ' (' . $unexpectedErrorMessage . ')';
+                    $lines[] = '+ '.$key.' ('.$unexpectedErrorMessage.')';
                 }
             } else {
-                $lines[] = '- ' . $key;
+                $lines[] = '- '.$key;
             }
         }
 
         throw new \PHPUnit_Framework_ExpectationFailedException(
-            $description . "\n" . implode("\n", $lines)
+            $description."\n".implode("\n", $lines)
         );
     }
 

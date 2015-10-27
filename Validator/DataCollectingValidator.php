@@ -16,7 +16,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use Symfony\Component\Validator\Exception;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class DataCollectingValidator implements ValidatorInterface, EventSubscriberInterface

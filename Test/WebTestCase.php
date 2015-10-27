@@ -724,7 +724,7 @@ abstract class WebTestCase extends BaseWebTestCase
      * Assert that the last validation errors within $container match the
      * expected keys.
      *
-     * @param array $expected A flat array of field names
+     * @param array              $expected  A flat array of field names
      * @param ContainerInterface $container
      */
     public function assertValidationErrors(array $expected, ContainerInterface $container)
