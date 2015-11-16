@@ -119,7 +119,19 @@ abstract class WebTestCase extends BaseWebTestCase
         $input->setInteractive(false);
 
         $fp = fopen('php://temp/maxmemory:'.$this->maxMemory, 'r+');
-        $output = new StreamOutput($fp);
+
+        $commandVerbosity = StreamOutput::VERBOSITY_NORMAL;
+        if ($this->getContainer()->hasParameter('liip_functional_test.command_verbosity')) {
+            $verbosity = 'StreamOutput::VERBOSITY_' . strtoupper($this->getContainer()->getParameter('liip_functional_test.command_verbosity'));
+            if (defined($verbosity)) {
+                $commandVerbosity = $verbosity;
+            }
+        }
+        $decorated = true;
+        if ($this->getContainer()->hasParameter('liip_functional_test.command_decoration')) {
+            $decorated = $this->getContainer()->getParameter('liip_functional_test.command_decoration');
+        }
+        $output = new StreamOutput($fp, $commandVerbosity, $decorated);
 
         $application->run($input, $output);
 
