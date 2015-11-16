@@ -122,7 +122,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
         $commandVerbosity = StreamOutput::VERBOSITY_NORMAL;
         if ($this->getContainer()->hasParameter('liip_functional_test.command_verbosity')) {
-            $verbosity = 'StreamOutput::VERBOSITY_' . strtoupper($this->getContainer()->getParameter('liip_functional_test.command_verbosity'));
+            $verbosity = 'StreamOutput::VERBOSITY_'.strtoupper($this->getContainer()->getParameter('liip_functional_test.command_verbosity'));
             if (defined($verbosity)) {
                 $commandVerbosity = $verbosity;
             }
