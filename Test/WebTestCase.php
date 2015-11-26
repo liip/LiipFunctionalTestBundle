@@ -16,7 +16,6 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\StreamOutput;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -361,7 +360,7 @@ abstract class WebTestCase extends BaseWebTestCase
     }
 
     /**
-     * @param array  $paths
+     * @param array  $paths        Either symfony resource locators (@ BundleName/etc) or actual file paths
      * @param bool   $append
      * @param null   $omName
      * @param string $registryName
@@ -395,6 +394,11 @@ abstract class WebTestCase extends BaseWebTestCase
         $files = array();
         $kernel = $this->getContainer()->get('kernel');
         foreach ($paths as $path) {
+            if ($path[0] !== '@' && file_exists($path) === true) {
+                $files[] = $path;
+                continue;
+            }
+
             $files[] = $kernel->locateResource($path);
         }
 
