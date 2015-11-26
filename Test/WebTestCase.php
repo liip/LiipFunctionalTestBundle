@@ -134,9 +134,11 @@ abstract class WebTestCase extends BaseWebTestCase
      * Retrieves the output verbosity level.
      *
      * @see Symfony\Component\Console\Output\StreamOutput for available levels
+     *
      * @return string
      */
-    private function retrieveVerbosityLevel() {
+    private function retrieveVerbosityLevel()
+    {
         // Returns the local verbosity level
         if ($this->verbosityLevel) {
             $verbosity = 'StreamOutput::VERBOSITY_'.strtoupper($this->verbosityLevel);
@@ -160,9 +162,10 @@ abstract class WebTestCase extends BaseWebTestCase
     /**
      * Retrieves the flag indicating if the output should be decorated or not.
      *
-     * @return boolean
+     * @return bool
      */
-    private function retrieveDecorated() {
+    private function retrieveDecorated()
+    {
         // Returns the local decorated flag
         if (is_bool($this->decorated)) {
             return $this->decorated;
