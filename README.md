@@ -116,6 +116,19 @@ liip_functional_test:
 Supported values are ```quiet```, ```normal```, ```verbose```, ```very_verbose```
 and ```debug```. The default value is ```normal```.
 
+You can also configure this on a per-test basis:
+```php
+use Liip\FunctionalTestBundle\Test\WebTestCase;
+
+class MyTestCase extends WebTestCase {
+
+    public function myTest() {
+        $this->verbosityLevel = 'debug';
+        $this->runCommand('myCommand');
+    }
+}
+```
+
 Depending where your tests are running, you might want to disable the output
 decorator:
 ```yaml
@@ -124,6 +137,19 @@ liip_functional_test:
     command_decoration: false
 ```
 The default value is true.
+
+You can also configure this on a per-test basis:
+```php
+use Liip\FunctionalTestBundle\Test\WebTestCase;
+
+class MyTestCase extends WebTestCase {
+
+    public function myTest() {
+        $this->decorated = false;
+        $this->runCommand('myCommand');
+    }
+}
+```
 
 Database Tests
 --------------
