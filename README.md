@@ -77,6 +77,8 @@ encountered by the Client object.
 
 If you are expecting validation errors, test them with `assertValidationErrors`.
 
+Note: Both `assertStatusCode` and `assertValidationErrors` only works on Symfony 2.5+
+
 ```php
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 
