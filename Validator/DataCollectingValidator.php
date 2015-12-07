@@ -16,7 +16,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Validator\ValidatorInterface;
 
 class DataCollectingValidator implements ValidatorInterface, EventSubscriberInterface
 {
@@ -56,7 +56,12 @@ class DataCollectingValidator implements ValidatorInterface, EventSubscriberInte
         return $this->wrappedValidator->hasMetadataFor($value);
     }
 
-    public function validate($value, $constraints = null, $groups = null)
+    public function validate($object, $groups = null, $traverse = false, $deep = false)
+    {
+        return $this->wrappedValidator->validate($object, $groups, $traverse = false, $deep = false);
+    }
+
+    public function validateValue($value, $constraints = null, $groups = null)
     {
         return $this->lastErrors = $this->wrappedValidator->validate($value, $constraints, $groups);
     }
@@ -69,6 +74,11 @@ class DataCollectingValidator implements ValidatorInterface, EventSubscriberInte
     public function validatePropertyValue($objectOrClass, $propertyName, $value, $groups = null)
     {
         return $this->wrappedValidator->validatePropertyValue($objectOrClass, $propertyName, $value, $groups);
+    }
+
+    public function getMetadataFactory()
+    {
+        return $this->wrappedValidator->getMetadataFactory();
     }
 
     public function startContext()
