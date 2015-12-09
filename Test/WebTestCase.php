@@ -45,6 +45,8 @@ abstract class WebTestCase extends BaseWebTestCase
     protected $kernelDir;
     // 5 * 1024 * 1024 KB
     protected $maxMemory = 5242880;
+    protected $verbosityLevel;
+    protected $decorated;
 
     /**
      * @var array
@@ -118,13 +120,63 @@ abstract class WebTestCase extends BaseWebTestCase
         $input->setInteractive(false);
 
         $fp = fopen('php://temp/maxmemory:'.$this->maxMemory, 'r+');
-        $output = new StreamOutput($fp);
+        $output = new StreamOutput($fp, $this->retrieveVerbosityLevel(), $this->retrieveDecorated());
 
         $application->run($input, $output);
 
         rewind($fp);
 
         return stream_get_contents($fp);
+    }
+
+    /**
+     * Retrieves the output verbosity level.
+     *
+     * @see Symfony\Component\Console\Output\StreamOutput for available levels
+     *
+     * @return string
+     */
+    private function retrieveVerbosityLevel()
+    {
+        // Returns the local verbosity level
+        if ($this->verbosityLevel) {
+            $verbosity = 'StreamOutput::VERBOSITY_'.strtoupper($this->verbosityLevel);
+            if (defined($verbosity)) {
+                return $verbosity;
+            }
+        }
+
+        // Returns the global verbosity level
+        if ($this->getContainer()->hasParameter('liip_functional_test.command_verbosity')) {
+            $verbosity = 'StreamOutput::VERBOSITY_'.strtoupper($this->getContainer()->getParameter('liip_functional_test.command_verbosity'));
+            if (defined($verbosity)) {
+                return $verbosity;
+            }
+        }
+
+        // Returns the default verbosity level
+        return StreamOutput::VERBOSITY_NORMAL;
+    }
+
+    /**
+     * Retrieves the flag indicating if the output should be decorated or not.
+     *
+     * @return bool
+     */
+    private function retrieveDecorated()
+    {
+        // Returns the local decorated flag
+        if (is_bool($this->decorated)) {
+            return $this->decorated;
+        }
+
+        // Returns the global decorated flag
+        if ($this->getContainer()->hasParameter('liip_functional_test.command_decoration')) {
+            return $this->getContainer()->getParameter('liip_functional_test.command_decoration');
+        }
+
+        // Returns the default decorated flag
+        return true;
     }
 
     /**
