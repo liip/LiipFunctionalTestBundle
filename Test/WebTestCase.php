@@ -349,7 +349,7 @@ abstract class WebTestCase extends BaseWebTestCase
                         $this->preFixtureRestore($om, $referenceRepository);
 
                         copy($backup, $name);
-                        
+
                         $executor = new $executorClass($om);
                         $executor->setReferenceRepository($referenceRepository);
                         $executor->getReferenceRepository()->load($backup);
