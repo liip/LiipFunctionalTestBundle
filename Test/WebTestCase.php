@@ -587,7 +587,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
             $params = array_merge($params, [
                 'PHP_AUTH_USER' => $authentication['username'],
-                'PHP_AUTH_PW'   => $authentication['password']
+                'PHP_AUTH_PW' => $authentication['password'],
             ]);
         }
 
