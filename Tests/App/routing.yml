@@ -1,0 +1,3 @@
+liipfunctionaltestbundle_homepage:
+    path:  /
+    defaults: { _controller: LiipFunctionalTestBundle:Default:index }
