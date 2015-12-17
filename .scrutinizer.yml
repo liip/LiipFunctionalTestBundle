@@ -1,0 +1,25 @@
+checks:
+  php:
+    code_rating: true
+    duplication: true
+
+filter:
+  excluded_paths:
+    - Tests/*
+  paths:
+    - Annotations
+    - DependencyInjection
+    - EventListener
+    - ExampleTests
+    - Exception
+    - Test
+    - Validator
+
+build:
+  tests:
+    override:
+      -
+        command: 'phpunit --coverage-clover=coverage-clover'
+        coverage:
+          file: 'coverage-clover'
+          format: 'php-clover'
