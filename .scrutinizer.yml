@@ -1,0 +1,30 @@
+checks:
+  php:
+    code_rating: true
+    duplication: true
+
+filter:
+  excluded_paths:
+    - Tests/*
+  paths:
+    - Annotations/*
+    - DependencyInjection/*
+    - DependencyInjection/Compiler/*
+    - EventListener/*
+    - Exception/*
+    - Test/*
+    - Validator/*
+
+build:
+  dependencies:
+    override:
+      - 
+        command: 'composer require --dev "symfony/symfony:2.8.*" --no-interaction -vvv --profile --no-progress'
+        idle_timeout: 900
+  tests:
+    override:
+      -
+        command: 'phpunit --coverage-clover=coverage-clover'
+        coverage:
+          file: 'coverage-clover'
+          format: 'php-clover'

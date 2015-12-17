@@ -1,0 +1,39 @@
+# Generated with the following command:
+#  php app/console generate:doctrine:entity --entity=AppBundle:User \
+#  --fields="name:string(255) email:string(255) password:string(255) \
+#  algorithm:string(255) enabled:boolean \
+#  confirmationToken:string(255)" --format=yml --no-interaction
+ 
+Liip\FunctionalTestBundle\Entity\User:
+    type: entity
+    table: 'liip_user'
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: '255'
+        email:
+            type: string
+            length: '255'
+        password:
+            type: string
+            length: '255'
+        salt:
+            type: string
+            length: '255'
+        algorithm:
+            type: string
+            length: '255'
+        enabled:
+            type: boolean
+            length: null
+        confirmationToken:
+            type: string
+            length: '255'
+            nullable: true
+    lifecycleCallbacks: {  }
