@@ -26,6 +26,12 @@ env:
 matrix:
   allow_failures:
     - env: SYMFONY_VERSION="3.0.*"
+  exclude:
+    # Symfony 3.0 requires PHP >= 5.5.9
+    - php: 5.3
+      env: SYMFONY_VERSION="3.0.*"
+    - rvm: 5.4
+      env: SYMFONY_VERSION="3.0.*"    
 
 addons:
   apt:
@@ -37,11 +43,3 @@ install:
   - composer require symfony/symfony:${SYMFONY_VERSION}
 
 script: php ./vendor/bin/phpunit
-
-# Symfony 3.0 requires PHP >= 5.5.9
-matrix:
-  exclude:
-    - php: 5.3
-      env: SYMFONY_VERSION="3.0.*"
-    - rvm: 5.4
-      env: SYMFONY_VERSION="3.0.*"

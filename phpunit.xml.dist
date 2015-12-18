@@ -28,7 +28,6 @@
             <directory>Annotations</directory>
             <directory>DependencyInjection</directory>
             <directory>EventListener</directory>
-            <directory>ExampleTests</directory>
             <directory>Exception</directory>
             <directory>Test</directory>
             <directory>Validator</directory>

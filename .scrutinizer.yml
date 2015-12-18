@@ -7,13 +7,13 @@ filter:
   excluded_paths:
     - Tests/*
   paths:
-    - Annotations
-    - DependencyInjection
-    - EventListener
-    - ExampleTests
-    - Exception
-    - Test
-    - Validator
+    - Annotations/*
+    - DependencyInjection/*
+    - DependencyInjection/Compiler/*
+    - EventListener/*
+    - Exception/*
+    - Test/*
+    - Validator/*
 
 build:
   tests:

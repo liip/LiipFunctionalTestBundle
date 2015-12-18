@@ -14,9 +14,6 @@ framework:
         storage_id: session.storage.filesystem 
     profiler:
         collect: false
-    # Enable Assetic
-    # see https://github.com/symfony/assetic-bundle/issues/396#issuecomment-160986958
-    assets: ~  
 
 monolog:
     handlers:
@@ -31,6 +28,8 @@ monolog:
 
 liip_functional_test:
     cache_sqlite_db: true
+    query:
+        max_query_count: 50
 
 doctrine:
     dbal:
