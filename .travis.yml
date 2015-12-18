@@ -25,7 +25,6 @@ env:
 
 matrix:
   allow_failures:
-    - php: 7.0
     - env: SYMFONY_VERSION="2.3.*"
   exclude:
     # Symfony 3.0 requires PHP >= 5.5.9
