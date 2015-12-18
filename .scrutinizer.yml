@@ -1,7 +1,3 @@
-before_commands:
-    - composer self-update
-    - composer install --no-interaction -vvv
-
 checks:
   php:
     code_rating: true
@@ -19,8 +15,11 @@ filter:
     - Test/*
     - Validator/*
 
-
 build:
+  dependencies:
+    override:
+      - "composer self-update"
+      - "composer install --no-interaction -vvv"
   tests:
     override:
       -

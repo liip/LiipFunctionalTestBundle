@@ -25,6 +25,7 @@ env:
 
 matrix:
   allow_failures:
+    - php: 7.0
     - env: SYMFONY_VERSION="2.3.*"
   exclude:
     # Symfony 3.0 requires PHP >= 5.5.9
@@ -45,6 +46,8 @@ before_install: if [[ $TRAVIS_PHP_VERSION = '5.6' && $SYMFONY_VERSION = '2.8.*' 
 install:
   - composer self-update
   - composer require symfony/symfony:${SYMFONY_VERSION} $DEPENDENCY
+
+script: php ./vendor/bin/phpunit $PHPUNIT_FLAGS
 
 # Only send code coverage if it has been generated
 after_success: if [[ $PHPUNIT_FLAGS != "" ]]; then php ./vendor/bin/test-reporter; fi
