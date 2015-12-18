@@ -585,10 +585,10 @@ abstract class WebTestCase extends BaseWebTestCase
                 $authentication = $this->getContainer()->getParameter('liip_functional_test.authentication');
             }
 
-            $params = array_merge($params, [
+            $params = array_merge($params, array(
                 'PHP_AUTH_USER' => $authentication['username'],
                 'PHP_AUTH_PW' => $authentication['password'],
-            ]);
+            ));
         }
 
         $client = static::createClient(array('environment' => $this->environment), $params);
