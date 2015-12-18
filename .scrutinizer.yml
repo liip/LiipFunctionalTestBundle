@@ -18,7 +18,6 @@ filter:
 build:
   dependencies:
     override:
-      - "composer self-update"
       - "composer install --no-interaction -vvv"
   tests:
     override:
