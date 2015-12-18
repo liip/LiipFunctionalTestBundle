@@ -39,8 +39,13 @@ addons:
     packages:
       - php5-sqlite
 
+# Only send code coverage to Code Climate for the current versions of PHP and Symfony LTS
+# https://github.com/doctrine/doctrine2/blob/3570f4a49afc7e98fed71e0596dded6a39d4fd7b/.travis.yml#L16
+before_install: if [[ $TRAVIS_PHP_VERSION = '7.0' && $SYMFONY_VERSION = '2.8.*' ]]; then DEPENDENCY="codeclimate/php-test-reporter:dev-master"; PHPUNIT_FLAGS="--coverage-clover ./build/logs/clover.xml"; else DEPENDENCY=""; PHPUNIT_FLAGS=""; fi
+
 install:
   - composer self-update
-  - composer require symfony/symfony:${SYMFONY_VERSION}
+  - composer require symfony/symfony:${SYMFONY_VERSION} $DEPENDENCY
 
-script: php ./vendor/bin/phpunit
+# Only send code coverage if it has been generated
+after_success: if [[ $PHPUNIT_FLAGS != "" ]]; then php ./vendor/bin/test-reporter; fi
