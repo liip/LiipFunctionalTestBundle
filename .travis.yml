@@ -26,7 +26,6 @@ env:
 matrix:
   allow_failures:
     - env: SYMFONY_VERSION="2.3.*"
-    - env: SYMFONY_VERSION="3.0.*"
   exclude:
     # Symfony 3.0 requires PHP >= 5.5.9
     - php: 5.3
@@ -39,9 +38,9 @@ addons:
     packages:
       - php5-sqlite
 
-# Only send code coverage to Code Climate for the current versions of PHP and Symfony LTS
+# Only send code coverage to Code Climate for PHP 5.6 and Symfony LTS
 # https://github.com/doctrine/doctrine2/blob/3570f4a49afc7e98fed71e0596dded6a39d4fd7b/.travis.yml#L16
-before_install: if [[ $TRAVIS_PHP_VERSION = '7.0' && $SYMFONY_VERSION = '2.8.*' ]]; then DEPENDENCY="codeclimate/php-test-reporter:dev-master"; PHPUNIT_FLAGS="--coverage-clover ./build/logs/clover.xml"; else DEPENDENCY=""; PHPUNIT_FLAGS=""; fi
+before_install: if [[ $TRAVIS_PHP_VERSION = '5.6' && $SYMFONY_VERSION = '2.8.*' ]]; then DEPENDENCY="codeclimate/php-test-reporter:dev-master"; PHPUNIT_FLAGS="--coverage-clover ./build/logs/clover.xml"; else DEPENDENCY=""; PHPUNIT_FLAGS=""; fi
 
 install:
   - composer self-update

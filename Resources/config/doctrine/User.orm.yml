@@ -6,7 +6,7 @@
  
 Liip\FunctionalTestBundle\Entity\User:
     type: entity
-    table: null
+    table: 'liip_user'
     id:
         id:
             type: integer
