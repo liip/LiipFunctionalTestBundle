@@ -15,6 +15,10 @@ filter:
     - Test/*
     - Validator/*
 
+before_commands:
+    - composer self-update
+    - composer install --no-interaction -vvv
+
 build:
   tests:
     override:
