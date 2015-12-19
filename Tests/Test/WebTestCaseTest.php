@@ -32,6 +32,8 @@ class WebTestCaseTest extends WebTestCase
         
         $crawler = $this->client->request('GET', $path);
         
+        $this->assertStatusCode(200, $this->client);
+        
         $this->assertSame(1,
             $crawler->filter('html > body')->count());
         
@@ -52,6 +54,8 @@ class WebTestCaseTest extends WebTestCase
         
         $crawler = $this->client->request('GET', $path);
         
+        $this->assertStatusCode(200, $this->client);
+        
         $this->assertSame(1,
             $crawler->filter('html > body')->count());
         
@@ -64,16 +68,9 @@ class WebTestCaseTest extends WebTestCase
     public function testIndexWithAuthentication()
     {
         $this->client = static::makeClient(array(
-            'username' => 'user',
-            'password' => 'pa$$word',
+            'username' => 'foo bar',
+            'password' => '12341234',
         ));
-        
-        $this->client = static::makeClient(true,
-            array(
-            'username' => 'user',
-            'password' => 'pa$$word',
-            )
-        );
         
         $this->loadFixtures(array());
         
@@ -81,12 +78,58 @@ class WebTestCaseTest extends WebTestCase
         
         $crawler = $this->client->request('GET', $path);
         
+        $this->assertStatusCode(200, $this->client);
+        
         $this->assertSame(1,
             $crawler->filter('html > body')->count());
         
         $this->assertSame(
             'LiipFunctionalTestBundle',
             $crawler->filter('h1')->text()
+        );
+    }
+    
+    public function testUserWithFixtures()
+    {
+        $this->loadFixtures(array(
+            'Liip\FunctionalTestBundle\DataFixtures\ORM\LoadUserData',
+        ));
+        
+        $path = '/user/1';
+        
+        $this->client->enableProfiler();
+        
+        $crawler = $this->client->request('GET', $path);
+        
+        $this->assertStatusCode(200, $this->client);
+        
+        if ($profile = $this->client->getProfile())
+        {
+            // One query
+            $this->assertEquals(1,
+                $profile->getCollector('db')->getQueryCount());
+        }
+        else {
+            $this->markTestIncomplete(
+                'Profiler is disabled.'
+            );
+        }
+        
+        $this->assertSame(1,
+            $crawler->filter('html > body')->count());
+        
+        $this->assertSame(
+            'LiipFunctionalTestBundle',
+            $crawler->filter('h1')->text()
+        );
+        
+        $this->assertSame(
+            'Name: foo bar',
+            $crawler->filter('p')->eq(0)->text()
+        );
+        $this->assertSame(
+            'Email: foo@bar.com',
+            $crawler->filter('p')->eq(1)->text()
         );
     }
     
@@ -101,6 +144,8 @@ class WebTestCaseTest extends WebTestCase
         $this->client->enableProfiler();
         
         $crawler = $this->client->request('GET', $path);
+        
+        $this->assertStatusCode(200, $this->client);
         
         if ($profile = $this->client->getProfile())
         {
@@ -123,7 +168,7 @@ class WebTestCaseTest extends WebTestCase
         );
     }
     
-    public function testloadFixtures()
+    public function testLoadFixtures()
     {
         $this->loadFixtures(array(
             'Liip\FunctionalTestBundle\DataFixtures\ORM\LoadUserData',
@@ -145,5 +190,35 @@ class WebTestCaseTest extends WebTestCase
         $this->assertTrue(
             $user->getEnabled()
         );    
+    }
+    
+    public function testForm()
+    {
+        $this->loadFixtures(array());
+        
+        $path = '/form';
+        
+        $crawler = $this->client->request('GET', $path);
+        
+        $this->assertStatusCode(200, $this->client);
+        
+        $form = $crawler->selectButton('Submit')->form();
+        $crawler = $this->client->submit($form);
+        
+        $this->assertStatusCode(200, $this->client);
+        
+        $this->assertValidationErrors(array(), $this->client->getContainer());
+        
+        // Try again with with the fields filled out.
+        $form = $crawler->selectButton('Submit')->form();
+        $form->setValues(['form[name]' => 'foo bar']);
+        $crawler = $this->client->submit($form);
+        
+        $this->assertContains(
+            'Name submitted.',
+            $crawler->filter('div.flash-notice')->text()
+        );
+        
+        $this->assertStatusCode(200, $this->client);
     }
 }

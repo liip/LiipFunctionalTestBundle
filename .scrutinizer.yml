@@ -19,7 +19,7 @@ build:
   dependencies:
     override:
       - 
-        command: 'composer require "symfony/symfony:2.8.*" --no-interaction -vvv --profile'
+        command: 'composer require --dev "symfony/symfony:2.8.*" --no-interaction -vvv --profile --no-progress'
         idle_timeout: 900
   tests:
     override:

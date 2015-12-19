@@ -9,5 +9,13 @@
     
     <body>
         <h1>LiipFunctionalTestBundle</h1>
+        
+        {% for flash_message in app.session.flashbag.get('notice') %}
+            <div class="flash-notice">
+                {{ flash_message }}
+            </div>
+        {% endfor %}
+        
+        {% block body %}{% endblock %}
     </body>
 </html>

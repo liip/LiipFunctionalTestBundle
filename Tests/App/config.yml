@@ -29,7 +29,10 @@ monolog:
 liip_functional_test:
     cache_sqlite_db: true
     query:
-        max_query_count: 50
+        max_query_count: 5
+    authentication:
+        username: "foo bar"
+        password: "12341234"    
 
 doctrine:
     dbal:
