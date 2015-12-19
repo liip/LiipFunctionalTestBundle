@@ -13,4 +13,4 @@ ratings:
 
 exclude_paths:
   - DataFixtures/ORM/*
-  - Tests/*
+  - Tests/App/*

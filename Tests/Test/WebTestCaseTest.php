@@ -211,7 +211,7 @@ class WebTestCaseTest extends WebTestCase
         
         // Try again with with the fields filled out.
         $form = $crawler->selectButton('Submit')->form();
-        $form->setValues(['form[name]' => 'foo bar']);
+        $form->setValues(array('form[name]' => 'foo bar'));
         $crawler = $this->client->submit($form);
         
         $this->assertContains(
