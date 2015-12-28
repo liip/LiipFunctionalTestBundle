@@ -19,7 +19,7 @@
         "symfony/framework-bundle": "~2.3|~3.0",
         "symfony/browser-kit": "~2.3|~3.0",
         "symfony/validator": "~2.5|~3.0",
-        "doctrine/common": "~2.0"
+        "doctrine/common": "^2.5.3"
     },
     "suggest": {
         "doctrine/doctrine-fixtures-bundle": "Required when using the fixture loading functionality",
