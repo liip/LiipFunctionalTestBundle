@@ -189,6 +189,10 @@ class WebTestCaseTest extends WebTestCase
 
     public function testForm()
     {
+        if (!interface_exists('Symfony\Component\Validator\Validator\ValidatorInterface')) {
+            $this->markTestSkipped('The Symfony\Component\Validator\Validator\ValidatorInterface does not exist');
+        }
+
         $this->loadFixtures(array());
 
         $path = '/form';

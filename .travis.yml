@@ -1,41 +1,34 @@
-sudo: false
-
 language: php
 
-cache:
-  directories:
-    - $HOME/.composer/cache
-
-git:
-  depth: 5
-
 php:
-  - 5.3
   - 5.4
   - 5.5
   - 5.6
   - 7.0
   - hhvm
 
-env:
-  - SYMFONY_VERSION="2.3.*"
-  - SYMFONY_VERSION="2.7.*"
-  - SYMFONY_VERSION="2.8.*"
-  - SYMFONY_VERSION="3.0.*"
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.composer/cache/files
 
 matrix:
-  allow_failures:
-    - env: SYMFONY_VERSION="2.3.*"
-    - env: SYMFONY_VERSION="3.0.*"
-  exclude:
-    # Symfony 3.0 requires PHP >= 5.5.9
+  include:
     - php: 5.3
-      env: SYMFONY_VERSION="3.0.*"
-    - php: 5.4
-      env: SYMFONY_VERSION="3.0.*"    
+      env: COMPOSER_FLAGS="--prefer-lowest"
+    - php: 7.0
+      env: SYMFONY_VERSION="2.7"
+    - php: 7.0
+      env: SYMFONY_VERSION="2.8"
+    - php: 7.0
+      env: SYMFONY_VERSION="3.0"
+  fast_finish: true
 
 install:
-  - composer self-update
-  - composer require symfony/symfony:${SYMFONY_VERSION}
+  - composer self-update || true
+  - if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then echo "memory_limit = -1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini; fi
+  - if [ "$SYMFONY_VERSION" != "" ]; then composer require --no-update symfony/symfony=$SYMFONY_VERSION; fi;
+  - composer update $COMPOSER_FLAGS --prefer-dist
 
 script: php ./vendor/bin/phpunit
