@@ -59,9 +59,12 @@ class DefaultController extends Controller
         $object = new \ArrayObject();
         $object->name = null;
 
+        $textType = method_exists('Symfony\Component\Form\AbstractType', 'getBlockPrefix') ? 'Symfony\Component\Form\Extension\Core\Type\TextType' : 'text';
+        $submitType = method_exists('Symfony\Component\Form\AbstractType', 'getBlockPrefix') ? 'Symfony\Component\Form\Extension\Core\Type\SubmitType' : 'submit';
+
         $form = $this->createFormBuilder($object)
-            ->add('name', 'text')
-            ->add('Submit', 'submit')
+            ->add('name', $textType)
+            ->add('Submit', $submitType)
             ->getForm();
 
         $form->handleRequest($request);
