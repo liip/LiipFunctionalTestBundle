@@ -34,11 +34,6 @@ matrix:
     - php: 5.4
       env: SYMFONY_VERSION="3.0.*"    
 
-addons:
-  apt:
-    packages:
-      - php5-sqlite
-
 install:
   - composer self-update
   - composer require symfony/symfony:${SYMFONY_VERSION}

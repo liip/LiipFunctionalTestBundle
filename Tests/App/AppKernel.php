@@ -1,7 +1,15 @@
 <?php
-// Tests/Controller/App/AppKernel.php
 
-/** @see http://www.whitewashing.de/2012/02/25/symfony2_controller_testing.html */
+/*
+ * This file is part of the Liip/FunctionalTestBundle
+ *
+ * (c) Lukas Kahwe Smith <smith@pooteeweet.org>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ * 
+ * @see http://www.whitewashing.de/2012/02/25/symfony2_controller_testing.html
+ */
 
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;

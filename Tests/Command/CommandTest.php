@@ -20,10 +20,10 @@ class CommandTest extends WebTestCase
         $this->loadFixtures(array(
             'Liip\FunctionalTestBundle\DataFixtures\ORM\LoadUserData',
         ));
-        
+
         $this->verbosityLevel = 'debug';
         $display = $this->runCommand('command:test');
-        
+
         $this->assertContains('Name: foo bar', $display);
         $this->assertContains('Email: foo@bar.com', $display);
     }

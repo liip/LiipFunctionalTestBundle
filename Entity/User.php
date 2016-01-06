@@ -18,12 +18,12 @@
 namespace Liip\FunctionalTestBundle\Entity;
 
 /**
- * User
+ * User.
  */
 class User
 {
     /**
-     * @var integer
+     * @var int
      */
     private $id;
 
@@ -53,7 +53,7 @@ class User
     private $algorithm;
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $enabled;
 
@@ -62,19 +62,19 @@ class User
      */
     private $confirmationToken;
 
-
     public function __construct()
     {
         $this->salt = sha1(
-            # http://php.net/manual/fr/function.openssl-random-pseudo-bytes.php
+            // http://php.net/manual/fr/function.openssl-random-pseudo-bytes.php
             bin2hex(openssl_random_pseudo_bytes(100))
         );
     }
 
     /**
-     * Set id
+     * Set id.
      *
-     * @param integer $id
+     * @param int $id
+     * 
      * @return User
      */
     public function setId($id)
@@ -85,9 +85,9 @@ class User
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer 
+     * @return int
      */
     public function getId()
     {
@@ -95,9 +95,10 @@ class User
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
+     * 
      * @return User
      */
     public function setName($name)
@@ -108,9 +109,9 @@ class User
     }
 
     /**
-     * Get name
+     * Get name.
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -118,9 +119,10 @@ class User
     }
 
     /**
-     * Set email
+     * Set email.
      *
      * @param string $email
+     * 
      * @return User
      */
     public function setEmail($email)
@@ -131,9 +133,9 @@ class User
     }
 
     /**
-     * Get email
+     * Get email.
      *
-     * @return string 
+     * @return string
      */
     public function getEmail()
     {
@@ -141,9 +143,10 @@ class User
     }
 
     /**
-     * Set password
+     * Set password.
      *
      * @param string $password
+     * 
      * @return User
      */
     public function setPassword($password)
@@ -154,9 +157,9 @@ class User
     }
 
     /**
-     * Get password
+     * Get password.
      *
-     * @return string 
+     * @return string
      */
     public function getPassword()
     {
@@ -164,9 +167,10 @@ class User
     }
 
     /**
-     * Set salt
+     * Set salt.
      *
      * @param string $salt
+     * 
      * @return User
      */
     public function setSalt($salt)
@@ -177,9 +181,9 @@ class User
     }
 
     /**
-     * Get salt
+     * Get salt.
      *
-     * @return string 
+     * @return string
      */
     public function getSalt()
     {
@@ -187,9 +191,10 @@ class User
     }
 
     /**
-     * Set algorithm
+     * Set algorithm.
      *
      * @param string $algorithm
+     * 
      * @return User
      */
     public function setAlgorithm($algorithm)
@@ -200,9 +205,9 @@ class User
     }
 
     /**
-     * Get algorithm
+     * Get algorithm.
      *
-     * @return string 
+     * @return string
      */
     public function getAlgorithm()
     {
@@ -210,9 +215,10 @@ class User
     }
 
     /**
-     * Set enabled
+     * Set enabled.
      *
-     * @param boolean $enabled
+     * @param bool $enabled
+     * 
      * @return User
      */
     public function setEnabled($enabled)
@@ -223,9 +229,9 @@ class User
     }
 
     /**
-     * Get enabled
+     * Get enabled.
      *
-     * @return boolean 
+     * @return bool
      */
     public function getEnabled()
     {
@@ -233,9 +239,10 @@ class User
     }
 
     /**
-     * Set confirmationToken
+     * Set confirmationToken.
      *
      * @param string $confirmationToken
+     * 
      * @return User
      */
     public function setConfirmationToken($confirmationToken)
@@ -246,9 +253,9 @@ class User
     }
 
     /**
-     * Get confirmationToken
+     * Get confirmationToken.
      *
-     * @return string 
+     * @return string
      */
     public function getConfirmationToken()
     {

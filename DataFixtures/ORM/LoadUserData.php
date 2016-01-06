@@ -16,14 +16,11 @@ use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
 use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
 use Doctrine\Common\Persistence\ObjectManager;
-
 use Liip\FunctionalTestBundle\Entity\User;
 
-class LoadUserData extends AbstractFixture
-    implements OrderedFixtureInterface, FixtureInterface, ContainerAwareInterface
+class LoadUserData extends AbstractFixture implements OrderedFixtureInterface, FixtureInterface, ContainerAwareInterface
 {
     /**
      * @var ContainerInterface
@@ -31,7 +28,7 @@ class LoadUserData extends AbstractFixture
     private $container;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setContainer(ContainerInterface $container = null)
     {
@@ -39,7 +36,7 @@ class LoadUserData extends AbstractFixture
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function load(ObjectManager $manager)
     {
@@ -55,11 +52,11 @@ class LoadUserData extends AbstractFixture
 
         $manager->persist($user);
         $manager->flush();
-        
+
         $this->addReference('user', $user);
-        
+
         $user = clone $this->getReference('user');
-        
+
         $user->setId(2);
 
         $manager->persist($user);
@@ -67,7 +64,7 @@ class LoadUserData extends AbstractFixture
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getOrder()
     {
