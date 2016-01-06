@@ -1,2 +1,7 @@
 composer.lock
 vendor
+
+# Ignore files created during tests
+/Tests/App/cache/
+/Tests/App/logs/
+/cov/

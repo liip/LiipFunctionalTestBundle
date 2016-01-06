@@ -1,3 +1,8 @@
+[![Build status][Travis Master image]][Travis Master]
+[![Scrutinizer Code Quality][Scrutinizer image]
+![Scrutinizer][Scrutinizer Coverage Image]][Scrutinizer]
+[![SensioLabsInsight][SensioLabsInsight Image]][SensioLabsInsight]
+
 Introduction
 ============
 
@@ -589,3 +594,11 @@ Caveats
        // ...
    }
    ```
+
+[Travis Master]: https://travis-ci.org/alexislefebvre/LiipFunctionalTestBundle
+[Travis Master image]: https://travis-ci.org/alexislefebvre/LiipFunctionalTestBundle.svg?branch=master
+[Scrutinizer]: https://scrutinizer-ci.com/g/alexislefebvre/LiipFunctionalTestBundle/?branch=master
+[Scrutinizer image]: https://scrutinizer-ci.com/g/alexislefebvre/LiipFunctionalTestBundle/badges/quality-score.png?b=master
+[Scrutinizer Coverage image]: https://scrutinizer-ci.com/g/alexislefebvre/LiipFunctionalTestBundle/badges/coverage.png?b=master
+[SensioLabsInsight]: https://insight.sensiolabs.com/projects/cb128312-f657-465d-b57c-99fe9e2ec1c8
+[SensioLabsInsight Image]: https://insight.sensiolabs.com/projects/cb128312-f657-465d-b57c-99fe9e2ec1c8/mini.png

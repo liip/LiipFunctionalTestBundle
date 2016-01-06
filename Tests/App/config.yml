@@ -1,0 +1,46 @@
+# http://www.whitewashing.de/2012/02/25/symfony2_controller_testing.html
+
+# Tests/App/config.yml
+framework:
+    secret:          secret
+    test: ~
+    router:          { resource: "%kernel.root_dir%/routing.yml" }
+    form:            true
+    csrf_protection: true
+    templating:      { engines: ['twig'] }
+    session:
+        # handler_id set to null will use default session handler from php.ini
+        handler_id:  ~
+        storage_id: session.storage.filesystem 
+    profiler:
+        collect: false
+
+monolog:
+    handlers:
+        main:
+            type:         fingers_crossed
+            action_level: error
+            handler:      nested
+        nested:
+            type:  stream
+            path:  %kernel.logs_dir%/%kernel.environment%.log
+            level: debug
+
+liip_functional_test:
+    cache_sqlite_db: true
+    query:
+        max_query_count: 5
+    authentication:
+        username: "foo bar"
+        password: "12341234"    
+
+doctrine:
+    dbal:
+        default_connection: default
+        connections:
+            default:
+                driver: pdo_sqlite
+                path: %kernel.cache_dir%/test.db
+    orm:
+        auto_generate_proxy_classes: "%kernel.debug%"
+        auto_mapping: true            
