@@ -23,6 +23,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -655,7 +656,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return string
      */
-    protected function getUrl($route, $params = array(), $absolute = false)
+    protected function getUrl($route, $params = array(), $absolute = UrlGeneratorInterface::ABSOLUTE_PATH)
     {
         return $this->getContainer()->get('router')->generate($route, $params, $absolute);
     }
