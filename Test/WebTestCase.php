@@ -24,8 +24,9 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
+use Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
 use Doctrine\Common\DataFixtures\ProxyReferenceRepository;
@@ -212,22 +213,6 @@ abstract class WebTestCase extends BaseWebTestCase
     }
 
     /**
-     * @param string $omName
-     * @param string $registryName
-     *
-     * @return ObjectManager
-     */
-    protected function getObjectManager($omName = null, $registryName = 'doctrine')
-    {
-        $registry = $this->getContainer()->get($registryName);
-        if ($registry instanceof ManagerRegistry) {
-            return  $registry->getManager($omName);
-        }
-
-        return $registry->getEntityManager($omName);
-    }
-
-    /**
      * This function finds the time when the data blocks of a class definition
      * file were being written to, that is, the time when the content of the
      * file was changed.
@@ -298,19 +283,15 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param string $registryName The service id of manager registry to use
      * @param int    $purgeMode    Sets the ORM purge mode
      *
-     * @return null|Doctrine\Common\DataFixtures\Executor\AbstractExecutor
+     * @return null|AbstractExecutor
      */
     protected function loadFixtures(array $classNames, $omName = null, $registryName = 'doctrine', $purgeMode = null)
     {
         $container = $this->getContainer();
+        /** @var ManagerRegistry $registry */
         $registry = $container->get($registryName);
-        if ($registry instanceof ManagerRegistry) {
-            $om = $registry->getManager($omName);
-            $type = $registry->getName();
-        } else {
-            $om = $registry->getEntityManager($omName);
-            $type = 'ORM';
-        }
+        $om = $registry->getManager($omName);
+        $type = $registry->getName();
 
         $executorClass = 'PHPCR' === $type && class_exists('Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor')
             ? 'Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor'
@@ -401,7 +382,6 @@ abstract class WebTestCase extends BaseWebTestCase
         $executor->execute($loader->getFixtures(), true);
 
         if (isset($name) && isset($backup)) {
-            $om = $executor->getObjectManager();
             $this->preReferenceSave($om, $executor, $backup);
 
             $executor->getReferenceRepository()->save($backup);
@@ -429,18 +409,20 @@ abstract class WebTestCase extends BaseWebTestCase
             throw new \BadMethodCallException('nelmio/alice should be installed to use this method.');
         }
 
-        $om = $this->getObjectManager($omName, $registryName);
+        /** @var ManagerRegistry $registry */
+        $registry = $this->getContainer()->get($registryName);
+        $om = $registry->getManager($omName);
 
         if ($append == false) {
             //Clean database
             $connection = $om->getConnection();
-            if ($connection->getDatabasePlatform() instanceof MySqlPlatform) {
+            if ($registry->getName() === 'ORM' && $connection->getDatabasePlatform() instanceof MySqlPlatform) {
                 $connection->query('SET FOREIGN_KEY_CHECKS=0');
             }
 
             $this->loadFixtures(array());
 
-            if ($connection->getDatabasePlatform() instanceof MySqlPlatform) {
+            if ($registry->getName() === 'ORM' && $connection->getDatabasePlatform() instanceof MySqlPlatform) {
                 $connection->query('SET FOREIGN_KEY_CHECKS=1');
             }
         }
@@ -520,7 +502,7 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param ContainerInterface $container
      * @param array              $classNames
      *
-     * @return \Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader
+     * @return Loader
      */
     protected function getFixtureLoader(ContainerInterface $container, array $classNames)
     {
@@ -542,8 +524,8 @@ abstract class WebTestCase extends BaseWebTestCase
     /**
      * Load a data fixture class.
      *
-     * @param \Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader $loader
-     * @param string                                                            $className
+     * @param Loader $loader
+     * @param string $className
      */
     protected function loadFixtureClass($loader, $className)
     {
