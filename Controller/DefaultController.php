@@ -13,6 +13,7 @@ namespace Liip\FunctionalTestBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class DefaultController extends Controller
 {
@@ -63,7 +64,10 @@ class DefaultController extends Controller
         $submitType = method_exists('Symfony\Component\Form\AbstractType', 'getBlockPrefix') ? 'Symfony\Component\Form\Extension\Core\Type\SubmitType' : 'submit';
 
         $form = $this->createFormBuilder($object)
-            ->add('name', $textType)
+            ->add('name', $textType, array(
+                /* @see http://symfony.com/doc/2.7/book/forms.html#adding-validation */
+                'constraints' => new NotBlank(),
+            ))
             ->add('Submit', $submitType)
             ->getForm();
 
