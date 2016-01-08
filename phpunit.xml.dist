@@ -25,6 +25,9 @@
 
     <filter>
         <whitelist>
+            <file>LiipFunctionalTestBundle.php</file>
+            <file>QueryCountClient.php</file>
+            <file>QueryCounter.php</file>
             <directory>Annotations</directory>
             <directory>DependencyInjection</directory>
             <directory>EventListener</directory>

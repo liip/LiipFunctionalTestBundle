@@ -21,8 +21,22 @@ class CommandTest extends WebTestCase
             'Liip\FunctionalTestBundle\DataFixtures\ORM\LoadUserData',
         ));
 
-        $this->verbosityLevel = 'debug';
+        // Run command without options
         $display = $this->runCommand('command:test');
+
+        $this->assertContains('Name: foo bar', $display);
+        $this->assertContains('Email: foo@bar.com', $display);
+
+        // Run command with options
+        $this->verbosityLevel = 'debug';
+        $this->decorated = false;
+        $display = $this->runCommand('command:test');
+
+        $this->assertContains('Name: foo bar', $display);
+        $this->assertContains('Email: foo@bar.com', $display);
+
+        // Run command and reuse kernel
+        $display = $this->runCommand('command:test', array(), true);
 
         $this->assertContains('Name: foo bar', $display);
         $this->assertContains('Email: foo@bar.com', $display);
