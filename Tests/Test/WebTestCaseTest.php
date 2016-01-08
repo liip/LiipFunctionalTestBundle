@@ -206,9 +206,9 @@ class WebTestCaseTest extends WebTestCase
 
         $this->assertStatusCode(200, $this->client);
 
-        $this->assertValidationErrors(array(), $this->client->getContainer());
+        $this->assertValidationErrors(array('children[name].data'), $this->client->getContainer());
 
-        // Try again with with the fields filled out.
+        // Try again with the fields filled out.
         $form = $crawler->selectButton('Submit')->form();
         $form->setValues(array('form[name]' => 'foo bar'));
         $crawler = $this->client->submit($form);
