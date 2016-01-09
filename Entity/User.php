@@ -17,10 +17,12 @@
 
 namespace Liip\FunctionalTestBundle\Entity;
 
+use Symfony\Component\Security\Core\User\UserInterface;
+
 /**
  * User.
  */
-class User
+class User implements UserInterface
 {
     /**
      * @var int
@@ -260,5 +262,21 @@ class User
     public function getConfirmationToken()
     {
         return $this->confirmationToken;
+    }
+
+    // Functions required for compatibility with UserInterface
+
+    public function getRoles()
+    {
+        return array('ROLE_ADMIN');
+    }
+
+    public function getUsername()
+    {
+        return $this->getName();
+    }
+
+    public function eraseCredentials()
+    {
     }
 }

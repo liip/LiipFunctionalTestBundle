@@ -220,4 +220,67 @@ class WebTestCaseTest extends WebTestCase
 
         $this->assertStatusCode(200, $this->client);
     }
+
+    public function testAdminWithoutAuthentication()
+    {
+        $this->client = static::makeClient();
+
+        $this->loadFixtures(array());
+
+        $path = '/admin';
+
+        $crawler = $this->client->request('GET', $path);
+
+        $this->assertStatusCode(500, $this->client);
+    }
+
+    /**
+     * Log in as the user defined in the configuration file.
+     */
+    public function testAdminWithAuthenticationTrue()
+    {
+        $this->client = static::makeClient(true);
+
+        $this->loadFixtures(array());
+
+        $path = '/admin';
+
+        $crawler = $this->client->request('GET', $path);
+
+        $this->assertStatusCode(500, $this->client);
+    }
+
+    public function testAdminWithAuthenticationLoginAs()
+    {
+        if (!$this->client->getContainer()->has('security.token_storage')) {
+            $this->markTestSkipped('security.token_storage is not available');
+        }
+
+        $fixtures = $this->loadFixtures(array(
+            'Liip\FunctionalTestBundle\DataFixtures\ORM\LoadUserData',
+        ))->getReferenceRepository();
+
+        $this->loginAs($fixtures->getReference('user'),
+            'secured_area');
+        $this->client = static::makeClient();
+
+        $path = '/admin';
+
+        $crawler = $this->client->request('GET', $path);
+
+        $this->assertStatusCode(200, $this->client);
+
+        $this->assertSame(1,
+            $crawler->filter('html > body')->count());
+
+        $this->assertSame(
+            'LiipFunctionalTestBundle',
+            $crawler->filter('h1')->text()
+        );
+
+        $this->assertSame(
+            'Admin',
+            $crawler->filter('h2')->text()
+        );
+    }
 }
