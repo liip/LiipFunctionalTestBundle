@@ -83,4 +83,15 @@ class DefaultController extends Controller
             'form' => $form->createView(),
         ));
     }
+
+    /**
+     * Used to test the authentication and firewall.
+     * 
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function adminAction()
+    {
+        return $this->render(
+            'LiipFunctionalTestBundle:Default:admin.html.twig');
+    }
 }

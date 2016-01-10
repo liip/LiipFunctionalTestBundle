@@ -11,7 +11,9 @@ framework:
     session:
         # handler_id set to null will use default session handler from php.ini
         handler_id:  ~
-        storage_id: session.storage.filesystem 
+        storage_id: session.storage.filesystem
+        # https://groups.google.com/forum/#!topic/symfony2/IB-CpMgo5o0
+        name: MOCKSESSID
     profiler:
         collect: false
 
@@ -44,3 +46,17 @@ doctrine:
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
         auto_mapping: true            
+
+security:
+    providers:
+        main:
+          entity: { class: Liip\FunctionalTestBundle\Entity\User, property: id }
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_USER
+    firewalls:
+        secured_area:
+            pattern:  ^/
+            anonymous: ~
+    access_control:
+        # require ROLE_ADMIN for /admin*
+        - { path: ^/admin, roles: ROLE_ADMIN }        

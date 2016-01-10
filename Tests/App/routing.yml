@@ -11,3 +11,9 @@ liipfunctionaltestbundle_user:
 liipfunctionaltestbundle_form:
     path:  /form
     defaults: { _controller: LiipFunctionalTestBundle:Default:form }
+
+liipfunctionaltestbundle_admin:
+    path:  /admin
+    defaults: { _controller: LiipFunctionalTestBundle:Default:admin }
+    requirements:
+        userId: \d+
