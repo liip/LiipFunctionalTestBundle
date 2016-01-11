@@ -34,7 +34,10 @@ liip_functional_test:
         max_query_count: 5
     authentication:
         username: "foo bar"
-        password: "12341234"    
+        password: "12341234"
+    html5validation:
+        url: http://validator.nu/
+        ignores_extract: {}
 
 doctrine:
     dbal:

@@ -11,6 +11,8 @@
         <parameter key="liip_functional_test.html5validation.url">http://validator.nu/</parameter>
 
         <parameter key="liip_functional_test.html5validation.ignores" type="collection" />
+        
+        <parameter key="liip_functional_test.html5validation.ignores_extract" type="collection" />
 
         <parameter key="liip_functional_test.authentication" type="collection">
             <parameter key="username"></parameter>

@@ -50,6 +50,12 @@ return $v; })
                         ->scalarNode('password')->end()
                     ->end()
                 ->end()
+                ->arrayNode('html5validation')
+                    ->children()
+                        ->scalarNode('url')->end()
+                        ->arrayNode('ignores_extract')->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 
