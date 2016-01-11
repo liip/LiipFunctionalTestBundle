@@ -252,10 +252,6 @@ class WebTestCaseTest extends WebTestCase
 
     public function testAdminWithAuthenticationLoginAs()
     {
-        if (!$this->client->getContainer()->has('security.token_storage')) {
-            $this->markTestSkipped('security.token_storage is not available');
-        }
-
         $fixtures = $this->loadFixtures(array(
             'Liip\FunctionalTestBundle\DataFixtures\ORM\LoadUserData',
         ))->getReferenceRepository();
