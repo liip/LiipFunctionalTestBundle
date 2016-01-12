@@ -596,7 +596,18 @@ abstract class WebTestCase extends BaseWebTestCase
             foreach ($this->firewallLogins as $firewallName => $user) {
                 $token = $this->createUserToken($user, $firewallName);
 
-                $client->getContainer()->get('security.token_storage')->setToken($token);
+                // BC: security.token_storage is available on Symfony 2.6+
+                // see http://symfony.com/blog/new-in-symfony-2-6-security-component-improvements
+                if ($client->getContainer()->has('security.token_storage')) {
+                    $tokenStorage = $client->getContainer()->get('security.token_storage');
+                } else {
+                    // This block will never be reached with Symfony 2.5+
+                    // @codeCoverageIgnoreStart
+                    $tokenStorage = $client->getContainer()->get('security.context');
+                    // @codeCoverageIgnoreEnd
+                }
+
+                $tokenStorage->setToken($token);
                 $session->set('_security_'.$firewallName, serialize($token));
             }
 

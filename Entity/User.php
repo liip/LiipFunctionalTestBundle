@@ -24,15 +24,18 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User implements UserInterface
 {
+    // Properties which will be serialized have to be "protected"
+    // @see http://stackoverflow.com/questions/9384836/symfony2-serialize-entity-object-to-session/10014802#10014802
+
     /**
      * @var int
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string
@@ -42,12 +45,12 @@ class User implements UserInterface
     /**
      * @var string
      */
-    private $password;
+    protected $password;
 
     /**
      * @var string
      */
-    private $salt;
+    protected $salt;
 
     /**
      * @var string
@@ -265,6 +268,7 @@ class User implements UserInterface
     }
 
     // Functions required for compatibility with UserInterface
+    // @see http://symfony.com/doc/2.3/cookbook/security/custom_provider.html
 
     public function getRoles()
     {
@@ -278,5 +282,35 @@ class User implements UserInterface
 
     public function eraseCredentials()
     {
+    }
+
+    public function isEqualTo(UserInterface $user)
+    {
+        if (!$user instanceof self) {
+            return false;
+        }
+
+        if ($this->id !== $user->getId()) {
+            return false;
+        }
+
+        if ($this->password !== $user->getPassword()) {
+            return false;
+        }
+
+        if ($this->salt !== $user->getSalt()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    // @see http://stackoverflow.com/questions/9384836/symfony2-serialize-entity-object-to-session/19133985#19133985
+
+    public function __sleep()
+    {
+        // these are field names to be serialized, others will be excluded
+        // but note that you have to fill other field values by your own
+        return array('id', 'name', 'password', 'salt');
     }
 }
