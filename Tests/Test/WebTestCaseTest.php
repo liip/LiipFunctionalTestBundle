@@ -187,6 +187,77 @@ class WebTestCaseTest extends WebTestCase
         );
     }
 
+    /**
+     * Use nelmio/alice.
+     */
+    public function testLoadFixturesFiles()
+    {
+        $this->loadFixtureFiles(array(
+            '@LiipFunctionalTestBundle/DataFixtures/ORM/user.yml',
+        ));
+
+        $em = $this->client->getContainer()
+            ->get('doctrine.orm.entity_manager');
+
+        $users = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findAll();
+
+        $this->assertSame(
+            10,
+            count($users)
+        );
+
+        $user = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findOneBy(array(
+                'id' => 1,
+            ));
+
+        $this->assertTrue(
+            $user->getEnabled()
+        );
+
+        $user = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findOneBy(array(
+                'id' => 10,
+            ));
+
+        $this->assertTrue(
+            $user->getEnabled()
+        );
+    }
+
+    /**
+     * Use nelmio/alice with full path to the file.
+     */
+    public function testLoadFixturesFilesPaths()
+    {
+        $this->loadFixtureFiles(array(
+            $this->client->getContainer()->get('kernel')->locateResource(
+                '@LiipFunctionalTestBundle/DataFixtures/ORM/user.yml'
+            ),
+        ));
+
+        $em = $this->client->getContainer()
+            ->get('doctrine.orm.entity_manager');
+
+        $users = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findAll();
+
+        $this->assertSame(
+            10,
+            count($users)
+        );
+
+        $user = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findOneBy(array(
+                'id' => 1,
+            ));
+
+        $this->assertTrue(
+            $user->getEnabled()
+        );
+    }
+
     public function testForm()
     {
         if (!interface_exists('Symfony\Component\Validator\Validator\ValidatorInterface')) {

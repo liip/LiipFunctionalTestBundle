@@ -27,7 +27,8 @@
         "symfony/monolog-bundle": "~2.4",
         "doctrine/doctrine-fixtures-bundle": "~2.3",
         "phpunit/phpunit": "4.8.*|5.1.*",
-        "twig/twig": "~1.12"
+        "twig/twig": "~1.12",
+        "nelmio/alice": "~1.7|~2.0"
     },
     "suggest": {
         "symfony/framework-bundle": "To use assertStatusCode and assertValidationErrors ~2.5",
