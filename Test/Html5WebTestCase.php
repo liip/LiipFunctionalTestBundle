@@ -135,7 +135,7 @@ HTML;
         }
 
         $res = $this->validateHtml5($content);
-        if (false === $res->messages) {
+        if (false === $res) {
             return $this->skipTestWithInvalidService();
         }
 
@@ -152,6 +152,10 @@ HTML;
          * if our local validator.nu instance is fixed, this stuff should go away
          */
         $ignores_extract = $this->getContainer()->getParameter('liip_functional_test.html5validation.ignores_extract');
+
+        if (!isset($res->messages)) {
+            return;
+        }
 
         foreach ($res->messages as $row) {
             if ($row->type == 'error') {
