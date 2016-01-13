@@ -14,18 +14,22 @@ namespace Liip\FunctionalTestBundle\Test;
 /**
  * @author Daniel Barsotti
  *
- * The on-line validator: http://validator.nu/
- * The documentation: http://about.validator.nu/
- * Documentation about the web service: http://wiki.whatwg.org/wiki/Validator.nu_Web_Service_Interface
+ * The on-line validator: https://validator.nu/
+ * The documentation: https://about.validator.nu/
+ * Documentation about the web service: https://github.com/validator/validator/wiki/Service:-HTTP-interface
  */
 abstract class Html5WebTestCase extends WebTestCase
 {
+    // <title> can't be empty:
+    //
+    // HTML5 validation failed:
+    //  Line 5: Element “title” must not be empty.
     protected $html5Wrapper = <<<'HTML'
 <!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title></title>
+    <title>HTML5</title>
 </head>
 <body>
 <<CONTENT>>
@@ -135,7 +139,7 @@ HTML;
         }
 
         $res = $this->validateHtml5($content);
-        if (false === $res) {
+        if (false === $res->messages) {
             return $this->skipTestWithInvalidService();
         }
 
@@ -152,10 +156,6 @@ HTML;
          * if our local validator.nu instance is fixed, this stuff should go away
          */
         $ignores_extract = $this->getContainer()->getParameter('liip_functional_test.html5validation.ignores_extract');
-
-        if (!isset($res->messages)) {
-            return;
-        }
 
         foreach ($res->messages as $row) {
             if ($row->type == 'error') {

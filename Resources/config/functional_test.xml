@@ -8,7 +8,7 @@
 
         <parameter key="liip_functional_test.cache_sqlite_db">false</parameter>
 
-        <parameter key="liip_functional_test.html5validation.url">http://validator.nu/</parameter>
+        <parameter key="liip_functional_test.html5validation.url">https://validator.nu/</parameter>
 
         <parameter key="liip_functional_test.html5validation.ignores" type="collection" />
         

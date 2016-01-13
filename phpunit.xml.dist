@@ -19,7 +19,8 @@
 
     <testsuites>
         <testsuite name="Project Test Suite">
-            <directory>Tests</directory>
+            <directory>Tests/Command</directory>
+            <directory>Tests/Test</directory>
         </testsuite>
     </testsuites>
 
