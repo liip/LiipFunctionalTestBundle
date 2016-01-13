@@ -139,7 +139,9 @@ HTML;
         }
 
         $res = $this->validateHtml5($content);
-        if (false === $res->messages) {
+        // json_decode returned null if the validator service didn't
+        // return JSON
+        if ((null === $res) || (false === $res) || (false === $res->messages)) {
             return $this->skipTestWithInvalidService();
         }
 
