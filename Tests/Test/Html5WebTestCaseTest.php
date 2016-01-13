@@ -20,12 +20,12 @@ class Html5WebTestCaseTest extends Html5WebTestCase
     public function setUp()
     {
         $this->client = static::makeClient();
+
+        $this->loadFixtures(array());
     }
 
     public function testIndex()
     {
-        $this->loadFixtures(array());
-
         $path = '/';
 
         $crawler = $this->client->request('GET', $path);
@@ -42,6 +42,13 @@ class Html5WebTestCaseTest extends Html5WebTestCase
 
         $this->assertIsValidHtml5(
             $this->client->getResponse()->getContent()
+        );
+    }
+
+    public function testSnippet()
+    {
+        $this->assertIsValidHtml5Snippet(
+            '<p>Hello World!</p>'
         );
     }
 }
