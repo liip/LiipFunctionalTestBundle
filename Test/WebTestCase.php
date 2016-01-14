@@ -550,29 +550,31 @@ abstract class WebTestCase extends BaseWebTestCase
     /**
      * Creates an instance of a lightweight Http client.
      *
-     * If $authentication is set to 'true' it will use the content of
-     * 'liip_functional_test.authentication' to log in.
+     * If $authentication is set to 'true', it will use the content of
+     * 'liip_functional_test.authentication' or 'liip_functional_test.authentication.default' to log in;
+     * If $authentication is a string, it will use 'liip_functional_test.authentication.{$authentication}';
+     * If $authentication is an array, it will pass it directly to $params.
+     *
+     * $authentication is merged in $params.
      *
      * $params can be used to pass headers to the client, note that they have
      * to follow the naming format used in $_SERVER.
      * Example: 'HTTP_X_REQUESTED_WITH' instead of 'X-Requested-With'
      *
-     * @param bool|array $authentication
-     * @param array      $params
+     * @param bool|array|string $authentication
+     * @param array             $params
      *
      * @return Client
      */
     protected function makeClient($authentication = false, array $params = array())
     {
         if ($authentication) {
-            if ($authentication === true) {
-                $authentication = $this->getContainer()->getParameter('liip_functional_test.authentication');
-            }
+            $credentials = $this->createAuthenticationCredentials($authentication);
 
-            $params = array_merge($params, array(
-                'PHP_AUTH_USER' => $authentication['username'],
-                'PHP_AUTH_PW' => $authentication['password'],
-            ));
+            $params = array_merge($params, [
+                'PHP_AUTH_USER' => $credentials['username'],
+                'PHP_AUTH_PW' => $credentials['password'],
+            ]);
         }
 
         $client = static::createClient(array('environment' => $this->environment), $params);
@@ -597,18 +599,7 @@ abstract class WebTestCase extends BaseWebTestCase
             foreach ($this->firewallLogins as $firewallName => $user) {
                 $token = $this->createUserToken($user, $firewallName);
 
-                // BC: security.token_storage is available on Symfony 2.6+
-                // see http://symfony.com/blog/new-in-symfony-2-6-security-component-improvements
-                if ($client->getContainer()->has('security.token_storage')) {
-                    $tokenStorage = $client->getContainer()->get('security.token_storage');
-                } else {
-                    // This block will never be reached with Symfony 2.5+
-                    // @codeCoverageIgnoreStart
-                    $tokenStorage = $client->getContainer()->get('security.context');
-                    // @codeCoverageIgnoreEnd
-                }
-
-                $tokenStorage->setToken($token);
+                $client->getContainer()->get('security.context')->setToken($token);
                 $session->set('_security_'.$firewallName, serialize($token));
             }
 
@@ -616,6 +607,45 @@ abstract class WebTestCase extends BaseWebTestCase
         }
 
         return $client;
+    }
+
+    /**
+     * Create the credentials to login the client.
+     *
+     * @param $authentication
+     * @return array It contains the credentials to use to login the client
+     * @throws \InvalidArgumentException
+     */
+    private function createAuthenticationCredentials($authentication) {
+        if ($authentication === true) {
+            $credentials = $this->getContainer()->getParameter('liip_functional_test.authentication');
+
+            if (!isset($credentials['default'])) {
+                throw new \InvalidArgumentException(
+                    'If you pass "true" to WebTestCase::makeClient(), you have to set the "default" credentials in configuration file.'
+                );
+            }
+
+            $authentication = $credentials['default'];
+        } elseif (is_string($authentication)) {
+            $credentials = $this->getContainer()->getParameter('liip_functional_test.authentication');
+
+            if (!isset($credentials[$authentication])) {
+                throw new \InvalidArgumentException(
+                    sprintf('The credentials for user "%s" are not set in the configuration file.', $authentication)
+                );
+            }
+
+            $authentication = $credentials[$authentication];
+        } elseif (is_array($authentication)) {
+            if (!isset($authentication['username']) | !isset($authentication['password'])) {
+                throw new \InvalidArgumentException(
+                    'To create an already loggedin client you have to pass an array with keys "username" and "password".
+                        ');
+            }
+        }
+
+        return $authentication;
     }
 
     /**
