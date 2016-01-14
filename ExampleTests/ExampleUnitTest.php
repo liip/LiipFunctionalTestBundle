@@ -11,6 +11,7 @@
 
 namespace Liip\FooBundle\Tests;
 
+use Liip\FunctionalTestBundle\Controller\DefaultController;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 
 /**
