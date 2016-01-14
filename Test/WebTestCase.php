@@ -413,7 +413,7 @@ abstract class WebTestCase extends BaseWebTestCase
         $registry = $this->getContainer()->get($registryName);
         $om = $registry->getManager($omName);
 
-        if ($append == false) {
+        if ($append === false) {
             //Clean database
             $connection = $om->getConnection();
             if ($registry->getName() === 'ORM' && $connection->getDatabasePlatform() instanceof MySqlPlatform) {
