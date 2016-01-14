@@ -28,34 +28,55 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('liip_functional_test', 'array');
         $rootNode
             ->beforeNormalization()
-                ->ifArray()->then(function ($v) { if (!empty($v['query_count.max_query_count'])) {
-     $v['query']['max_query_count'] = $v['query_count.max_query_count'];
-     unset($v['query_count.max_query_count']);
- }
+            ->ifArray()->then(
+                function ($v)
+                {
+                    if (!empty($v['query_count.max_query_count']))
+                    {
+                        $v['query']['max_query_count'] = $v['query_count.max_query_count'];
+                        unset($v['query_count.max_query_count']);
+                    }
 
-return $v; })
-            ->end()
+                    return $v;
+                })->end()
+            ->beforeNormalization()
+            ->ifArray()->then(
+                function ($v)
+                {
+                    if (isset($v['authentication']['username']) | isset($v['authentication']['password']))
+                    {
+                        // Put username and password in a new array with "default" as key
+                        $username = (isset($v['authentication']['username'])) ? $v['authentication']['username'] : '';
+                        $password = (isset($v['authentication']['password'])) ? $v['authentication']['password'] : '';
+
+                        unset($v['authentication']['username']);
+                        unset($v['authentication']['password']);
+
+                        $v['authentication']['default'] = [
+                            'username' => $username,
+                            'password' => $password
+                        ];
+                    }
+
+                    return $v;
+                })->end()
             ->children()
-                ->booleanNode('cache_sqlite_db')->defaultFalse()->end()
-                ->scalarNode('command_verbosity')->defaultValue('normal')->end()
-                ->booleanNode('command_decoration')->defaultTrue()->end()
-                ->arrayNode('query')
-                    ->children()
-                        ->scalarNode('max_query_count')->end()
-                    ->end()
-                ->end()
-                ->arrayNode('authentication')
-                    ->children()
-                        ->scalarNode('username')->end()
-                        ->scalarNode('password')->end()
-                    ->end()
-                ->end()
-                ->arrayNode('html5validation')
-                    ->children()
-                        ->scalarNode('url')->end()
-                        ->arrayNode('ignores_extract')->end()
-                    ->end()
-                ->end()
+            ->booleanNode('cache_sqlite_db')->defaultFalse()->end()
+            ->scalarNode('command_verbosity')->defaultValue('normal')->end()
+            ->booleanNode('command_decoration')->defaultTrue()->end()
+            ->arrayNode('query')
+            ->children()
+            ->scalarNode('max_query_count')->end()
+            ->end()
+            ->end()
+            ->arrayNode('authentication')
+            ->prototype('array')
+            ->children()
+            ->scalarNode('username')->end()
+            ->scalarNode('password')->end()
+            ->end()
+            ->end()
+            ->end()
             ->end()
         ;
 
