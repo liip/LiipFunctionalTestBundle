@@ -350,4 +350,11 @@ class WebTestCaseTest extends WebTestCase
             $crawler->filter('h2')->text()
         );
     }
+
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        $this->client = null;
+    }
 }
