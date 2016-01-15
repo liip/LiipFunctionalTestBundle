@@ -15,30 +15,147 @@ use Liip\FunctionalTestBundle\Test\WebTestCase;
 
 class CommandTest extends WebTestCase
 {
-    public function testRunCommand()
+    private $display;
+
+    /**
+     * This method tests both the default setting of `runCommand()` and the kernel reusing, as, to reuse kernel,
+     * it is needed a kernel is yet instantiated. So we test these two conditions here, to not repeat the code.
+     */
+    public function testRunCommandWithoutOptionsAndReuseKernel()
     {
-        $this->loadFixtures(array(
-            'Liip\FunctionalTestBundle\DataFixtures\ORM\LoadUserData',
-        ));
-
         // Run command without options
-        $display = $this->runCommand('command:test');
+        $this->display = $this->runCommand('command:test');
 
-        $this->assertContains('Name: foo bar', $display);
-        $this->assertContains('Email: foo@bar.com', $display);
-
-        // Run command with options
-        $this->verbosityLevel = 'debug';
-        $this->decorated = false;
-        $display = $this->runCommand('command:test');
-
-        $this->assertContains('Name: foo bar', $display);
-        $this->assertContains('Email: foo@bar.com', $display);
+        // Test default values
+        $this->assertContains('Environment: test', $this->display);
+        $this->assertContains('Verbosity level: NORMAL', $this->display);
+        $this->assertEquals(true, $this->getDecorated());
 
         // Run command and reuse kernel
-        $display = $this->runCommand('command:test', array(), true);
+        $this->display = $this->runCommand('command:test', array(), true);
 
-        $this->assertContains('Name: foo bar', $display);
-        $this->assertContains('Email: foo@bar.com', $display);
+        $this->assertContains('Environment: test', $this->display);
+        $this->assertContains('Verbosity level: NORMAL', $this->display);
+    }
+
+    public function testRunCommandWithoutOptionsAndNotReuseKernel()
+    {
+        // Run command without options
+        $this->display = $this->runCommand('command:test');
+
+        // Test default values
+        $this->assertContains('Environment: test', $this->display);
+        $this->assertContains('Verbosity level: NORMAL', $this->display);
+        $this->assertEquals(true, $this->getDecorated());
+
+        // Run command and not reuse kernel
+        $this->environment = 'prod';
+        $this->display = $this->runCommand('command:test', array(), true);
+
+        $this->assertContains('Environment: prod', $this->display);
+        $this->assertContains('Verbosity level: NORMAL', $this->display);
+    }
+
+    public function testRunCommandWithoutDecoration()
+    {
+        // Set `decorated` to false
+        $this->isDecorated(false);
+
+        $this->display = $this->runCommand('command:test');
+
+        $this->assertContains('Verbosity level: NORMAL', $this->display);
+        $this->assertEquals(false, $this->getDecorated());
+    }
+
+    public function testRunCommandVerbosityQuiet()
+    {
+        $this->setVerbosityLevel('quiet');
+        $this->isDecorated(false);
+        $this->display = $this->runCommand('command:test');
+
+        $this->assertNotContains('Verbosity level: NORMAL', $this->display);
+        $this->assertNotContains('Verbosity level: VERBOSE', $this->display);
+        $this->assertNotContains('Verbosity level: VERY_VERBOSE', $this->display);
+        $this->assertNotContains('Verbosity level: DEBUG', $this->display);
+    }
+
+    public function testRunCommandVerbosityImplicitlyNormal()
+    {
+        // Run command without setting verbosity: default set is normal
+        $this->isDecorated(false);
+        $this->display = $this->runCommand('command:test');
+
+        $this->assertContains('Verbosity level: NORMAL', $this->display);
+
+        // In this version of Symfony, NORMAL is practically equal to VERBOSE
+        if (\Symfony\Component\HttpKernel\Kernel::VERSION_ID === '20301') {
+            $this->assertContains('Verbosity level: VERBOSE', $this->display);
+        } else {
+            $this->assertNotContains('Verbosity level: VERBOSE', $this->display);
+        }
+
+        $this->assertNotContains('Verbosity level: VERY_VERBOSE', $this->display);
+        $this->assertNotContains('Verbosity level: DEBUG', $this->display);
+    }
+
+    public function testRunCommandVerbosityExplicitlyNormal()
+    {
+        $this->setVerbosityLevel('normal');
+        $this->isDecorated(false);
+        $this->display = $this->runCommand('command:test');
+
+        $this->assertContains('Verbosity level: NORMAL', $this->display);
+
+        // In this version of Symfony, NORMAL is practically equal to VERBOSE
+        if (\Symfony\Component\HttpKernel\Kernel::VERSION_ID === '20301') {
+            $this->assertContains('Verbosity level: VERBOSE', $this->display);
+        } else {
+            $this->assertNotContains('Verbosity level: VERBOSE', $this->display);
+        }
+
+        $this->assertNotContains('Verbosity level: VERY_VERBOSE', $this->display);
+        $this->assertNotContains('Verbosity level: DEBUG', $this->display);
+    }
+
+    public function testRunCommandVerbosityVerbose()
+    {
+        $this->setVerbosityLevel('verbose');
+        $this->display = $this->runCommand('command:test');
+
+        $this->assertContains('Verbosity level: NORMAL', $this->display);
+        $this->assertContains('Verbosity level: VERBOSE', $this->display);
+        $this->assertNotContains('Verbosity level: VERY_VERBOSE', $this->display);
+        $this->assertNotContains('Verbosity level: DEBUG', $this->display);
+    }
+
+    public function testRunCommandVerbosityVeryVerbose()
+    {
+        $this->setVerbosityLevel('very_verbose');
+        $this->isDecorated(false);
+        $this->display = $this->runCommand('command:test');
+
+        $this->assertContains('Verbosity level: NORMAL', $this->display);
+        $this->assertContains('Verbosity level: VERBOSE', $this->display);
+        $this->assertContains('Verbosity level: VERY_VERBOSE', $this->display);
+        $this->assertNotContains('Verbosity level: DEBUG', $this->display);
+    }
+
+    public function testRunCommandVerbosityDebug()
+    {
+        $this->setVerbosityLevel('debug');
+        $this->isDecorated(false);
+        $this->display = $this->runCommand('command:test');
+
+        $this->assertContains('Verbosity level: NORMAL', $this->display);
+        $this->assertContains('Verbosity level: VERBOSE', $this->display);
+        $this->assertContains('Verbosity level: VERY_VERBOSE', $this->display);
+        $this->assertContains('Verbosity level: DEBUG', $this->display);
+    }
+
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        unset($this->display);
     }
 }
