@@ -11,9 +11,7 @@
 
 namespace Liip\FunctionalTestBundle\Tests\Test;
 
-use Liip\FunctionalTestBundle\Test\Html5WebTestCase;
-
-class Html5WebTestCaseTest extends Html5WebTestCase
+class Html5WebTestCaseFakeTest extends Html5WebTestCaseFake
 {
     private $client = null;
 
