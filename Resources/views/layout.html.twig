@@ -8,6 +8,14 @@
     </head>
     
     <body>
+        <p id="user">
+            {%- if (app.user is null) -%}
+                Not logged in.
+            {%- else -%}
+                Logged in as {{ app.user.username }}.
+            {%- endif -%}
+        </p>
+
         <h1>LiipFunctionalTestBundle</h1>
         
         {% for flash_message in app.session.flashbag.get('notice') %}
@@ -16,6 +24,6 @@
             </div>
         {% endfor %}
         
-        {% block body %}{% endblock %}
+        <div id="content">{% block body %}{% endblock %}</div>
     </body>
 </html>
