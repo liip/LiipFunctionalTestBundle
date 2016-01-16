@@ -37,6 +37,11 @@ class WebTestCaseTest extends WebTestCase
             $crawler->filter('html > body')->count());
 
         $this->assertSame(
+            'Not logged in.',
+            $crawler->filter('p#user')->text()
+        );
+
+        $this->assertSame(
             'LiipFunctionalTestBundle',
             $crawler->filter('h1')->text()
         );
@@ -67,7 +72,7 @@ class WebTestCaseTest extends WebTestCase
     public function testIndexWithAuthentication()
     {
         $this->client = static::makeClient(array(
-            'username' => 'foo bar',
+            'username' => 'foobar',
             'password' => '12341234',
         ));
 
@@ -81,6 +86,11 @@ class WebTestCaseTest extends WebTestCase
 
         $this->assertSame(1,
             $crawler->filter('html > body')->count());
+
+        $this->assertSame(
+            'Logged in as foobar.',
+            $crawler->filter('p#user')->text()
+        );
 
         $this->assertSame(
             'LiipFunctionalTestBundle',
@@ -122,11 +132,11 @@ class WebTestCaseTest extends WebTestCase
 
         $this->assertSame(
             'Name: foo bar',
-            $crawler->filter('p')->eq(0)->text()
+            $crawler->filter('div#content p')->eq(0)->text()
         );
         $this->assertSame(
             'Email: foo@bar.com',
-            $crawler->filter('p')->eq(1)->text()
+            $crawler->filter('div#content p')->eq(1)->text()
         );
     }
 
@@ -302,11 +312,40 @@ class WebTestCaseTest extends WebTestCase
 
         $crawler = $this->client->request('GET', $path);
 
-        $this->assertStatusCode(500, $this->client);
+        $this->assertStatusCode(401, $this->client);
     }
 
     /**
      * Log in as the user defined in the configuration file.
+     */
+    public function testAuthenticationTrue()
+    {
+        $this->client = static::makeClient(true);
+
+        $this->loadFixtures(array());
+
+        $path = '/';
+
+        $crawler = $this->client->request('GET', $path);
+
+        $this->assertStatusCode(200, $this->client);
+
+        $this->assertSame(1,
+            $crawler->filter('html > body')->count());
+
+        $this->assertSame(
+            'Logged in as foobar.',
+            $crawler->filter('p#user')->text()
+        );
+
+        $this->assertSame(
+            'LiipFunctionalTestBundle',
+            $crawler->filter('h1')->text()
+        );
+    }
+
+    /**
+     * Log in as the user defined in the Bundle configuration.
      */
     public function testAdminWithAuthenticationTrue()
     {
@@ -318,7 +357,26 @@ class WebTestCaseTest extends WebTestCase
 
         $crawler = $this->client->request('GET', $path);
 
-        $this->assertStatusCode(500, $this->client);
+        $this->assertStatusCode(403, $this->client);
+    }
+
+    /**
+     * Log in as the admin defined in the in_memory array.
+     */
+    public function testAdminWithAuthenticationRoleAdmin()
+    {
+        $this->client = static::makeClient(array(
+            'username' => 'roleadmin',
+            'password' => '12341234',
+        ));
+
+        $this->loadFixtures(array());
+
+        $path = '/admin';
+
+        $crawler = $this->client->request('GET', $path);
+
+        $this->assertStatusCode(200, $this->client);
     }
 
     public function testAdminWithAuthenticationLoginAs()
@@ -339,6 +397,11 @@ class WebTestCaseTest extends WebTestCase
 
         $this->assertSame(1,
             $crawler->filter('html > body')->count());
+
+        $this->assertSame(
+            'Logged in as foo bar.',
+            $crawler->filter('p#user')->text()
+        );
 
         $this->assertSame(
             'LiipFunctionalTestBundle',
