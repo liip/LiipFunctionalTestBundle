@@ -292,6 +292,34 @@ class WebTestCaseTest extends WebTestCase
         $this->assertStatusCode(200, $this->client);
     }
 
+    public function testFormWithException()
+    {
+        if (!interface_exists('Symfony\Component\Validator\Validator\ValidatorInterface')) {
+            $this->markTestSkipped('The Symfony\Component\Validator\Validator\ValidatorInterface does not exist');
+        }
+
+        $this->loadFixtures(array());
+
+        $path = '/form';
+
+        $crawler = $this->client->request('GET', $path);
+
+        $this->assertStatusCode(200, $this->client);
+
+        $form = $crawler->selectButton('Submit')->form();
+        $crawler = $this->client->submit($form);
+
+        $this->assertStatusCode(200, $this->client);
+
+        try {
+            $this->assertValidationErrors(array(''), $this->client->getContainer());
+        } catch (\PHPUnit_Framework_ExpectationFailedException $expected) {
+            return;
+        }
+
+        $this->fail('PHPUnit_Framework_ExpectationFailedException has not been raised');
+    }
+
     public function testAdminWithoutAuthentication()
     {
         $this->client = static::makeClient();
