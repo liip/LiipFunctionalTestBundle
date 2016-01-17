@@ -122,6 +122,56 @@ class WebTestCaseTest extends WebTestCase
         );
     }
 
+    public function testIndex404()
+    {
+        $this->loadFixtures(array());
+
+        $path = '/missing_page';
+
+        $crawler = $this->client->request('GET', $path);
+
+        $this->assertStatusCode(404, $this->client);
+
+        $this->isSuccessful($this->client->getResponse(), false);
+    }
+
+    /**
+     * @depends testIndex
+     */
+    public function testUserGetUrl()
+    {
+        $this->loadFixtures(array(
+            'Liip\FunctionalTestBundle\DataFixtures\ORM\LoadUserData',
+        ));
+
+        $path = $this->getUrl(
+            'liipfunctionaltestbundle_user',
+            array(
+                'userId' => 1,
+                'get_parameter' => 'abc',
+            )
+        );
+
+        $this->assertSame($path, '/user/1?get_parameter=abc');
+
+        $crawler = $this->client->request('GET', $path);
+
+        $this->isSuccessful($this->client->getResponse());
+
+        $this->assertSame(1,
+            $crawler->filter('html > body')->count());
+
+        $this->assertSame(
+            'Not logged in.',
+            $crawler->filter('p#user')->text()
+        );
+
+        $this->assertSame(
+            'LiipFunctionalTestBundle',
+            $crawler->filter('h1')->text()
+        );
+    }
+
     /**
      * @depends testIndex
      * @QueryCount(100)
@@ -145,9 +195,7 @@ class WebTestCaseTest extends WebTestCase
 
     /**
      * Authentication.
-     */
-
-    /**
+     *
      * @depends testIndex
      */
     public function testIndexWithAuthentication()
@@ -182,7 +230,6 @@ class WebTestCaseTest extends WebTestCase
     /**
      * Data fixtures.
      */
-
     public function testUserWithFixtures()
     {
         $this->loadFixtures(array(
@@ -359,7 +406,6 @@ class WebTestCaseTest extends WebTestCase
     /**
      * Form.
      */
-
     public function testForm()
     {
         if (!interface_exists('Symfony\Component\Validator\Validator\ValidatorInterface')) {
@@ -428,7 +474,6 @@ class WebTestCaseTest extends WebTestCase
     /**
      * Authentication.
      */
-
     public function testAdminWithoutAuthentication()
     {
         $this->client = static::makeClient();
@@ -508,6 +553,9 @@ class WebTestCaseTest extends WebTestCase
         $this->assertStatusCode(200, $this->client);
     }
 
+    /**
+     * Authentication.
+     */
     public function testAdminWithAuthenticationLoginAs()
     {
         $fixtures = $this->loadFixtures(array(
@@ -540,6 +588,23 @@ class WebTestCaseTest extends WebTestCase
         $this->assertSame(
             'Admin',
             $crawler->filter('h2')->text()
+        );
+    }
+
+    public function testJson()
+    {
+        $this->client = static::makeClient(true);
+
+        $this->loadFixtures(array());
+
+        $path = '/json';
+
+        $crawler = $this->client->request('GET', $path);
+
+        $this->isSuccessful(
+            $this->client->getResponse(),
+            true,
+            'application/json'
         );
     }
 }

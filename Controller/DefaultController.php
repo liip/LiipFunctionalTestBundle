@@ -13,6 +13,7 @@ namespace Liip\FunctionalTestBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class DefaultController extends Controller
@@ -29,7 +30,7 @@ class DefaultController extends Controller
 
     /**
      * @param int $userId
-     * 
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function userAction($userId)
@@ -52,7 +53,7 @@ class DefaultController extends Controller
 
     /**
      * @param Request $request
-     * 
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function formAction(Request $request)
@@ -86,12 +87,25 @@ class DefaultController extends Controller
 
     /**
      * Used to test the authentication and firewall.
-     * 
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function adminAction()
     {
         return $this->render(
             'LiipFunctionalTestBundle:Default:admin.html.twig');
+    }
+
+    /**
+     * Used to test a JSON content with corresponding Content-Type.
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function jsonAction()
+    {
+        $response = new Response(json_encode(array('name' => 'John Doe')));
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
     }
 }
