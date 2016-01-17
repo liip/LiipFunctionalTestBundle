@@ -23,6 +23,9 @@ class WebTestCaseTest extends WebTestCase
         $this->client = static::makeClient();
     }
 
+    /**
+     * Call methods from Symfony to ensure the Controller works.
+     */
     public function testIndex()
     {
         $this->loadFixtures(array());
@@ -30,8 +33,6 @@ class WebTestCaseTest extends WebTestCase
         $path = '/';
 
         $crawler = $this->client->request('GET', $path);
-
-        $this->assertStatusCode(200, $this->client);
 
         $this->assertSame(1,
             $crawler->filter('html > body')->count());
@@ -48,6 +49,81 @@ class WebTestCaseTest extends WebTestCase
     }
 
     /**
+     * Call methods from the parent class.
+     */
+
+    /**
+     * @depends testIndex
+     */
+    public function testIndexAssertStatusCode()
+    {
+        $this->loadFixtures(array());
+
+        $path = '/';
+
+        $crawler = $this->client->request('GET', $path);
+
+        $this->assertStatusCode(200, $this->client);
+    }
+
+    /**
+     * @depends testIndex
+     */
+    public function testIndexIsSuccesful()
+    {
+        $this->loadFixtures(array());
+
+        $path = '/';
+
+        $crawler = $this->client->request('GET', $path);
+
+        $this->isSuccessful($this->client->getResponse());
+    }
+
+    /**
+     * @depends testIndex
+     */
+    public function testIndexFetchCrawler()
+    {
+        $this->loadFixtures(array());
+
+        $path = '/';
+
+        $crawler = $this->fetchCrawler($path);
+
+        $this->assertSame(1,
+            $crawler->filter('html > body')->count());
+
+        $this->assertSame(
+            'Not logged in.',
+            $crawler->filter('p#user')->text()
+        );
+
+        $this->assertSame(
+            'LiipFunctionalTestBundle',
+            $crawler->filter('h1')->text()
+        );
+    }
+
+    /**
+     * @depends testIndex
+     */
+    public function testIndexFetchContent()
+    {
+        $this->loadFixtures(array());
+
+        $path = '/';
+
+        $content = $this->fetchContent($path);
+
+        $this->assertContains(
+            '<h1>LiipFunctionalTestBundle</h1>',
+            $content
+        );
+    }
+
+    /**
+     * @depends testIndex
      * @QueryCount(100)
      */
     public function testIndexWithAnnotations()
@@ -58,8 +134,6 @@ class WebTestCaseTest extends WebTestCase
 
         $crawler = $this->client->request('GET', $path);
 
-        $this->assertStatusCode(200, $this->client);
-
         $this->assertSame(1,
             $crawler->filter('html > body')->count());
 
@@ -69,6 +143,13 @@ class WebTestCaseTest extends WebTestCase
         );
     }
 
+    /**
+     * Authentication.
+     */
+
+    /**
+     * @depends testIndex
+     */
     public function testIndexWithAuthentication()
     {
         $this->client = static::makeClient(array(
@@ -97,6 +178,10 @@ class WebTestCaseTest extends WebTestCase
             $crawler->filter('h1')->text()
         );
     }
+
+    /**
+     * Data fixtures.
+     */
 
     public function testUserWithFixtures()
     {
@@ -140,6 +225,9 @@ class WebTestCaseTest extends WebTestCase
         );
     }
 
+    /**
+     * @depends testIndex
+     */
     public function testIndexWithFixtures()
     {
         $this->loadFixtures(array(
@@ -268,6 +356,10 @@ class WebTestCaseTest extends WebTestCase
         );
     }
 
+    /**
+     * Form.
+     */
+
     public function testForm()
     {
         if (!interface_exists('Symfony\Component\Validator\Validator\ValidatorInterface')) {
@@ -294,14 +386,17 @@ class WebTestCaseTest extends WebTestCase
         $form->setValues(array('form[name]' => 'foo bar'));
         $crawler = $this->client->submit($form);
 
+        $this->assertStatusCode(200, $this->client);
+
         $this->assertContains(
             'Name submitted.',
             $crawler->filter('div.flash-notice')->text()
         );
-
-        $this->assertStatusCode(200, $this->client);
     }
 
+    /**
+     * @depends testForm
+     */
     public function testFormWithException()
     {
         if (!interface_exists('Symfony\Component\Validator\Validator\ValidatorInterface')) {
@@ -330,6 +425,10 @@ class WebTestCaseTest extends WebTestCase
         $this->fail('PHPUnit_Framework_ExpectationFailedException has not been raised');
     }
 
+    /**
+     * Authentication.
+     */
+
     public function testAdminWithoutAuthentication()
     {
         $this->client = static::makeClient();
@@ -341,6 +440,8 @@ class WebTestCaseTest extends WebTestCase
         $crawler = $this->client->request('GET', $path);
 
         $this->assertStatusCode(401, $this->client);
+
+        $this->isSuccessful($this->client->getResponse(), false);
     }
 
     /**
