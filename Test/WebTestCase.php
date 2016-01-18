@@ -18,6 +18,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\BrowserKit\Cookie;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -661,7 +662,7 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param bool     $success  to define whether the response is expected to be successful
      * @param string   $type
      */
-    public function isSuccessful($response, $success = true, $type = 'text/html')
+    public function isSuccessful(Response $response, $success = true, $type = 'text/html')
     {
         try {
             $crawler = new Crawler();
