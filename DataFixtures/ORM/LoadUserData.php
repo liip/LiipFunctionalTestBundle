@@ -16,7 +16,6 @@ use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
 use Doctrine\Common\Persistence\ObjectManager;
 use Liip\FunctionalTestBundle\Entity\User;
 
@@ -44,10 +43,8 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface, F
         $user->setId(1);
         $user->setName('foo bar');
         $user->setEmail('foo@bar.com');
-        // Set according to your security context settings
-        $encoder = new MessageDigestPasswordEncoder('sha1', true, 3);
-        $user->setPassword($encoder->encodePassword('12341234', $user->getSalt()));
-        $user->setAlgorithm('sha1');
+        $user->setPassword('12341234');
+        $user->setAlgorithm('plaintext');
         $user->setEnabled(true);
         $user->setConfirmationToken(null);
 
