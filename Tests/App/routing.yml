@@ -17,3 +17,9 @@ liipfunctionaltestbundle_admin:
     defaults: { _controller: LiipFunctionalTestBundle:Default:admin }
     requirements:
         userId: \d+
+
+liipfunctionaltestbundle_json:
+    path:  /json
+    defaults: { _controller: LiipFunctionalTestBundle:Default:json }
+    requirements:
+        userId: \d+

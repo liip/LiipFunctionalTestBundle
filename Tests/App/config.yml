@@ -33,7 +33,7 @@ liip_functional_test:
     query:
         max_query_count: 5
     authentication:
-        username: "foo bar"
+        username: "foobar"
         password: "12341234"
 
 doctrine:
@@ -48,15 +48,36 @@ doctrine:
         auto_mapping: true            
 
 security:
+    encoders:
+        # in_memory users
+        Symfony\Component\Security\Core\User\User: plaintext
+        # User entity
+        Liip\FunctionalTestBundle\Entity\User: plaintext
     providers:
+        chain_provider:
+            chain:
+                providers: [in_memory, main]
+        in_memory:
+            memory:
+                users:
+                    foobar:
+                        password: "12341234"
+                        roles: 'ROLE_USER'
+                    roleadmin:
+                        password: "12341234"
+                        roles: 'ROLE_ADMIN'
         main:
-          entity: { class: Liip\FunctionalTestBundle\Entity\User, property: id }
+            entity: { class: Liip\FunctionalTestBundle\Entity\User, property: id }
     role_hierarchy:
         ROLE_ADMIN: ROLE_USER
     firewalls:
         secured_area:
             pattern:  ^/
-            anonymous: ~
+            anonymous: true
+            http_basic:
+                realm: "Admin Area"
+            provider: chain_provider
     access_control:
         # require ROLE_ADMIN for /admin*
-        - { path: ^/admin, roles: ROLE_ADMIN }        
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
