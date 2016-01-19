@@ -607,4 +607,11 @@ class WebTestCaseTest extends WebTestCase
             'application/json'
         );
     }
+
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        $this->client = null;
+    }
 }
