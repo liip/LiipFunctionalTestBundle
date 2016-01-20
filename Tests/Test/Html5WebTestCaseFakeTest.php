@@ -49,4 +49,14 @@ class Html5WebTestCaseFakeTest extends Html5WebTestCaseFake
             '<p>Hello World!</p>'
         );
     }
+
+    public function testSetHtml5Wrapper()
+    {
+        $this->setHtml5Wrapper('foo bar');
+
+        $this->assertSame(
+            'foo bar',
+            $this->html5Wrapper
+        );
+    }
 }

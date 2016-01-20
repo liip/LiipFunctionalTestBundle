@@ -24,6 +24,40 @@ class WebTestCaseTest extends WebTestCase
     }
 
     /**
+     * Call methods from the parent class.
+     */
+    public function testGetContainer()
+    {
+        $this->assertInstanceOf(
+            'Symfony\Component\DependencyInjection\ContainerInterface',
+            $this->getContainer()
+        );
+    }
+
+    public function testMakeClient()
+    {
+        $this->assertInstanceOf(
+            'Symfony\Bundle\FrameworkBundle\Client',
+            static::makeClient()
+        );
+    }
+
+    public function testGetUrl()
+    {
+        $path = $this->getUrl(
+            'liipfunctionaltestbundle_user',
+            array(
+                'userId' => 1,
+                'get_parameter' => 'abc',
+            )
+        );
+
+        $this->assertInternalType('string', $path);
+
+        $this->assertSame($path, '/user/1?get_parameter=abc');
+    }
+
+    /**
      * Call methods from Symfony to ensure the Controller works.
      */
     public function testIndex()
@@ -61,7 +95,7 @@ class WebTestCaseTest extends WebTestCase
 
         $path = '/';
 
-        $crawler = $this->client->request('GET', $path);
+        $this->client->request('GET', $path);
 
         $this->assertStatusCode(200, $this->client);
     }
@@ -75,7 +109,7 @@ class WebTestCaseTest extends WebTestCase
 
         $path = '/';
 
-        $crawler = $this->client->request('GET', $path);
+        $this->client->request('GET', $path);
 
         $this->isSuccessful($this->client->getResponse());
     }
@@ -90,6 +124,11 @@ class WebTestCaseTest extends WebTestCase
         $path = '/';
 
         $crawler = $this->fetchCrawler($path);
+
+        $this->assertInstanceOf(
+            'Symfony\Component\DomCrawler\Crawler',
+            $crawler
+        );
 
         $this->assertSame(1,
             $crawler->filter('html > body')->count());
@@ -116,13 +155,15 @@ class WebTestCaseTest extends WebTestCase
 
         $content = $this->fetchContent($path);
 
+        $this->assertInternalType('string', $content);
+
         $this->assertContains(
             '<h1>LiipFunctionalTestBundle</h1>',
             $content
         );
     }
 
-    public function testIndex404()
+    public function test404Error()
     {
         $this->loadFixtures(array());
 
@@ -133,43 +174,6 @@ class WebTestCaseTest extends WebTestCase
         $this->assertStatusCode(404, $this->client);
 
         $this->isSuccessful($this->client->getResponse(), false);
-    }
-
-    /**
-     * @depends testIndex
-     */
-    public function testUserGetUrl()
-    {
-        $this->loadFixtures(array(
-            'Liip\FunctionalTestBundle\DataFixtures\ORM\LoadUserData',
-        ));
-
-        $path = $this->getUrl(
-            'liipfunctionaltestbundle_user',
-            array(
-                'userId' => 1,
-                'get_parameter' => 'abc',
-            )
-        );
-
-        $this->assertSame($path, '/user/1?get_parameter=abc');
-
-        $crawler = $this->client->request('GET', $path);
-
-        $this->isSuccessful($this->client->getResponse());
-
-        $this->assertSame(1,
-            $crawler->filter('html > body')->count());
-
-        $this->assertSame(
-            'Not logged in.',
-            $crawler->filter('p#user')->text()
-        );
-
-        $this->assertSame(
-            'LiipFunctionalTestBundle',
-            $crawler->filter('h1')->text()
-        );
     }
 
     /**
@@ -204,6 +208,11 @@ class WebTestCaseTest extends WebTestCase
             'username' => 'foobar',
             'password' => '12341234',
         ));
+
+        $this->assertInstanceOf(
+            'Symfony\Bundle\FrameworkBundle\Client',
+            $this->client
+        );
 
         $this->loadFixtures(array());
 
@@ -272,14 +281,29 @@ class WebTestCaseTest extends WebTestCase
         );
     }
 
+    public function testLoadEmptyFixtures()
+    {
+        $fixtures = $this->loadFixtures(array());
+
+        $this->assertInstanceOf(
+            'Doctrine\Common\DataFixtures\Executor\AbstractExecutor',
+            $this->loadFixtures(array())
+        );
+    }
+
     /**
      * @depends testIndex
      */
     public function testIndexWithFixtures()
     {
-        $this->loadFixtures(array(
+        $fixtures = $this->loadFixtures(array(
             'Liip\FunctionalTestBundle\DataFixtures\ORM\LoadUserData',
         ));
+
+        $this->assertInstanceOf(
+            'Doctrine\Common\DataFixtures\Executor\AbstractExecutor',
+            $fixtures
+        );
 
         $path = '/';
 
@@ -310,10 +334,25 @@ class WebTestCaseTest extends WebTestCase
 
     public function testLoadFixtures()
     {
-        $this->loadFixtures(array(
+        $fixtures = $this->loadFixtures(array(
             'Liip\FunctionalTestBundle\DataFixtures\ORM\LoadUserData',
         ));
 
+        $this->assertInstanceOf(
+            'Doctrine\Common\DataFixtures\Executor\AbstractExecutor',
+            $fixtures
+        );
+
+        $repository = $fixtures->getReferenceRepository();
+
+        $user1 = $repository->getReference('user');
+
+        $this->assertSame(1, $user1->getId());
+        $this->assertSame('foo bar', $user1->getName());
+        $this->assertSame('foo@bar.com', $user1->getEmail());
+        $this->assertTrue($user1->getEnabled());
+
+        // Load data from database
         $em = $this->client->getContainer()
             ->get('doctrine.orm.entity_manager');
 
@@ -326,7 +365,6 @@ class WebTestCaseTest extends WebTestCase
             'foo@bar.com',
             $user->getEmail()
         );
-
         $this->assertTrue(
             $user->getEnabled()
         );
@@ -337,9 +375,20 @@ class WebTestCaseTest extends WebTestCase
      */
     public function testLoadFixturesFiles()
     {
-        $this->loadFixtureFiles(array(
+        $fixtures = $this->loadFixtureFiles(array(
             '@LiipFunctionalTestBundle/DataFixtures/ORM/user.yml',
         ));
+
+        $this->assertInternalType(
+            'array',
+            $fixtures
+        );
+
+        // 10 users are loaded
+        $this->assertCount(
+            10,
+            $fixtures
+        );
 
         $em = $this->client->getContainer()
             ->get('doctrine.orm.entity_manager');
@@ -376,11 +425,27 @@ class WebTestCaseTest extends WebTestCase
      */
     public function testLoadFixturesFilesPaths()
     {
-        $this->loadFixtureFiles(array(
+        $fixtures = $this->loadFixtureFiles(array(
             $this->client->getContainer()->get('kernel')->locateResource(
                 '@LiipFunctionalTestBundle/DataFixtures/ORM/user.yml'
             ),
         ));
+
+        $this->assertInternalType(
+            'array',
+            $fixtures
+        );
+
+        // 10 users are loaded
+        $this->assertCount(
+            10,
+            $fixtures
+        );
+
+        $user1 = $fixtures['id1'];
+
+        $this->assertInternalType('string', $user1->getUsername());
+        $this->assertTrue($user1->getEnabled());
 
         $em = $this->client->getContainer()
             ->get('doctrine.orm.entity_manager');
@@ -482,7 +547,7 @@ class WebTestCaseTest extends WebTestCase
 
         $path = '/admin';
 
-        $crawler = $this->client->request('GET', $path);
+        $this->client->request('GET', $path);
 
         $this->assertStatusCode(401, $this->client);
 
@@ -495,6 +560,11 @@ class WebTestCaseTest extends WebTestCase
     public function testAuthenticationTrue()
     {
         $this->client = static::makeClient(true);
+
+        $this->assertInstanceOf(
+            'Symfony\Bundle\FrameworkBundle\Client',
+            $this->client
+        );
 
         $this->loadFixtures(array());
 
@@ -525,11 +595,16 @@ class WebTestCaseTest extends WebTestCase
     {
         $this->client = static::makeClient(true);
 
+        $this->assertInstanceOf(
+            'Symfony\Bundle\FrameworkBundle\Client',
+            $this->client
+        );
+
         $this->loadFixtures(array());
 
         $path = '/admin';
 
-        $crawler = $this->client->request('GET', $path);
+        $this->client->request('GET', $path);
 
         $this->assertStatusCode(403, $this->client);
     }
@@ -544,11 +619,16 @@ class WebTestCaseTest extends WebTestCase
             'password' => '12341234',
         ));
 
+        $this->assertInstanceOf(
+            'Symfony\Bundle\FrameworkBundle\Client',
+            $this->client
+        );
+
         $this->loadFixtures(array());
 
         $path = '/admin';
 
-        $crawler = $this->client->request('GET', $path);
+        $this->client->request('GET', $path);
 
         $this->assertStatusCode(200, $this->client);
     }
@@ -560,11 +640,29 @@ class WebTestCaseTest extends WebTestCase
     {
         $fixtures = $this->loadFixtures(array(
             'Liip\FunctionalTestBundle\DataFixtures\ORM\LoadUserData',
-        ))->getReferenceRepository();
+        ));
 
-        $this->loginAs($fixtures->getReference('user'),
+        $this->assertInstanceOf(
+            'Doctrine\Common\DataFixtures\Executor\AbstractExecutor',
+            $fixtures
+        );
+
+        $repository = $fixtures->getReferenceRepository();
+
+        $loginAs = $this->loginAs($repository->getReference('user'),
             'secured_area');
+
+        $this->assertInstanceOf(
+            'Liip\FunctionalTestBundle\Test\WebTestCase',
+            $loginAs
+        );
+
         $this->client = static::makeClient();
+
+        $this->assertInstanceOf(
+            'Symfony\Bundle\FrameworkBundle\Client',
+            $this->client
+        );
 
         $path = '/admin';
 
@@ -591,15 +689,18 @@ class WebTestCaseTest extends WebTestCase
         );
     }
 
+    /**
+     * Call isSuccessful() with "application/json" content type.
+     */
     public function testJson()
     {
-        $this->client = static::makeClient(true);
+        $this->client = static::makeClient();
 
         $this->loadFixtures(array());
 
         $path = '/json';
 
-        $crawler = $this->client->request('GET', $path);
+        $this->client->request('GET', $path);
 
         $this->isSuccessful(
             $this->client->getResponse(),

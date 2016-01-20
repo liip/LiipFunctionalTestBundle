@@ -26,10 +26,14 @@ class CommandTest extends WebTestCase
         // Run command without options
         $this->display = $this->runCommand('command:test');
 
+        $this->assertInternalType('string', $this->display);
+
         // Test default values
         $this->assertContains('Environment: test', $this->display);
         $this->assertContains('Verbosity level: NORMAL', $this->display);
-        $this->assertEquals(true, $this->getDecorated());
+
+        $this->assertInternalType('boolean', $this->getDecorated());
+        $this->assertTrue($this->getDecorated());
 
         // Run command and reuse kernel
         $this->display = $this->runCommand('command:test', array(), true);
@@ -46,7 +50,9 @@ class CommandTest extends WebTestCase
         // Test default values
         $this->assertContains('Environment: test', $this->display);
         $this->assertContains('Verbosity level: NORMAL', $this->display);
-        $this->assertEquals(true, $this->getDecorated());
+
+        $this->assertInternalType('boolean', $this->getDecorated());
+        $this->assertTrue($this->getDecorated());
 
         // Run command and not reuse kernel
         $this->environment = 'prod';
@@ -63,15 +69,24 @@ class CommandTest extends WebTestCase
 
         $this->display = $this->runCommand('command:test');
 
+        $this->assertInternalType('string', $this->display);
+
         $this->assertContains('Verbosity level: NORMAL', $this->display);
-        $this->assertEquals(false, $this->getDecorated());
+
+        $this->assertInternalType('boolean', $this->getDecorated());
+        $this->assertFalse($this->getDecorated());
     }
 
     public function testRunCommandVerbosityQuiet()
     {
         $this->setVerbosityLevel('quiet');
         $this->isDecorated(false);
+        $this->assertInternalType('boolean', $this->getDecorated());
+        $this->assertFalse($this->getDecorated());
+
         $this->display = $this->runCommand('command:test');
+
+        $this->assertInternalType('string', $this->display);
 
         $this->assertNotContains('Verbosity level: NORMAL', $this->display);
         $this->assertNotContains('Verbosity level: VERBOSE', $this->display);
@@ -83,9 +98,14 @@ class CommandTest extends WebTestCase
     {
         // Run command without setting verbosity: default set is normal
         $this->isDecorated(false);
+        $this->assertInternalType('boolean', $this->getDecorated());
+        $this->assertFalse($this->getDecorated());
+
         $this->display = $this->runCommand('command:test');
 
         $this->assertContains('Verbosity level: NORMAL', $this->display);
+
+        $this->assertInternalType('string', $this->display);
 
         // In this version of Symfony, NORMAL is practically equal to VERBOSE
         if (\Symfony\Component\HttpKernel\Kernel::VERSION_ID === '20301') {
@@ -106,6 +126,8 @@ class CommandTest extends WebTestCase
 
         $this->assertContains('Verbosity level: NORMAL', $this->display);
 
+        $this->assertInternalType('string', $this->display);
+
         // In this version of Symfony, NORMAL is practically equal to VERBOSE
         if (\Symfony\Component\HttpKernel\Kernel::VERSION_ID === '20301') {
             $this->assertContains('Verbosity level: VERBOSE', $this->display);
@@ -122,6 +144,8 @@ class CommandTest extends WebTestCase
         $this->setVerbosityLevel('verbose');
         $this->display = $this->runCommand('command:test');
 
+        $this->assertInternalType('string', $this->display);
+
         $this->assertContains('Verbosity level: NORMAL', $this->display);
         $this->assertContains('Verbosity level: VERBOSE', $this->display);
         $this->assertNotContains('Verbosity level: VERY_VERBOSE', $this->display);
@@ -132,7 +156,12 @@ class CommandTest extends WebTestCase
     {
         $this->setVerbosityLevel('very_verbose');
         $this->isDecorated(false);
+        $this->assertInternalType('boolean', $this->getDecorated());
+        $this->assertFalse($this->getDecorated());
+
         $this->display = $this->runCommand('command:test');
+
+        $this->assertInternalType('string', $this->display);
 
         $this->assertContains('Verbosity level: NORMAL', $this->display);
         $this->assertContains('Verbosity level: VERBOSE', $this->display);
@@ -144,7 +173,12 @@ class CommandTest extends WebTestCase
     {
         $this->setVerbosityLevel('debug');
         $this->isDecorated(false);
+        $this->assertInternalType('boolean', $this->getDecorated());
+        $this->assertFalse($this->getDecorated());
+
         $this->display = $this->runCommand('command:test');
+
+        $this->assertInternalType('string', $this->display);
 
         $this->assertContains('Verbosity level: NORMAL', $this->display);
         $this->assertContains('Verbosity level: VERBOSE', $this->display);
