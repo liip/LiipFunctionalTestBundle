@@ -15,9 +15,11 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\BrowserKit\Cookie;
+use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -48,6 +50,8 @@ abstract class WebTestCase extends BaseWebTestCase
     protected $kernelDir;
     // 5 * 1024 * 1024 KB
     protected $maxMemory = 5242880;
+
+    // RUN COMMAND
     protected $verbosityLevel;
     protected $decorated;
 
@@ -119,11 +123,15 @@ abstract class WebTestCase extends BaseWebTestCase
         $application = new Application($kernel);
         $application->setAutoExit(false);
 
+        if ('20301' === Kernel::VERSION_ID) {
+            $params = $this->configureVerbosityForSymfony20301($params);
+        }
+
         $input = new ArrayInput($params);
         $input->setInteractive(false);
 
         $fp = fopen('php://temp/maxmemory:'.$this->maxMemory, 'r+');
-        $output = new StreamOutput($fp, $this->retrieveVerbosityLevel(), $this->retrieveDecorated());
+        $output = new StreamOutput($fp, $this->getVerbosityLevel(), $this->getDecorated());
 
         $application->run($input, $output);
 
@@ -135,30 +143,76 @@ abstract class WebTestCase extends BaseWebTestCase
     /**
      * Retrieves the output verbosity level.
      *
-     * @see Symfony\Component\Console\Output\StreamOutput for available levels
+     * @see Symfony\Component\Console\Output\OutputInterface for available levels
      *
-     * @return string
+     * @return int
+     *
+     * @throws \OutOfBoundsException If the set value isn't accepted
      */
-    private function retrieveVerbosityLevel()
+    protected function getVerbosityLevel()
     {
-        // Returns the local verbosity level
-        if ($this->verbosityLevel) {
-            $verbosity = 'StreamOutput::VERBOSITY_'.strtoupper($this->verbosityLevel);
-            if (defined($verbosity)) {
-                return $verbosity;
-            }
+        // If `null`, is not yet set
+        if (null === $this->verbosityLevel) {
+            // Set the global verbosity level that is set as NORMAL by the TreeBuilder in Configuration
+            $level = strtoupper($this->getContainer()->getParameter('liip_functional_test.command_verbosity'));
+            $verbosity = '\Symfony\Component\Console\Output\StreamOutput::VERBOSITY_'.$level;
+
+            $this->verbosityLevel = constant($verbosity);
         }
 
-        // Returns the global verbosity level
-        if ($this->getContainer()->hasParameter('liip_functional_test.command_verbosity')) {
-            $verbosity = 'StreamOutput::VERBOSITY_'.strtoupper($this->getContainer()->getParameter('liip_functional_test.command_verbosity'));
-            if (defined($verbosity)) {
-                return $verbosity;
+        // If string, it is set by the developer, so check that the value is an accepted one
+        if (is_string($this->verbosityLevel)) {
+            $level = strtoupper($this->verbosityLevel);
+            $verbosity = '\Symfony\Component\Console\Output\StreamOutput::VERBOSITY_'.$level;
+
+            if (null === constant($verbosity)) {
+                throw new \OutOfBoundsException(
+                    'The set value "%s" for verbosityLevel is not valid. Accepted are: "quiet", "normal", "verbose", "very_verbose" and "debug".
+                    ');
             }
+
+            $this->verbosityLevel = constant($verbosity);
         }
 
-        // Returns the default verbosity level
-        return StreamOutput::VERBOSITY_NORMAL;
+        return $this->verbosityLevel;
+    }
+
+    /**
+     * In Symfony 2.3.1 the verbosity level has to be set through {Symfony\Component\Console\Input\ArrayInput} and not
+     * in {Symfony\Component\Console\Output\OutputInterface}.
+     *
+     * This method builds $params to be passed to {Symfony\Component\Console\Input\ArrayInput}.
+     *
+     * @param array $params
+     *
+     * @return array
+     */
+    private function configureVerbosityForSymfony20301(array $params)
+    {
+        switch ($this->getVerbosityLevel()) {
+            case OutputInterface::VERBOSITY_QUIET:
+                $params['-q'] = '-q';
+                break;
+
+            case OutputInterface::VERBOSITY_VERBOSE:
+                $params['-v'] = '';
+                break;
+
+            case OutputInterface::VERBOSITY_VERY_VERBOSE:
+                $params['-vv'] = '';
+                break;
+
+            case OutputInterface::VERBOSITY_DEBUG:
+                $params['-vvv'] = '';
+                break;
+        }
+
+        return $params;
+    }
+
+    public function setVerbosityLevel($level)
+    {
+        $this->verbosityLevel = $level;
     }
 
     /**
@@ -166,20 +220,26 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return bool
      */
-    private function retrieveDecorated()
+    protected function getDecorated()
     {
-        // Returns the local decorated flag
-        if (is_bool($this->decorated)) {
-            return $this->decorated;
+        if (null === $this->decorated) {
+            // Set the global decoration flag that is set to `true` by the TreeBuilder in Configuration
+            $this->decorated = $this->getContainer()->getParameter('liip_functional_test.command_decoration');
         }
 
-        // Returns the global decorated flag
-        if ($this->getContainer()->hasParameter('liip_functional_test.command_decoration')) {
-            return $this->getContainer()->getParameter('liip_functional_test.command_decoration');
+        // Check the local decorated flag
+        if (false === is_bool($this->decorated)) {
+            throw new \OutOfBoundsException(
+                sprintf('`WebTestCase::decorated` has to be `bool`. "%s" given.', gettype($this->decorated))
+            );
         }
 
-        // Returns the default decorated flag
-        return true;
+        return $this->decorated;
+    }
+
+    public function isDecorated($decorated)
+    {
+        $this->decorated = $decorated;
     }
 
     /**
