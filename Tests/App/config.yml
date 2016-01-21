@@ -28,13 +28,7 @@ monolog:
             path:  %kernel.logs_dir%/%kernel.environment%.log
             level: debug
 
-liip_functional_test:
-    cache_sqlite_db: true
-    query:
-        max_query_count: 5
-    authentication:
-        username: "foobar"
-        password: "12341234"
+liip_functional_test: ~
 
 doctrine:
     dbal:
@@ -48,11 +42,6 @@ doctrine:
         auto_mapping: true            
 
 security:
-    encoders:
-        # in_memory users
-        Symfony\Component\Security\Core\User\User: plaintext
-        # User entity
-        Liip\FunctionalTestBundle\Entity\User: plaintext
     providers:
         chain_provider:
             chain:
@@ -68,15 +57,10 @@ security:
                         roles: 'ROLE_ADMIN'
         main:
             entity: { class: Liip\FunctionalTestBundle\Entity\User, property: id }
-    role_hierarchy:
-        ROLE_ADMIN: ROLE_USER
     firewalls:
         secured_area:
             pattern:  ^/
             anonymous: true
-            http_basic:
-                realm: "Admin Area"
-            provider: chain_provider
     access_control:
         # require ROLE_ADMIN for /admin*
         - { path: ^/admin, roles: ROLE_ADMIN }

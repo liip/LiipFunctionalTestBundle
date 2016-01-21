@@ -20,6 +20,7 @@
     <testsuites>
         <testsuite name="Project Test Suite">
             <directory>Tests/Command</directory>
+            <directory>Tests/DependencyInjection</directory>
             <directory>Tests/Test</directory>
         </testsuite>
     </testsuites>
