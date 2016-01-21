@@ -6,18 +6,9 @@
 
     <parameters>
 
-        <parameter key="liip_functional_test.cache_sqlite_db">false</parameter>
-
-        <parameter key="liip_functional_test.html5validation.url">https://validator.nu/</parameter>
-
         <parameter key="liip_functional_test.html5validation.ignores" type="collection" />
-        
-        <parameter key="liip_functional_test.html5validation.ignores_extract" type="collection" />
 
-        <parameter key="liip_functional_test.authentication" type="collection">
-            <parameter key="username"></parameter>
-            <parameter key="password"></parameter>
-        </parameter>
+        <parameter key="liip_functional_test.html5validation.ignores_extract" type="collection" />
 
         <parameter key="liip_functional_test.query.max_query_count">null</parameter>
 

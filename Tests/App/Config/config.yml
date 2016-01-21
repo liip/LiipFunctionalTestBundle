@@ -1,0 +1,35 @@
+framework:
+    router: { resource: "%kernel.root_dir%/../routing.yml" }
+
+# Define all the available parameters in this Bundle
+liip_functional_test:
+    cache_sqlite_db: true
+    command_verbosity: "very_verbose"
+    command_decoration: false
+    query:
+        max_query_count: 5
+    authentication:
+        username: "foobar"
+        password: "12341234"
+    html5validation:
+        url: http://example.com/
+        ignores: ['ignore_1', 'ignore_2']
+        ignores_extract:
+            - 'ignore_extract_1'
+            - 'ignore_extract_2'
+
+security:
+    encoders:
+        # in_memory users
+        Symfony\Component\Security\Core\User\User: plaintext
+        # User entity
+        Liip\FunctionalTestBundle\Entity\User: plaintext
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_USER
+    firewalls:
+        secured_area:
+            pattern:  ^/
+            anonymous: true
+            http_basic:
+                realm: "Admin Area"
+            provider: chain_provider
