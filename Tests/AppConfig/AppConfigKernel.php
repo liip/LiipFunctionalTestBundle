@@ -11,7 +11,7 @@
  * @see http://www.whitewashing.de/2012/02/25/symfony2_controller_testing.html
  */
 
-require_once __DIR__.'/../AppKernel.php';
+require_once __DIR__.'/../App/AppKernel.php';
 
 use Symfony\Component\Config\Loader\LoaderInterface;
 

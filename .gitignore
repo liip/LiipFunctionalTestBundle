@@ -4,6 +4,6 @@ vendor
 # Ignore files created during tests
 /Tests/App/cache/
 /Tests/App/logs/
-/Tests/App/Config/cache/
-/Tests/App/Config/logs/
+/Tests/AppConfig/cache/
+/Tests/AppConfig/logs/
 /cov/

@@ -25,7 +25,7 @@ class ConfigurationConfigTest extends ConfigurationTest
      */
     protected static function getKernelClass()
     {
-        require_once __DIR__.'/../App/Config/AppConfigKernel.php';
+        require_once __DIR__.'/../AppConfig/AppConfigKernel.php';
 
         return 'AppConfigKernel';
     }

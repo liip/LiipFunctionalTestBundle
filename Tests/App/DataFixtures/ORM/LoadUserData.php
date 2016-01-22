@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Liip\FunctionalTestBundle\DataFixtures\ORM;
+namespace Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -17,7 +17,7 @@ use Doctrine\Common\DataFixtures\FixtureInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Liip\FunctionalTestBundle\Entity\User;
+use Liip\FunctionalTestBundle\Tests\App\Entity\User;
 
 class LoadUserData extends AbstractFixture implements OrderedFixtureInterface, FixtureInterface, ContainerAwareInterface
 {
