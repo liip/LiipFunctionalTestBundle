@@ -12,7 +12,6 @@
 namespace Liip\FunctionalTestBundle\Tests\Test;
 
 use Liip\FunctionalTestBundle\Test\WebTestCase;
-use Liip\FunctionalTestBundle\Annotations\QueryCount;
 
 class WebTestCaseTest extends WebTestCase
 {
@@ -324,9 +323,6 @@ class WebTestCaseTest extends WebTestCase
         );
     }
 
-    /**
-     * @QueryCount(100)
-     */
     public function testUserWithFixtures()
     {
         $fixtures = $this->loadFixtures(array(

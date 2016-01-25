@@ -11,6 +11,7 @@
 
 namespace Liip\FunctionalTestBundle\Tests\Test;
 
+use Liip\FunctionalTestBundle\Annotations\QueryCount;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 
 /**
@@ -135,5 +136,60 @@ class WebTestCaseConfigTest extends WebTestCase
             'LiipFunctionalTestBundle',
             $crawler->filter('h1')->text()
         );
+    }
+
+    /**
+     * Log in as the user defined in the Data Fixtures and except a
+     * AllowedQueriesExceededException exception.
+     */
+    public function testAllowedQueriesExceededException()
+    {
+        $fixtures = $this->loadFixtures(array(
+            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
+        ));
+
+        $repository = $fixtures->getReferenceRepository();
+
+        // There will be one query to log in the first user.
+        $this->loginAs($repository->getReference('user'),
+            'secured_area');
+
+        $this->client = static::makeClient();
+
+        // One another query to load the second user.
+        $path = '/user/2';
+
+        // There will be 2 queries, in the configuration the limit is 1,
+        // an Exception will be thrown.
+        $this->setExpectedException(
+            'Liip\FunctionalTestBundle\Exception\AllowedQueriesExceededException'
+        );
+
+        $this->client->request('GET', $path);
+    }
+
+    /**
+     * Expect an exception due to the QueryCount annotation.
+     *
+     * @QueryCount(0)
+     */
+    public function testAnnotationAndException()
+    {
+        $this->loadFixtures(array(
+            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
+        ));
+
+        $this->client = static::makeClient();
+
+        // One query to load the second user
+        $path = '/user/1';
+
+        // There will be 1 query, in the annotation the limit is 0,
+        // an Exception will be thrown.
+        $this->setExpectedException(
+            'Liip\FunctionalTestBundle\Exception\AllowedQueriesExceededException'
+        );
+
+        $this->client->request('GET', $path);
     }
 }
