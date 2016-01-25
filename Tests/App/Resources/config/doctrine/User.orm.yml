@@ -1,10 +1,4 @@
-# Generated with the following command:
-#  php app/console generate:doctrine:entity --entity=AppBundle:User \
-#  --fields="name:string(255) email:string(255) password:string(255) \
-#  algorithm:string(255) enabled:boolean \
-#  confirmationToken:string(255)" --format=yml --no-interaction
- 
-Liip\FunctionalTestBundle\Entity\User:
+Liip\FunctionalTestBundle\Tests\App\Entity\User:
     type: entity
     table: 'liip_user'
     id:

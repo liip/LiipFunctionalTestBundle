@@ -7,15 +7,9 @@
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
- * 
- * Generated with the following command:
- * php app/console generate:doctrine:entity --entity=AppBundle:User \
- * --fields="name:string(255) email:string(255) password:string(255) \
- * algorithm:string(255) enabled:boolean \
- * confirmationToken:string(255)" --format=yml --no-interaction
  */
 
-namespace Liip\FunctionalTestBundle\Entity;
+namespace Liip\FunctionalTestBundle\Tests\App\Entity;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 

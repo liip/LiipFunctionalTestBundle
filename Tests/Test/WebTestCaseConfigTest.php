@@ -28,7 +28,7 @@ class WebTestCaseConfigTest extends WebTestCase
 
     protected static function getKernelClass()
     {
-        require_once __DIR__.'/../App/Config/AppConfigKernel.php';
+        require_once __DIR__.'/../AppConfig/AppConfigKernel.php';
 
         return 'AppConfigKernel';
     }
@@ -158,7 +158,7 @@ class WebTestCaseConfigTest extends WebTestCase
     public function testAdminAuthenticationLoginAs()
     {
         $fixtures = $this->loadFixtures(array(
-            'Liip\FunctionalTestBundle\DataFixtures\ORM\LoadUserData',
+            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ));
 
         $this->assertInstanceOf(

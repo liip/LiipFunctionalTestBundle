@@ -39,7 +39,19 @@ doctrine:
                 path: %kernel.cache_dir%/test.db
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
-        auto_mapping: true            
+        default_entity_manager: default
+        entity_managers:
+            default:
+                connection: default
+                mappings:
+                    LiipFunctionalTestBundle:
+                        type: php
+                        dir: "%kernel.root_dir%/../App/Entity"
+                        prefix: 'Liip\FunctionalTestBundle\Tests\App\Entity'
+                    LiipFunctionalTestBundleYml:
+                        type: "yml"
+                        dir: "%kernel.root_dir%/../App/Resources/config/doctrine"
+                        prefix: 'Liip\FunctionalTestBundle\Tests\App\Entity'
 
 security:
     providers:
@@ -56,7 +68,7 @@ security:
                         password: "12341234"
                         roles: 'ROLE_ADMIN'
         main:
-            entity: { class: Liip\FunctionalTestBundle\Entity\User, property: id }
+            entity: { class: Liip\FunctionalTestBundle\Tests\App\Entity\User, property: id }
     firewalls:
         secured_area:
             pattern:  ^/

@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Liip\FunctionalTestBundle\Controller;
+namespace Liip\FunctionalTestBundle\Tests\App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -80,9 +80,10 @@ class DefaultController extends Controller
             );
         }
 
-        return $this->render('LiipFunctionalTestBundle:Default:form.html.twig', array(
-            'form' => $form->createView(),
-        ));
+        return $this->render(
+            'LiipFunctionalTestBundle:Default:form.html.twig',
+            array('form' => $form->createView())
+        );
     }
 
     /**
@@ -93,7 +94,8 @@ class DefaultController extends Controller
     public function adminAction()
     {
         return $this->render(
-            'LiipFunctionalTestBundle:Default:admin.html.twig');
+            'LiipFunctionalTestBundle:Default:admin.html.twig'
+        );
     }
 
     /**

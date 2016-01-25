@@ -1,4 +1,4 @@
-Liip\FunctionalTestBundle\Entity\User:
+Liip\FunctionalTestBundle\Tests\App\Entity\User:
     id{1..10}:
         name: <name()>
         email: <email()>

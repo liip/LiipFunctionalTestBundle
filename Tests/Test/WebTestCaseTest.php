@@ -190,7 +190,7 @@ class WebTestCaseTest extends WebTestCase
     public function testLoadFixtures()
     {
         $fixtures = $this->loadFixtures(array(
-            'Liip\FunctionalTestBundle\DataFixtures\ORM\LoadUserData',
+            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ));
 
         $this->assertInstanceOf(
@@ -232,7 +232,7 @@ class WebTestCaseTest extends WebTestCase
     public function testLoadFixturesFiles()
     {
         $fixtures = $this->loadFixtureFiles(array(
-            '@LiipFunctionalTestBundle/DataFixtures/ORM/user.yml',
+            '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml',
         ));
 
         $this->assertInternalType(
@@ -283,7 +283,7 @@ class WebTestCaseTest extends WebTestCase
     {
         $fixtures = $this->loadFixtureFiles(array(
             $this->client->getContainer()->get('kernel')->locateResource(
-                '@LiipFunctionalTestBundle/DataFixtures/ORM/user.yml'
+                '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml'
             ),
         ));
 
@@ -330,7 +330,7 @@ class WebTestCaseTest extends WebTestCase
     public function testUserWithFixtures()
     {
         $fixtures = $this->loadFixtures(array(
-            'Liip\FunctionalTestBundle\DataFixtures\ORM\LoadUserData',
+            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ));
 
         $this->assertInstanceOf(

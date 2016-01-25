@@ -1,5 +1,5 @@
 framework:
-    router: { resource: "%kernel.root_dir%/../routing.yml" }
+    router: { resource: "%kernel.root_dir%/../App/routing.yml" }
 
 # Define all the available parameters in this Bundle
 liip_functional_test:
@@ -23,7 +23,7 @@ security:
         # in_memory users
         Symfony\Component\Security\Core\User\User: plaintext
         # User entity
-        Liip\FunctionalTestBundle\Entity\User: plaintext
+        Liip\FunctionalTestBundle\Tests\App\Entity\User: plaintext
     role_hierarchy:
         ROLE_ADMIN: ROLE_USER
     firewalls:
