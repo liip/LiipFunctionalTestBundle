@@ -90,7 +90,7 @@ HTML;
      *
      * @param string $content The HTML content to validate
      *
-     * @return array
+     * @return array|false
      */
     public function validateHtml5($content)
     {
