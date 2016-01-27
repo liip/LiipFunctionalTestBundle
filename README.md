@@ -111,6 +111,98 @@ class MyControllerTest extends WebTestCase
 }
 ```
 
+### Methods
+
+#### Check HTTP status codes
+
+##### isSuccessful()
+
+Check that the request succedded:
+
+```php
+$client = static::makeClient();
+$client->request('GET', '/contact');
+
+// Successful HTTP request
+$this->isSuccessful($client->getResponse());
+```
+
+Add `false` as the second argument in order to check that the request failed:
+
+```php
+$client = static::makeClient();
+$client->request('GET', '/error');
+
+// Request returned an error
+$this->isSuccessful($client->getResponse(), false);
+```
+
+In order to test more specific status codes, use `assertStatusCode()`:
+
+##### assertStatusCode()
+
+Check the HTTP status code from the request:
+
+```php
+$client = static::makeClient();
+$client->request('GET', '/contact');
+
+// Standard response for successful HTTP request
+$this->assertStatusCode(302, $client);
+```
+
+#### Get Crawler or content
+
+##### fetchCrawler()
+
+Get a [Crawler](http://api.symfony.com/master/Symfony/Component/DomCrawler/Crawler.html) instance from an URL:
+
+```php
+$crawler = $this->fetchCrawler('/contact');
+
+// There is one <body> tag
+$this->assertSame(
+    1,
+    $crawler->filter('html > body')->count()
+);
+```
+
+##### fetchContent()
+
+Get the content of an URL:
+
+```php
+$crawler = $this->fetchContent('/contact');
+
+// `filter()` can't be used since the output is HTML code, check the content directly
+$this->assertContains(
+    '<h1>LiipFunctionalTestBundle</h1>',
+    $content
+);
+```
+
+#### Routing
+
+##### getURL()
+
+Generate an URL from a route:
+
+```php
+$path = $this->getUrl(
+    'route_name',
+    array(
+        'argument_1' => 'liip',
+        'argument_2' => 'test',
+    )
+);
+
+$client = static::makeClient();
+$client->request('GET', $path);
+
+$this->isSuccessful($client->getResponse());
+```
+        
+
 Command Tests
 -------------
 If you need to test commands, you might need to tweak the output to your needs.
