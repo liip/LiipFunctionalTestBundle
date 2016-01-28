@@ -448,24 +448,6 @@ class WebTestCaseTest extends WebTestCase
     }
 
     /**
-     * Authentication.
-     */
-    public function testAdminWithoutAuthentication()
-    {
-        $this->loadFixtures(array());
-
-        $this->client = static::makeClient();
-
-        $path = '/admin';
-
-        $this->client->request('GET', $path);
-
-        $this->assertStatusCode(500, $this->client);
-
-        $this->isSuccessful($this->client->getResponse(), false);
-    }
-
-    /**
      * Call isSuccessful() with "application/json" content type.
      */
     public function testJsonIsSuccesful()

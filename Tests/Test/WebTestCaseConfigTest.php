@@ -97,74 +97,13 @@ class WebTestCaseConfigTest extends WebTestCase
     }
 
     /**
-     * Log in as the user defined in the
-     * "liip_functional_test.authentication"
-     * node from the configuration file.
-     */
-    public function testAdminAuthenticationTrue()
-    {
-        $this->loadFixtures(array());
-
-        $this->client = static::makeClient(true);
-
-        $path = '/admin';
-
-        $crawler = $this->client->request('GET', $path);
-
-        $this->assertStatusCode(403, $this->client);
-
-        $this->isSuccessful($this->client->getResponse(), false);
-    }
-
-    /**
-     * Log in as the admin defined in the
-     * "security.providers.in_memory"
-     * node from the configuration file.
-     */
-    public function testAdminAuthenticationInMemoryRoleAdmin()
-    {
-        $this->loadFixtures(array());
-
-        $this->client = static::makeClient(array(
-            'username' => 'roleadmin',
-            'password' => '12341234',
-        ));
-
-        $path = '/admin';
-
-        $crawler = $this->client->request('GET', $path);
-
-        $this->assertStatusCode(200, $this->client);
-
-        $this->isSuccessful($this->client->getResponse());
-
-        $this->assertSame(1,
-            $crawler->filter('html > body')->count());
-
-        $this->assertSame(
-            'Logged in as roleadmin.',
-            $crawler->filter('p#user')->text()
-        );
-
-        $this->assertSame(
-            'LiipFunctionalTestBundle',
-            $crawler->filter('h1')->text()
-        );
-    }
-
-    /**
      * Log in as the user defined in the Data Fixture.
      */
-    public function testAdminAuthenticationLoginAs()
+    public function testIndexAuthenticationLoginAs()
     {
         $fixtures = $this->loadFixtures(array(
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ));
-
-        $this->assertInstanceOf(
-            'Doctrine\Common\DataFixtures\Executor\AbstractExecutor',
-            $fixtures
-        );
 
         $repository = $fixtures->getReferenceRepository();
 
@@ -172,13 +111,13 @@ class WebTestCaseConfigTest extends WebTestCase
             'secured_area');
 
         $this->assertInstanceOf(
-            'Liip\FunctionalTestBundle\Tests\Test\WebTestCaseConfigTest',
+            'Liip\FunctionalTestBundle\Test\WebTestCase',
             $loginAs
         );
 
         $this->client = static::makeClient();
 
-        $path = '/admin';
+        $path = '/';
 
         $crawler = $this->client->request('GET', $path);
 
@@ -195,11 +134,6 @@ class WebTestCaseConfigTest extends WebTestCase
         $this->assertSame(
             'LiipFunctionalTestBundle',
             $crawler->filter('h1')->text()
-        );
-
-        $this->assertSame(
-            'Admin',
-            $crawler->filter('h2')->text()
         );
     }
 }

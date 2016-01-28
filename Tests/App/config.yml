@@ -54,6 +54,11 @@ doctrine:
                         prefix: 'Liip\FunctionalTestBundle\Tests\App\Entity'
 
 security:
+    encoders:
+        # in_memory users
+        Symfony\Component\Security\Core\User\User: plaintext
+        # User entity
+        Liip\FunctionalTestBundle\Tests\App\Entity\User: plaintext
     providers:
         chain_provider:
             chain:
@@ -64,16 +69,14 @@ security:
                     foobar:
                         password: "12341234"
                         roles: 'ROLE_USER'
-                    roleadmin:
-                        password: "12341234"
-                        roles: 'ROLE_ADMIN'
         main:
             entity: { class: Liip\FunctionalTestBundle\Tests\App\Entity\User, property: id }
     firewalls:
         secured_area:
             pattern:  ^/
             anonymous: true
+            http_basic:
+                realm: "Admin Area"
+            provider: chain_provider
     access_control:
-        # require ROLE_ADMIN for /admin*
-        - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }

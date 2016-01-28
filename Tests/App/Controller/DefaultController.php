@@ -87,18 +87,6 @@ class DefaultController extends Controller
     }
 
     /**
-     * Used to test the authentication and firewall.
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function adminAction()
-    {
-        return $this->render(
-            'LiipFunctionalTestBundle:Default:admin.html.twig'
-        );
-    }
-
-    /**
      * Used to test a JSON content with corresponding Content-Type.
      *
      * @return \Symfony\Component\HttpFoundation\Response

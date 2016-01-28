@@ -123,9 +123,11 @@ abstract class WebTestCase extends BaseWebTestCase
         $application = new Application($kernel);
         $application->setAutoExit(false);
 
+        // @codeCoverageIgnoreStart
         if ('20301' === Kernel::VERSION_ID) {
             $params = $this->configureVerbosityForSymfony20301($params);
         }
+        // @codeCoverageIgnoreEnd
 
         $input = new ArrayInput($params);
         $input->setInteractive(false);
@@ -182,6 +184,8 @@ abstract class WebTestCase extends BaseWebTestCase
      * in {Symfony\Component\Console\Output\OutputInterface}.
      *
      * This method builds $params to be passed to {Symfony\Component\Console\Input\ArrayInput}.
+     *
+     * @codeCoverageIgnore
      *
      * @param array $params
      *
