@@ -45,14 +45,34 @@ use Nelmio\Alice\Fixtures;
  */
 abstract class WebTestCase extends BaseWebTestCase
 {
+    /** @var string $environment */
     protected $environment = 'test';
+
+    /** @var  array $containers */
     protected $containers;
+
+    /** @var  string $kernelDir */
     protected $kernelDir;
-    // 5 * 1024 * 1024 KB
+
+    /** @var int $maxMemory 5 * 1024 * 1024 KB */
     protected $maxMemory = 5242880;
 
-    // RUN COMMAND
+    /** @var Client $localClient */
+    private $localClient;
+
+    /** @var  string $localContent */
+    private $localContent;
+
+    /** @var  Crawler $localCrawler */
+    private $localCrawler;
+
+    /** @var \Symfony\Component\HttpKernel\KernelInterface $kernel */
+    private $localKernel;
+
+    /** @var  int $verbosityLevel Used by runCommand() */
     protected $verbosityLevel;
+
+    /** @var  bool $decorated Used by runCommand() */
     protected $decorated;
 
     /**
@@ -114,13 +134,13 @@ abstract class WebTestCase extends BaseWebTestCase
                 static::$kernel->shutdown();
             }
 
-            $kernel = static::$kernel = $this->createKernel(array('environment' => $this->environment));
-            $kernel->boot();
+            $this->localKernel = static::$kernel = $this->createKernel(array('environment' => $this->environment));
+            $this->localKernel->boot();
         } else {
-            $kernel = $this->getContainer()->get('kernel');
+            $this->localKernel = $this->getContainer()->get('kernel');
         }
 
-        $application = new Application($kernel);
+        $application = new Application($this->localKernel);
         $application->setAutoExit(false);
 
         // @codeCoverageIgnoreStart
@@ -214,6 +234,11 @@ abstract class WebTestCase extends BaseWebTestCase
         return $params;
     }
 
+    /**
+     * Set the verbosity level to use when using runCommand().
+     *
+     * @param $level
+     */
     public function setVerbosityLevel($level)
     {
         $this->verbosityLevel = $level;
@@ -241,6 +266,9 @@ abstract class WebTestCase extends BaseWebTestCase
         return $this->decorated;
     }
 
+    /**
+     * @param $decorated
+     */
     public function isDecorated($decorated)
     {
         $this->decorated = $decorated;
@@ -264,10 +292,10 @@ abstract class WebTestCase extends BaseWebTestCase
             $options = array(
                 'environment' => $this->environment,
             );
-            $kernel = $this->createKernel($options);
-            $kernel->boot();
+            $this->localKernel = $this->createKernel($options);
+            $this->localKernel->boot();
 
-            $this->containers[$cacheKey] = $kernel->getContainer();
+            $this->containers[$cacheKey] = $this->localKernel->getContainer();
         }
 
         if (isset($tmpKernelDir)) {
@@ -597,8 +625,6 @@ abstract class WebTestCase extends BaseWebTestCase
         $fixture = new $className();
 
         if ($loader->hasFixture($fixture)) {
-            unset($fixture);
-
             return;
         }
 
@@ -639,23 +665,23 @@ abstract class WebTestCase extends BaseWebTestCase
             ));
         }
 
-        $client = static::createClient(array('environment' => $this->environment), $params);
+        $this->localClient = static::createClient(array('environment' => $this->environment), $params);
 
         if ($this->firewallLogins) {
             // has to be set otherwise "hasPreviousSession" in Request returns false.
-            $options = $client->getContainer()->getParameter('session.storage.options');
+            $options = $this->localClient->getContainer()->getParameter('session.storage.options');
 
             if (!$options || !isset($options['name'])) {
                 throw new \InvalidArgumentException('Missing session.storage.options#name');
             }
 
-            $session = $client->getContainer()->get('session');
+            $session = $this->localClient->getContainer()->get('session');
             // Since the namespace of the session changed in symfony 2.1, instanceof can be used to check the version.
             if ($session instanceof Session) {
                 $session->setId(uniqid());
             }
 
-            $client->getCookieJar()->set(new Cookie($options['name'], $session->getId()));
+            $this->localClient->getCookieJar()->set(new Cookie($options['name'], $session->getId()));
 
             /** @var $user UserInterface */
             foreach ($this->firewallLogins as $firewallName => $user) {
@@ -663,12 +689,12 @@ abstract class WebTestCase extends BaseWebTestCase
 
                 // BC: security.token_storage is available on Symfony 2.6+
                 // see http://symfony.com/blog/new-in-symfony-2-6-security-component-improvements
-                if ($client->getContainer()->has('security.token_storage')) {
-                    $tokenStorage = $client->getContainer()->get('security.token_storage');
+                if ($this->localClient->getContainer()->has('security.token_storage')) {
+                    $tokenStorage = $this->localClient->getContainer()->get('security.token_storage');
                 } else {
                     // This block will never be reached with Symfony 2.5+
                     // @codeCoverageIgnoreStart
-                    $tokenStorage = $client->getContainer()->get('security.context');
+                    $tokenStorage = $this->localClient->getContainer()->get('security.context');
                     // @codeCoverageIgnoreEnd
                 }
 
@@ -679,7 +705,7 @@ abstract class WebTestCase extends BaseWebTestCase
             $session->save();
         }
 
-        return $client;
+        return $this->localClient;
     }
 
     /**
@@ -761,15 +787,15 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     public function fetchContent($path, $method = 'GET', $authentication = false, $success = true)
     {
-        $client = $this->makeClient($authentication);
-        $client->request($method, $path);
+        $this->localClient = $this->makeClient($authentication);
+        $this->localClient->request($method, $path);
 
-        $content = $client->getResponse()->getContent();
+        $this->localContent = $this->localClient->getResponse()->getContent();
         if (is_bool($success)) {
-            $this->isSuccessful($client->getResponse(), $success);
+            $this->isSuccessful($this->localClient->getResponse(), $success);
         }
 
-        return $content;
+        return $this->localContent;
     }
 
     /**
@@ -786,12 +812,12 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     public function fetchCrawler($path, $method = 'GET', $authentication = false, $success = true)
     {
-        $client = $this->makeClient($authentication);
-        $crawler = $client->request($method, $path);
+        $this->localClient = $this->makeClient($authentication);
+        $this->localCrawler = $this->localClient->request($method, $path);
 
-        $this->isSuccessful($client->getResponse(), $success);
+        $this->isSuccessful($this->localClient->getResponse(), $success);
 
-        return $crawler;
+        return $this->localCrawler;
     }
 
     /**
@@ -850,5 +876,21 @@ abstract class WebTestCase extends BaseWebTestCase
             new ValidationErrorsConstraint($expected),
             'Validation errors should match.'
         );
+    }
+
+    /**
+     * Tears down after the test ends.
+     */
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        self::$cachedMetadatas = array();
+        unset($this->containers);
+        unset($this->firewallLogins);
+        unset($this->localClient);
+        unset($this->localContent);
+        unset($this->localCrawler);
+        unset($this->localKernel);
     }
 }
