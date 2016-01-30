@@ -167,10 +167,10 @@ abstract class WebTestCase extends BaseWebTestCase
             $level = strtoupper($this->verbosityLevel);
             $verbosity = '\Symfony\Component\Console\Output\StreamOutput::VERBOSITY_'.$level;
 
-            if (null === constant($verbosity)) {
+            if (!defined($verbosity)) {
                 throw new \OutOfBoundsException(
-                    'The set value "%s" for verbosityLevel is not valid. Accepted are: "quiet", "normal", "verbose", "very_verbose" and "debug".
-                    ');
+                    sprintf('The set value "%s" for verbosityLevel is not valid. Accepted are: "quiet", "normal", "verbose", "very_verbose" and "debug".', $level)
+                    );
             }
 
             $this->verbosityLevel = constant($verbosity);
