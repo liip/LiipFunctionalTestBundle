@@ -1,5 +1,8 @@
 framework:
     router: { resource: "%kernel.root_dir%/../App/routing.yml" }
+    profiler:
+        enabled: true
+        collect: true
 
 # Define all the available parameters in this Bundle
 liip_functional_test:
@@ -7,7 +10,7 @@ liip_functional_test:
     command_verbosity: "very_verbose"
     command_decoration: false
     query:
-        max_query_count: 5
+        max_query_count: 1
     authentication:
         username: "foobar"
         password: "12341234"

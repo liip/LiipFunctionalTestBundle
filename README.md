@@ -645,6 +645,12 @@ larger than the number of queries allowed in the configuration. To enable the
 query counter, adjust the `config_test.yml` file like this:
 
 ```yaml
+framework:
+    # ...
+    profiler:
+        enabled: true
+        collect: true
+
 liip_functional_test:
     query:
         max_query_count: 50

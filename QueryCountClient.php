@@ -29,6 +29,14 @@ class QueryCountClient extends Client
             $this->queryCounter->checkQueryCount(
                 $this->getProfile()->getCollector('db')->getQueryCount()
             );
+        } else {
+            // @codeCoverageIgnoreStart
+            echo "\n".
+                'Profiler is disabled, it must be enabled for the '.
+                'Query Counter. '.
+                'See https://github.com/liip/LiipFunctionalTestBundle#query-counter'.
+                "\n";
+            // @codeCoverageIgnoreEnd
         }
 
         return $crawler;

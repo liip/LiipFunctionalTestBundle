@@ -40,7 +40,7 @@ class ConfigurationConfigTest extends ConfigurationTest
             array('command_verbosity', 'very_verbose'),
             array('command_decoration', false),
             array('query', array(
-                'max_query_count' => 5,
+                'max_query_count' => 1,
             )),
             array('authentication', array(
                 'username' => 'foobar',
