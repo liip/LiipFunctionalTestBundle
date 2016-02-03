@@ -4,6 +4,16 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+    <parameters>
+
+        <parameter key="liip_functional_test.html5validation.ignores" type="collection" />
+
+        <parameter key="liip_functional_test.html5validation.ignores_extract" type="collection" />
+
+        <parameter key="liip_functional_test.query.max_query_count">null</parameter>
+
+    </parameters>
+
     <services>
         <service id="liip_functional_test.exception_listener" class="Liip\FunctionalTestBundle\EventListener\ExceptionListener">
             <tag name="kernel.event_subscriber" />
@@ -20,10 +30,7 @@
         </service>
 
         <service id="liip_functional_test.query.counter" class="Liip\FunctionalTestBundle\QueryCounter">
-            <!-- "query.max_query_count" is an array, it is only
-            accessible by passing the "query" node and getting the
-            "max_query_count" array with PHP. -->
-            <argument>%liip_functional_test.query%</argument>
+            <argument>%liip_functional_test.query.max_query_count%</argument>
             <argument type="service" id="annotation_reader" />
         </service>
     </services>

@@ -14,14 +14,9 @@ class QueryCounter
     /** @var \Doctrine\Common\Annotations\AnnotationReader */
     private $annotationReader;
 
-    /**
-     * "query.max_query_count" is an array, it is only accessible
-     * through "query" node and getting the "max_query_count" array
-     * key with PHP.
-     */
-    public function __construct($query, Reader $annotationReader)
+    public function __construct($defaultMaxCount, Reader $annotationReader)
     {
-        $this->defaultMaxCount = $query['max_query_count'];
+        $this->defaultMaxCount = $defaultMaxCount;
         $this->annotationReader = $annotationReader;
     }
 
