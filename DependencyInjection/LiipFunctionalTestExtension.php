@@ -35,7 +35,20 @@ class LiipFunctionalTestExtension extends Extension
         }
 
         foreach ($config as $key => $value) {
-            $container->setParameter($this->getAlias().'.'.$key, $value);
+            // If the node is an array,
+            // e.g. "liip_functional_test.query.max_query_count",
+            // set the value as
+            // "liip_functional_test.query.max_query_count"
+            // instead of an array "liip_functional_test.query"
+            // with a "max_query_count" key.
+            if (is_array($value)) {
+                foreach ($value as $key2 => $value2) {
+                    $container->setParameter($this->getAlias().'.'.$key.
+                        '.'.$key2, $value2);
+                }
+            } else {
+                $container->setParameter($this->getAlias().'.'.$key, $value);
+            }
         }
 
         $definition = $container->getDefinition('liip_functional_test.query.count_client');

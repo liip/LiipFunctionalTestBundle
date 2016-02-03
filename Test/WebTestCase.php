@@ -630,7 +630,12 @@ abstract class WebTestCase extends BaseWebTestCase
     {
         if ($authentication) {
             if ($authentication === true) {
-                $authentication = $this->getContainer()->getParameter('liip_functional_test.authentication');
+                $authentication = array(
+                    'username' => $this->getContainer()
+                        ->getParameter('liip_functional_test.authentication.username'),
+                    'password' => $this->getContainer()
+                        ->getParameter('liip_functional_test.authentication.password'),
+                );
             }
 
             $params = array_merge($params, array(
