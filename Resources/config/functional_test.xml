@@ -20,10 +20,7 @@
         </service>
 
         <service id="liip_functional_test.query.counter" class="Liip\FunctionalTestBundle\QueryCounter">
-            <!-- "query.max_query_count" is an array, it is only
-            accessible by passing the "query" node and getting the
-            "max_query_count" array with PHP. -->
-            <argument>%liip_functional_test.query%</argument>
+            <argument>%liip_functional_test.query.max_query_count%</argument>
             <argument type="service" id="annotation_reader" />
         </service>
     </services>

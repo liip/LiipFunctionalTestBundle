@@ -39,23 +39,17 @@ class ConfigurationConfigTest extends ConfigurationTest
             array('cache_sqlite_db', true),
             array('command_verbosity', 'very_verbose'),
             array('command_decoration', false),
-            array('query', array(
-                'max_query_count' => 1,
+            array('query.max_query_count', 1),
+            array('authentication.username', 'foobar'),
+            array('authentication.password', '12341234'),
+            array('html5validation.url', 'http://example.com/'),
+            array('html5validation.ignores', array(
+                'ignore_1',
+                'ignore_2',
             )),
-            array('authentication', array(
-                'username' => 'foobar',
-                'password' => '12341234',
-            )),
-            array('html5validation', array(
-                'url' => 'http://example.com/',
-                'ignores' => array(
-                    'ignore_1',
-                    'ignore_2',
-                ),
-                'ignores_extract' => array(
-                    'ignore_extract_1',
-                    'ignore_extract_2',
-                ),
+            array('html5validation.ignores_extract', array(
+                'ignore_extract_1',
+                'ignore_extract_2',
             )),
         );
     }

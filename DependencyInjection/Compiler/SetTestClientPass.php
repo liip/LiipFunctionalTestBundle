@@ -10,12 +10,7 @@ class SetTestClientPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        // "query.max_query_count" is an array, it is only accessible
-        // through "query" node and getting the "max_query_count" array
-        // key with PHP.
-        $query = $container->getParameter('liip_functional_test.query');
-
-        if (null === $query['max_query_count']) {
+        if (null === $container->getParameter('liip_functional_test.query.max_query_count')) {
             $container->removeDefinition('liip_functional_test.query.count_client');
 
             return;

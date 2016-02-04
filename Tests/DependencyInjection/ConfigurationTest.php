@@ -52,18 +52,12 @@ class ConfigurationTest extends WebTestCase
             array('cache_sqlite_db', false),
             array('command_verbosity', 'normal'),
             array('command_decoration', true),
-            array('query', array(
-                'max_query_count' => null,
-            )),
-            array('authentication', array(
-                'username' => '',
-                'password' => '',
-            )),
-            array('html5validation', array(
-                'url' => 'https://validator.nu/',
-                'ignores' => array(),
-                'ignores_extract' => array(),
-            )),
+            array('query.max_query_count', null),
+            array('authentication.username', ''),
+            array('authentication.password', ''),
+            array('html5validation.url', 'https://validator.nu/'),
+            array('html5validation.ignores', array()),
+            array('html5validation.ignores_extract', array()),
         );
     }
 }
