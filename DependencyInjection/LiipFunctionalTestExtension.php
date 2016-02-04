@@ -55,7 +55,10 @@ class LiipFunctionalTestExtension extends Extension
         if (method_exists($definition, 'setShared')) {
             $definition->setShared(false);
         } else {
+            // This block will never be reached with Symfony <2.8
+            // @codeCoverageIgnoreStart
             $definition->setScope('prototype');
+            // @codeCoverageIgnoreEnd
         }
     }
 }

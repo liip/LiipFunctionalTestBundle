@@ -23,12 +23,15 @@ class SetTestClientPass implements CompilerPassInterface
             $definition->setPublic(false);
             $container->setDefinition('liip_functional_test.query.count_client.parent', $definition);
         } elseif ($container->hasAlias('test.client')) {
+            // This block will never be reached with Symfony <2.8
+            // @codeCoverageIgnoreStart
             // test.client is an alias.
             // Register a private alias for this service to inject it as the parent
             $container->setAlias(
                 'liip_functional_test.query.count_client.parent',
                 new Alias((string) $container->getAlias('test.client'), false)
             );
+            // @codeCoverageIgnoreEnd
         } else {
             throw new \Exception('The LiipFunctionalTestBundle\'s Query Counter can only be used in the test environment.'.PHP_EOL.'See https://github.com/liip/LiipFunctionalTestBundle#only-in-test-environment');
         }

@@ -37,7 +37,7 @@ class AppKernel extends Kernel
     {
         $loader->load(__DIR__.'/config.yml');
 
-        // garciously stolen from https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Tests/Fixtures/App/AppKernel.php#L39-L45
+        // graciously stolen from https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Tests/Fixtures/App/AppKernel.php#L39-L45
         if ($this->isSymfony3()) {
             $loader->load(function (ContainerBuilder $container) {
                 $container->loadFromExtension('framework', array(

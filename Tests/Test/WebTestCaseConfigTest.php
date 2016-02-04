@@ -17,11 +17,16 @@ use Liip\FunctionalTestBundle\Test\WebTestCase;
 /**
  * Tests that configuration has been loaded and users can be logged in.
  *
- * Use Tests/App/Config/AppConfigKernel.php instead of
+ * Use Tests/AppConfig/AppConfigKernel.php instead of
  * Tests/App/AppKernel.php.
  * So it must be loaded in a separate process.
  *
  * @runTestsInSeparateProcesses
+ *
+ * Avoid conflict with PHPUnit annotation when reading QueryCount
+ * annotation:
+ *
+ * @IgnoreAnnotation("expectedException")
  */
 class WebTestCaseConfigTest extends WebTestCase
 {
@@ -139,8 +144,13 @@ class WebTestCaseConfigTest extends WebTestCase
     }
 
     /**
-     * Log in as the user defined in the Data Fixtures and except a
+     * Log in as the user defined in the Data Fixtures and except an
      * AllowedQueriesExceededException exception.
+     *
+     * There will be 2 queries, in the configuration the limit is 1,
+     * an Exception will be thrown.
+     *
+     * @expectedException Liip\FunctionalTestBundle\Exception\AllowedQueriesExceededException
      */
     public function testAllowedQueriesExceededException()
     {
@@ -159,12 +169,6 @@ class WebTestCaseConfigTest extends WebTestCase
         // One another query to load the second user.
         $path = '/user/2';
 
-        // There will be 2 queries, in the configuration the limit is 1,
-        // an Exception will be thrown.
-        $this->setExpectedException(
-            'Liip\FunctionalTestBundle\Exception\AllowedQueriesExceededException'
-        );
-
         $this->client->request('GET', $path);
     }
 
@@ -172,6 +176,11 @@ class WebTestCaseConfigTest extends WebTestCase
      * Expect an exception due to the QueryCount annotation.
      *
      * @QueryCount(0)
+     *
+     * There will be 1 query, in the annotation the limit is 0,
+     * an Exception will be thrown.
+     *
+     * @expectedException Liip\FunctionalTestBundle\Exception\AllowedQueriesExceededException
      */
     public function testAnnotationAndException()
     {
@@ -183,12 +192,6 @@ class WebTestCaseConfigTest extends WebTestCase
 
         // One query to load the second user
         $path = '/user/1';
-
-        // There will be 1 query, in the annotation the limit is 0,
-        // an Exception will be thrown.
-        $this->setExpectedException(
-            'Liip\FunctionalTestBundle\Exception\AllowedQueriesExceededException'
-        );
 
         $this->client->request('GET', $path);
     }

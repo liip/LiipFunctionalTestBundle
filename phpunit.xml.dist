@@ -11,6 +11,11 @@
     convertErrorsToExceptions="true"
     convertNoticesToExceptions="true"
     convertWarningsToExceptions="true"
+    beStrictAboutTestsThatDoNotTestAnything="true"
+    beStrictAboutOutputDuringTests="true"
+    beStrictAboutTestSize="true"
+    reportUselessTests="true"
+    disallowTestOutput="true"
 >
 
     <php>

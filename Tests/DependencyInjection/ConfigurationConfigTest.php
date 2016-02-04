@@ -12,7 +12,7 @@
 namespace Liip\FunctionalTestBundle\Tests\DependencyInjection;
 
 /**
- * Use Tests/App/Config/AppConfigKernel.php instead of
+ * Use Tests/AppConfig/AppConfigKernel.php instead of
  * Tests/App/AppKernel.php.
  * So it must be loaded in a separate process.
  *

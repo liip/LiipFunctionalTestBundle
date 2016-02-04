@@ -671,7 +671,7 @@ abstract class WebTestCase extends BaseWebTestCase
                 if ($client->getContainer()->has('security.token_storage')) {
                     $tokenStorage = $client->getContainer()->get('security.token_storage');
                 } else {
-                    // This block will never be reached with Symfony 2.5+
+                    // This block will never be reached with Symfony 2.6+
                     // @codeCoverageIgnoreStart
                     $tokenStorage = $client->getContainer()->get('security.context');
                     // @codeCoverageIgnoreEnd
