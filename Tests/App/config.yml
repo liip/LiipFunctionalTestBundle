@@ -4,7 +4,7 @@
 framework:
     secret:          secret
     test: ~
-    router:          { resource: "%kernel.root_dir%/routing.yml" }
+    router:          { resource: "%kernel.root_dir%/../App/routing.yml" }
     form:            true
     csrf_protection: true
     templating:      { engines: ['twig'] }
@@ -32,13 +32,10 @@ liip_functional_test: ~
 
 doctrine:
     dbal:
-        default_connection: default
-        connections:
-            default:
-                driver: pdo_sqlite
-                path: %kernel.cache_dir%/test.db
+        driver: pdo_sqlite
+        path: %kernel.cache_dir%/test.db
+        charset: UTF8
     orm:
-        auto_generate_proxy_classes: "%kernel.debug%"
         default_entity_manager: default
         entity_managers:
             default:

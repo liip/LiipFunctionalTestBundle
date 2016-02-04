@@ -6,4 +6,6 @@ vendor
 /Tests/App/logs/
 /Tests/AppConfig/cache/
 /Tests/AppConfig/logs/
+/Tests/AppConfigMysql/cache/
+/Tests/AppConfigMysql/logs/
 /cov/

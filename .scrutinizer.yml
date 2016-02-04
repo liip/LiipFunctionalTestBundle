@@ -24,10 +24,19 @@ build:
       - 
         command: 'composer require --dev "symfony/symfony:2.8.*" --no-interaction -vv --profile --no-progress'
         idle_timeout: 900
+  # Run after dependencies
+  project_setup:
+    before:
+      - mysql -e 'CREATE DATABASE liip;'
+
+    override: []
+    after: []
   tests:
     override:
+      # in phpunit.xml.dist, tests annotated with "@group mysql" are
+      # excluded, revert this
       -
-        command: 'php ./vendor/bin/phpunit --coverage-clover=coverage-clover'
+        command: 'php ./vendor/bin/phpunit --coverage-clover=coverage-clover  --exclude-group ""'
         coverage:
           file: 'coverage-clover'
           format: 'php-clover'

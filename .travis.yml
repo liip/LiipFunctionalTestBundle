@@ -9,6 +9,9 @@ php:
 
 sudo: false
 
+services:
+  - mysql
+
 matrix:
   include:
     - php: 5.3
@@ -32,4 +35,10 @@ before_install:
 install:
   - composer update $COMPOSER_FLAGS --prefer-source
 
-script: php ./vendor/bin/phpunit
+# http://jubianchi.fr/how-to-test-your-symfony2-project-with-behat-on-travisci.htm
+before_script:
+  - mysql -e 'CREATE DATABASE liip;'
+
+# in phpunit.xml.dist, tests annotated with "@group mysql" are excluded,
+# revert this
+script: php ./vendor/bin/phpunit --exclude-group ""

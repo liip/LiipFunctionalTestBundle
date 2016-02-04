@@ -42,4 +42,10 @@
             </exclude>
         </whitelist>
     </filter>
+
+    <groups>
+        <exclude>
+            <group>mysql</group>
+        </exclude>
+    </groups>
 </phpunit>

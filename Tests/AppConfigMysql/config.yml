@@ -1,0 +1,8 @@
+doctrine:
+    dbal:
+        driver: pdo_mysql
+        host: 127.0.0.1
+        port: null
+        dbname: liip
+        user: root
+        password: ""
