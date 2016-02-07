@@ -181,7 +181,7 @@ class WebTestCaseTest extends WebTestCase
         $fixtures = $this->loadFixtures(array());
 
         $this->assertInstanceOf(
-            'Doctrine\Common\DataFixtures\Executor\AbstractExecutor',
+            'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
             $fixtures
         );
     }
@@ -193,11 +193,16 @@ class WebTestCaseTest extends WebTestCase
         ));
 
         $this->assertInstanceOf(
-            'Doctrine\Common\DataFixtures\Executor\AbstractExecutor',
+            'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
             $fixtures
         );
 
         $repository = $fixtures->getReferenceRepository();
+
+        $this->assertInstanceOf(
+            'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
+            $fixtures
+        );
 
         $user1 = $repository->getReference('user');
 
@@ -330,7 +335,7 @@ class WebTestCaseTest extends WebTestCase
         ));
 
         $this->assertInstanceOf(
-            'Doctrine\Common\DataFixtures\Executor\AbstractExecutor',
+            'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
             $fixtures
         );
 
