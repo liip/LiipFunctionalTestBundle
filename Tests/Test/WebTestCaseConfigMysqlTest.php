@@ -114,6 +114,69 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
     }
 
     /**
+     * Data fixtures and purge.
+     *
+     * Purge modes are defined in
+     * Doctrine\Common\DataFixtures\Purger\ORMPurger.
+     *
+     * @group mysql
+     */
+    public function testLoadFixturesAndPurge()
+    {
+        $fixtures = $this->loadFixtures(array(
+            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
+        ));
+
+        $this->assertInstanceOf(
+            'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
+            $fixtures
+        );
+
+        $client = static::makeClient();
+        $em = $client->getContainer()
+            ->get('doctrine.orm.entity_manager');
+
+        // Check that there are 2 users.
+        $this->assertSame(
+            2,
+            count($em->getRepository('LiipFunctionalTestBundle:User')
+                ->findAll())
+        );
+
+        // 1 → ORMPurger::PURGE_MODE_DELETE
+        $fixtures = $this->loadFixtures(array(), null, 'doctrine', 1);
+
+        // The purge worked: there is no user.
+        $this->assertSame(
+            0,
+            count($em->getRepository('LiipFunctionalTestBundle:User')
+                ->findAll())
+        );
+
+        // Reload fixtures
+        $fixtures = $this->loadFixtures(array(
+            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
+        ));
+
+        // Check that there are 2 users.
+        $this->assertSame(
+            2,
+            count($em->getRepository('LiipFunctionalTestBundle:User')
+                ->findAll())
+        );
+
+        // 2 → ORMPurger::PURGE_MODE_TRUNCATE
+        $fixtures = $this->loadFixtures(array(), null, 'doctrine', 2);
+
+        // The purge worked: there is no user.
+        $this->assertSame(
+            0,
+            count($em->getRepository('LiipFunctionalTestBundle:User')
+                ->findAll())
+        );
+    }
+
+    /**
      * Use nelmio/alice.
      *
      * @group mysql
