@@ -1,5 +1,6 @@
+# inherits configuration from ../App/config.yml
+
 framework:
-    router: { resource: "%kernel.root_dir%/../App/routing.yml" }
     profiler:
         enabled: true
         collect: true
