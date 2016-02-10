@@ -35,6 +35,7 @@ use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
 use Doctrine\Common\DataFixtures\ProxyReferenceRepository;
 use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
 use Nelmio\Alice\Fixtures;
 
@@ -459,6 +460,55 @@ abstract class WebTestCase extends BaseWebTestCase
     }
 
     /**
+     * Clean database.
+     *
+     * @param ManagerRegistry $registry
+     * @param EntityManager   $om
+     */
+    private function cleanDatabase(ManagerRegistry $registry, EntityManager $om)
+    {
+        $connection = $om->getConnection();
+
+        $mysql = ($registry->getName() === 'ORM'
+            && $connection->getDatabasePlatform() instanceof MySqlPlatform);
+
+        if ($mysql) {
+            $connection->query('SET FOREIGN_KEY_CHECKS=0');
+        }
+
+        $this->loadFixtures(array());
+
+        if ($mysql) {
+            $connection->query('SET FOREIGN_KEY_CHECKS=1');
+        }
+    }
+
+    /**
+     * Locate fixture files.
+     *
+     * @param array $paths
+     *
+     * @return array $files
+     */
+    private function locateResources($paths)
+    {
+        $files = array();
+
+        $kernel = $this->getContainer()->get('kernel');
+
+        foreach ($paths as $path) {
+            if ($path[0] !== '@' && file_exists($path) === true) {
+                $files[] = $path;
+                continue;
+            }
+
+            $files[] = $kernel->locateResource($path);
+        }
+
+        return $files;
+    }
+
+    /**
      * @param array  $paths        Either symfony resource locators (@ BundleName/etc) or actual file paths
      * @param bool   $append
      * @param null   $omName
@@ -476,32 +526,14 @@ abstract class WebTestCase extends BaseWebTestCase
 
         /** @var ManagerRegistry $registry */
         $registry = $this->getContainer()->get($registryName);
+        /** @var EntityManager $om */
         $om = $registry->getManager($omName);
 
         if ($append === false) {
-            //Clean database
-            $connection = $om->getConnection();
-            if ($registry->getName() === 'ORM' && $connection->getDatabasePlatform() instanceof MySqlPlatform) {
-                $connection->query('SET FOREIGN_KEY_CHECKS=0');
-            }
-
-            $this->loadFixtures(array());
-
-            if ($registry->getName() === 'ORM' && $connection->getDatabasePlatform() instanceof MySqlPlatform) {
-                $connection->query('SET FOREIGN_KEY_CHECKS=1');
-            }
+            $this->cleanDatabase($registry, $om);
         }
 
-        $files = array();
-        $kernel = $this->getContainer()->get('kernel');
-        foreach ($paths as $path) {
-            if ($path[0] !== '@' && file_exists($path) === true) {
-                $files[] = $path;
-                continue;
-            }
-
-            $files[] = $kernel->locateResource($path);
-        }
+        $files = $this->locateResources($paths);
 
         return Fixtures::load($files, $om);
     }
