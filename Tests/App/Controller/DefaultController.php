@@ -35,6 +35,7 @@ class DefaultController extends Controller
      */
     public function userAction($userId)
     {
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
         $user = $this->getDoctrine()
             ->getRepository('LiipFunctionalTestBundle:User')
             ->find($userId);

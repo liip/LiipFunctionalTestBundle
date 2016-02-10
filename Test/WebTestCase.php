@@ -87,7 +87,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @param string $id
      *
-     * @return PHPUnit_Framework_MockObject_MockBuilder
+     * @return \PHPUnit_Framework_MockObject_MockBuilder
      */
     protected function getServiceMockBuilder($id)
     {
@@ -356,6 +356,7 @@ abstract class WebTestCase extends BaseWebTestCase
         $container = $this->getContainer();
         /** @var ManagerRegistry $registry */
         $registry = $container->get($registryName);
+        /** @var ObjectManager $om */
         $om = $registry->getManager($omName);
         $type = $registry->getName();
 
@@ -410,7 +411,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
                 // TODO: handle case when using persistent connections. Fail loudly?
                 $schemaTool = new SchemaTool($om);
-                $schemaTool->dropDatabase($name);
+                $schemaTool->dropDatabase();
                 if (!empty($metadatas)) {
                     $schemaTool->createSchema($metadatas);
                 }
@@ -747,7 +748,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @param string $route    The name of the route
      * @param array  $params   Set of parameters
-     * @param bool   $absolute
+     * @param int    $absolute
      *
      * @return string
      */
@@ -833,6 +834,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
     /**
      * @param UserInterface $user
+     * @param string        $firewallName
      *
      * @return WebTestCase
      */

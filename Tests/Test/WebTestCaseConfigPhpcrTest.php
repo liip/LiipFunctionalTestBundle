@@ -25,8 +25,6 @@ use Liip\FunctionalTestBundle\Test\WebTestCase;
  */
 class WebTestCaseConfigPhpcrTest extends WebTestCase
 {
-    private $client = null;
-
     protected static function getKernelClass()
     {
         require_once __DIR__.'/../AppConfigPhpcr/AppConfigPhpcrKernel.php';
@@ -65,8 +63,8 @@ class WebTestCaseConfigPhpcrTest extends WebTestCase
         $repository = $fixtures->getReferenceRepository();
 
         $this->assertInstanceOf(
-            'Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor',
-            $fixtures
+            'Doctrine\Common\DataFixtures\ProxyReferenceRepository',
+            $repository
         );
     }
 }

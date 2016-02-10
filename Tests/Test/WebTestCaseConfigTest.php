@@ -30,6 +30,7 @@ use Liip\FunctionalTestBundle\Test\WebTestCase;
  */
 class WebTestCaseConfigTest extends WebTestCase
 {
+    /** @var \Symfony\Bundle\FrameworkBundle\Client client */
     private $client = null;
 
     protected static function getKernelClass()
@@ -111,6 +112,7 @@ class WebTestCaseConfigTest extends WebTestCase
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ));
 
+        /** @var \Doctrine\Common\DataFixtures\ReferenceRepository $repository */
         $repository = $fixtures->getReferenceRepository();
 
         $loginAs = $this->loginAs($repository->getReference('user'),
@@ -158,6 +160,7 @@ class WebTestCaseConfigTest extends WebTestCase
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ));
 
+        /** @var \Doctrine\Common\DataFixtures\ReferenceRepository $repository */
         $repository = $fixtures->getReferenceRepository();
 
         // There will be one query to log in the first user.

@@ -32,8 +32,6 @@ use Liip\FunctionalTestBundle\Test\WebTestCase;
  */
 class WebTestCaseConfigMysqlTest extends WebTestCase
 {
-    private $client = null;
-
     protected static function getKernelClass()
     {
         require_once __DIR__.'/../AppConfigMysql/AppConfigMysqlKernel.php';
@@ -99,10 +97,10 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
         $this->assertTrue($user1->getEnabled());
 
         // Load data from database
-        $client = static::makeClient();
-        $em = $client->getContainer()
+        $em = $this->getContainer()
             ->get('doctrine.orm.entity_manager');
 
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
         $user = $em->getRepository('LiipFunctionalTestBundle:User')
             ->findOneBy(array(
                 'id' => 1,
@@ -137,8 +135,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
             $fixtures
         );
 
-        $client = static::makeClient();
-        $em = $client->getContainer()
+        $em = $this->getContainer()
             ->get('doctrine.orm.entity_manager');
 
         // Check that there are 2 users.
@@ -149,7 +146,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
         );
 
         // 1 → ORMPurger::PURGE_MODE_DELETE
-        $fixtures = $this->loadFixtures(array(), null, 'doctrine', 1);
+        $this->loadFixtures(array(), null, 'doctrine', 1);
 
         // The purge worked: there is no user.
         $this->assertSame(
@@ -159,7 +156,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
         );
 
         // Reload fixtures
-        $fixtures = $this->loadFixtures(array(
+        $this->loadFixtures(array(
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ));
 
@@ -171,7 +168,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
         );
 
         // 2 → ORMPurger::PURGE_MODE_TRUNCATE
-        $fixtures = $this->loadFixtures(array(), null, 'doctrine', 2);
+        $this->loadFixtures(array(), null, 'doctrine', 2);
 
         // The purge worked: there is no user.
         $this->assertSame(
@@ -203,8 +200,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
             $fixtures
         );
 
-        $client = static::makeClient();
-        $em = $client->getContainer()
+        $em = $this->getContainer()
             ->get('doctrine.orm.entity_manager');
 
         $users = $em->getRepository('LiipFunctionalTestBundle:User')
@@ -215,6 +211,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
             count($users)
         );
 
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
         $user = $em->getRepository('LiipFunctionalTestBundle:User')
             ->findOneBy(array(
                 'id' => 1,

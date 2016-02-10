@@ -25,8 +25,6 @@ class AppConfigPhpcrKernel extends AppKernel
                 new Doctrine\Bundle\PHPCRBundle\DoctrinePHPCRBundle(),
             )
         );
-
-        return $bundles;
     }
 
     /**

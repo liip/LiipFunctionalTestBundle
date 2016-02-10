@@ -13,6 +13,7 @@ namespace Liip\FunctionalTestBundle\Tests\Test;
 
 class Html5WebTestCaseFakeTest extends Html5WebTestCaseFake
 {
+    /** @var \Symfony\Bundle\FrameworkBundle\Client client */
     private $client = null;
 
     public function setUp()
@@ -26,6 +27,7 @@ class Html5WebTestCaseFakeTest extends Html5WebTestCaseFake
     {
         $path = '/';
 
+        /** @var \Symfony\Component\DomCrawler\Crawler $crawler */
         $crawler = $this->client->request('GET', $path);
 
         $this->assertStatusCode(200, $this->client);

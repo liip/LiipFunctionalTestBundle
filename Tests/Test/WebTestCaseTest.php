@@ -15,6 +15,7 @@ use Liip\FunctionalTestBundle\Test\WebTestCase;
 
 class WebTestCaseTest extends WebTestCase
 {
+    /** @var \Symfony\Bundle\FrameworkBundle\Client client */
     private $client = null;
 
     public function setUp()
@@ -63,6 +64,7 @@ class WebTestCaseTest extends WebTestCase
     {
         $path = '/';
 
+        /** @var \Symfony\Component\DomCrawler\Crawler $crawler */
         $crawler = $this->client->request('GET', $path);
 
         $this->assertSame(1,
@@ -200,10 +202,11 @@ class WebTestCaseTest extends WebTestCase
         $repository = $fixtures->getReferenceRepository();
 
         $this->assertInstanceOf(
-            'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
-            $fixtures
+            'Doctrine\Common\DataFixtures\ProxyReferenceRepository',
+            $repository
         );
 
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user1 */
         $user1 = $repository->getReference('user');
 
         $this->assertSame(1, $user1->getId());
@@ -215,6 +218,7 @@ class WebTestCaseTest extends WebTestCase
         $em = $this->client->getContainer()
             ->get('doctrine.orm.entity_manager');
 
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
         $user = $em->getRepository('LiipFunctionalTestBundle:User')
             ->findOneBy(array(
                 'id' => 1,
@@ -261,6 +265,7 @@ class WebTestCaseTest extends WebTestCase
             count($users)
         );
 
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
         $user = $em->getRepository('LiipFunctionalTestBundle:User')
             ->findOneBy(array(
                 'id' => 1,
@@ -302,6 +307,7 @@ class WebTestCaseTest extends WebTestCase
             $fixtures
         );
 
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user1 */
         $user1 = $fixtures['id1'];
 
         $this->assertInternalType('string', $user1->getUsername());
@@ -318,6 +324,7 @@ class WebTestCaseTest extends WebTestCase
             count($users)
         );
 
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
         $user = $em->getRepository('LiipFunctionalTestBundle:User')
             ->findOneBy(array(
                 'id' => 1,
@@ -343,6 +350,7 @@ class WebTestCaseTest extends WebTestCase
 
         $this->client->enableProfiler();
 
+        /** @var \Symfony\Component\DomCrawler\Crawler $crawler */
         $crawler = $this->client->request('GET', $path);
 
         $this->assertStatusCode(200, $this->client);
@@ -435,7 +443,7 @@ class WebTestCaseTest extends WebTestCase
         $this->assertStatusCode(200, $this->client);
 
         $form = $crawler->selectButton('Submit')->form();
-        $crawler = $this->client->submit($form);
+        $this->client->submit($form);
 
         $this->assertStatusCode(200, $this->client);
 

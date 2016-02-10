@@ -39,6 +39,7 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface, F
      */
     public function load(ObjectManager $manager)
     {
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
         $user = new User();
         $user->setId(1);
         $user->setName('foo bar');

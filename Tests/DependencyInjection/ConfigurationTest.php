@@ -18,6 +18,7 @@ use Liip\FunctionalTestBundle\Test\WebTestCase;
  */
 class ConfigurationTest extends WebTestCase
 {
+    /** @var \Symfony\Component\DependencyInjection\ContainerInterface $container */
     private $container = null;
 
     public function setUp()
@@ -28,6 +29,9 @@ class ConfigurationTest extends WebTestCase
 
     /**
      * @dataProvider parametersProvider
+     *
+     * @param string $node  Array key from parametersProvider
+     * @param string $value Array value from parametersProvider
      */
     public function testParameter($node, $value)
     {
