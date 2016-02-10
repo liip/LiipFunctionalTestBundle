@@ -27,17 +27,11 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
 use Doctrine\Common\DataFixtures\ProxyReferenceRepository;
-use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
-use Doctrine\DBAL\Platforms\MySqlPlatform;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Tools\SchemaTool;
-use Nelmio\Alice\Fixtures;
+use Liip\FunctionalTestBundle\Utils\FixturesLoader;
 
 /**
  * @author Lea Haensenberger
@@ -60,11 +54,6 @@ abstract class WebTestCase extends BaseWebTestCase
      * @var array
      */
     private $firewallLogins = array();
-
-    /**
-     * @var array
-     */
-    private static $cachedMetadatas = array();
 
     protected static function getKernelClass()
     {
@@ -279,56 +268,6 @@ abstract class WebTestCase extends BaseWebTestCase
     }
 
     /**
-     * This function finds the time when the data blocks of a class definition
-     * file were being written to, that is, the time when the content of the
-     * file was changed.
-     *
-     * @param string $class The fully qualified class name of the fixture class to
-     *                      check modification date on.
-     *
-     * @return \DateTime|null
-     */
-    protected function getFixtureLastModified($class)
-    {
-        $lastModifiedDateTime = null;
-
-        $reflClass = new \ReflectionClass($class);
-        $classFileName = $reflClass->getFileName();
-
-        if (file_exists($classFileName)) {
-            $lastModifiedDateTime = new \DateTime();
-            $lastModifiedDateTime->setTimestamp(filemtime($classFileName));
-        }
-
-        return $lastModifiedDateTime;
-    }
-
-    /**
-     * Determine if the Fixtures that define a database backup have been
-     * modified since the backup was made.
-     *
-     * @param array  $classNames The fixture classnames to check
-     * @param string $backup     The fixture backup SQLite database file path
-     *
-     * @return bool TRUE if the backup was made since the modifications to the
-     *              fixtures; FALSE otherwise
-     */
-    protected function isBackupUpToDate(array $classNames, $backup)
-    {
-        $backupLastModifiedDateTime = new \DateTime();
-        $backupLastModifiedDateTime->setTimestamp(filemtime($backup));
-
-        foreach ($classNames as &$className) {
-            $fixtureLastModifiedDateTime = $this->getFixtureLastModified($className);
-            if ($backupLastModifiedDateTime < $fixtureLastModifiedDateTime) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
      * Set the database to the provided fixtures.
      *
      * Drops the current database and then loads fixtures using the specified
@@ -353,160 +292,9 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     protected function loadFixtures(array $classNames, $omName = null, $registryName = 'doctrine', $purgeMode = null)
     {
-        $container = $this->getContainer();
-        /** @var ManagerRegistry $registry */
-        $registry = $container->get($registryName);
-        /** @var ObjectManager $om */
-        $om = $registry->getManager($omName);
-        $type = $registry->getName();
+        $loader = new FixturesLoader($this->getContainer());
 
-        $executorClass = 'PHPCR' === $type && class_exists('Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor')
-            ? 'Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor'
-            : 'Doctrine\\Common\\DataFixtures\\Executor\\'.$type.'Executor';
-        $referenceRepository = new ProxyReferenceRepository($om);
-        $cacheDriver = $om->getMetadataFactory()->getCacheDriver();
-
-        if ($cacheDriver) {
-            $cacheDriver->deleteAll();
-        }
-
-        if ('ORM' === $type) {
-            $connection = $om->getConnection();
-            if ($connection->getDriver() instanceof SqliteDriver) {
-                $params = $connection->getParams();
-                if (isset($params['master'])) {
-                    $params = $params['master'];
-                }
-
-                $name = isset($params['path']) ? $params['path'] : (isset($params['dbname']) ? $params['dbname'] : false);
-                if (!$name) {
-                    throw new \InvalidArgumentException("Connection does not contain a 'path' or 'dbname' parameter and cannot be dropped.");
-                }
-
-                if (!isset(self::$cachedMetadatas[$omName])) {
-                    self::$cachedMetadatas[$omName] = $om->getMetadataFactory()->getAllMetadata();
-                    usort(self::$cachedMetadatas[$omName], function ($a, $b) { return strcmp($a->name, $b->name); });
-                }
-                $metadatas = self::$cachedMetadatas[$omName];
-
-                if ($container->getParameter('liip_functional_test.cache_sqlite_db')) {
-                    $backup = $container->getParameter('kernel.cache_dir').'/test_'.md5(serialize($metadatas).serialize($classNames)).'.db';
-                    if (file_exists($backup) && file_exists($backup.'.ser') && $this->isBackupUpToDate($classNames, $backup)) {
-                        $om->flush();
-                        $om->clear();
-
-                        $this->preFixtureRestore($om, $referenceRepository);
-
-                        copy($backup, $name);
-
-                        $executor = new $executorClass($om);
-                        $executor->setReferenceRepository($referenceRepository);
-                        $executor->getReferenceRepository()->load($backup);
-
-                        $this->postFixtureRestore();
-
-                        return $executor;
-                    }
-                }
-
-                // TODO: handle case when using persistent connections. Fail loudly?
-                $schemaTool = new SchemaTool($om);
-                $schemaTool->dropDatabase();
-                if (!empty($metadatas)) {
-                    $schemaTool->createSchema($metadatas);
-                }
-                $this->postFixtureSetup();
-
-                $executor = new $executorClass($om);
-                $executor->setReferenceRepository($referenceRepository);
-            }
-        }
-
-        if (empty($executor)) {
-            $purgerClass = 'Doctrine\\Common\\DataFixtures\\Purger\\'.$type.'Purger';
-            if ('PHPCR' === $type) {
-                $purger = new $purgerClass($om);
-                $initManager = $container->has('doctrine_phpcr.initializer_manager')
-                    ? $container->get('doctrine_phpcr.initializer_manager')
-                    : null;
-
-                $executor = new $executorClass($om, $purger, $initManager);
-            } else {
-                $purger = new $purgerClass();
-                if (null !== $purgeMode) {
-                    $purger->setPurgeMode($purgeMode);
-                }
-
-                $executor = new $executorClass($om, $purger);
-            }
-
-            $executor->setReferenceRepository($referenceRepository);
-            $executor->purge();
-        }
-
-        $loader = $this->getFixtureLoader($container, $classNames);
-
-        $executor->execute($loader->getFixtures(), true);
-
-        if (isset($name) && isset($backup)) {
-            $this->preReferenceSave($om, $executor, $backup);
-
-            $executor->getReferenceRepository()->save($backup);
-            copy($name, $backup);
-
-            $this->postReferenceSave($om, $executor, $backup);
-        }
-
-        return $executor;
-    }
-
-    /**
-     * Clean database.
-     *
-     * @param ManagerRegistry $registry
-     * @param EntityManager   $om
-     */
-    private function cleanDatabase(ManagerRegistry $registry, EntityManager $om)
-    {
-        $connection = $om->getConnection();
-
-        $mysql = ($registry->getName() === 'ORM'
-            && $connection->getDatabasePlatform() instanceof MySqlPlatform);
-
-        if ($mysql) {
-            $connection->query('SET FOREIGN_KEY_CHECKS=0');
-        }
-
-        $this->loadFixtures(array());
-
-        if ($mysql) {
-            $connection->query('SET FOREIGN_KEY_CHECKS=1');
-        }
-    }
-
-    /**
-     * Locate fixture files.
-     *
-     * @param array $paths
-     *
-     * @return array $files
-     */
-    private function locateResources($paths)
-    {
-        $files = array();
-
-        $kernel = $this->getContainer()->get('kernel');
-
-        foreach ($paths as $path) {
-            if ($path[0] !== '@' && file_exists($path) === true) {
-                $files[] = $path;
-                continue;
-            }
-
-            $files[] = $kernel->locateResource($path);
-        }
-
-        return $files;
+        return $loader->loadFixtures($classNames, $omName, $registryName, $purgeMode);
     }
 
     /**
@@ -521,25 +309,9 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     public function loadFixtureFiles(array $paths = array(), $append = false, $omName = null, $registryName = 'doctrine')
     {
-        if (!class_exists('Nelmio\Alice\Fixtures')) {
-            // This class is available during tests, no exception will be thrown.
-            // @codeCoverageIgnoreStart
-            throw new \BadMethodCallException('nelmio/alice should be installed to use this method.');
-            // @codeCoverageIgnoreEnd
-        }
+        $loader = new FixturesLoader($this->getContainer());
 
-        /** @var ManagerRegistry $registry */
-        $registry = $this->getContainer()->get($registryName);
-        /** @var EntityManager $om */
-        $om = $registry->getManager($omName);
-
-        if ($append === false) {
-            $this->cleanDatabase($registry, $om);
-        }
-
-        $files = $this->locateResources($paths);
-
-        return Fixtures::load($files, $om);
+        return $loader->loadFixtureFiles($paths, $append, $omName, $registryName);
     }
 
     /**
@@ -595,59 +367,6 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     protected function preReferenceSave(ObjectManager $manager, AbstractExecutor $executor, $backupFilePath)
     {
-    }
-
-    /**
-     * Retrieve Doctrine DataFixtures loader.
-     *
-     * @param ContainerInterface $container
-     * @param array              $classNames
-     *
-     * @return Loader
-     */
-    protected function getFixtureLoader(ContainerInterface $container, array $classNames)
-    {
-        $loaderClass = class_exists('Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader')
-            ? 'Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader'
-            : (class_exists('Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader')
-                // This class is not available during tests.
-                // @codeCoverageIgnoreStart
-                ? 'Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader'
-                // @codeCoverageIgnoreEnd
-                : 'Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader');
-
-        $loader = new $loaderClass($container);
-
-        foreach ($classNames as $className) {
-            $this->loadFixtureClass($loader, $className);
-        }
-
-        return $loader;
-    }
-
-    /**
-     * Load a data fixture class.
-     *
-     * @param Loader $loader
-     * @param string $className
-     */
-    protected function loadFixtureClass($loader, $className)
-    {
-        $fixture = new $className();
-
-        if ($loader->hasFixture($fixture)) {
-            unset($fixture);
-
-            return;
-        }
-
-        $loader->addFixture($fixture);
-
-        if ($fixture instanceof DependentFixtureInterface) {
-            foreach ($fixture->getDependencies() as $dependency) {
-                $this->loadFixtureClass($loader, $dependency);
-            }
-        }
     }
 
     /**
