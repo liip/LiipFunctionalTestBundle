@@ -210,12 +210,11 @@ class FixturesLoader
      * Purge database.
      *
      * @param ObjectManager            $om
-     * @param string                   $name
      * @param array                    $metadatas
      * @param string                   $executorClass
      * @param ProxyReferenceRepository $referenceRepository
      */
-    private function createSqliteSchema(ObjectManager $om, $name,
+    private function createSqliteSchema(ObjectManager $om,
                                         $metadatas, $executorClass,
                                         ProxyReferenceRepository $referenceRepository)
     {
@@ -287,7 +286,7 @@ class FixturesLoader
                     }
                 }
 
-                $this->createSqliteSchema($om, $name, $metadatas,
+                $this->createSqliteSchema($om, $metadatas,
                     $executorClass, $referenceRepository);
             }
         }
