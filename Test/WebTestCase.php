@@ -522,7 +522,10 @@ abstract class WebTestCase extends BaseWebTestCase
     public function loadFixtureFiles(array $paths = array(), $append = false, $omName = null, $registryName = 'doctrine')
     {
         if (!class_exists('Nelmio\Alice\Fixtures')) {
+            // This class is available during tests, no exception will be thrown.
+            // @codeCoverageIgnoreStart
             throw new \BadMethodCallException('nelmio/alice should be installed to use this method.');
+            // @codeCoverageIgnoreEnd
         }
 
         /** @var ManagerRegistry $registry */
@@ -607,7 +610,10 @@ abstract class WebTestCase extends BaseWebTestCase
         $loaderClass = class_exists('Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader')
             ? 'Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader'
             : (class_exists('Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader')
+                // This class is not available during tests.
+                // @codeCoverageIgnoreStart
                 ? 'Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader'
+                // @codeCoverageIgnoreEnd
                 : 'Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader');
 
         $loader = new $loaderClass($container);

@@ -12,12 +12,11 @@
 namespace Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Liip\FunctionalTestBundle\Tests\App\Entity\User;
 
-class LoadUserData extends AbstractFixture implements FixtureInterface
+class LoadDependentUserData extends AbstractFixture implements DependentFixtureInterface
 {
     /**
      * @var ContainerInterface
@@ -38,25 +37,28 @@ class LoadUserData extends AbstractFixture implements FixtureInterface
     public function load(ObjectManager $manager)
     {
         /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
-        $user = new User();
-        $user->setId(1);
-        $user->setName('foo bar');
-        $user->setEmail('foo@bar.com');
-        $user->setPassword('12341234');
-        $user->setAlgorithm('plaintext');
-        $user->setEnabled(true);
-        $user->setConfirmationToken(null);
+        $user = clone $this->getReference('user');
+
+        $user->setId(3);
 
         $manager->persist($user);
         $manager->flush();
-
-        $this->addReference('user', $user);
 
         $user = clone $this->getReference('user');
 
-        $user->setId(2);
+        $user->setId(4);
 
         $manager->persist($user);
         $manager->flush();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDependencies()
+    {
+        return array(
+            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
+        );
     }
 }

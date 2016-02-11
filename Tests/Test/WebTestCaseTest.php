@@ -218,6 +218,15 @@ class WebTestCaseTest extends WebTestCase
         $em = $this->client->getContainer()
             ->get('doctrine.orm.entity_manager');
 
+        $users = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findAll();
+
+        // There are 2 users.
+        $this->assertSame(
+            2,
+            count($users)
+        );
+
         /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
         $user = $em->getRepository('LiipFunctionalTestBundle:User')
             ->findOneBy(array(
@@ -231,6 +240,33 @@ class WebTestCaseTest extends WebTestCase
 
         $this->assertTrue(
             $user->getEnabled()
+        );
+    }
+
+    /**
+     * Load fixture which has a dependency.
+     */
+    public function testLoadDependentFixtures()
+    {
+        $fixtures = $this->loadFixtures(array(
+            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadDependentUserData',
+        ));
+
+        $this->assertInstanceOf(
+            'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
+            $fixtures
+        );
+
+        $em = $this->client->getContainer()
+            ->get('doctrine.orm.entity_manager');
+
+        $users = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findAll();
+
+        // The two files with fixtures have been loaded, there are 4 users.
+        $this->assertSame(
+            4,
+            count($users)
         );
     }
 
