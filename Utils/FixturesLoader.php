@@ -18,6 +18,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
 use Doctrine\Common\DataFixtures\ProxyReferenceRepository;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\ORM\EntityManager;
@@ -37,6 +38,58 @@ class FixturesLoader
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return string
+     */
+    private function getExecutorClass($type)
+    {
+        return 'PHPCR' === $type && class_exists('Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor')
+            ? 'Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor'
+            : 'Doctrine\\Common\\DataFixtures\\Executor\\'.$type.'Executor';
+    }
+
+    /**
+     * Get file path of the SQLite database.
+     *
+     * @param Connection $connection
+     *
+     * @return string $name
+     */
+    private function getNameParameter(Connection $connection)
+    {
+        $params = $connection->getParams();
+
+        if (isset($params['master'])) {
+            $params = $params['master'];
+        }
+
+        $name = isset($params['path']) ? $params['path'] : (isset($params['dbname']) ? $params['dbname'] : false);
+
+        if (!$name) {
+            throw new \InvalidArgumentException("Connection does not contain a 'path' or 'dbname' parameter and cannot be dropped.");
+        }
+
+        return $name;
+    }
+
+    /**
+     * Purge SQLite database.
+     *
+     * @param ObjectManager $om
+     * @param string        $omName The name of object manager to use
+     */
+    private function getCachedMetadatas(ObjectManager $om, $omName)
+    {
+        if (!isset(self::$cachedMetadatas[$omName])) {
+            self::$cachedMetadatas[$omName] = $om->getMetadataFactory()->getAllMetadata();
+            usort(self::$cachedMetadatas[$omName], function ($a, $b) { return strcmp($a->name, $b->name); });
+        }
+
+        return self::$cachedMetadatas[$omName];
     }
 
     /**
@@ -90,6 +143,95 @@ class FixturesLoader
     }
 
     /**
+     * Copy SQLite backup file.
+     *
+     * @param ObjectManager            $om
+     * @param string                   $executorClass
+     * @param ProxyReferenceRepository $referenceRepository
+     * @param string                   $backup              Path of the source file.
+     * @param string                   $name                Path of the destination file.
+     */
+    private function copySqliteBackup($om, $executorClass,
+                                      $referenceRepository, $backup, $name)
+    {
+        $om->flush();
+        $om->clear();
+
+        $this->preFixtureRestore($om, $referenceRepository);
+
+        copy($backup, $name);
+
+        $executor = new $executorClass($om);
+        $executor->setReferenceRepository($referenceRepository);
+        $executor->getReferenceRepository()->load($backup);
+
+        $this->postFixtureRestore();
+
+        return $executor;
+    }
+
+    /**
+     * Purge database.
+     *
+     * @param ObjectManager            $om
+     * @param string                   $type
+     * @param int                      $purgeMode
+     * @param string                   $executorClass
+     * @param ProxyReferenceRepository $referenceRepository
+     */
+    private function purgeDatabase(ObjectManager $om, $type, $purgeMode,
+                                   $executorClass,
+                                   ProxyReferenceRepository $referenceRepository)
+    {
+        $purgerClass = 'Doctrine\\Common\\DataFixtures\\Purger\\'.$type.'Purger';
+        if ('PHPCR' === $type) {
+            $purger = new $purgerClass($om);
+            $initManager = $this->container->has('doctrine_phpcr.initializer_manager')
+                ? $this->container->get('doctrine_phpcr.initializer_manager')
+                : null;
+
+            $executor = new $executorClass($om, $purger, $initManager);
+        } else {
+            $purger = new $purgerClass();
+            if (null !== $purgeMode) {
+                $purger->setPurgeMode($purgeMode);
+            }
+
+            $executor = new $executorClass($om, $purger);
+        }
+
+        $executor->setReferenceRepository($referenceRepository);
+        $executor->purge();
+
+        return $executor;
+    }
+
+    /**
+     * Purge database.
+     *
+     * @param ObjectManager            $om
+     * @param string                   $name
+     * @param array                    $metadatas
+     * @param string                   $executorClass
+     * @param ProxyReferenceRepository $referenceRepository
+     */
+    private function createSqliteSchema(ObjectManager $om, $name,
+                                        $metadatas, $executorClass,
+                                        ProxyReferenceRepository $referenceRepository)
+    {
+        // TODO: handle case when using persistent connections. Fail loudly?
+        $schemaTool = new SchemaTool($om);
+        $schemaTool->dropDatabase();
+        if (!empty($metadatas)) {
+            $schemaTool->createSchema($metadatas);
+        }
+        $this->postFixtureSetup();
+
+        $executor = new $executorClass($om);
+        $executor->setReferenceRepository($referenceRepository);
+    }
+
+    /**
      * Set the database to the provided fixtures.
      *
      * Drops the current database and then loads fixtures using the specified
@@ -114,18 +256,14 @@ class FixturesLoader
      */
     public function loadFixtures(array $classNames, $omName = null, $registryName = 'doctrine', $purgeMode = null)
     {
-        $container = $this->container;
-
         /** @var ManagerRegistry $registry */
-        $registry = $container->get($registryName);
-        /** @var ObjectManager $om */
+        $registry = $this->container->get($registryName);
         $om = $registry->getManager($omName);
         $type = $registry->getName();
 
-        $executorClass = 'PHPCR' === $type && class_exists('Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor')
-            ? 'Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor'
-            : 'Doctrine\\Common\\DataFixtures\\Executor\\'.$type.'Executor';
+        $executorClass = $this->getExecutorClass($type);
         $referenceRepository = new ProxyReferenceRepository($om);
+
         $cacheDriver = $om->getMetadataFactory()->getCacheDriver();
 
         if ($cacheDriver) {
@@ -135,78 +273,31 @@ class FixturesLoader
         if ('ORM' === $type) {
             $connection = $om->getConnection();
             if ($connection->getDriver() instanceof SqliteDriver) {
-                $params = $connection->getParams();
-                if (isset($params['master'])) {
-                    $params = $params['master'];
-                }
+                $name = $this->getNameParameter($connection);
+                $metadatas = $this->getCachedMetadatas($om, $omName);
 
-                $name = isset($params['path']) ? $params['path'] : (isset($params['dbname']) ? $params['dbname'] : false);
-                if (!$name) {
-                    throw new \InvalidArgumentException("Connection does not contain a 'path' or 'dbname' parameter and cannot be dropped.");
-                }
-
-                if (!isset(self::$cachedMetadatas[$omName])) {
-                    self::$cachedMetadatas[$omName] = $om->getMetadataFactory()->getAllMetadata();
-                    usort(self::$cachedMetadatas[$omName], function ($a, $b) { return strcmp($a->name, $b->name); });
-                }
-                $metadatas = self::$cachedMetadatas[$omName];
-
-                if ($container->getParameter('liip_functional_test.cache_sqlite_db')) {
-                    $backup = $container->getParameter('kernel.cache_dir').'/test_'.md5(serialize($metadatas).serialize($classNames)).'.db';
+                if ($this->container->getParameter('liip_functional_test.cache_sqlite_db')) {
+                    $backup = $this->container->getParameter('kernel.cache_dir').'/test_'.md5(serialize($metadatas).serialize($classNames)).'.db';
                     if (file_exists($backup) && file_exists($backup.'.ser') && $this->isBackupUpToDate($classNames, $backup)) {
-                        $om->flush();
-                        $om->clear();
-
-                        $this->preFixtureRestore($om, $referenceRepository);
-
-                        copy($backup, $name);
-
-                        $executor = new $executorClass($om);
-                        $executor->setReferenceRepository($referenceRepository);
-                        $executor->getReferenceRepository()->load($backup);
-
-                        $this->postFixtureRestore();
+                        $executor = $this->copySqliteBackup($om,
+                            $executorClass, $referenceRepository,
+                            $backup, $name);
 
                         return $executor;
                     }
                 }
 
-                // TODO: handle case when using persistent connections. Fail loudly?
-                $schemaTool = new SchemaTool($om);
-                $schemaTool->dropDatabase();
-                if (!empty($metadatas)) {
-                    $schemaTool->createSchema($metadatas);
-                }
-                $this->postFixtureSetup();
-
-                $executor = new $executorClass($om);
-                $executor->setReferenceRepository($referenceRepository);
+                $this->createSqliteSchema($om, $name, $metadatas,
+                    $executorClass, $referenceRepository);
             }
         }
 
         if (empty($executor)) {
-            $purgerClass = 'Doctrine\\Common\\DataFixtures\\Purger\\'.$type.'Purger';
-            if ('PHPCR' === $type) {
-                $purger = new $purgerClass($om);
-                $initManager = $container->has('doctrine_phpcr.initializer_manager')
-                    ? $container->get('doctrine_phpcr.initializer_manager')
-                    : null;
-
-                $executor = new $executorClass($om, $purger, $initManager);
-            } else {
-                $purger = new $purgerClass();
-                if (null !== $purgeMode) {
-                    $purger->setPurgeMode($purgeMode);
-                }
-
-                $executor = new $executorClass($om, $purger);
-            }
-
-            $executor->setReferenceRepository($referenceRepository);
-            $executor->purge();
+            $executor = $this->purgeDatabase($om, $type, $purgeMode,
+                $executorClass, $referenceRepository);
         }
 
-        $loader = $this->getFixtureLoader($container, $classNames);
+        $loader = $this->getFixtureLoader($classNames);
 
         $executor->execute($loader->getFixtures(), true);
 
@@ -304,12 +395,11 @@ class FixturesLoader
     /**
      * Retrieve Doctrine DataFixtures loader.
      *
-     * @param ContainerInterface $container
-     * @param array              $classNames
+     * @param array $classNames
      *
      * @return Loader
      */
-    protected function getFixtureLoader(ContainerInterface $container, array $classNames)
+    protected function getFixtureLoader(array $classNames)
     {
         $loaderClass = class_exists('Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader')
             ? 'Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader'
@@ -317,7 +407,7 @@ class FixturesLoader
                 ? 'Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader'
                 : 'Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader');
 
-        $loader = new $loaderClass($container);
+        $loader = new $loaderClass($this->container);
 
         foreach ($classNames as $className) {
             $this->loadFixtureClass($loader, $className);
