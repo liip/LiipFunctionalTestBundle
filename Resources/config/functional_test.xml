@@ -26,5 +26,9 @@
 
         <service id="liip_functional_test.http_assertions" class="Liip\FunctionalTestBundle\Utils\HttpAssertions">
         </service>
+
+        <service id="liip_functional_test.fixtures_loader" class="Liip\FunctionalTestBundle\Utils\FixturesLoader">
+            <argument type="service" id="service_container" />
+        </service>
     </services>
 </container>
