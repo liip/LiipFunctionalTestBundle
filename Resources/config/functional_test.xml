@@ -23,5 +23,8 @@
             <argument>%liip_functional_test.query.max_query_count%</argument>
             <argument type="service" id="annotation_reader" />
         </service>
+
+        <service id="liip_functional_test.http_assertions" class="Liip\FunctionalTestBundle\Utils\HttpAssertions">
+        </service>
     </services>
 </container>

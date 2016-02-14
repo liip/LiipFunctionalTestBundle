@@ -772,23 +772,8 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     public function isSuccessful(Response $response, $success = true, $type = 'text/html')
     {
-        try {
-            $crawler = new Crawler();
-            $crawler->addContent($response->getContent(), $type);
-            if (!count($crawler->filter('title'))) {
-                $title = '['.$response->getStatusCode().'] - '.$response->getContent();
-            } else {
-                $title = $crawler->filter('title')->text();
-            }
-        } catch (\Exception $e) {
-            $title = $e->getMessage();
-        }
-
-        if ($success) {
-            $this->assertTrue($response->isSuccessful(), 'The Response was not successful: '.$title);
-        } else {
-            $this->assertFalse($response->isSuccessful(), 'The Response was successful: '.$title);
-        }
+        $this->getContainer()->get('liip_functional_test.http_assertions')
+            ->isSuccessful($response, $success, $type);
     }
 
     /**
@@ -861,24 +846,8 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     public function assertStatusCode($expectedStatusCode, Client $client)
     {
-        $helpfulErrorMessage = null;
-
-        if ($expectedStatusCode !== $client->getResponse()->getStatusCode()) {
-            // Get a more useful error message, if available
-            if ($exception = $client->getContainer()->get('liip_functional_test.exception_listener')->getLastException()) {
-                $helpfulErrorMessage = $exception->getMessage();
-            } elseif (count($validationErrors = $client->getContainer()->get('liip_functional_test.validator')->getLastErrors())) {
-                $helpfulErrorMessage = "Unexpected validation errors:\n";
-
-                foreach ($validationErrors as $error) {
-                    $helpfulErrorMessage .= sprintf("+ %s: %s\n", $error->getPropertyPath(), $error->getMessage());
-                }
-            } else {
-                $helpfulErrorMessage = substr($client->getResponse(), 0, 200);
-            }
-        }
-
-        self::assertEquals($expectedStatusCode, $client->getResponse()->getStatusCode(), $helpfulErrorMessage);
+        $this->getContainer()->get('liip_functional_test.http_assertions')
+            ->assertStatusCode($expectedStatusCode, $client);
     }
 
     /**
@@ -890,10 +859,7 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     public function assertValidationErrors(array $expected, ContainerInterface $container)
     {
-        self::assertThat(
-            $container->get('liip_functional_test.validator')->getLastErrors(),
-            new ValidationErrorsConstraint($expected),
-            'Validation errors should match.'
-        );
+        $this->getContainer()->get('liip_functional_test.http_assertions')
+            ->assertValidationErrors($expected, $container);
     }
 }

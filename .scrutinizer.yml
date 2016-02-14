@@ -13,6 +13,7 @@ filter:
     - EventListener/*
     - Exception/*
     - Test/*
+    - Utils/*
     - Validator/*
     - LiipFunctionalTestBundle.php
     - QueryCountClient.php
