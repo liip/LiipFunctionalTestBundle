@@ -528,8 +528,12 @@ abstract class WebTestCase extends BaseWebTestCase
             // @codeCoverageIgnoreEnd
         }
 
+        /** @var ContainerInterface $container */
+        $container = $this->getContainer();
+
         /** @var ManagerRegistry $registry */
-        $registry = $this->getContainer()->get($registryName);
+        $registry = $container->get($registryName);
+
         /** @var EntityManager $om */
         $om = $registry->getManager($omName);
 
@@ -538,6 +542,17 @@ abstract class WebTestCase extends BaseWebTestCase
         }
 
         $files = $this->locateResources($paths);
+
+        // Check if the Hautelook AliceBundle is registered and if yes, use it instead of Nelmio Alice
+        $hautelookLoaderServiceName = 'hautelook_alice.fixtures.loader';
+        if ($container->has($hautelookLoaderServiceName)) {
+            $loaderService = $container->get($hautelookLoaderServiceName);
+            $persisterClass = class_exists('Nelmio\Alice\ORM\Doctrine') ?
+                'Nelmio\Alice\ORM\Doctrine' :
+                'Nelmio\Alice\Persister\Doctrine';
+
+            return $loaderService->load(new $persisterClass($om), $files);
+        }
 
         return Fixtures::load($files, $om);
     }

@@ -31,14 +31,16 @@
         "nelmio/alice": "~1.7|~2.0",
         "jackalope/jackalope-doctrine-dbal": "1.1.*|1.2.*",
         "doctrine/phpcr-odm": "~1.3",
-        "doctrine/phpcr-bundle": "~1.3"
+        "doctrine/phpcr-bundle": "~1.3",
+        "hautelook/alice-bundle": "~0.2|~1.2"
     },
     "suggest": {
         "symfony/framework-bundle": "To use assertStatusCode and assertValidationErrors ~2.5",
         "doctrine/doctrine-fixtures-bundle": "Required when using the fixture loading functionality",
         "doctrine/orm": "Required when using the fixture loading functionality with an ORM and SQLite",
         "doctrine/dbal": "Required when using the fixture loading functionality with an ORM and SQLite",
-        "nelmio/alice": "Required when using loadFixtureFiles functionality"
+        "nelmio/alice": "Required when using loadFixtureFiles functionality",
+        "hautelook/alice-bundle" : "Required when using loadFixtureFiles functionality with custom providers"
     },
     "autoload": {
         "psr-4": {
