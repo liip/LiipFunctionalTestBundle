@@ -188,6 +188,16 @@ class WebTestCaseTest extends WebTestCase
         );
     }
 
+    public function testLoadEmptyFixturesFromService()
+    {
+        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
+
+        $this->assertInstanceOf(
+            'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
+            $fixtures
+        );
+    }
+
     public function testLoadFixtures()
     {
         $fixtures = $this->loadFixtures(array(
@@ -267,6 +277,53 @@ class WebTestCaseTest extends WebTestCase
         $this->assertSame(
             4,
             count($users)
+        );
+    }
+
+    public function testLoadFixturesFromService()
+    {
+        $fixtures = $this->getContainer()
+            ->get('liip_functional_test.fixtures_loader')->loadFixtures(array(
+                'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
+            ));
+
+        $this->assertInstanceOf(
+            'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
+            $fixtures
+        );
+
+        $repository = $fixtures->getReferenceRepository();
+
+        $this->assertInstanceOf(
+            'Doctrine\Common\DataFixtures\ProxyReferenceRepository',
+            $repository
+        );
+
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user1 */
+        $user1 = $repository->getReference('user');
+
+        $this->assertSame(1, $user1->getId());
+        $this->assertSame('foo bar', $user1->getName());
+        $this->assertSame('foo@bar.com', $user1->getEmail());
+        $this->assertTrue($user1->getEnabled());
+
+        // Load data from database
+        $em = $this->client->getContainer()
+            ->get('doctrine.orm.entity_manager');
+
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        $user = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findOneBy(array(
+                'id' => 1,
+            ));
+
+        $this->assertSame(
+            'foo@bar.com',
+            $user->getEmail()
+        );
+
+        $this->assertTrue(
+            $user->getEnabled()
         );
     }
 
