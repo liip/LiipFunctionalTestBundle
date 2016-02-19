@@ -542,6 +542,8 @@ class WebTestCaseTest extends WebTestCase
 
     /**
      * @depends testForm
+     *
+     * @expectedException \PHPUnit_Framework_ExpectationFailedException
      */
     public function testFormWithException()
     {
@@ -562,13 +564,7 @@ class WebTestCaseTest extends WebTestCase
 
         $this->assertStatusCode(200, $this->client);
 
-        try {
-            $this->assertValidationErrors(array(''), $this->client->getContainer());
-        } catch (\PHPUnit_Framework_ExpectationFailedException $expected) {
-            return;
-        }
-
-        $this->fail('PHPUnit_Framework_ExpectationFailedException has not been raised');
+        $this->assertValidationErrors(array(''), $this->client->getContainer());
     }
 
     /**
