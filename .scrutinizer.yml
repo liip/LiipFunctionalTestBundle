@@ -19,10 +19,15 @@ filter:
     - QueryCounter.php
 
 build:
+  environment:
+    php:
+      version: 5.6
   dependencies:
     override:
       - 
-        command: 'composer require --dev "symfony/symfony:2.8.*" --no-interaction -vv --profile --no-progress'
+        command: 'composer require --dev "symfony/symfony:2.8.*" --no-update'
+      -
+        command: 'composer update --no-interaction -vv --profile --no-progress'
         idle_timeout: 900
   # Run after dependencies
   project_setup:
