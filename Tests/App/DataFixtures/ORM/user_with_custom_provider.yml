@@ -1,0 +1,7 @@
+Liip\FunctionalTestBundle\Tests\App\Entity\User:
+    id{1..10}:
+        name: <foo('a string')>
+        email: <email()>
+        password: <name()>
+        algorithm: "sha1"
+        enabled: true

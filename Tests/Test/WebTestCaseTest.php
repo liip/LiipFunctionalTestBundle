@@ -401,6 +401,55 @@ class WebTestCaseTest extends WebTestCase
     }
 
     /**
+     * Load Data Fixtures with hautelook and custom loader defined in configuration.
+     */
+    public function testLoadFixturesFilesWithHautelookCustomProvider()
+    {
+        if (!class_exists('Hautelook\AliceBundle\Faker\Provider\ProviderChain')) {
+            self::markTestSkipped('Please use hautelook/alice-bundle >=1.2');
+        }
+
+        // Load default Data Fixtures.
+        $fixtures = $this->loadFixtureFiles(array(
+            '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml',
+        ));
+
+        $this->assertInternalType(
+            'array',
+            $fixtures
+        );
+
+        // 10 users are loaded
+        $this->assertCount(
+            10,
+            $fixtures
+        );
+
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        $user = $fixtures['id1'];
+
+        // The custom provider has not been used successfully.
+        $this->assertStringStartsNotWith(
+            'foo',
+            $user->getName()
+        );
+
+        // Load Data Fixtures with custom loader defined in configuration.
+        $fixtures = $this->loadFixtureFiles(array(
+            '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user_with_custom_provider.yml',
+        ));
+
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        $user = $fixtures['id1'];
+
+        // The custom provider "foo" has been loaded and used successfully.
+        $this->assertSame(
+            'fooa string',
+            $user->getName()
+        );
+    }
+
+    /**
      * Use nelmio/alice with full path to the file.
      */
     public function testLoadFixturesFilesPaths()
