@@ -77,3 +77,9 @@ security:
             provider: chain_provider
     access_control:
         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+
+# HautelookAliceBundle: custom Faker provider
+services:
+    faker.provider.foo:
+        class: Liip\FunctionalTestBundle\Tests\App\DataFixtures\Faker\Provider\FooProvider
+        tags: [ { name: hautelook_alice.faker.provider } ]
