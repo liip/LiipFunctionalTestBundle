@@ -63,6 +63,11 @@ HTML;
         return $res !== false;
     }
 
+    public function getValidationServiceAvailable()
+    {
+        return $this->validationServiceAvailable;
+    }
+
     /**
      * Get the URL of the HTML5 validation service from the config.
      *
@@ -134,7 +139,7 @@ HTML;
      */
     public function assertIsValidHtml5($content, $message = '')
     {
-        if (!$this->validationServiceAvailable) {
+        if (!$this->getValidationServiceAvailable()) {
             return $this->skipTestWithInvalidService();
         }
 
