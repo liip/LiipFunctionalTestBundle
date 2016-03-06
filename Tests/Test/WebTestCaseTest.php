@@ -100,6 +100,66 @@ class WebTestCaseTest extends WebTestCase
     }
 
     /**
+     * Check the failure message returned by assertStatusCode().
+     */
+    public function testAssertStatusCodeFail()
+    {
+        if (!interface_exists('Symfony\Component\Validator\Validator\ValidatorInterface')) {
+            $this->markTestSkipped('The Symfony\Component\Validator\Validator\ValidatorInterface does not exist');
+        }
+
+        $this->loadFixtures(array());
+
+        $path = '/';
+
+        $this->client->request('GET', $path);
+
+        try {
+            $this->assertStatusCode(-1, $this->client);
+        } catch (\PHPUnit_Framework_AssertionFailedError $e) {
+            $this->assertStringStartsWith(
+                'HTTP/1.1 200 OK',
+                $e->getMessage()
+            );
+
+            $this->assertStringEndsWith(
+                'Failed asserting that 200 matches expected -1.',
+                $e->getMessage()
+            );
+
+            return;
+        }
+
+        $this->fail('Test failed.');
+    }
+
+    /**
+     * Check the failure message returned by assertStatusCode().
+     */
+    public function testAssertStatusCodeException()
+    {
+        $this->loadFixtures(array());
+
+        $path = '/user/2';
+
+        $this->client->request('GET', $path);
+
+        try {
+            $this->assertStatusCode(-1, $this->client);
+        } catch (\PHPUnit_Framework_AssertionFailedError $e) {
+            $string = <<<'EOF'
+No user found
+Failed asserting that 404 matches expected -1.
+EOF;
+            $this->assertSame($string, $e->getMessage());
+
+            return;
+        }
+
+        $this->fail('Test failed.');
+    }
+
+    /**
      * @depends testIndex
      */
     public function testIndexIsSuccesful()
@@ -173,6 +233,38 @@ class WebTestCaseTest extends WebTestCase
         $this->assertStatusCode(404, $this->client);
 
         $this->isSuccessful($this->client->getResponse(), false);
+    }
+
+    /**
+     * Throw an Exception in the try/catch block and check the failure message
+     * returned by assertStatusCode().
+     */
+    public function testIsSuccessfulException()
+    {
+        $this->loadFixtures(array());
+
+        $response = $this->getMockBuilder('Symfony\Component\HttpFoundation\Response')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getContent'))
+            ->getMock();
+
+        $response->expects($this->any())
+            ->method('getContent')
+            ->will($this->throwException(new \Exception('foo')));
+
+        try {
+            $this->isSuccessful($response);
+        } catch (\PHPUnit_Framework_AssertionFailedError $e) {
+            $string = <<<'EOF'
+The Response was not successful: foo
+Failed asserting that false is true.
+EOF;
+            $this->assertSame($string, $e->getMessage());
+
+            return;
+        }
+
+        $this->fail('Test failed.');
     }
 
     /**
@@ -614,6 +706,43 @@ class WebTestCaseTest extends WebTestCase
         $this->assertStatusCode(200, $this->client);
 
         $this->assertValidationErrors(array(''), $this->client->getContainer());
+    }
+
+    /**
+     * Check the failure message returned by assertStatusCode()
+     * when an invalid form is submitted.
+     */
+    public function testFormWithExceptionAssertStatusCode()
+    {
+        if (!interface_exists('Symfony\Component\Validator\Validator\ValidatorInterface')) {
+            $this->markTestSkipped('The Symfony\Component\Validator\Validator\ValidatorInterface does not exist');
+        }
+
+        $this->loadFixtures(array());
+
+        $path = '/form';
+
+        $crawler = $this->client->request('GET', $path);
+
+        $form = $crawler->selectButton('Submit')->form();
+
+        $this->client->submit($form);
+
+        try {
+            $this->assertStatusCode(-1, $this->client);
+        } catch (\PHPUnit_Framework_AssertionFailedError $e) {
+            $string = <<<'EOF'
+Unexpected validation errors:
++ children[name].data: This value should not be blank.
+
+Failed asserting that 200 matches expected -1.
+EOF;
+            $this->assertSame($string, $e->getMessage());
+
+            return;
+        }
+
+        $this->fail('Test failed.');
     }
 
     /**

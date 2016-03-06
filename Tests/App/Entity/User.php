@@ -73,7 +73,7 @@ class User implements UserInterface
      * Set id.
      *
      * @param int $id
-     * 
+     *
      * @return User
      */
     public function setId($id)
@@ -97,7 +97,7 @@ class User implements UserInterface
      * Set name.
      *
      * @param string $name
-     * 
+     *
      * @return User
      */
     public function setName($name)
@@ -121,7 +121,7 @@ class User implements UserInterface
      * Set email.
      *
      * @param string $email
-     * 
+     *
      * @return User
      */
     public function setEmail($email)
@@ -145,7 +145,7 @@ class User implements UserInterface
      * Set password.
      *
      * @param string $password
-     * 
+     *
      * @return User
      */
     public function setPassword($password)
@@ -169,7 +169,7 @@ class User implements UserInterface
      * Set salt.
      *
      * @param string $salt
-     * 
+     *
      * @return User
      */
     public function setSalt($salt)
@@ -193,7 +193,7 @@ class User implements UserInterface
      * Set algorithm.
      *
      * @param string $algorithm
-     * 
+     *
      * @return User
      */
     public function setAlgorithm($algorithm)
@@ -217,7 +217,7 @@ class User implements UserInterface
      * Set enabled.
      *
      * @param bool $enabled
-     * 
+     *
      * @return User
      */
     public function setEnabled($enabled)
@@ -241,7 +241,7 @@ class User implements UserInterface
      * Set confirmationToken.
      *
      * @param string $confirmationToken
-     * 
+     *
      * @return User
      */
     public function setConfirmationToken($confirmationToken)
