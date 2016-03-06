@@ -9,6 +9,10 @@ php:
 
 sudo: false
 
+cache:
+  directories:
+    - $HOME/.composer/cache
+
 services:
   - mysql
 
