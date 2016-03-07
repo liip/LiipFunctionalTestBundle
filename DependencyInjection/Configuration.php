@@ -78,6 +78,17 @@ return $v; })
                     ->end()
                 ->end()
             ->end()
+            ->arrayNode('paratest')
+                ->addDefaultsIfNotSet()
+                ->children()
+                    ->scalarNode('process')
+                        ->defaultValue('')
+                    ->end()
+                    ->scalarNode('phpunit')
+                        ->defaultValue('')
+                    ->end()
+                ->end()
+            ->end()
         ;
 
         return $treeBuilder;
