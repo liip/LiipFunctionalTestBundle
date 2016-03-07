@@ -30,7 +30,7 @@ class ParatestCommandTest extends WebTestCase
            'command' => 'test:run'));
 
         if (!class_exists('Symfony\Component\Console\Output\BufferedOutput')) {
-            $output = new \Symfony\Component\Console\Output\StreamOutput(tmpfile(), StreamOutput::VERBOSITY_NORMAL);
+            $output = new \Symfony\Component\Console\Output\StreamOutput(tmpfile(), \Symfony\Component\Console\Output\StreamOutput::VERBOSITY_NORMAL);
             $application->run($input, $output);
             rewind($output->getStream());
             $content = stream_get_contents($output->getStream());
