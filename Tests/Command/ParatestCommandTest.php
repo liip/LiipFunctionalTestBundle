@@ -14,7 +14,6 @@ namespace Liip\FunctionalTestBundle\Tests\Command;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\BufferedOutput;
 
 class ParatestCommandTest extends WebTestCase
 {
@@ -30,10 +29,17 @@ class ParatestCommandTest extends WebTestCase
         $input = new ArrayInput(array(
            'command' => 'test:run'));
 
-        $output = new BufferedOutput();
-        $application->run($input, $output);
-        $content = $output->fetch();
-        // Test default values
+        if (!class_exists('Symfony\Component\Console\Output\BufferedOutput')) {
+            $output = new \Symfony\Component\Console\Output\StreamOutput(tmpfile(), StreamOutput::VERBOSITY_NORMAL);
+            $application->run($input, $output);
+            rewind($output->getStream());
+            $content = stream_get_contents($output->getStream());
+        }else{
+            $output = new \Symfony\Component\Console\Output\BufferedOutput();
+            $application->run($input, $output);
+            $content = $output->fetch();
+        }
+
         $this->assertContains('Initial schema created', $content);
         $this->assertContains('Done...Running test.', $content);
 
