@@ -12,24 +12,30 @@
 namespace Liip\FunctionalTestBundle\Tests\Command;
 
 use Liip\FunctionalTestBundle\Test\WebTestCase;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
 
 class ParatestCommandTest extends WebTestCase
 {
-    private $display;
-
     /**
-     * This method tests both the default setting of `runCommand()` and the kernel reusing, as, to reuse kernel,
-     * it is needed a kernel is yet instantiated. So we test these two conditions here, to not repeat the code.
+     * Test paratestCommand
      */
     public function testParatest()
     {
-        // Run command without options
-        $this->display = $this->runCommand('test:run');
+        $kernel = $this->getContainer()->get('kernel');
+        $application = new Application($kernel);
+        $application->setAutoExit(false);
+
+        $input = new ArrayInput(array(
+           'command' => 'test:run'));
+
+        $output = new BufferedOutput();
+        $application->run($input, $output);
+        $content = $output->fetch();
         // Test default values
-        $this->assertContains('Initial schema created', $this->display);
-        $this->assertNotContains('Can t populate', $this->display);
-        $this->assertContains('Initial schema populated, duplicating....', $this->display);
-        $this->assertContains('Done...Running test.', $this->display);
+        $this->assertContains('Initial schema created', $content);
+        $this->assertContains('Done...Running test.', $content);
 
     }
 }

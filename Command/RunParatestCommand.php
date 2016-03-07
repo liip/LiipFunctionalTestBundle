@@ -32,12 +32,15 @@ class RunParatestCommand extends ContainerAwareCommand
 
     protected function prepare()
     {
-        $this->container = $this->getApplication()->getKernel()->getContainer();
-        $this->configuration = $this->container->getParameter("liip_functional_test.paratest");
-        $this->process = ( !empty($this->configuration['process']) ) ? $this->configuration['process'] : $this->process;
-        $this->phpunit = ( !empty($this->configuration['phpunit']) ) ? $this->configuration['phpunit'] : $this->phpunit;
-        $testDbPath = $this->container->get('kernel')->getRootDir();
+        $this->configuration = $this->getContainer()->hasParameter("liip_functional_test");
+        $paratestCfg = ( !isset($this->configuration['paratest'])) ? array('process' => $this->process, 'phpunit' => $this->phpunit) : $this->configuration['paratest'];
+
+        $this->process = ( !empty($this->configuration['process']) ) ? $paratestCfg['process'] : $this->process;
+        $this->phpunit = ( !empty($this->configuration['phpunit']) ) ? $paratestCfg['phpunit'] : $this->phpunit;
+        $testDbPath = $this->getContainer()->get('kernel')->getRootDir();
         $this->output->writeln("Cleaning old dbs in $testDbPath ...");
+        $createDirProcess = new Process('mkdir -p ' . $testDbPath . '/cache/test/');
+        $createDirProcess->run();
         $cleanProcess = new Process("rm -fr $testDbPath/cache/test/dbTest.db $testDbPath/cache/test/dbTest*.db*");
         $cleanProcess->run();
         $this->output->writeln("Creating Schema in $testDbPath ...");
@@ -46,7 +49,6 @@ class RunParatestCommand extends ContainerAwareCommand
 
         $this->output->writeln("Initial schema created");
         $populateProcess = new Process("php app/console doctrine:fixtures:load -n --fixtures $testDbPath/../src/overlord/AppBundle/Tests/DataFixtures/ORM/ --env=test");
-
         $populateProcess->run();
 
         if ($populateProcess->isSuccessful()) {
@@ -56,7 +58,7 @@ class RunParatestCommand extends ContainerAwareCommand
                 $test->run();
             }
         } else {
-            $output->writeln("Can t populate");
+            $this->output->writeln("Can t populate");
         }
     }
 
@@ -71,7 +73,7 @@ class RunParatestCommand extends ContainerAwareCommand
         $this->output = $output;
         $this->prepare();
         $this->output->writeln('Done...Running test.');
-        $runProcess = new Process("./bin/paratest -c app/ --phpunit " .$this->phpunit." --runner WrapRunner  -p ". $this->process);
+        $runProcess = new Process( $testDbPath  . "../vendor/bin/paratest -c app/ --phpunit " .$this->phpunit." --runner WrapRunner  -p ". $this->process);
         $runProcess->run(function ($type, $buffer) {
             echo $buffer;
         });
