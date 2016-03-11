@@ -7,7 +7,7 @@ use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Configuration;
 
 /**
- * Creates a connection taking the db name from the env with 
+ * Creates a connection taking the db name from the env with
  * a unique number defined by current process ID.
  */
 class ConnectionFactory extends BaseConnectionFactory
