@@ -18,7 +18,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 class ParatestCommandTest extends WebTestCase
 {
     /**
-     * Test paratestCommand
+     * Test paratestCommand.
      */
     public function testParatest()
     {
@@ -27,14 +27,14 @@ class ParatestCommandTest extends WebTestCase
         $application->setAutoExit(false);
 
         $input = new ArrayInput(array(
-           'command' => 'test:run'));
+           'command' => 'test:run', ));
 
         if (!class_exists('Symfony\Component\Console\Output\BufferedOutput')) {
             $output = new \Symfony\Component\Console\Output\StreamOutput(tmpfile(), \Symfony\Component\Console\Output\StreamOutput::VERBOSITY_NORMAL);
             $application->run($input, $output);
             rewind($output->getStream());
             $content = stream_get_contents($output->getStream());
-        }else{
+        } else {
             $output = new \Symfony\Component\Console\Output\BufferedOutput();
             $application->run($input, $output);
             $content = $output->fetch();
@@ -42,6 +42,5 @@ class ParatestCommandTest extends WebTestCase
 
         $this->assertContains('Initial schema created', $content);
         $this->assertContains('Done...Running test.', $content);
-
     }
 }

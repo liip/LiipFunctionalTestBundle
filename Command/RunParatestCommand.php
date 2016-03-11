@@ -27,19 +27,18 @@ class RunParatestCommand extends ContainerAwareCommand
             ->setName('test:run')
             ->setDescription('Run phpunit tests with multiple process')
         ;
-
     }
 
     protected function prepare()
     {
-        $this->configuration = $this->getContainer()->hasParameter("liip_functional_test");
-        $paratestCfg = ( !isset($this->configuration['paratest'])) ? array('process' => $this->process, 'phpunit' => $this->phpunit) : $this->configuration['paratest'];
+        $this->configuration = $this->getContainer()->hasParameter('liip_functional_test');
+        $paratestCfg = (!isset($this->configuration['paratest'])) ? array('process' => $this->process, 'phpunit' => $this->phpunit) : $this->configuration['paratest'];
 
-        $this->process = ( !empty($this->configuration['process']) ) ? $paratestCfg['process'] : $this->process;
-        $this->phpunit = ( !empty($this->configuration['phpunit']) ) ? $paratestCfg['phpunit'] : $this->phpunit;
+        $this->process = (!empty($this->configuration['process'])) ? $paratestCfg['process'] : $this->process;
+        $this->phpunit = (!empty($this->configuration['phpunit'])) ? $paratestCfg['phpunit'] : $this->phpunit;
         $testDbPath = $this->getContainer()->get('kernel')->getRootDir();
         $this->output->writeln("Cleaning old dbs in $testDbPath ...");
-        $createDirProcess = new Process('mkdir -p ' . $testDbPath . '/cache/test/');
+        $createDirProcess = new Process('mkdir -p '.$testDbPath.'/cache/test/');
         $createDirProcess->run();
         $cleanProcess = new Process("rm -fr $testDbPath/cache/test/dbTest.db $testDbPath/cache/test/dbTest*.db*");
         $cleanProcess->run();
@@ -47,18 +46,18 @@ class RunParatestCommand extends ContainerAwareCommand
         $createProcess = new Process('php app/console doctrine:schema:create --env=test');
         $createProcess->run();
 
-        $this->output->writeln("Initial schema created");
+        $this->output->writeln('Initial schema created');
         $populateProcess = new Process("php app/console doctrine:fixtures:load -n --fixtures $testDbPath/../src/overlord/AppBundle/Tests/DataFixtures/ORM/ --env=test");
         $populateProcess->run();
 
         if ($populateProcess->isSuccessful()) {
             $this->output->writeln('Initial schema populated, duplicating....');
-            for ($a = 0; $a < $this->process; $a++) {
-                $test = new Process("cp $testDbPath/cache/test/dbTest.db " . $testDbPath . "/cache/test/dbTest$a.db");
+            for ($a = 0; $a < $this->process; ++$a) {
+                $test = new Process("cp $testDbPath/cache/test/dbTest.db ".$testDbPath."/cache/test/dbTest$a.db");
                 $test->run();
             }
         } else {
-            $this->output->writeln("Can t populate");
+            $this->output->writeln('Can t populate');
         }
     }
 
@@ -73,7 +72,7 @@ class RunParatestCommand extends ContainerAwareCommand
         $this->output = $output;
         $this->prepare();
         $this->output->writeln('Done...Running test.');
-        $runProcess = new Process( $testDbPath  . "../vendor/bin/paratest -c app/ --phpunit " .$this->phpunit." --runner WrapRunner  -p ". $this->process);
+        $runProcess = new Process($testDbPath.'../vendor/bin/paratest -c app/ --phpunit '.$this->phpunit.' --runner WrapRunner  -p '.$this->process);
         $runProcess->run(function ($type, $buffer) {
             echo $buffer;
         });

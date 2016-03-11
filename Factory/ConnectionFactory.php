@@ -1,4 +1,5 @@
 <?php
+
 namespace Liip\FunctionalTestBundle\Factory;
 
 use Doctrine\Bundle\DoctrineBundle\ConnectionFactory as BaseConnectionFactory;
@@ -24,16 +25,17 @@ class ConnectionFactory extends BaseConnectionFactory
     public function createConnection(array $params, Configuration $config = null, EventManager $eventManager = null, array $mappingTypes = array())
     {
         $dbName = $this->getDbNameFromEnv($params['dbname']);
-                
+
         if ($params['driver'] === 'pdo_sqlite') {
-            $params['path'] = str_replace("__DBNAME__", $dbName, $params['path']);
+            $params['path'] = str_replace('__DBNAME__', $dbName, $params['path']);
         } else {
             $params['dbname'] = $dbName;
         }
+
         return parent::createConnection($params, $config, $eventManager, $mappingTypes);
     }
     private function getDbNameFromEnv($dbName)
     {
-        return 'dbTest' . getenv('TEST_TOKEN');
+        return 'dbTest'.getenv('TEST_TOKEN');
     }
 }
