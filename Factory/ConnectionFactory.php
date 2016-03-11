@@ -34,6 +34,7 @@ class ConnectionFactory extends BaseConnectionFactory
 
         return parent::createConnection($params, $config, $eventManager, $mappingTypes);
     }
+    
     private function getDbNameFromEnv($dbName)
     {
         return 'dbTest'.getenv('TEST_TOKEN');
