@@ -33,7 +33,6 @@
         "doctrine/phpcr-odm": "~1.3",
         "doctrine/phpcr-bundle": "~1.3",
         "hautelook/alice-bundle": "~0.2|~1.2",
-        "brianium/paratest": "~0.12.0|~0.13.2"
     },
     "suggest": {
         "symfony/framework-bundle": "To use assertStatusCode and assertValidationErrors ~2.5",
@@ -41,7 +40,8 @@
         "doctrine/orm": "Required when using the fixture loading functionality with an ORM and SQLite",
         "doctrine/dbal": "Required when using the fixture loading functionality with an ORM and SQLite",
         "nelmio/alice": "Required when using loadFixtureFiles functionality",
-        "hautelook/alice-bundle" : "Required when using loadFixtureFiles functionality with custom providers"
+        "hautelook/alice-bundle" : "Required when using loadFixtureFiles functionality with custom providers",
+        "brianium/paratest": "~0.12.0|~0.13.2"
     },
     "autoload": {
         "psr-4": {

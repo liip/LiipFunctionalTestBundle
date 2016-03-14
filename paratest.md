@@ -9,13 +9,7 @@ Installation
 
 1) Add ParaTest package
 
-To install with composer add the following to your `composer.json` file:
-```js
-"require": {
-    "brianium/paratest": "dev-master"
-}
-```
-Then run `php composer.phar install`
+To install with composer, simply run `composer require brianium/paratest`
 
 2) Add the connection factory to your config_test.yml
 
