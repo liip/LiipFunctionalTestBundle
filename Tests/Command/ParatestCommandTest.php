@@ -41,6 +41,7 @@ class ParatestCommandTest extends WebTestCase
         }
 
         $this->assertContains('Initial schema created', $content);
+        $this->assertNotContains('Error : Install paratest first', $content);
         $this->assertContains('Done...Running test.', $content);
     }
 }
