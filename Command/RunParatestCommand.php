@@ -68,9 +68,9 @@ class RunParatestCommand extends ContainerAwareCommand
     {
         $this->output = $output;
         $this->prepare();
-        if ( is_file('vendor/bin/paratest') !== true )
+        if (is_file('vendor/bin/paratest') !== true) {
             $this->output->writeln('Error : Install paratest first');
-        else{
+        } else {
             $this->output->writeln('Done...Running test.');
             $runProcess = new Process('vendor/bin/paratest -c phpunit.xml.dist --phpunit '.$this->phpunit.' --runner WrapRunner  -p '.$this->process);
             $runProcess->run(function ($type, $buffer) {
