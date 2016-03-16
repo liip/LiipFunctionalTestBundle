@@ -8,10 +8,12 @@ filter:
     - Tests/*
   paths:
     - Annotations/*
+    - Command/*
     - DependencyInjection/*
     - DependencyInjection/Compiler/*
     - EventListener/*
     - Exception/*
+    - Factory/*
     - Test/*
     - Validator/*
     - LiipFunctionalTestBundle.php
