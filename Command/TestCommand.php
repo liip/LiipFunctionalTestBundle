@@ -23,7 +23,7 @@ class TestCommand extends ContainerAwareCommand
     {
         parent::configure();
 
-        $this->setName('command:test')
+        $this->setName('liipfunctionaltestbundle:test')
             ->setDescription('Test command');
     }
 

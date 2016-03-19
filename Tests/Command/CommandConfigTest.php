@@ -34,7 +34,7 @@ class CommandConfigTest extends WebTestCase
     public function testRunCommand()
     {
         // Run command without options
-        $this->display = $this->runCommand('command:test');
+        $this->display = $this->runCommand('liipfunctionaltestbundle:test');
 
         $this->assertInternalType('string', $this->display);
 

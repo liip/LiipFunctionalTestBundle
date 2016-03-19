@@ -24,7 +24,7 @@ class CommandTest extends WebTestCase
     public function testRunCommandWithoutOptionsAndReuseKernel()
     {
         // Run command without options
-        $this->display = $this->runCommand('command:test');
+        $this->display = $this->runCommand('liipfunctionaltestbundle:test');
 
         $this->assertInternalType('string', $this->display);
 
@@ -36,7 +36,7 @@ class CommandTest extends WebTestCase
         $this->assertTrue($this->getDecorated());
 
         // Run command and reuse kernel
-        $this->display = $this->runCommand('command:test', array(), true);
+        $this->display = $this->runCommand('liipfunctionaltestbundle:test', array(), true);
 
         $this->assertContains('Environment: test', $this->display);
         $this->assertContains('Verbosity level: NORMAL', $this->display);
@@ -45,7 +45,7 @@ class CommandTest extends WebTestCase
     public function testRunCommandWithoutOptionsAndNotReuseKernel()
     {
         // Run command without options
-        $this->display = $this->runCommand('command:test');
+        $this->display = $this->runCommand('liipfunctionaltestbundle:test');
 
         // Test default values
         $this->assertContains('Environment: test', $this->display);
@@ -56,7 +56,7 @@ class CommandTest extends WebTestCase
 
         // Run command and not reuse kernel
         $this->environment = 'prod';
-        $this->display = $this->runCommand('command:test', array(), true);
+        $this->display = $this->runCommand('liipfunctionaltestbundle:test', array(), true);
 
         $this->assertContains('Environment: prod', $this->display);
         $this->assertContains('Verbosity level: NORMAL', $this->display);
@@ -67,7 +67,7 @@ class CommandTest extends WebTestCase
         // Set `decorated` to false
         $this->isDecorated(false);
 
-        $this->display = $this->runCommand('command:test');
+        $this->display = $this->runCommand('liipfunctionaltestbundle:test');
 
         $this->assertInternalType('string', $this->display);
 
@@ -84,7 +84,7 @@ class CommandTest extends WebTestCase
         $this->assertInternalType('boolean', $this->getDecorated());
         $this->assertFalse($this->getDecorated());
 
-        $this->display = $this->runCommand('command:test');
+        $this->display = $this->runCommand('liipfunctionaltestbundle:test');
 
         $this->assertInternalType('string', $this->display);
 
@@ -101,7 +101,7 @@ class CommandTest extends WebTestCase
         $this->assertInternalType('boolean', $this->getDecorated());
         $this->assertFalse($this->getDecorated());
 
-        $this->display = $this->runCommand('command:test');
+        $this->display = $this->runCommand('liipfunctionaltestbundle:test');
 
         $this->assertContains('Verbosity level: NORMAL', $this->display);
 
@@ -122,7 +122,7 @@ class CommandTest extends WebTestCase
     {
         $this->setVerbosityLevel('normal');
         $this->isDecorated(false);
-        $this->display = $this->runCommand('command:test');
+        $this->display = $this->runCommand('liipfunctionaltestbundle:test');
 
         $this->assertContains('Verbosity level: NORMAL', $this->display);
 
@@ -142,7 +142,7 @@ class CommandTest extends WebTestCase
     public function testRunCommandVerbosityVerbose()
     {
         $this->setVerbosityLevel('verbose');
-        $this->display = $this->runCommand('command:test');
+        $this->display = $this->runCommand('liipfunctionaltestbundle:test');
 
         $this->assertInternalType('string', $this->display);
 
@@ -159,7 +159,7 @@ class CommandTest extends WebTestCase
         $this->assertInternalType('boolean', $this->getDecorated());
         $this->assertFalse($this->getDecorated());
 
-        $this->display = $this->runCommand('command:test');
+        $this->display = $this->runCommand('liipfunctionaltestbundle:test');
 
         $this->assertInternalType('string', $this->display);
 
@@ -176,7 +176,7 @@ class CommandTest extends WebTestCase
         $this->assertInternalType('boolean', $this->getDecorated());
         $this->assertFalse($this->getDecorated());
 
-        $this->display = $this->runCommand('command:test');
+        $this->display = $this->runCommand('liipfunctionaltestbundle:test');
 
         $this->assertInternalType('string', $this->display);
 

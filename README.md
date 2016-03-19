@@ -3,6 +3,18 @@
 ![Scrutinizer][Scrutinizer Coverage Image]][Scrutinizer]
 [![SensioLabsInsight][SensioLabsInsight Image]][SensioLabsInsight]
 
+Table of contents:
+
+- [Installation](#installation)
+- [Basic usage and methods](#basic-usage)
+- [Command tests](#command-tests)
+- [Database and fixtures](#database-tests)
+- [Create an already logged client](#create-an-already-logged-client)
+- [HTML5 Validator](#html5-validator)
+- [Query Counter](#query-counter)
+- [Caveats](#caveats)
+- [paratest](paratest.md)
+
 Introduction
 ============
 
