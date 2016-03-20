@@ -36,6 +36,7 @@
             <file>QueryCountClient.php</file>
             <file>QueryCounter.php</file>
             <directory>Annotations</directory>
+            <file>Command/RunParatestCommand.php</file>
             <directory>DependencyInjection</directory>
             <directory>EventListener</directory>
             <directory>Exception</directory>
