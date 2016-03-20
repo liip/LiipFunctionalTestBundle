@@ -17,6 +17,16 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 
 class AppConfigKernel extends AppKernel
 {
+    public function registerBundles()
+    {
+        return array_merge(
+            parent::registerBundles(),
+            array(
+                new Hautelook\AliceBundle\HautelookAliceBundle(),
+            )
+        );
+    }
+
     /**
      * Load the config.yml from the current directory.
      */

@@ -198,4 +198,132 @@ class WebTestCaseConfigTest extends WebTestCase
 
         $this->client->request('GET', $path);
     }
+
+    /**
+     * Test if there is a call-out to the service if defined.
+     */
+    public function testHautelookServiceUsage()
+    {
+        $hautelookLoaderMock = $this->getMockBuilder('\Hautelook\AliceBundle\Alice\DataFixtures\Loader')
+            ->disableOriginalConstructor()
+            ->setMethods(array('load'))
+            ->getMock();
+        $hautelookLoaderMock->expects(self::once())->method('load');
+
+        $this->getContainer()->set('hautelook_alice.fixtures.loader', $hautelookLoaderMock);
+
+        $this->loadFixtureFiles(array(
+            '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml',
+        ));
+    }
+
+    /**
+     * Use hautelook.
+     */
+    public function testLoadFixturesFilesWithHautelook()
+    {
+        if (!class_exists('Hautelook\AliceBundle\Faker\Provider\ProviderChain')) {
+            self::markTestSkipped('Please use hautelook/alice-bundle >=1.2');
+        }
+
+        $fakerProcessorChain = new \Hautelook\AliceBundle\Faker\Provider\ProviderChain(array());
+        $aliceProcessorChain = new \Hautelook\AliceBundle\Alice\ProcessorChain(array());
+        $fixtureLoader = new \Hautelook\AliceBundle\Alice\DataFixtures\Fixtures\Loader('en_US', $fakerProcessorChain);
+        $loader = new \Hautelook\AliceBundle\Alice\DataFixtures\Loader($fixtureLoader, $aliceProcessorChain, true, 10);
+        $this->getContainer()->set('hautelook_alice.fixtures.loader', $loader);
+
+        $fixtures = $this->loadFixtureFiles(array(
+            '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml',
+        ));
+
+        $this->assertInternalType(
+            'array',
+            $fixtures
+        );
+
+        // 10 users are loaded
+        $this->assertCount(
+            10,
+            $fixtures
+        );
+
+        $em = $this->getContainer()
+            ->get('doctrine.orm.entity_manager');
+
+        $users = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findAll();
+
+        $this->assertSame(
+            10,
+            count($users)
+        );
+
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        $user = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findOneBy(array(
+                'id' => 1,
+            ));
+
+        $this->assertTrue(
+            $user->getEnabled()
+        );
+
+        $user = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findOneBy(array(
+                'id' => 10,
+            ));
+
+        $this->assertTrue(
+            $user->getEnabled()
+        );
+    }
+
+    /**
+     * Load Data Fixtures with hautelook and custom loader defined in configuration.
+     */
+    public function testLoadFixturesFilesWithHautelookCustomProvider()
+    {
+        if (!class_exists('Hautelook\AliceBundle\Faker\Provider\ProviderChain')) {
+            self::markTestSkipped('Please use hautelook/alice-bundle >=1.2');
+        }
+
+        // Load default Data Fixtures.
+        $fixtures = $this->loadFixtureFiles(array(
+            '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml',
+        ));
+
+        $this->assertInternalType(
+            'array',
+            $fixtures
+        );
+
+        // 10 users are loaded
+        $this->assertCount(
+            10,
+            $fixtures
+        );
+
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        $user = $fixtures['id1'];
+
+        // The custom provider has not been used successfully.
+        $this->assertStringStartsNotWith(
+            'foo',
+            $user->getName()
+        );
+
+        // Load Data Fixtures with custom loader defined in configuration.
+        $fixtures = $this->loadFixtureFiles(array(
+            '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user_with_custom_provider.yml',
+        ));
+
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        $user = $fixtures['id1'];
+
+        // The custom provider "foo" has been loaded and used successfully.
+        $this->assertSame(
+            'fooa string',
+            $user->getName()
+        );
+    }
 }

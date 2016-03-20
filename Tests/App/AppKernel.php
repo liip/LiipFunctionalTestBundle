@@ -28,7 +28,6 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
             new Liip\FunctionalTestBundle\LiipFunctionalTestBundle(),
-            new Hautelook\AliceBundle\HautelookAliceBundle(),
         );
 
         return $bundles;

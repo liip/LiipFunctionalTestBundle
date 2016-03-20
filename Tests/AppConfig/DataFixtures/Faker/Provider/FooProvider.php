@@ -9,7 +9,7 @@
 * with this source code in the file LICENSE.
 */
 
-namespace Liip\FunctionalTestBundle\Tests\App\DataFixtures\Faker\Provider;
+namespace Liip\FunctionalTestBundle\Tests\AppConfig\DataFixtures\Faker\Provider;
 
 class FooProvider
 {

@@ -21,3 +21,9 @@ liip_functional_test:
         ignores_extract:
             - 'ignore_extract_1'
             - 'ignore_extract_2'
+
+# HautelookAliceBundle: custom Faker provider
+services:
+    faker.provider.foo:
+        class: Liip\FunctionalTestBundle\Tests\AppConfig\DataFixtures\Faker\Provider\FooProvider
+        tags: [ { name: hautelook_alice.faker.provider } ]
