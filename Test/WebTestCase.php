@@ -68,7 +68,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
     protected static function getKernelClass()
     {
-        $dir = isset($_SERVER['KERNEL_DIR']) ? $_SERVER['KERNEL_DIR'] : self::getPhpUnitXmlDir();
+        $dir = isset($_SERVER['KERNEL_DIR']) ? $_SERVER['KERNEL_DIR'] : static::getPhpUnitXmlDir();
 
         list($appname) = explode('\\', get_called_class());
 
