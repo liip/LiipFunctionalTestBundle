@@ -184,7 +184,7 @@ $this->assertSame(
 Get the content of an URL:
 
 ```php
-$crawler = $this->fetchContent('/contact');
+$content = $this->fetchContent('/contact');
 
 // `filter()` can't be used since the output is HTML code, check the content directly
 $this->assertContains(
