@@ -37,7 +37,7 @@ before_install:
   - if [ "$SYMFONY_VERSION" != "" ]; then composer require --no-update symfony/symfony=$SYMFONY_VERSION; fi;
 
 install:
-  - composer update $COMPOSER_FLAGS --prefer-source
+  - composer update $COMPOSER_FLAGS --prefer-dist
 
 # http://jubianchi.fr/how-to-test-your-symfony2-project-with-behat-on-travisci.htm
 before_script:
