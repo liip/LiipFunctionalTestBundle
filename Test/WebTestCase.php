@@ -318,7 +318,11 @@ abstract class WebTestCase extends BaseWebTestCase
         $backupLastModifiedDateTime = new \DateTime();
         $backupLastModifiedDateTime->setTimestamp(filemtime($backup));
 
-        foreach ($classNames as &$className) {
+        /** @var \Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader $loader */
+        $loader = $this->getFixtureLoader($this->getContainer(), $classNames);
+
+        // Use loader in order to fetch all the dependencies fixtures.
+        foreach ($loader->getFixtures() as $className) {
             $fixtureLastModifiedDateTime = $this->getFixtureLastModified($className);
             if ($backupLastModifiedDateTime < $fixtureLastModifiedDateTime) {
                 return false;

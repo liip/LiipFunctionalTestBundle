@@ -326,4 +326,54 @@ class WebTestCaseConfigTest extends WebTestCase
             $user->getName()
         );
     }
+
+    /**
+     * Update a fixture file and check that the cache will be refreshed.
+     */
+    public function testBackupIsRefreshed()
+    {
+        // This value is generated in loadFixtures().
+        $md5 = '0ded9d8daaeaeca1056b18b9d0d433b2';
+
+        $this->loadFixtures(array(
+            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadDependentUserData',
+        ));
+
+        $dependentFixtureFilePath = $this->getContainer()->get('kernel')->locateResource(
+            '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/LoadUserData.php'
+        );
+
+        $dependentFixtureFilemtime = filemtime($dependentFixtureFilePath);
+
+        $databaseFilePath = $this->getContainer()->getParameter('kernel.cache_dir')
+            .'/test_'.$md5.'.db';
+
+        if (!is_file($databaseFilePath)) {
+            $this->markTestSkipped($databaseFilePath.' is not a file.');
+        }
+
+        $databaseFilemtime = filemtime($databaseFilePath);
+
+        sleep(1);
+
+        // Update the filemtime of the fixture file used as a dependency:
+        // set a date in the future.
+        touch($dependentFixtureFilePath, (time() + 5));
+
+        $this->loadFixtures(array(
+            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadDependentUserData',
+        ));
+
+        // The mtime of the file has been updated.
+        $this->assertGreaterThan(
+            $dependentFixtureFilemtime,
+            filemtime($dependentFixtureFilePath)
+        );
+
+        // The backup should be up-to-date.
+        $this->assertGreaterThan(
+            $databaseFilemtime,
+            filemtime($databaseFilePath)
+        );
+    }
 }
