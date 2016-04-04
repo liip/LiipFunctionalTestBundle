@@ -50,14 +50,16 @@ Then run `php app/console paratest:run`
 Options
 =======
 
-You can modify process amount and phpunit location with the foloowing: 
+You can modify process amount, paratest and phpunit locations with the following configuration:
 
 ```yaml
 # app/config/config_test.yml
 liip_functional_test:
     paratest:
-        process:5 #default is 5
-        phpunit:'./bin/phpunit' #default is ./bin/phpunit
+        process: 5 #default is 5
+        path: './bin/paratest' #default is ./bin/paratest or ./vendor/bin/paratest on Symfony 2
+        phpunit: './bin/phpunit' #default is ./bin/phpunit or ./vendor/bin/phpunit on Symfony 2
+        xml_config: './app.phpunit.xml.dist'
 ```
 Ensure that the framework is using the filesystem for session storage:
 

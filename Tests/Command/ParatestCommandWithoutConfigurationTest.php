@@ -21,13 +21,13 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
  *
  * @runTestsInSeparateProcesses
  */
-class ParatestCommandTest extends WebTestCase
+class ParatestCommandWithoutConfigurationTest extends WebTestCase
 {
     protected static function getKernelClass()
     {
-        require_once __DIR__.'/../AppConfigParatest/AppConfigParatestKernel.php';
+        require_once __DIR__.'/../App/AppKernel.php';
 
-        return 'AppConfigParatestKernel';
+        return 'AppKernel';
     }
 
     /**
@@ -45,9 +45,8 @@ class ParatestCommandTest extends WebTestCase
             'options' => 'Tests/Test/WebTestCaseConfigParatestTest.php --group "paratest"',
         ));
 
-        $this->assertContains('Running phpunit in 3 processes', $content);
-        $this->assertNotContains('Error : Install paratest first', $content);
-        $this->assertContains('Done...Running test.', $content);
-        $this->assertContains('OK (2 tests, 4 assertions)', $content);
+        $this->assertNotContains('Running phpunit in 3 processes', $content);
+        $this->assertContains('Error : Install paratest first', $content);
+        $this->assertNotContains('Done...Running test.', $content);
     }
 }

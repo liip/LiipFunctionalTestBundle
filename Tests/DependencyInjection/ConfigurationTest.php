@@ -62,6 +62,10 @@ class ConfigurationTest extends WebTestCase
             array('html5validation.url', 'https://validator.nu/'),
             array('html5validation.ignores', array()),
             array('html5validation.ignores_extract', array()),
+            array('paratest.process', 5),
+            array('paratest.path', './bin/paratest'),
+            array('paratest.phpunit', './bin/phpunit'),
+            array('paratest.xml_config', './app/phpunit.xml.dist'),
         );
     }
 }
