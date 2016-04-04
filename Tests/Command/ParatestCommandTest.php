@@ -27,7 +27,7 @@ class ParatestCommandTest extends WebTestCase
         $application->setAutoExit(false);
 
         $input = new ArrayInput(array(
-           'command' => 'test:run', ));
+           'command' => 'paratest:run', ));
 
         if (!class_exists('Symfony\Component\Console\Output\BufferedOutput')) {
             $output = new \Symfony\Component\Console\Output\StreamOutput(tmpfile(), \Symfony\Component\Console\Output\StreamOutput::VERBOSITY_NORMAL);
