@@ -41,7 +41,7 @@ The connection factory will replace __DBNAME__ with it s own unique ID depending
 
 3) Run the command, and don't leave for a coffee, it s already finished.
 
-Then run `php app/console test:run`
+Then run `php app/console paratest:run`
 
 ( Run in test environnement by default )
 

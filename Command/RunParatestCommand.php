@@ -25,8 +25,8 @@ class RunParatestCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('test:run')
-            ->setDescription('Run phpunit tests with multiple process')
+            ->setName('paratest:run')
+            ->setDescription('Run phpunit tests with multiple processes')
         ;
     }
 
