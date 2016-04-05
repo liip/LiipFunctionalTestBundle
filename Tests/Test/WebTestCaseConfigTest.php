@@ -335,9 +335,11 @@ class WebTestCaseConfigTest extends WebTestCase
         // This value is generated in loadFixtures().
         $md5 = '0ded9d8daaeaeca1056b18b9d0d433b2';
 
-        $this->loadFixtures(array(
+        $fixtures = array(
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadDependentUserData',
-        ));
+        );
+
+        $this->loadFixtures($fixtures);
 
         $dependentFixtureFilePath = $this->getContainer()->get('kernel')->locateResource(
             '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/LoadUserData.php'
@@ -354,26 +356,45 @@ class WebTestCaseConfigTest extends WebTestCase
 
         $databaseFilemtime = filemtime($databaseFilePath);
 
-        sleep(1);
+        sleep(2);
+
+        // Reload the fixtures.
+        $this->loadFixtures($fixtures);
+
+        // The mtime of the file has not changed.
+        $this->assertSame(
+            $dependentFixtureFilemtime,
+            filemtime($dependentFixtureFilePath),
+            'File modification time of the fixture has been updated.'
+        );
+
+        // The backup has not been updated.
+        $this->assertSame(
+            $databaseFilemtime,
+            filemtime($databaseFilePath),
+            'File modification time of the backup has been updated.'
+        );
+
+        sleep(2);
 
         // Update the filemtime of the fixture file used as a dependency:
         // set a date in the future.
-        touch($dependentFixtureFilePath, (time() + 5));
+        touch($dependentFixtureFilePath);
 
-        $this->loadFixtures(array(
-            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadDependentUserData',
-        ));
+        $this->loadFixtures($fixtures);
 
-        // The mtime of the file has been updated.
+        // The mtime of the fixture file has been updated.
         $this->assertGreaterThan(
             $dependentFixtureFilemtime,
-            filemtime($dependentFixtureFilePath)
+            filemtime($dependentFixtureFilePath),
+            'File modification time of the fixture has not been updated.'
         );
 
-        // The backup should be up-to-date.
+        // The backup has been refreshed: mtime is greater.
         $this->assertGreaterThan(
             $databaseFilemtime,
-            filemtime($databaseFilePath)
+            filemtime($databaseFilePath),
+            'File modification time of the backup has not been updated.'
         );
     }
 }
