@@ -52,6 +52,7 @@
     <groups>
         <exclude>
             <group>mysql</group>
+            <group>paratest</group>
         </exclude>
     </groups>
 </phpunit>

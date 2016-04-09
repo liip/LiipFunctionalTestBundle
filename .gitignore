@@ -8,6 +8,8 @@ vendor
 /Tests/AppConfig/logs/
 /Tests/AppConfigMysql/cache/
 /Tests/AppConfigMysql/logs/
+/Tests/AppConfigParatest/cache/
+/Tests/AppConfigParatest/logs/
 /Tests/AppConfigPhpcr/cache/
 /Tests/AppConfigPhpcr/logs/
 /cov/
