@@ -312,9 +312,6 @@ Tips for Fixture Loading Tests
         cache_sqlite_db: true
     ```
 
-    Note: If you use `DependentFixtureInterface` in your fixtures,
-    see the note in [Caveats](#caveats) about the caching of the SQLite database.
-
  3. Load your Doctrine fixtures in your tests:
 
     ```php
@@ -775,10 +772,6 @@ To resolve the issue, it is recommended to configure your Doctrine slaves  speci
 Caveats
 -------
 
- * If you set the `liip_functional_test.cache_sqlite_db` parameter to `true`,
-   you have to clear the cache every time you modify a fixture
-   referenced by another fixture through `DependentFixtureInterface`:
-   `php app/console cache:clear --env=test`.
  * QueryCount annotations currently only work for tests that have a method name
    of `testFooBla()` (with a test prefix). The `@test` annotation isn't
    supported at the moment.
