@@ -31,7 +31,7 @@ class RunParatestCommand extends ContainerAwareCommand
 
     protected function prepare()
     {
-        $this->phpunit = $this->getContainer()->getParameter('liip_functional_test.paratest.phpunit') ;
+        $this->phpunit = $this->getContainer()->getParameter('liip_functional_test.paratest.phpunit');
         $this->process = $this->getContainer()->getParameter('liip_functional_test.paratest.process');
 
         $this->testDbPath = $this->getContainer()->get('kernel')->getRootDir();
