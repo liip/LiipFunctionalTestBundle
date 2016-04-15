@@ -13,11 +13,10 @@ use Symfony\Component\Process\Process;
 class RunParatestCommand extends ContainerAwareCommand
 {
     private $container;
-    private $configuration;
     private $output;
-    private $process = 5;
+    private $process;
     private $testDbPath;
-    private $phpunit = './bin/phpunit';
+    private $phpunit;
 
     /**
      * Configuration of the command.
@@ -32,11 +31,9 @@ class RunParatestCommand extends ContainerAwareCommand
 
     protected function prepare()
     {
-        $this->configuration = $this->getContainer()->hasParameter('liip_functional_test');
-        $paratestCfg = (!isset($this->configuration['paratest'])) ? array('process' => $this->process, 'phpunit' => $this->phpunit) : $this->configuration['paratest'];
+        $this->phpunit = $this->getContainer()->getParameter('liip_functional_test.paratest.phpunit');
+        $this->process = $this->getContainer()->getParameter('liip_functional_test.paratest.process');
 
-        $this->process = (!empty($this->configuration['process'])) ? $paratestCfg['process'] : $this->process;
-        $this->phpunit = (!empty($this->configuration['phpunit'])) ? $paratestCfg['phpunit'] : $this->phpunit;
         $this->testDbPath = $this->getContainer()->get('kernel')->getRootDir();
         $this->output->writeln("Cleaning old dbs in $this->testDbPath ...");
         $createDirProcess = new Process('mkdir -p '.$this->testDbPath.'/cache/test/');
