@@ -13,10 +13,23 @@ namespace Liip\FunctionalTestBundle\Tests\Command;
 
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\Console\Input\ArrayInput;
 
+/**
+ * Use Tests/AppConfig/AppConfigKernel.php instead of
+ * Tests/App/AppKernel.php.
+ * So it must be loaded in a separate process.
+ *
+ * @runTestsInSeparateProcesses
+ */
 class ParatestCommandTest extends WebTestCase
 {
+    protected static function getKernelClass()
+    {
+        require_once __DIR__.'/../AppConfig/AppConfigKernel.php';
+
+        return 'AppConfigKernel';
+    }
+
     /**
      * Test paratestCommand.
      */
@@ -26,22 +39,22 @@ class ParatestCommandTest extends WebTestCase
         $application = new Application($kernel);
         $application->setAutoExit(false);
 
-        $input = new ArrayInput(array(
-           'command' => 'paratest:run', ));
+        $this->isDecorated(false);
+        $content = $this->runCommand('paratest:run', array(
+            // Don't ignore the "paratest" group that is ignored by default.
+            'options' => 'Tests/Test/WebTestCaseTest.php',
+        ));
 
-        if (!class_exists('Symfony\Component\Console\Output\BufferedOutput')) {
-            $output = new \Symfony\Component\Console\Output\StreamOutput(tmpfile(), \Symfony\Component\Console\Output\StreamOutput::VERBOSITY_NORMAL);
-            $application->run($input, $output);
-            rewind($output->getStream());
-            $content = stream_get_contents($output->getStream());
-        } else {
-            $output = new \Symfony\Component\Console\Output\BufferedOutput();
-            $application->run($input, $output);
-            $content = $output->fetch();
-        }
-
+        $this->assertContains('Running phpunit in 5 processes with vendor/bin/phpunit', $content);
         $this->assertContains('Initial schema created', $content);
         $this->assertNotContains('Error : Install paratest first', $content);
         $this->assertContains('Done...Running test.', $content);
+
+        // Some tests are skipped with Symfony 2.3, the numbers of tests and
+        // assertions are 18 and 55 instead of 22 and 69 on Symfony 2.7+.
+        $this->assertRegExp(
+            '#OK \((22|18) tests, (69|55) assertions\)#',
+            $content
+        );
     }
 }

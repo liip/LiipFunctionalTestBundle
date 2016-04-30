@@ -3,6 +3,7 @@
 namespace Liip\FunctionalTestBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
@@ -12,7 +13,6 @@ use Symfony\Component\Process\Process;
  */
 class RunParatestCommand extends ContainerAwareCommand
 {
-    private $container;
     private $output;
     private $process;
     private $testDbPath;
@@ -26,6 +26,8 @@ class RunParatestCommand extends ContainerAwareCommand
         $this
             ->setName('paratest:run')
             ->setDescription('Run phpunit tests with multiple processes')
+            // Pass arguments from this command "paratest:run" to the paratest binary.
+            ->addArgument('options', InputArgument::OPTIONAL, 'Options')
         ;
     }
 
@@ -69,9 +71,15 @@ class RunParatestCommand extends ContainerAwareCommand
             $this->output->writeln('Error : Install paratest first');
         } else {
             $this->output->writeln('Done...Running test.');
-            $runProcess = new Process('vendor/bin/paratest -c phpunit.xml.dist --phpunit '.$this->phpunit.' --runner WrapRunner  -p '.$this->process);
-            $runProcess->run(function ($type, $buffer) {
-                echo $buffer;
+            $runProcess = new Process('vendor/bin/paratest '.
+                '-c phpunit.xml.dist '.
+                '--phpunit '.$this->phpunit.' '.
+                '--runner WrapRunner '.
+                '-p '.$this->process.' '.
+                $input->getArgument('options')
+            );
+            $runProcess->run(function ($type, $buffer) use ($output) {
+                $output->write($buffer);
             });
         }
     }
