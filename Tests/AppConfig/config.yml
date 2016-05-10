@@ -22,6 +22,7 @@ liip_functional_test:
             - 'ignore_extract_1'
             - 'ignore_extract_2'
     paratest:
+        process: 3
         phpunit: 'vendor/bin/phpunit'
 
 # HautelookAliceBundle: custom Faker provider

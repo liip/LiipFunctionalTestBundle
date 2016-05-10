@@ -26,7 +26,7 @@ class RunParatestCommand extends ContainerAwareCommand
         $this
             ->setName('paratest:run')
             ->setDescription('Run phpunit tests with multiple processes')
-            // Pass arguments from this command "paratest:run" to the paratest binary.
+            // Pass arguments from this command "paratest:run" to the paratest command.
             ->addArgument('options', InputArgument::OPTIONAL, 'Options')
         ;
     }

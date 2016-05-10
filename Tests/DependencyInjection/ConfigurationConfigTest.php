@@ -51,6 +51,7 @@ class ConfigurationConfigTest extends ConfigurationTest
                 'ignore_extract_1',
                 'ignore_extract_2',
             )),
+            array('paratest.process', 3),
             array('paratest.phpunit', 'vendor/bin/phpunit'),
         );
     }

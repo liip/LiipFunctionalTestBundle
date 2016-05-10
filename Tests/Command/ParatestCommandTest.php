@@ -41,11 +41,11 @@ class ParatestCommandTest extends WebTestCase
 
         $this->isDecorated(false);
         $content = $this->runCommand('paratest:run', array(
-            // Don't ignore the "paratest" group that is ignored by default.
+            // Only launch one test class, launching more classes may start an infinite loop.
             'options' => 'Tests/Test/WebTestCaseTest.php',
         ));
 
-        $this->assertContains('Running phpunit in 5 processes with vendor/bin/phpunit', $content);
+        $this->assertContains('Running phpunit in 3 processes with vendor/bin/phpunit', $content);
         $this->assertContains('Initial schema created', $content);
         $this->assertNotContains('Error : Install paratest first', $content);
         $this->assertContains('Done...Running test.', $content);
