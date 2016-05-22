@@ -23,5 +23,9 @@
             <argument>%liip_functional_test.query.max_query_count%</argument>
             <argument type="service" id="annotation_reader" />
         </service>
+
+        <service id="liip_functional_test.fixtures_loader" class="Liip\FunctionalTestBundle\Utils\FixturesLoader">
+            <argument type="service" id="service_container" />
+        </service>
     </services>
 </container>

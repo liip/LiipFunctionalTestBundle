@@ -271,9 +271,9 @@ DoctrineFixturesBundle installed and configured first:
 
 In case tests require database access make sure that the database is created and
 proxies are generated.  For tests that rely on specific database contents,
-write fixture classes and call `loadFixtures()` method from the bundled
+write fixture classes and call `$this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures()` method from the bundled
 `Test\WebTestCase` class. This will replace the database configured in
-`config_test.yml` with the specified fixtures. Please note that `loadFixtures()`
+`config_test.yml` with the specified fixtures. Please note that `$this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures()`
 will delete the contents from the database before loading the fixtures. That's
 why you should use a designated database for tests.
 
@@ -323,7 +323,7 @@ Tips for Fixture Loading Tests
         {
             // add all your fixtures classes that implement
             // Doctrine\Common\DataFixtures\FixtureInterface
-            $this->loadFixtures(array(
+            $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array(
                 'Bamarni\MainBundle\DataFixtures\ORM\LoadData',
                 'Me\MyBundle\DataFixtures\ORM\LoadData'
             ));
@@ -346,7 +346,7 @@ Tips for Fixture Loading Tests
     {
         public function testIndex()
         {
-            $this->loadFixtures(array());
+            $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(
 
             // you can now run your functional tests with a populated database
             $client = static::createClient();
@@ -369,7 +369,7 @@ Tips for Fixture Loading Tests
                 'Me\MyBundle\DataFixtures\MongoDB\LoadData'
             );
 
-            $this->loadFixtures($fixtures, null, 'doctrine_mongodb');
+            $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures($fixtures, null, 'doctrine_mongodb');
 
             $client = static::createClient();
         }
@@ -384,7 +384,7 @@ This method uses the [Alice Loader](https://github.com/nelmio/alice/blob/master/
 rather than the FunctionalTestBundle's load methods. You should be aware that there are some difference between the ways these two libraries handle loading.
 
 ```php
-$fixtures = $this->loadFixtureFiles(array(
+$fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtureFiles(array(
     '@AcmeBundle/DataFixtures/ORM/ObjectData.yml',
     '@AcmeBundle/DataFixtures/ORM/AnotherObjectData.yml',
     '../../DataFixtures/ORM/YetAnotherObjectData.yml',
@@ -421,7 +421,7 @@ class AppKernel extends Kernel
 }
 ```
 
-Then you can load fixtures with `$this->loadFixtureFiles(array('@AcmeBundle/…/fixture.yml'));`.
+Then you can load fixtures with `$this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtureFiles(array('@AcmeBundle/…/fixture.yml'));`.
 
 ### Non-SQLite
 
@@ -453,7 +453,7 @@ class AccountControllerTest extends WebTestCase
         $fixtures = array(
             'Acme\MyBundle\DataFixtures\ORM\LoadUserData',
         );
-        $this->loadFixtures($fixtures);
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures($fixtures);
     }
 //...
 }
@@ -485,7 +485,7 @@ and then in the test case setup:
 ...
     public function setUp()
     {
-        $this->fixtures = $this->loadFixtures([
+        $this->fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([
             'AppBundle\Tests\Fixtures\LoadMemberAccounts'
         ])->getReferenceRepository();
     ...
@@ -542,7 +542,7 @@ fixtures](#referencing-fixtures-in-tests) using the method `getReferenceReposito
 object to the method `WebTestCase::loginAs()`.
 
 ```php
-$fixtures = $this->loadFixtures(array(
+$fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array(
     'AppBundle\DataFixtures\ORM\LoadUserData'
 ))->getReferenceRepository();
 

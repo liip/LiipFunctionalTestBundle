@@ -60,7 +60,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
      */
     public function testLoadEmptyFixtures()
     {
-        $fixtures = $this->loadFixtures(array());
+        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $this->assertInstanceOf(
             'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
@@ -71,9 +71,9 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
     /**
      * @group mysql
      */
-    public function testLoadFixtures()
+    public function testloadFixtures()
     {
-        $fixtures = $this->loadFixtures(array(
+        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array(
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ));
 
@@ -126,7 +126,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
      */
     public function testLoadFixturesAndPurge()
     {
-        $fixtures = $this->loadFixtures(array(
+        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array(
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ));
 
@@ -146,7 +146,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
         );
 
         // 1 → ORMPurger::PURGE_MODE_DELETE
-        $this->loadFixtures(array(), null, 'doctrine', 1);
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array(), null, 'doctrine', 1);
 
         // The purge worked: there is no user.
         $this->assertSame(
@@ -156,7 +156,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
         );
 
         // Reload fixtures
-        $this->loadFixtures(array(
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array(
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ));
 
@@ -168,7 +168,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
         );
 
         // 2 → ORMPurger::PURGE_MODE_TRUNCATE
-        $this->loadFixtures(array(), null, 'doctrine', 2);
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array(), null, 'doctrine', 2);
 
         // The purge worked: there is no user.
         $this->assertSame(
@@ -185,7 +185,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
      */
     public function testLoadFixturesFiles()
     {
-        $fixtures = $this->loadFixtureFiles(array(
+        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtureFiles(array(
             '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml',
         ));
 

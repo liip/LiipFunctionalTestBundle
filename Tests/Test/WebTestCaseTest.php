@@ -90,7 +90,7 @@ class WebTestCaseTest extends WebTestCase
      */
     public function testIndexAssertStatusCode()
     {
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $path = '/';
 
@@ -108,7 +108,7 @@ class WebTestCaseTest extends WebTestCase
             $this->markTestSkipped('The Symfony\Component\Validator\Validator\ValidatorInterface does not exist');
         }
 
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $path = '/';
 
@@ -138,7 +138,7 @@ class WebTestCaseTest extends WebTestCase
      */
     public function testAssertStatusCodeException()
     {
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $path = '/user/2';
 
@@ -164,7 +164,7 @@ EOF;
      */
     public function testIndexIsSuccesful()
     {
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $path = '/';
 
@@ -178,7 +178,7 @@ EOF;
      */
     public function testIndexFetchCrawler()
     {
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $path = '/';
 
@@ -208,7 +208,7 @@ EOF;
      */
     public function testIndexFetchContent()
     {
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $path = '/';
 
@@ -224,7 +224,7 @@ EOF;
 
     public function test404Error()
     {
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $path = '/missing_page';
 
@@ -241,7 +241,7 @@ EOF;
      */
     public function testIsSuccessfulException()
     {
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $response = $this->getMockBuilder('Symfony\Component\HttpFoundation\Response')
             ->disableOriginalConstructor()
@@ -272,7 +272,7 @@ EOF;
      */
     public function testLoadEmptyFixtures()
     {
-        $fixtures = $this->loadFixtures(array());
+        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $this->assertInstanceOf(
             'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
@@ -282,7 +282,7 @@ EOF;
 
     public function testLoadFixtures()
     {
-        $fixtures = $this->loadFixtures(array(
+        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array(
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ));
 
@@ -340,7 +340,7 @@ EOF;
      */
     public function testLoadDependentFixtures()
     {
-        $fixtures = $this->loadFixtures(array(
+        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array(
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadDependentUserData',
         ));
 
@@ -367,7 +367,7 @@ EOF;
      */
     public function testLoadFixturesFiles()
     {
-        $fixtures = $this->loadFixtureFiles(array(
+        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtureFiles(array(
             '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml',
         ));
 
@@ -418,7 +418,7 @@ EOF;
      */
     public function testLoadFixturesFilesPaths()
     {
-        $fixtures = $this->loadFixtureFiles(array(
+        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtureFiles(array(
             $this->client->getContainer()->get('kernel')->locateResource(
                 '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml'
             ),
@@ -465,7 +465,7 @@ EOF;
 
     public function testUserWithFixtures()
     {
-        $fixtures = $this->loadFixtures(array(
+        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array(
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ));
 
@@ -525,7 +525,7 @@ EOF;
             $this->markTestSkipped('The Symfony\Component\Validator\Validator\ValidatorInterface does not exist');
         }
 
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $path = '/form';
 
@@ -564,7 +564,7 @@ EOF;
             $this->markTestSkipped('The Symfony\Component\Validator\Validator\ValidatorInterface does not exist');
         }
 
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $path = '/form';
 
@@ -590,7 +590,7 @@ EOF;
             $this->markTestSkipped('The Symfony\Component\Validator\Validator\ValidatorInterface does not exist');
         }
 
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $path = '/form';
 
@@ -622,7 +622,7 @@ EOF;
      */
     public function testJsonIsSuccesful()
     {
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $this->client = static::makeClient();
 
