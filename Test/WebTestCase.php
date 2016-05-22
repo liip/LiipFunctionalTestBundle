@@ -376,34 +376,6 @@ abstract class WebTestCase extends BaseWebTestCase
     }
 
     /**
-     * Checks the success state of a response.
-     *
-     * @param Response $response Response object
-     * @param bool     $success  to define whether the response is expected to be successful
-     * @param string   $type
-     */
-    public function isSuccessful(Response $response, $success = true, $type = 'text/html')
-    {
-        try {
-            $crawler = new Crawler();
-            $crawler->addContent($response->getContent(), $type);
-            if (!count($crawler->filter('title'))) {
-                $title = '['.$response->getStatusCode().'] - '.$response->getContent();
-            } else {
-                $title = $crawler->filter('title')->text();
-            }
-        } catch (\Exception $e) {
-            $title = $e->getMessage();
-        }
-
-        if ($success) {
-            $this->assertTrue($response->isSuccessful(), 'The Response was not successful: '.$title);
-        } else {
-            $this->assertFalse($response->isSuccessful(), 'The Response was successful: '.$title);
-        }
-    }
-
-    /**
      * Executes a request on the given url and returns the response contents.
      *
      * This method also asserts the request was successful.
@@ -422,7 +394,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
         $content = $client->getResponse()->getContent();
         if (is_bool($success)) {
-            $this->isSuccessful($client->getResponse(), $success);
+            $this->getContainer()->get('liip_functional_test.http_assertions')->isSuccessful($client->getResponse(), $success);
         }
 
         return $content;
@@ -445,7 +417,7 @@ abstract class WebTestCase extends BaseWebTestCase
         $client = $this->makeClient($authentication);
         $crawler = $client->request($method, $path);
 
-        $this->isSuccessful($client->getResponse(), $success);
+        $this->getContainer()->get('liip_functional_test.http_assertions')->isSuccessful($client->getResponse(), $success);
 
         return $crawler;
     }
@@ -461,51 +433,5 @@ abstract class WebTestCase extends BaseWebTestCase
         $this->firewallLogins[$firewallName] = $user;
 
         return $this;
-    }
-
-    /**
-     * Asserts that the HTTP response code of the last request performed by
-     * $client matches the expected code. If not, raises an error with more
-     * information.
-     *
-     * @param $expectedStatusCode
-     * @param Client $client
-     */
-    public function assertStatusCode($expectedStatusCode, Client $client)
-    {
-        $helpfulErrorMessage = null;
-
-        if ($expectedStatusCode !== $client->getResponse()->getStatusCode()) {
-            // Get a more useful error message, if available
-            if ($exception = $client->getContainer()->get('liip_functional_test.exception_listener')->getLastException()) {
-                $helpfulErrorMessage = $exception->getMessage();
-            } elseif (count($validationErrors = $client->getContainer()->get('liip_functional_test.validator')->getLastErrors())) {
-                $helpfulErrorMessage = "Unexpected validation errors:\n";
-
-                foreach ($validationErrors as $error) {
-                    $helpfulErrorMessage .= sprintf("+ %s: %s\n", $error->getPropertyPath(), $error->getMessage());
-                }
-            } else {
-                $helpfulErrorMessage = substr($client->getResponse(), 0, 200);
-            }
-        }
-
-        self::assertEquals($expectedStatusCode, $client->getResponse()->getStatusCode(), $helpfulErrorMessage);
-    }
-
-    /**
-     * Assert that the last validation errors within $container match the
-     * expected keys.
-     *
-     * @param array              $expected  A flat array of field names
-     * @param ContainerInterface $container
-     */
-    public function assertValidationErrors(array $expected, ContainerInterface $container)
-    {
-        self::assertThat(
-            $container->get('liip_functional_test.validator')->getLastErrors(),
-            new ValidationErrorsConstraint($expected),
-            'Validation errors should match.'
-        );
     }
 }

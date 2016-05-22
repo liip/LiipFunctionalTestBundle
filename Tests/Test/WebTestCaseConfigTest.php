@@ -56,7 +56,7 @@ class WebTestCaseConfigTest extends WebTestCase
 
         $crawler = $this->client->request('GET', $path);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(200, $this->client);
 
         $this->assertSame(1,
             $crawler->filter('html > body')->count());
@@ -87,7 +87,7 @@ class WebTestCaseConfigTest extends WebTestCase
 
         $crawler = $this->client->request('GET', $path);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(200, $this->client);
 
         $this->assertSame(1,
             $crawler->filter('html > body')->count());
@@ -129,7 +129,7 @@ class WebTestCaseConfigTest extends WebTestCase
 
         $crawler = $this->client->request('GET', $path);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(200, $this->client);
 
         $this->assertSame(1,
             $crawler->filter('html > body')->count());

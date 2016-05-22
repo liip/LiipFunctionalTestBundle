@@ -96,7 +96,7 @@ class WebTestCaseTest extends WebTestCase
 
         $this->client->request('GET', $path);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(200, $this->client);
     }
 
     /**
@@ -115,7 +115,7 @@ class WebTestCaseTest extends WebTestCase
         $this->client->request('GET', $path);
 
         try {
-            $this->assertStatusCode(-1, $this->client);
+            $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(-1, $this->client);
         } catch (\PHPUnit_Framework_AssertionFailedError $e) {
             $this->assertStringStartsWith(
                 'HTTP/1.1 200 OK',
@@ -145,7 +145,7 @@ class WebTestCaseTest extends WebTestCase
         $this->client->request('GET', $path);
 
         try {
-            $this->assertStatusCode(-1, $this->client);
+            $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(-1, $this->client);
         } catch (\PHPUnit_Framework_AssertionFailedError $e) {
             $string = <<<'EOF'
 No user found
@@ -170,7 +170,7 @@ EOF;
 
         $this->client->request('GET', $path);
 
-        $this->isSuccessful($this->client->getResponse());
+        $this->getContainer()->get('liip_functional_test.http_assertions')->isSuccessful($this->client->getResponse());
     }
 
     /**
@@ -230,9 +230,9 @@ EOF;
 
         $this->client->request('GET', $path);
 
-        $this->assertStatusCode(404, $this->client);
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(404, $this->client);
 
-        $this->isSuccessful($this->client->getResponse(), false);
+        $this->getContainer()->get('liip_functional_test.http_assertions')->isSuccessful($this->client->getResponse(), false);
     }
 
     /**
@@ -253,7 +253,7 @@ EOF;
             ->will($this->throwException(new \Exception('foo')));
 
         try {
-            $this->isSuccessful($response);
+            $this->getContainer()->get('liip_functional_test.http_assertions')->isSuccessful($response);
         } catch (\PHPUnit_Framework_AssertionFailedError $e) {
             $string = <<<'EOF'
 The Response was not successful: foo
@@ -481,7 +481,7 @@ EOF;
         /** @var \Symfony\Component\DomCrawler\Crawler $crawler */
         $crawler = $this->client->request('GET', $path);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(200, $this->client);
 
         if ($profile = $this->client->getProfile()) {
             // One query
@@ -531,21 +531,21 @@ EOF;
 
         $crawler = $this->client->request('GET', $path);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(200, $this->client);
 
         $form = $crawler->selectButton('Submit')->form();
         $crawler = $this->client->submit($form);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(200, $this->client);
 
-        $this->assertValidationErrors(array('children[name].data'), $this->client->getContainer());
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertValidationErrors(array('children[name].data'), $this->client->getContainer());
 
         // Try again with the fields filled out.
         $form = $crawler->selectButton('Submit')->form();
         $form->setValues(array('form[name]' => 'foo bar'));
         $crawler = $this->client->submit($form);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(200, $this->client);
 
         $this->assertContains(
             'Name submitted.',
@@ -570,14 +570,14 @@ EOF;
 
         $crawler = $this->client->request('GET', $path);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(200, $this->client);
 
         $form = $crawler->selectButton('Submit')->form();
         $this->client->submit($form);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(200, $this->client);
 
-        $this->assertValidationErrors(array(''), $this->client->getContainer());
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertValidationErrors(array(''), $this->client->getContainer());
     }
 
     /**
@@ -601,7 +601,7 @@ EOF;
         $this->client->submit($form);
 
         try {
-            $this->assertStatusCode(-1, $this->client);
+            $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(-1, $this->client);
         } catch (\PHPUnit_Framework_AssertionFailedError $e) {
             $string = <<<'EOF'
 Unexpected validation errors:
@@ -630,7 +630,7 @@ EOF;
 
         $this->client->request('GET', $path);
 
-        $this->isSuccessful(
+        $this->getContainer()->get('liip_functional_test.http_assertions')->isSuccessful(
             $this->client->getResponse(),
             true,
             'application/json'
