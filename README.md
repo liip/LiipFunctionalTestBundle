@@ -57,7 +57,7 @@ Installation
                 $bundles[] = new Liip\FunctionalTestBundle\LiipFunctionalTestBundle();
             }
 
-            return $bundles
+            return $bundles;
         }
 
         // ...
