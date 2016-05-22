@@ -90,13 +90,13 @@ class WebTestCaseTest extends WebTestCase
      */
     public function testIndexAssertStatusCode()
     {
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $path = '/';
 
         $this->client->request('GET', $path);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(200, $this->client);
     }
 
     /**
@@ -108,14 +108,14 @@ class WebTestCaseTest extends WebTestCase
             $this->markTestSkipped('The Symfony\Component\Validator\Validator\ValidatorInterface does not exist');
         }
 
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $path = '/';
 
         $this->client->request('GET', $path);
 
         try {
-            $this->assertStatusCode(-1, $this->client);
+            $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(-1, $this->client);
         } catch (\PHPUnit_Framework_AssertionFailedError $e) {
             $this->assertStringStartsWith(
                 'HTTP/1.1 200 OK',
@@ -138,14 +138,14 @@ class WebTestCaseTest extends WebTestCase
      */
     public function testAssertStatusCodeException()
     {
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $path = '/user/2';
 
         $this->client->request('GET', $path);
 
         try {
-            $this->assertStatusCode(-1, $this->client);
+            $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(-1, $this->client);
         } catch (\PHPUnit_Framework_AssertionFailedError $e) {
             $string = <<<'EOF'
 No user found
@@ -164,13 +164,13 @@ EOF;
      */
     public function testIndexIsSuccesful()
     {
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $path = '/';
 
         $this->client->request('GET', $path);
 
-        $this->isSuccessful($this->client->getResponse());
+        $this->getContainer()->get('liip_functional_test.http_assertions')->isSuccessful($this->client->getResponse());
     }
 
     /**
@@ -178,7 +178,7 @@ EOF;
      */
     public function testIndexFetchCrawler()
     {
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $path = '/';
 
@@ -208,7 +208,7 @@ EOF;
      */
     public function testIndexFetchContent()
     {
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $path = '/';
 
@@ -224,15 +224,15 @@ EOF;
 
     public function test404Error()
     {
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $path = '/missing_page';
 
         $this->client->request('GET', $path);
 
-        $this->assertStatusCode(404, $this->client);
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(404, $this->client);
 
-        $this->isSuccessful($this->client->getResponse(), false);
+        $this->getContainer()->get('liip_functional_test.http_assertions')->isSuccessful($this->client->getResponse(), false);
     }
 
     /**
@@ -241,7 +241,7 @@ EOF;
      */
     public function testIsSuccessfulException()
     {
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $response = $this->getMockBuilder('Symfony\Component\HttpFoundation\Response')
             ->disableOriginalConstructor()
@@ -253,7 +253,7 @@ EOF;
             ->will($this->throwException(new \Exception('foo')));
 
         try {
-            $this->isSuccessful($response);
+            $this->getContainer()->get('liip_functional_test.http_assertions')->isSuccessful($response);
         } catch (\PHPUnit_Framework_AssertionFailedError $e) {
             $string = <<<'EOF'
 The Response was not successful: foo
@@ -272,7 +272,7 @@ EOF;
      */
     public function testLoadEmptyFixtures()
     {
-        $fixtures = $this->loadFixtures(array());
+        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $this->assertInstanceOf(
             'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
@@ -282,7 +282,7 @@ EOF;
 
     public function testLoadFixtures()
     {
-        $fixtures = $this->loadFixtures(array(
+        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array(
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ));
 
@@ -340,7 +340,7 @@ EOF;
      */
     public function testLoadDependentFixtures()
     {
-        $fixtures = $this->loadFixtures(array(
+        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array(
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadDependentUserData',
         ));
 
@@ -367,7 +367,7 @@ EOF;
      */
     public function testLoadFixturesFiles()
     {
-        $fixtures = $this->loadFixtureFiles(array(
+        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtureFiles(array(
             '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml',
         ));
 
@@ -418,7 +418,7 @@ EOF;
      */
     public function testLoadFixturesFilesPaths()
     {
-        $fixtures = $this->loadFixtureFiles(array(
+        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtureFiles(array(
             $this->client->getContainer()->get('kernel')->locateResource(
                 '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml'
             ),
@@ -465,7 +465,7 @@ EOF;
 
     public function testUserWithFixtures()
     {
-        $fixtures = $this->loadFixtures(array(
+        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array(
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ));
 
@@ -481,7 +481,7 @@ EOF;
         /** @var \Symfony\Component\DomCrawler\Crawler $crawler */
         $crawler = $this->client->request('GET', $path);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(200, $this->client);
 
         if ($profile = $this->client->getProfile()) {
             // One query
@@ -525,27 +525,27 @@ EOF;
             $this->markTestSkipped('The Symfony\Component\Validator\Validator\ValidatorInterface does not exist');
         }
 
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $path = '/form';
 
         $crawler = $this->client->request('GET', $path);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(200, $this->client);
 
         $form = $crawler->selectButton('Submit')->form();
         $crawler = $this->client->submit($form);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(200, $this->client);
 
-        $this->assertValidationErrors(array('children[name].data'), $this->client->getContainer());
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertValidationErrors(array('children[name].data'), $this->client->getContainer());
 
         // Try again with the fields filled out.
         $form = $crawler->selectButton('Submit')->form();
         $form->setValues(array('form[name]' => 'foo bar'));
         $crawler = $this->client->submit($form);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(200, $this->client);
 
         $this->assertContains(
             'Name submitted.',
@@ -564,20 +564,20 @@ EOF;
             $this->markTestSkipped('The Symfony\Component\Validator\Validator\ValidatorInterface does not exist');
         }
 
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $path = '/form';
 
         $crawler = $this->client->request('GET', $path);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(200, $this->client);
 
         $form = $crawler->selectButton('Submit')->form();
         $this->client->submit($form);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(200, $this->client);
 
-        $this->assertValidationErrors(array(''), $this->client->getContainer());
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertValidationErrors(array(''), $this->client->getContainer());
     }
 
     /**
@@ -590,7 +590,7 @@ EOF;
             $this->markTestSkipped('The Symfony\Component\Validator\Validator\ValidatorInterface does not exist');
         }
 
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $path = '/form';
 
@@ -601,7 +601,7 @@ EOF;
         $this->client->submit($form);
 
         try {
-            $this->assertStatusCode(-1, $this->client);
+            $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(-1, $this->client);
         } catch (\PHPUnit_Framework_AssertionFailedError $e) {
             $string = <<<'EOF'
 Unexpected validation errors:
@@ -622,7 +622,7 @@ EOF;
      */
     public function testJsonIsSuccesful()
     {
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $this->client = static::makeClient();
 
@@ -630,7 +630,7 @@ EOF;
 
         $this->client->request('GET', $path);
 
-        $this->isSuccessful(
+        $this->getContainer()->get('liip_functional_test.http_assertions')->isSuccessful(
             $this->client->getResponse(),
             true,
             'application/json'

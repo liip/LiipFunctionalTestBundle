@@ -51,7 +51,7 @@ class WebTestCaseConfigPhpcrTest extends WebTestCase
 
     public function testLoadFixturesPhPCr()
     {
-        $fixtures = $this->loadFixtures(array(
+        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array(
             'Liip\FunctionalTestBundle\Tests\AppConfigPhpcr\DataFixtures\PHPCR\LoadTaskData',
         ), null, 'doctrine_phpcr');
 

@@ -30,7 +30,7 @@ class ExampleHtml5Test extends Html5WebTestCase
 
     public function testBasicAuthentication()
     {
-        $this->loadFixtures(array('Liip\FooBundle\Tests\Fixtures\LoadUserData'));
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array('Liip\FooBundle\Tests\Fixtures\LoadUserData'));
 
         $content = $this->fetchContent('/', 'GET', true);
         $this->assertEquals('Hello foo!', $content);

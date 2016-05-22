@@ -45,7 +45,7 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testIndexAuthenticationArray()
     {
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $this->client = static::makeClient(array(
             'username' => 'foobar',
@@ -56,7 +56,7 @@ class WebTestCaseConfigTest extends WebTestCase
 
         $crawler = $this->client->request('GET', $path);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(200, $this->client);
 
         $this->assertSame(1,
             $crawler->filter('html > body')->count());
@@ -79,7 +79,7 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testIndexAuthenticationTrue()
     {
-        $this->loadFixtures(array());
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array());
 
         $this->client = static::makeClient(true);
 
@@ -87,7 +87,7 @@ class WebTestCaseConfigTest extends WebTestCase
 
         $crawler = $this->client->request('GET', $path);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(200, $this->client);
 
         $this->assertSame(1,
             $crawler->filter('html > body')->count());
@@ -108,7 +108,7 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testIndexAuthenticationLoginAs()
     {
-        $fixtures = $this->loadFixtures(array(
+        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array(
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ));
 
@@ -129,7 +129,7 @@ class WebTestCaseConfigTest extends WebTestCase
 
         $crawler = $this->client->request('GET', $path);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->getContainer()->get('liip_functional_test.http_assertions')->assertStatusCode(200, $this->client);
 
         $this->assertSame(1,
             $crawler->filter('html > body')->count());
@@ -156,7 +156,7 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testAllowedQueriesExceededException()
     {
-        $fixtures = $this->loadFixtures(array(
+        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array(
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ));
 
@@ -187,7 +187,7 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testAnnotationAndException()
     {
-        $this->loadFixtures(array(
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(array(
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ));
 
@@ -212,7 +212,7 @@ class WebTestCaseConfigTest extends WebTestCase
 
         $this->getContainer()->set('hautelook_alice.fixtures.loader', $hautelookLoaderMock);
 
-        $this->loadFixtureFiles(array(
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtureFiles(array(
             '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml',
         ));
     }
@@ -232,7 +232,7 @@ class WebTestCaseConfigTest extends WebTestCase
         $loader = new \Hautelook\AliceBundle\Alice\DataFixtures\Loader($fixtureLoader, $aliceProcessorChain, true, 10);
         $this->getContainer()->set('hautelook_alice.fixtures.loader', $loader);
 
-        $fixtures = $this->loadFixtureFiles(array(
+        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtureFiles(array(
             '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml',
         ));
 
@@ -288,7 +288,7 @@ class WebTestCaseConfigTest extends WebTestCase
         }
 
         // Load default Data Fixtures.
-        $fixtures = $this->loadFixtureFiles(array(
+        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtureFiles(array(
             '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml',
         ));
 
@@ -313,7 +313,7 @@ class WebTestCaseConfigTest extends WebTestCase
         );
 
         // Load Data Fixtures with custom loader defined in configuration.
-        $fixtures = $this->loadFixtureFiles(array(
+        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtureFiles(array(
             '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user_with_custom_provider.yml',
         ));
 
@@ -332,14 +332,14 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testBackupIsRefreshed()
     {
-        // This value is generated in loadFixtures().
+        // This value is generated in $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures().
         $md5 = '0ded9d8daaeaeca1056b18b9d0d433b2';
 
         $fixtures = array(
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadDependentUserData',
         );
 
-        $this->loadFixtures($fixtures);
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures($fixtures);
 
         $dependentFixtureFilePath = $this->getContainer()->get('kernel')->locateResource(
             '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/LoadUserData.php'
@@ -359,7 +359,7 @@ class WebTestCaseConfigTest extends WebTestCase
         sleep(2);
 
         // Reload the fixtures.
-        $this->loadFixtures($fixtures);
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures($fixtures);
 
         // The mtime of the file has not changed.
         $this->assertSame(
@@ -381,7 +381,7 @@ class WebTestCaseConfigTest extends WebTestCase
         // set a date in the future.
         touch($dependentFixtureFilePath);
 
-        $this->loadFixtures($fixtures);
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures($fixtures);
 
         // The mtime of the fixture file has been updated.
         $this->assertGreaterThan(
