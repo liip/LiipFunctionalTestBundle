@@ -148,7 +148,8 @@ EOF;
     {
         /* @see http://gianarb.it/blog/symfony-unit-test-controller-with-phpunit#expectations */
         /** @var \Symfony\Component\DependencyInjection\ContainerInterface $container */
-        $container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
+        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
+            ->getMock();
         $container->expects($this->any())
             ->method('getParameter')
             ->will($this->onConsecutiveCalls(array('#foo#'), array('#bar#')));
