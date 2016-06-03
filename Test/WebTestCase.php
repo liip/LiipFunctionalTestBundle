@@ -390,7 +390,9 @@ abstract class WebTestCase extends BaseWebTestCase
 
                 if (!isset(self::$cachedMetadatas[$omName])) {
                     self::$cachedMetadatas[$omName] = $om->getMetadataFactory()->getAllMetadata();
-                    usort(self::$cachedMetadatas[$omName], function ($a, $b) { return strcmp($a->name, $b->name); });
+                    usort(self::$cachedMetadatas[$omName], function ($a, $b) {
+                        return strcmp($a->name, $b->name);
+                    });
                 }
                 $metadatas = self::$cachedMetadatas[$omName];
 

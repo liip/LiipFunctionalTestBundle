@@ -28,15 +28,17 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('liip_functional_test', 'array');
         $rootNode
             ->beforeNormalization()
-                ->ifArray()->then(function ($v) { if (!empty($v['query_count.max_query_count'])) {
-     // Normalization is for BC.
+                ->ifArray()->then(function ($v) {
+                    if (!empty($v['query_count.max_query_count'])) {
+                        // Normalization is for BC.
     // @codeCoverageIgnoreStart
      $v['query']['max_query_count'] = $v['query_count.max_query_count'];
-     unset($v['query_count.max_query_count']);
- }
+                        unset($v['query_count.max_query_count']);
+                    }
 // @codeCoverageIgnoreEnd
 
-return $v; })
+return $v;
+                })
             ->end()
             ->children()
                 ->booleanNode('cache_sqlite_db')->defaultFalse()->end()
