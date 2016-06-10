@@ -30,7 +30,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
 use Doctrine\Common\DataFixtures\ProxyReferenceRepository;
 use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
@@ -38,6 +37,7 @@ use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
 use Nelmio\Alice\Fixtures;
+use Liip\FunctionalTestBundle\Utils\FixturesLoader;
 use Liip\FunctionalTestBundle\Utils\HttpAssertions;
 
 /**
@@ -280,60 +280,6 @@ abstract class WebTestCase extends BaseWebTestCase
     }
 
     /**
-     * This function finds the time when the data blocks of a class definition
-     * file were being written to, that is, the time when the content of the
-     * file was changed.
-     *
-     * @param string $class The fully qualified class name of the fixture class to
-     *                      check modification date on.
-     *
-     * @return \DateTime|null
-     */
-    protected function getFixtureLastModified($class)
-    {
-        $lastModifiedDateTime = null;
-
-        $reflClass = new \ReflectionClass($class);
-        $classFileName = $reflClass->getFileName();
-
-        if (file_exists($classFileName)) {
-            $lastModifiedDateTime = new \DateTime();
-            $lastModifiedDateTime->setTimestamp(filemtime($classFileName));
-        }
-
-        return $lastModifiedDateTime;
-    }
-
-    /**
-     * Determine if the Fixtures that define a database backup have been
-     * modified since the backup was made.
-     *
-     * @param array  $classNames The fixture classnames to check
-     * @param string $backup     The fixture backup SQLite database file path
-     *
-     * @return bool TRUE if the backup was made since the modifications to the
-     *              fixtures; FALSE otherwise
-     */
-    protected function isBackupUpToDate(array $classNames, $backup)
-    {
-        $backupLastModifiedDateTime = new \DateTime();
-        $backupLastModifiedDateTime->setTimestamp(filemtime($backup));
-
-        /** @var \Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader $loader */
-        $loader = $this->getFixtureLoader($this->getContainer(), $classNames);
-
-        // Use loader in order to fetch all the dependencies fixtures.
-        foreach ($loader->getFixtures() as $className) {
-            $fixtureLastModifiedDateTime = $this->getFixtureLastModified($className);
-            if ($backupLastModifiedDateTime < $fixtureLastModifiedDateTime) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
      * Set the database to the provided fixtures.
      *
      * Drops the current database and then loads fixtures using the specified
@@ -398,7 +344,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
                 if ($container->getParameter('liip_functional_test.cache_sqlite_db')) {
                     $backup = $container->getParameter('kernel.cache_dir').'/test_'.md5(serialize($metadatas).serialize($classNames)).'.db';
-                    if (file_exists($backup) && file_exists($backup.'.ser') && $this->isBackupUpToDate($classNames, $backup)) {
+                    if (file_exists($backup) && file_exists($backup.'.ser') && FixturesLoader::isBackupUpToDate($classNames, $backup, $container)) {
                         $om->flush();
                         $om->clear();
 
@@ -451,7 +397,7 @@ abstract class WebTestCase extends BaseWebTestCase
             $executor->purge();
         }
 
-        $loader = $this->getFixtureLoader($container, $classNames);
+        $loader = FixturesLoader::getFixtureLoader($container, $classNames);
 
         $executor->execute($loader->getFixtures(), true);
 
@@ -492,31 +438,6 @@ abstract class WebTestCase extends BaseWebTestCase
     }
 
     /**
-     * Locate fixture files.
-     *
-     * @param array $paths
-     *
-     * @return array $files
-     */
-    private function locateResources($paths)
-    {
-        $files = array();
-
-        $kernel = $this->getContainer()->get('kernel');
-
-        foreach ($paths as $path) {
-            if ($path[0] !== '@' && file_exists($path) === true) {
-                $files[] = $path;
-                continue;
-            }
-
-            $files[] = $kernel->locateResource($path);
-        }
-
-        return $files;
-    }
-
-    /**
      * @param array  $paths        Either symfony resource locators (@ BundleName/etc) or actual file paths
      * @param bool   $append
      * @param null   $omName
@@ -548,7 +469,7 @@ abstract class WebTestCase extends BaseWebTestCase
             $this->cleanDatabase($registry, $om);
         }
 
-        $files = $this->locateResources($paths);
+        $files = FixturesLoader::locateResources($paths, $container);
 
         // Check if the Hautelook AliceBundle is registered and if yes, use it instead of Nelmio Alice
         $hautelookLoaderServiceName = 'hautelook_alice.fixtures.loader';
@@ -617,59 +538,6 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     protected function preReferenceSave(ObjectManager $manager, AbstractExecutor $executor, $backupFilePath)
     {
-    }
-
-    /**
-     * Retrieve Doctrine DataFixtures loader.
-     *
-     * @param ContainerInterface $container
-     * @param array              $classNames
-     *
-     * @return Loader
-     */
-    protected function getFixtureLoader(ContainerInterface $container, array $classNames)
-    {
-        $loaderClass = class_exists('Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader')
-            ? 'Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader'
-            : (class_exists('Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader')
-                // This class is not available during tests.
-                // @codeCoverageIgnoreStart
-                ? 'Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader'
-                // @codeCoverageIgnoreEnd
-                : 'Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader');
-
-        $loader = new $loaderClass($container);
-
-        foreach ($classNames as $className) {
-            $this->loadFixtureClass($loader, $className);
-        }
-
-        return $loader;
-    }
-
-    /**
-     * Load a data fixture class.
-     *
-     * @param Loader $loader
-     * @param string $className
-     */
-    protected function loadFixtureClass($loader, $className)
-    {
-        $fixture = new $className();
-
-        if ($loader->hasFixture($fixture)) {
-            unset($fixture);
-
-            return;
-        }
-
-        $loader->addFixture($fixture);
-
-        if ($fixture instanceof DependentFixtureInterface) {
-            foreach ($fixture->getDependencies() as $dependency) {
-                $this->loadFixtureClass($loader, $dependency);
-            }
-        }
     }
 
     /**
