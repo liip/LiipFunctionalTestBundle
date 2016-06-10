@@ -311,9 +311,7 @@ abstract class WebTestCase extends BaseWebTestCase
         $om = $registry->getManager($omName);
         $type = $registry->getName();
 
-        $executorClass = 'PHPCR' === $type && class_exists('Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor')
-            ? 'Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor'
-            : 'Doctrine\\Common\\DataFixtures\\Executor\\'.$type.'Executor';
+        $executorClass = FixturesLoader::getExecutorClass($type);
         $referenceRepository = new ProxyReferenceRepository($om);
         $cacheDriver = $om->getMetadataFactory()->getCacheDriver();
 
@@ -324,15 +322,7 @@ abstract class WebTestCase extends BaseWebTestCase
         if ('ORM' === $type) {
             $connection = $om->getConnection();
             if ($connection->getDriver() instanceof SqliteDriver) {
-                $params = $connection->getParams();
-                if (isset($params['master'])) {
-                    $params = $params['master'];
-                }
-
-                $name = isset($params['path']) ? $params['path'] : (isset($params['dbname']) ? $params['dbname'] : false);
-                if (!$name) {
-                    throw new \InvalidArgumentException("Connection does not contain a 'path' or 'dbname' parameter and cannot be dropped.");
-                }
+                $name = FixturesLoader::getNameParameter($connection);
 
                 if (!isset(self::$cachedMetadatas[$omName])) {
                     self::$cachedMetadatas[$omName] = $om->getMetadataFactory()->getAllMetadata();
@@ -376,25 +366,8 @@ abstract class WebTestCase extends BaseWebTestCase
         }
 
         if (empty($executor)) {
-            $purgerClass = 'Doctrine\\Common\\DataFixtures\\Purger\\'.$type.'Purger';
-            if ('PHPCR' === $type) {
-                $purger = new $purgerClass($om);
-                $initManager = $container->has('doctrine_phpcr.initializer_manager')
-                    ? $container->get('doctrine_phpcr.initializer_manager')
-                    : null;
-
-                $executor = new $executorClass($om, $purger, $initManager);
-            } else {
-                $purger = new $purgerClass();
-                if (null !== $purgeMode) {
-                    $purger->setPurgeMode($purgeMode);
-                }
-
-                $executor = new $executorClass($om, $purger);
-            }
-
-            $executor->setReferenceRepository($referenceRepository);
-            $executor->purge();
+            $executor = FixturesLoader::purgeDatabase($om, $type, $purgeMode,
+                $executorClass, $referenceRepository, $container);
         }
 
         $loader = FixturesLoader::getFixtureLoader($container, $classNames);
