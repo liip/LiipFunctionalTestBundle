@@ -172,6 +172,8 @@ class FixturesLoader
      * @param int                      $purgeMode
      * @param string                   $executorClass
      * @param ProxyReferenceRepository $referenceRepository
+     *
+     * @return \Doctrine\Common\DataFixtures\Executor\ORMExecutor
      */
     public static function purgeDatabase(ObjectManager $om, $type, $purgeMode,
          $executorClass,
