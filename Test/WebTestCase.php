@@ -285,7 +285,7 @@ abstract class WebTestCase extends BaseWebTestCase
      * file was changed.
      *
      * @param string $class The fully qualified class name of the fixture class to
-     *                      check modification date on.
+     *                      check modification date on
      *
      * @return \DateTime|null
      */

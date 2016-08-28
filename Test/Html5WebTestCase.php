@@ -83,7 +83,7 @@ HTML;
      * The $wrapper may contain valid HTML5 code + the <<CONTENT>> placeholder.
      * This placeholder will be replaced by the tested snippet before validation.
      *
-     * @param string $wrapper The custom HTML5 wrapper.
+     * @param string $wrapper The custom HTML5 wrapper
      */
     protected function setHtml5Wrapper($wrapper)
     {
