@@ -64,14 +64,10 @@ class ParatestCommandTest extends WebTestCase
             self::markTestSkipped('Ignore Symfony 2.3.27');
         }
         // Symfony 2.3.*.
-        // Some tests will be skipped, PHPUnit 5.4+ will report them as errors.
+        // Some tests will be skipped.
         else {
             $this->assertContains(
-                'FAILURES!',
-                $content
-            );
-            $this->assertContains(
-                'Tests: 20, Assertions: 55, Failures: 0, Errors: 3.',
+                'OK (18 tests, 55 assertions)',
                 $content
             );
         }
