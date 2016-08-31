@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 
 /**
  * Command used to update the project.
@@ -44,17 +45,17 @@ class RunParatestCommand extends ContainerAwareCommand
         $cleanProcess = new Process("rm -fr $this->testDbPath/dbTest.db $this->testDbPath/dbTest*.db*");
         $cleanProcess->run();
         $this->output->writeln("Creating Schema in $this->testDbPath ...");
-        $command = $this->getApplication()->find('doctrine:schema:create');
-        $input = new ArrayInput(array('--env' => 'test'));
-        $command->run($input, $this->output);
+        $application = new Application($this->getContainer()->get('kernel'));
+        $input = new ArrayInput(['doctrine:schema:create', '--env' => 'test']);
+        $application->run($input, $this->output);
 
         $this->output->writeln('Initial schema created');
-        $command = $this->getApplication()->find('doctrine:fixtures:load');
-        $input = new ArrayInput(array(
+        $input = new ArrayInput([
+            'doctrine:fixtures:load',
             '-n' => '',
             '--env' => 'test',
-        ));
-        $command->run($input, $this->output);
+        ]);
+        $application->run($input, $this->output);
 
         $this->output->writeln('Initial schema populated, duplicating....');
         for ($a = 0; $a < $this->process; ++$a) {
