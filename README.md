@@ -14,6 +14,7 @@ Table of contents:
 - [Query Counter](#query-counter)
 - [Caveats](#caveats)
 - [paratest](paratest.md)
+- [fastest](fastest.md)
 
 Introduction
 ============
