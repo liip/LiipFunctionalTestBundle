@@ -472,8 +472,9 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @param ManagerRegistry $registry
      * @param EntityManager   $om
+     * @param null            $omName
      */
-    private function cleanDatabase(ManagerRegistry $registry, EntityManager $om)
+    private function cleanDatabase(ManagerRegistry $registry, EntityManager $om, $omName = null)
     {
         $connection = $om->getConnection();
 
@@ -484,7 +485,7 @@ abstract class WebTestCase extends BaseWebTestCase
             $connection->query('SET FOREIGN_KEY_CHECKS=0');
         }
 
-        $this->loadFixtures(array());
+        $this->loadFixtures(array(), $omName);
 
         if ($mysql) {
             $connection->query('SET FOREIGN_KEY_CHECKS=1');
@@ -545,7 +546,7 @@ abstract class WebTestCase extends BaseWebTestCase
         $om = $registry->getManager($omName);
 
         if ($append === false) {
-            $this->cleanDatabase($registry, $om);
+            $this->cleanDatabase($registry, $om, $omName);
         }
 
         $files = $this->locateResources($paths);
