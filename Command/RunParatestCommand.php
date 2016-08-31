@@ -36,11 +36,11 @@ class RunParatestCommand extends ContainerAwareCommand
         $this->phpunit = $this->getContainer()->getParameter('liip_functional_test.paratest.phpunit');
         $this->process = $this->getContainer()->getParameter('liip_functional_test.paratest.process');
 
-        $this->testDbPath = $this->getContainer()->get('kernel')->getRootDir();
+        $this->testDbPath = $this->getContainer()->get('kernel')->getCacheDir();
         $this->output->writeln("Cleaning old dbs in $this->testDbPath ...");
-        $createDirProcess = new Process('mkdir -p '.$this->testDbPath.'/cache/test/');
+        $createDirProcess = new Process('mkdir -p '.$this->testDbPath);
         $createDirProcess->run();
-        $cleanProcess = new Process("rm -fr $this->testDbPath/cache/test/dbTest.db $this->testDbPath/cache/test/dbTest*.db*");
+        $cleanProcess = new Process("rm -fr $this->testDbPath/dbTest.db $this->testDbPath/dbTest*.db*");
         $cleanProcess->run();
         $this->output->writeln("Creating Schema in $this->testDbPath ...");
         $createProcess = new Process('php app/console doctrine:schema:create --env=test');
@@ -52,7 +52,7 @@ class RunParatestCommand extends ContainerAwareCommand
 
         $this->output->writeln('Initial schema populated, duplicating....');
         for ($a = 0; $a < $this->process; ++$a) {
-            $test = new Process("cp $this->testDbPath/cache/test/dbTest.db ".$this->testDbPath."/cache/test/dbTest$a.db");
+            $test = new Process("cp $this->testDbPath/dbTest.db ".$this->testDbPath."/dbTest$a.db");
             $test->run();
         }
     }
