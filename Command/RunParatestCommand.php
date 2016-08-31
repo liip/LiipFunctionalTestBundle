@@ -46,15 +46,15 @@ class RunParatestCommand extends ContainerAwareCommand
         $cleanProcess->run();
         $this->output->writeln("Creating Schema in $this->testDbPath ...");
         $application = new Application($this->getContainer()->get('kernel'));
-        $input = new ArrayInput(['doctrine:schema:create', '--env' => 'test']);
+        $input = new ArrayInput(array('doctrine:schema:create', '--env' => 'test'));
         $application->run($input, $this->output);
 
         $this->output->writeln('Initial schema created');
-        $input = new ArrayInput([
+        $input = new ArrayInput(array(
             'doctrine:fixtures:load',
             '-n' => '',
             '--env' => 'test',
-        ]);
+        ));
         $application->run($input, $this->output);
 
         $this->output->writeln('Initial schema populated, duplicating....');
