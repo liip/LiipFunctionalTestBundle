@@ -7,6 +7,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 
 /**
  * Command used to update the project.
@@ -36,23 +38,28 @@ class RunParatestCommand extends ContainerAwareCommand
         $this->phpunit = $this->getContainer()->getParameter('liip_functional_test.paratest.phpunit');
         $this->process = $this->getContainer()->getParameter('liip_functional_test.paratest.process');
 
-        $this->testDbPath = $this->getContainer()->get('kernel')->getRootDir();
+        $this->testDbPath = $this->getContainer()->get('kernel')->getCacheDir();
         $this->output->writeln("Cleaning old dbs in $this->testDbPath ...");
-        $createDirProcess = new Process('mkdir -p '.$this->testDbPath.'/cache/test/');
+        $createDirProcess = new Process('mkdir -p '.$this->testDbPath);
         $createDirProcess->run();
-        $cleanProcess = new Process("rm -fr $this->testDbPath/cache/test/dbTest.db $this->testDbPath/cache/test/dbTest*.db*");
+        $cleanProcess = new Process("rm -fr $this->testDbPath/dbTest.db $this->testDbPath/dbTest*.db*");
         $cleanProcess->run();
         $this->output->writeln("Creating Schema in $this->testDbPath ...");
-        $createProcess = new Process('php app/console doctrine:schema:create --env=test');
-        $createProcess->run();
+        $application = new Application($this->getContainer()->get('kernel'));
+        $input = new ArrayInput(array('doctrine:schema:create', '--env' => 'test'));
+        $application->run($input, $this->output);
 
         $this->output->writeln('Initial schema created');
-        $populateProcess = new Process("php app/console doctrine:fixtures:load -n --fixtures $this->testDbPath/../src/overlord/AppBundle/Tests/DataFixtures/ORM/ --env=test");
-        $populateProcess->run();
+        $input = new ArrayInput(array(
+            'doctrine:fixtures:load',
+            '-n' => '',
+            '--env' => 'test',
+        ));
+        $application->run($input, $this->output);
 
         $this->output->writeln('Initial schema populated, duplicating....');
         for ($a = 0; $a < $this->process; ++$a) {
-            $test = new Process("cp $this->testDbPath/cache/test/dbTest.db ".$this->testDbPath."/cache/test/dbTest$a.db");
+            $test = new Process("cp $this->testDbPath/dbTest.db ".$this->testDbPath."/dbTest$a.db");
             $test->run();
         }
     }
