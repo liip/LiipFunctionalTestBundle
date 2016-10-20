@@ -7,7 +7,7 @@ Once LiipFunctionalTestBundle has been configured, it's easy to use fastest.
 Installation
 ============
 
-1. Install paratest: `composer require "liuggio/fastest=~1.4"`
+1. Install fastest: `composer require "liuggio/fastest=~1.4"`
 
 2. Configure the [storage adapter](https://github.com/liuggio/fastest#storage-adapters)
 
