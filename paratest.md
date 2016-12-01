@@ -50,7 +50,7 @@ Then run `php app/console paratest:run`
 Options
 =======
 
-You can modify process amount and phpunit location with the foloowing: 
+You can modify process amount and phpunit location with the following: 
 
 ```yaml
 # app/config/config_test.yml
