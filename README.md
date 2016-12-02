@@ -84,7 +84,7 @@ Installation
 Basic usage
 -----------
 
-Use `static::makeClient` to create a Client object. Client is a Symfony class
+Use `$this->makeClient` to create a Client object. Client is a Symfony class
 that can simulate HTTP requests to your controllers and then inspect the
 results. It is covered by the [functional tests](http://symfony.com/doc/current/book/testing.html#functional-tests)
 section of the Symfony documentation.
@@ -104,7 +104,7 @@ class MyControllerTest extends WebTestCase
 {
     public function testContact()
     {
-        $client = static::makeClient();
+        $client = $this->makeClient();
         $crawler = $client->request('GET', '/contact');
         $this->assertStatusCode(200, $client);
 
@@ -133,7 +133,7 @@ class MyControllerTest extends WebTestCase
 Check that the request succedded:
 
 ```php
-$client = static::makeClient();
+$client = $this->makeClient();
 $client->request('GET', '/contact');
 
 // Successful HTTP request
@@ -143,7 +143,7 @@ $this->isSuccessful($client->getResponse());
 Add `false` as the second argument in order to check that the request failed:
 
 ```php
-$client = static::makeClient();
+$client = $this->makeClient();
 $client->request('GET', '/error');
 
 // Request returned an error
@@ -157,7 +157,7 @@ In order to test more specific status codes, use `assertStatusCode()`:
 Check the HTTP status code from the request:
 
 ```php
-$client = static::makeClient();
+$client = $this->makeClient();
 $client->request('GET', '/contact');
 
 // Standard response for successful HTTP request
@@ -209,7 +209,7 @@ $path = $this->getUrl(
     )
 );
 
-$client = static::makeClient();
+$client = $this->makeClient();
 $client->request('GET', $path);
 
 $this->isSuccessful($client->getResponse());
@@ -330,7 +330,7 @@ Tips for Fixture Loading Tests
             ));
 
             // you can now run your functional tests with a populated database
-            $client = static::createClient();
+            $client = $this->createClient();
             // ...
         }
     }
@@ -350,7 +350,7 @@ Tips for Fixture Loading Tests
             $this->loadFixtures(array());
 
             // you can now run your functional tests with a populated database
-            $client = static::createClient();
+            $client = $this->createClient();
             // ...
         }
     }
@@ -372,7 +372,7 @@ Tips for Fixture Loading Tests
 
             $this->loadFixtures($fixtures, null, 'doctrine_mongodb');
 
-            $client = static::createClient();
+            $client = $this->createClient();
         }
     }
     ```
@@ -520,7 +520,7 @@ liip_functional_test:
         password: "the password of that user"
 ```
 
-This way using `$client = static::makeClient(true);` your client will be automatically logged in.
+This way using `$client = $this->makeClient(true);` your client will be automatically logged in.
 
 ### Logging in a user passing the credentials directly in the test method
 
@@ -533,7 +533,7 @@ $credentials = array(
     'password' => 'a valid password'
 );
 
-$client = static::makeClient($credentials);
+$client = $this->makeClient($credentials);
 ```
 
 ### Logging in a user using `WebTestCase::loginAs()`
@@ -548,7 +548,7 @@ $fixtures = $this->loadFixtures(array(
 ))->getReferenceRepository();
 
 $this->loginAs($fixtures->getReference('account-alpha'), 'main');
-$client = static::makeClient();
+$client = $this->makeClient();
 ```
 
 Remember that `WebTestCase::loginAs()` accepts objects that implement the interface `Symfony\Component\Security\Core\User\UserInterface`. 
@@ -728,7 +728,7 @@ class DemoTest extends WebTestCase
      */
     public function testDoDemoStuff()
     {
-        $client = static::createClient();
+        $client = $this->createClient();
         $crawler = $client->request('GET', '/demoPage');
 
         $this->assertTrue($crawler->filter('html:contains("Demo")')->count() > 0);
