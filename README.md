@@ -412,7 +412,7 @@ class AppKernel extends Kernel
     {
         // ...
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
-            $bundles[] = new Hautelook\AliceBundle\HautelookAliceBundle(),;
+            $bundles[] = new Hautelook\AliceBundle\HautelookAliceBundle();
         }
 
         return $bundles
