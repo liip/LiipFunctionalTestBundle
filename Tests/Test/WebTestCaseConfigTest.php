@@ -152,7 +152,7 @@ class WebTestCaseConfigTest extends WebTestCase
      * There will be 2 queries, in the configuration the limit is 1,
      * an Exception will be thrown.
      *
-     * @expectedException Liip\FunctionalTestBundle\Exception\AllowedQueriesExceededException
+     * @expectedException \Liip\FunctionalTestBundle\Exception\AllowedQueriesExceededException
      */
     public function testAllowedQueriesExceededException()
     {
@@ -183,7 +183,7 @@ class WebTestCaseConfigTest extends WebTestCase
      * There will be 1 query, in the annotation the limit is 0,
      * an Exception will be thrown.
      *
-     * @expectedException Liip\FunctionalTestBundle\Exception\AllowedQueriesExceededException
+     * @expectedException \Liip\FunctionalTestBundle\Exception\AllowedQueriesExceededException
      */
     public function testAnnotationAndException()
     {

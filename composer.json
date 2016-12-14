@@ -21,8 +21,10 @@
         "doctrine/common": "~2.0"
     },
     "require-dev": {
-        "symfony/symfony": "~2.3.1|~2.7|~3.0",
-        "doctrine/orm": "^2.4.8",
+        "symfony/symfony": "~2.3.27|~2.7|~3.0",
+        "symfony/phpunit-bridge": "^2.7|~3.0",
+        "doctrine/orm": "~2.5",
+        "symfony/console": "~2.5|~3.0",
         "symfony/assetic-bundle": "~2.3",
         "symfony/monolog-bundle": "~2.4",
         "doctrine/doctrine-fixtures-bundle": "~2.3",
