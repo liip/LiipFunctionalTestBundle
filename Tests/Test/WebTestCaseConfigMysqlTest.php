@@ -124,6 +124,46 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
      *
      * @group mysql
      */
+    public function testLoadFixturesAndExcludeFromPurge()
+    {
+        $fixtures = $this->loadFixtures(array(
+            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
+        ));
+
+        $this->assertInstanceOf(
+            'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
+            $fixtures
+        );
+
+        $em = $this->getContainer()
+            ->get('doctrine.orm.entity_manager');
+
+        // Check that there are 2 users.
+        $this->assertSame(
+            2,
+            count($em->getRepository('LiipFunctionalTestBundle:User')
+                ->findAll())
+        );
+
+        $this->setExcludedDoctrineTables(array('liip_user'));
+        $this->loadFixtures(array(), null, 'doctrine', 2);
+
+        // The exclusion from purge worked, the user table is still alive and well.
+        $this->assertSame(
+            2,
+            count($em->getRepository('LiipFunctionalTestBundle:User')
+                ->findAll())
+        );
+    }
+
+    /**
+     * Data fixtures and purge.
+     *
+     * Purge modes are defined in
+     * Doctrine\Common\DataFixtures\Purger\ORMPurger.
+     *
+     * @group mysql
+     */
     public function testLoadFixturesAndPurge()
     {
         $fixtures = $this->loadFixtures(array(

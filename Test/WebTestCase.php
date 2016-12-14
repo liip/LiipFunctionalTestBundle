@@ -65,6 +65,11 @@ abstract class WebTestCase extends BaseWebTestCase
     /**
      * @var array
      */
+    private $excludedDoctrineTables = array();
+
+    /**
+     * @var array
+     */
     private static $cachedMetadatas = array();
 
     protected static function getKernelClass()
@@ -172,7 +177,7 @@ abstract class WebTestCase extends BaseWebTestCase
             if (!defined($verbosity)) {
                 throw new \OutOfBoundsException(
                     sprintf('The set value "%s" for verbosityLevel is not valid. Accepted are: "quiet", "normal", "verbose", "very_verbose" and "debug".', $level)
-                    );
+                );
             }
 
             $this->verbosityLevel = constant($verbosity);
@@ -439,7 +444,12 @@ abstract class WebTestCase extends BaseWebTestCase
 
                 $executor = new $executorClass($om, $purger, $initManager);
             } else {
-                $purger = new $purgerClass();
+                if ('ORM' === $type) {
+                    $purger = new $purgerClass(null, $this->excludedDoctrineTables);
+                } else {
+                    $purger = new $purgerClass();
+                }
+
                 if (null !== $purgeMode) {
                     $purger->setPurgeMode($purgeMode);
                 }
@@ -881,5 +891,13 @@ abstract class WebTestCase extends BaseWebTestCase
     public function assertValidationErrors(array $expected, ContainerInterface $container)
     {
         HttpAssertions::assertValidationErrors($expected, $container);
+    }
+
+    /**
+     * @param array $excludedDoctrineTables
+     */
+    public function setExcludedDoctrineTables($excludedDoctrineTables)
+    {
+        $this->excludedDoctrineTables = $excludedDoctrineTables;
     }
 }
