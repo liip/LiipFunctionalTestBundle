@@ -126,8 +126,8 @@ abstract class WebTestCase extends BaseWebTestCase
         $application->setAutoExit(false);
 
         // @codeCoverageIgnoreStart
-        if ('20301' === Kernel::VERSION_ID) {
-            $params = $this->configureVerbosityForSymfony20301($params);
+        if ('203' === substr(Kernel::VERSION_ID, 0, 3)) {
+            $params = $this->configureVerbosityForSymfony203($params);
         }
         // @codeCoverageIgnoreEnd
 
@@ -182,7 +182,7 @@ abstract class WebTestCase extends BaseWebTestCase
     }
 
     /**
-     * In Symfony 2.3.1 the verbosity level has to be set through {Symfony\Component\Console\Input\ArrayInput} and not
+     * In Symfony 2.3.* the verbosity level has to be set through {Symfony\Component\Console\Input\ArrayInput} and not
      * in {Symfony\Component\Console\Output\OutputInterface}.
      *
      * This method builds $params to be passed to {Symfony\Component\Console\Input\ArrayInput}.
@@ -193,7 +193,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return array
      */
-    private function configureVerbosityForSymfony20301(array $params)
+    private function configureVerbosityForSymfony203(array $params)
     {
         switch ($this->getVerbosityLevel()) {
             case OutputInterface::VERBOSITY_QUIET:
