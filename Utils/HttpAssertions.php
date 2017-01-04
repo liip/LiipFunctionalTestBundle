@@ -63,7 +63,10 @@ class HttpAssertions extends \PHPUnit_Framework_TestCase
             // Get a more useful error message, if available
             if ($exception = $client->getContainer()->get('liip_functional_test.exception_listener')->getLastException()) {
                 $helpfulErrorMessage = $exception->getMessage();
-            } elseif (count($validationErrors = $client->getContainer()->get('liip_functional_test.validator')->getLastErrors())) {
+            } elseif (
+                $client->getContainer()->has('liip_functional_test.validator') &&
+                count($validationErrors = $client->getContainer()->get('liip_functional_test.validator')->getLastErrors())
+            ) {
                 $helpfulErrorMessage = "Unexpected validation errors:\n";
 
                 foreach ($validationErrors as $error) {
@@ -86,6 +89,10 @@ class HttpAssertions extends \PHPUnit_Framework_TestCase
      */
     public static function assertValidationErrors(array $expected, ContainerInterface $container)
     {
+        if (!$container->has('liip_functional_test.validator')) {
+            trigger_error(sprintf('Method %s() can not be used as the validation component of the Symfony framework is disabled.', __METHOD__, __CLASS__), E_USER_WARNING);
+        }
+
         self::assertThat(
             $container->get('liip_functional_test.validator')->getLastErrors(),
             new ValidationErrorsConstraint($expected),
