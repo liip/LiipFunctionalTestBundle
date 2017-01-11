@@ -356,7 +356,27 @@ Tips for Fixture Loading Tests
     }
     ```
 
- 5. This bundle uses Doctrine ORM by default. If you are using another driver just
+ 5. Given that you want to exclude some of your doctrine tables from being purged
+    when loading the fixtures, you can do so by passing an array of tablenames 
+    to the `setExcludedDoctrineTables` method before loading the fixtures.
+
+    ```php
+    use Liip\FunctionalTestBundle\Test\WebTestCase;
+
+    class MyControllerTest extends WebTestCase
+    {
+        public function testIndex()
+        {
+            $this->setExcludedDoctrineTables(array('my_tablename_not_to_be_purged'));
+            $this->loadFixtures(array(
+                'Me\MyBundle\DataFixtures\ORM\LoadData'
+            ));
+            // ...
+        }
+    }
+    ```
+
+ 6. This bundle uses Doctrine ORM by default. If you are using another driver just
     specify the service id of the registry manager:
 
     ```php
@@ -415,7 +435,7 @@ class AppKernel extends Kernel
             $bundles[] = new Hautelook\AliceBundle\HautelookAliceBundle();
         }
 
-        return $bundles
+        return $bundles;
     }
 
     // ...
