@@ -520,7 +520,10 @@ abstract class WebTestCase extends BaseWebTestCase
                 $files[] = $path;
                 continue;
             }
-
+            if ($path[0] !== '@' && !file_exists($path) === true) {
+                throw new \InvalidArgumentException(sprintf('Unable to find file "%s".', $path));
+            }
+            
             $files[] = $kernel->locateResource($path);
         }
 
