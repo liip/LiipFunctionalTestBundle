@@ -518,12 +518,12 @@ abstract class WebTestCase extends BaseWebTestCase
         $kernel = $this->getContainer()->get('kernel');
 
         foreach ($paths as $path) {
-            if ($path[0] !== '@' && file_exists($path) === true) {
+            if ($path[0] !== '@') {
+                if (!file_exists($path)) {
+                    throw new \InvalidArgumentException(sprintf('Unable to find file "%s".', $path));
+                }
                 $files[] = $path;
                 continue;
-            }
-            if ($path[0] !== '@' && !file_exists($path) === true) {
-                throw new \InvalidArgumentException(sprintf('Unable to find file "%s".', $path));
             }
 
             $files[] = $kernel->locateResource($path);
