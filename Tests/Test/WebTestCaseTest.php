@@ -414,6 +414,18 @@ EOF;
     }
 
     /**
+     * Load nonexistent resource.
+     *
+     * @expectedException \InvalidArgumentException
+     */
+    public function testLoadNonexistentFixturesFiles()
+    {
+        $this->loadFixtureFiles(array(
+            '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/nonexistent.yml',
+        ));
+    }
+
+    /**
      * Use nelmio/alice with full path to the file.
      */
     public function testLoadFixturesFilesPaths()
@@ -461,6 +473,17 @@ EOF;
         $this->assertTrue(
             $user->getEnabled()
         );
+    }
+
+    /**
+     * Load nonexistent file with full path.
+     *
+     * @expectedException \InvalidArgumentException
+     */
+    public function testLoadNonexistentFixturesFilesPaths()
+    {
+        $path = array('/nonexistent.yml');
+        $this->loadFixtureFiles($path);
     }
 
     public function testUserWithFixtures()
