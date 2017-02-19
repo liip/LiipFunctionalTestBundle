@@ -508,6 +508,8 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param array $paths
      *
      * @return array $files
+     *
+     * @throws \InvalidArgumentException if a wrong path is given outside a bundle
      */
     private function locateResources($paths)
     {
@@ -516,7 +518,10 @@ abstract class WebTestCase extends BaseWebTestCase
         $kernel = $this->getContainer()->get('kernel');
 
         foreach ($paths as $path) {
-            if ($path[0] !== '@' && file_exists($path) === true) {
+            if ($path[0] !== '@') {
+                if (!file_exists($path)) {
+                    throw new \InvalidArgumentException(sprintf('Unable to find file "%s".', $path));
+                }
                 $files[] = $path;
                 continue;
             }
