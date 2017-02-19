@@ -476,6 +476,38 @@ EOF;
     }
 
     /**
+     * Use nelmio/alice with full path to the file without calling locateResource().
+     */
+    public function testLoadFixturesFilesPathsWithoutLocateResource()
+    {
+        $fixtures = $this->loadFixtureFiles(array(
+            dirname(__FILE__).'/../App/DataFixtures/ORM/user.yml',
+        ));
+
+        $this->assertInternalType(
+            'array',
+            $fixtures
+        );
+
+        // 10 users are loaded
+        $this->assertCount(
+            10,
+            $fixtures
+        );
+
+        $em = $this->client->getContainer()
+            ->get('doctrine.orm.entity_manager');
+
+        $users = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findAll();
+
+        $this->assertSame(
+            10,
+            count($users)
+        );
+    }
+
+    /**
      * Load nonexistent file with full path.
      *
      * @expectedException \InvalidArgumentException
