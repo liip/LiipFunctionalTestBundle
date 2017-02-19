@@ -150,9 +150,9 @@ EOF;
         /** @var \Symfony\Component\DependencyInjection\ContainerInterface $container */
         $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
             ->getMock();
-        $container->expects($this->any())
+        $container->expects($this->once())
             ->method('getParameter')
-            ->will($this->onConsecutiveCalls(array('#foo#'), array('#bar#')));
+            ->willReturn(array('#foo#'));
 
         /** @var Html5WebTestCase $mock */
         $mock = $this->getMockedClass(
@@ -172,7 +172,6 @@ EOF;
             (object) array('type' => 'error', 'message' => '', 'lastLine' => 2, 'extract' => 'no'),
             // $ignores and $ignores_extract arrays.
             (object) array('type' => 'error', 'message' => 'foo', 'lastLine' => 3),
-            (object) array('type' => 'error', 'message' => 'bar', 'lastLine' => 4, 'extract' => 'bar'),
         );
 
         $this->addMethodValidateHtml5($mock, $res);
