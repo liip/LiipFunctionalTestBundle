@@ -48,10 +48,6 @@ class ConfigurationConfigTest extends ConfigurationTest
                 'ignore_1',
                 'ignore_2',
             )),
-            array('html5validation.ignores_extract', array(
-                'ignore_extract_1',
-                'ignore_extract_2',
-            )),
             array('paratest.process', 3),
             array('paratest.phpunit', 'vendor/bin/phpunit'),
         );
