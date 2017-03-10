@@ -529,20 +529,24 @@ abstract class WebTestCase extends BaseWebTestCase
         return $files;
     }
 
-    private function getCallingClassPath() {
+    private function getCallingClassPath()
+    {
         $reflector = new \ReflectionClass($this->getCallingClass());
         $callingClassFilename = $reflector->getFileName();
 
-        return dirname( $callingClassFilename );
+        return dirname($callingClassFilename);
     }
 
-    private function getCallingClass() {
+    private function getCallingClass()
+    {
         $trace = debug_backtrace();
         $class = $trace[1]['class'];
-        for ($i=1; $i<count( $trace ); $i++) {
-            if (isset($trace[$i]))
-                if ($class != $trace[$i]['class'])
+        for ($i = 1; $i < count($trace); $i++) {
+            if (isset($trace[$i])) {
+                if ($class != $trace[$i]['class']) {
                     return $trace[$i]['class'];
+                }
+            }
         }
     }
 
