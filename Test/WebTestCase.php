@@ -526,6 +526,7 @@ abstract class WebTestCase extends BaseWebTestCase
             }
             $files[] = $kernel->locateResource($path);
         }
+
         return $files;
     }
 
