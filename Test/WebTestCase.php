@@ -516,8 +516,8 @@ abstract class WebTestCase extends BaseWebTestCase
         $files = array();
         $kernel = $this->getContainer()->get('kernel');
         foreach ($paths as $path) {
-            $path = $this->getCallingClassPath().'/'.$path;
             if ($path[0] !== '@') {
+                $path = $this->getCallingClassPath().'/'.$path;
                 if (!file_exists($path)) {
                     throw new \InvalidArgumentException(sprintf('Unable to find file "%s".', $path));
                 }
