@@ -541,7 +541,7 @@ abstract class WebTestCase extends BaseWebTestCase
     {
         $trace = debug_backtrace();
         $class = $trace[1]['class'];
-        for ($i = 1; $i < count($trace); $i++) {
+        for ($i = 1; $i < count($trace); ++$i) {
             if (isset($trace[$i])) {
                 if ($class != $trace[$i]['class']) {
                     return $trace[$i]['class'];
