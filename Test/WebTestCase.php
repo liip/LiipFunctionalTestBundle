@@ -19,6 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\BrowserKit\Cookie;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -517,7 +518,10 @@ abstract class WebTestCase extends BaseWebTestCase
         $kernel = $this->getContainer()->get('kernel');
         foreach ($paths as $path) {
             if ($path[0] !== '@') {
-                $path = $this->getCallingClassPath().'/'.$path;
+                $fs = new Filesystem();
+                if(!$fs->isAbsolutePath($path)) {
+                    $path = $this->getCallingClassPath().'/'.$path;
+                }
                 if (!file_exists($path)) {
                     throw new \InvalidArgumentException(sprintf('Unable to find file "%s".', $path));
                 }
