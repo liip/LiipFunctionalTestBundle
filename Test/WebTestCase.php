@@ -519,7 +519,7 @@ abstract class WebTestCase extends BaseWebTestCase
         foreach ($paths as $path) {
             if ($path[0] !== '@') {
                 $fs = new Filesystem();
-                if(!$fs->isAbsolutePath($path)) {
+                if (!$fs->isAbsolutePath($path)) {
                     $path = $this->getCallingClassPath().'/'.$path;
                 }
                 if (!file_exists($path)) {
