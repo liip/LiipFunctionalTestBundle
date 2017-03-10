@@ -514,10 +514,9 @@ abstract class WebTestCase extends BaseWebTestCase
     private function locateResources($paths)
     {
         $files = array();
-
         $kernel = $this->getContainer()->get('kernel');
-
         foreach ($paths as $path) {
+            $path = $this->getCallingClassPath().'/'.$path;
             if ($path[0] !== '@') {
                 if (!file_exists($path)) {
                     throw new \InvalidArgumentException(sprintf('Unable to find file "%s".', $path));
@@ -525,11 +524,26 @@ abstract class WebTestCase extends BaseWebTestCase
                 $files[] = $path;
                 continue;
             }
-
             $files[] = $kernel->locateResource($path);
         }
-
         return $files;
+    }
+
+    private function getCallingClassPath() {
+        $reflector = new \ReflectionClass($this->getCallingClass());
+        $callingClassFilename = $reflector->getFileName();
+
+        return dirname( $callingClassFilename );
+    }
+
+    private function getCallingClass() {
+        $trace = debug_backtrace();
+        $class = $trace[1]['class'];
+        for ($i=1; $i<count( $trace ); $i++) {
+            if (isset($trace[$i]))
+                if ($class != $trace[$i]['class'])
+                    return $trace[$i]['class'];
+        }
     }
 
     /**
