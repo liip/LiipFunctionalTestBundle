@@ -280,6 +280,15 @@ EOF;
         );
     }
 
+    public function testLoadFixturesWithoutParameters()
+    {
+        $fixtures = $this->loadFixtures();
+
+        $this->assertInstanceOf(
+            'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
+            $fixtures
+        );
+    }
     public function testLoadFixtures()
     {
         $fixtures = $this->loadFixtures(array(
