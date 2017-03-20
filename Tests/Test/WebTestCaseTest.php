@@ -289,6 +289,7 @@ EOF;
             $fixtures
         );
     }
+
     public function testLoadFixtures()
     {
         $fixtures = $this->loadFixtures(array(
