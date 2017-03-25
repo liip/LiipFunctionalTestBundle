@@ -802,7 +802,7 @@ Caveats
    `@IgnoreAnnotation` annotation:
 
    ```php
-  Liip\FunctionalTestBundle\Test\WebTestCase;
+   use Liip\FunctionalTestBundle\Test\WebTestCase;
 
    /**
     * @IgnoreAnnotation("dataProvider")
