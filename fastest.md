@@ -16,7 +16,6 @@ For example with SQLite, the `app/config_test.yml` have to be changed to:
 ```yaml
 # ...
 parameters:
-    auth_required_channel: 'http'
     doctrine.dbal.connection_factory.class: Liuggio\Fastest\Doctrine\DBAL\ConnectionFactory
 
 doctrine:
