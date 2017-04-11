@@ -54,8 +54,11 @@ Installation
         public function registerBundles()
         {
             // ...
-            if (in_array($this->getEnvironment(), array('dev', 'test'))) {
-                $bundles[] = new Liip\FunctionalTestBundle\LiipFunctionalTestBundle();
+            if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {
+                // ...
+                if ('test' === $this->getEnvironment()) {
+                    $bundles[] = new Liip\FunctionalTestBundle\LiipFunctionalTestBundle();
+                }
             }
 
             return $bundles;
