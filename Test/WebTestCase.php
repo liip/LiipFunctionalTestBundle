@@ -407,7 +407,7 @@ abstract class WebTestCase extends BaseWebTestCase
                         $om->flush();
                         $om->clear();
 
-                        $this->preFixtureRestore($om, $referenceRepository);
+                        $this->preFixtureRestore($om, $referenceRepository, $backup);
 
                         copy($backup, $name);
 
@@ -415,7 +415,7 @@ abstract class WebTestCase extends BaseWebTestCase
                         $executor->setReferenceRepository($referenceRepository);
                         $executor->getReferenceRepository()->load($backup);
 
-                        $this->postFixtureRestore();
+                        $this->postFixtureRestore($backup);
 
                         return $executor;
                     }
@@ -591,9 +591,10 @@ abstract class WebTestCase extends BaseWebTestCase
     /**
      * Callback function to be executed after Schema restore.
      *
+     * @param string $backupFilePath Path of file used to backup the references of the data fixtures
      * @return WebTestCase
      */
-    protected function postFixtureRestore()
+    protected function postFixtureRestore($backupFilePath)
     {
     }
 
@@ -602,11 +603,15 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @param ObjectManager            $manager             The object manager
      * @param ProxyReferenceRepository $referenceRepository The reference repository
+     * @param string $backupFilePath Path of file used to backup the references of the data fixtures
      *
      * @return WebTestCase
      */
-    protected function preFixtureRestore(ObjectManager $manager, ProxyReferenceRepository $referenceRepository)
-    {
+    protected function preFixtureRestore(
+        ObjectManager $manager,
+        ProxyReferenceRepository $referenceRepository,
+        $backupFilePath
+    ) {
     }
 
     /**
