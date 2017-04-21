@@ -404,6 +404,11 @@ abstract class WebTestCase extends BaseWebTestCase
                 if ($container->getParameter('liip_functional_test.cache_sqlite_db')) {
                     $backup = $container->getParameter('kernel.cache_dir').'/test_'.md5(serialize($metadatas).serialize($classNames)).'.db';
                     if (file_exists($backup) && file_exists($backup.'.ser') && $this->isBackupUpToDate($classNames, $backup)) {
+                        $connection = $this->getContainer()->get('doctrine.orm.entity_manager')->getConnection();
+                        if (null !== $connection) {
+                            $connection->close();
+                        }
+
                         $om->flush();
                         $om->clear();
 
