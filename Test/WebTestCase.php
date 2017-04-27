@@ -407,7 +407,7 @@ abstract class WebTestCase extends BaseWebTestCase
                         $om->flush();
                         $om->clear();
 
-                        $this->preFixtureRestore($om, $referenceRepository, $backup);
+                        $this->preFixtureBackupRestore($om, $referenceRepository, $backup);
 
                         copy($backup, $name);
 
@@ -415,7 +415,7 @@ abstract class WebTestCase extends BaseWebTestCase
                         $executor->setReferenceRepository($referenceRepository);
                         $executor->getReferenceRepository()->load($backup);
 
-                        $this->postFixtureRestore($backup);
+                        $this->postFixtureBackupRestore($backup);
 
                         return $executor;
                     }
@@ -591,10 +591,11 @@ abstract class WebTestCase extends BaseWebTestCase
     /**
      * Callback function to be executed after Schema restore.
      *
-     * @param string $backupFilePath Path of file used to backup the references of the data fixtures
      * @return WebTestCase
+     *
+     * @deprecated since version 1.8, to be removed in 2.0. Use postFixtureBackupRestore method instead.
      */
-    protected function postFixtureRestore($backupFilePath)
+    protected function postFixtureRestore()
     {
     }
 
@@ -603,15 +604,44 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @param ObjectManager            $manager             The object manager
      * @param ProxyReferenceRepository $referenceRepository The reference repository
+     *
+     * @return WebTestCase
+     *
+     * @deprecated since version 1.8, to be removed in 2.0. Use preFixtureBackupRestore method instead.
+     */
+    protected function preFixtureRestore(ObjectManager $manager, ProxyReferenceRepository $referenceRepository)
+    {
+    }
+
+    /**
+     * Callback function to be executed after Schema restore.
+     *
      * @param string $backupFilePath Path of file used to backup the references of the data fixtures
      *
      * @return WebTestCase
      */
-    protected function preFixtureRestore(
+    protected function postFixtureBackupRestore($backupFilePath)
+    {
+        $this->postFixtureRestore();
+        return $this;
+    }
+
+    /**
+     * Callback function to be executed before Schema restore.
+     *
+     * @param ObjectManager            $manager             The object manager
+     * @param ProxyReferenceRepository $referenceRepository The reference repository
+     * @param string                   $backupFilePath      Path of file used to backup the references of the data fixtures
+     *
+     * @return WebTestCase
+     */
+    protected function preFixtureBackupRestore(
         ObjectManager $manager,
         ProxyReferenceRepository $referenceRepository,
         $backupFilePath
     ) {
+        $this->preFixtureRestore($manager, $referenceRepository);
+        return $this;
     }
 
     /**
