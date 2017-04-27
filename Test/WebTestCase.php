@@ -623,6 +623,7 @@ abstract class WebTestCase extends BaseWebTestCase
     protected function postFixtureBackupRestore($backupFilePath)
     {
         $this->postFixtureRestore();
+
         return $this;
     }
 
@@ -641,6 +642,7 @@ abstract class WebTestCase extends BaseWebTestCase
         $backupFilePath
     ) {
         $this->preFixtureRestore($manager, $referenceRepository);
+
         return $this;
     }
 
