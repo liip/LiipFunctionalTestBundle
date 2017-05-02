@@ -388,11 +388,6 @@ abstract class WebTestCase extends BaseWebTestCase
                     $params = $params['master'];
                 }
 
-                $name = isset($params['path']) ? $params['path'] : (isset($params['dbname']) ? $params['dbname'] : false);
-                if (!$name) {
-                    throw new \InvalidArgumentException("Connection does not contain a 'path' or 'dbname' parameter and cannot be dropped.");
-                }
-
                 if (!isset(self::$cachedMetadatas[$omName])) {
                     self::$cachedMetadatas[$omName] = $om->getMetadataFactory()->getAllMetadata();
                     usort(self::$cachedMetadatas[$omName], function ($a, $b) {
@@ -402,6 +397,11 @@ abstract class WebTestCase extends BaseWebTestCase
                 $metadatas = self::$cachedMetadatas[$omName];
 
                 if ($container->getParameter('liip_functional_test.cache_sqlite_db')) {
+                    $name = isset($params['path']) ? $params['path'] : (isset($params['dbname']) ? $params['dbname'] : false);
+                    if (!$name) {
+                        throw new \InvalidArgumentException("Connection does not contain a 'path' or 'dbname' parameter and cannot be dropped.");
+                    }
+
                     $backup = $container->getParameter('kernel.cache_dir').'/test_'.md5(serialize($metadatas).serialize($classNames)).'.db';
                     if (file_exists($backup) && file_exists($backup.'.ser') && $this->isBackupUpToDate($classNames, $backup)) {
                         $connection = $this->getContainer()->get('doctrine.orm.entity_manager')->getConnection();
