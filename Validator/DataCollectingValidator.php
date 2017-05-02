@@ -71,9 +71,9 @@ class DataCollectingValidator implements ValidatorInterface, EventSubscriberInte
         return $this->wrappedValidator->validatePropertyValue($objectOrClass, $propertyName, $value, $groups);
     }
 
-    public function startContext()
+    public function startContext($root = null)
     {
-        return $this->wrappedValidator->startContext();
+        return $this->wrappedValidator->startContext($root);
     }
 
     public function inContext(ExecutionContextInterface $context)
