@@ -586,7 +586,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
             return Fixtures::load($files, $om);
         } else {
-            $fidryLoaderServiceName = "fidry_alice_data_fixtures.doctrine.persister_loader";
+            $fidryLoaderServiceName = 'fidry_alice_data_fixtures.doctrine.persister_loader';
             if($container->has($fidryLoaderServiceName)) {
                 $container->get($fidryLoaderServiceName)->load($files);
             } else {
