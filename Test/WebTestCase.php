@@ -552,10 +552,10 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     public function loadFixtureFiles(array $paths = array(), $append = false, $omName = null, $registryName = 'doctrine', $purgeMode = null)
     {
-        if (!class_exists('Nelmio\Alice\Fixtures')) {
+        if (!class_exists('Nelmio\Alice\Fixtures') && !(class_exists('Nelmio\Alice\FixtureSet') && class_exists('Fidry\AliceDataFixtures\Loader\PersisterLoader'))) {
             // This class is available during tests, no exception will be thrown.
             // @codeCoverageIgnoreStart
-            throw new \BadMethodCallException('nelmio/alice should be installed to use this method.');
+            throw new \BadMethodCallException('nelmio/alice v2.*.* OR (nelmio/alice v3.*.* vs theofidry/AliceDataFixtures) should be installed to use this method, https://github.com/liip/LiipFunctionalTestBundle/issues/297');
             // @codeCoverageIgnoreEnd
         }
 
@@ -574,18 +574,28 @@ abstract class WebTestCase extends BaseWebTestCase
 
         $files = $this->locateResources($paths);
 
-        // Check if the Hautelook AliceBundle is registered and if yes, use it instead of Nelmio Alice
-        $hautelookLoaderServiceName = 'hautelook_alice.fixtures.loader';
-        if ($container->has($hautelookLoaderServiceName)) {
-            $loaderService = $container->get($hautelookLoaderServiceName);
-            $persisterClass = class_exists('Nelmio\Alice\ORM\Doctrine') ?
-                'Nelmio\Alice\ORM\Doctrine' :
-                'Nelmio\Alice\Persister\Doctrine';
+        if (class_exists('Nelmio\Alice\Fixtures')) {
+            // nelmio/alice v2.*.*
+            // Check if the Hautelook AliceBundle is registered and if yes, use it instead of Nelmio Alice
+            $hautelookLoaderServiceName = 'hautelook_alice.fixtures.loader';
+            if ($container->has($hautelookLoaderServiceName)) {
+                $loaderService = $container->get($hautelookLoaderServiceName);
+                $persisterClass = class_exists('Nelmio\Alice\ORM\Doctrine') ?
+                    'Nelmio\Alice\ORM\Doctrine' :
+                    'Nelmio\Alice\Persister\Doctrine';
 
-            return $loaderService->load(new $persisterClass($om), $files);
+                return $loaderService->load(new $persisterClass($om), $files);
+            }
+
+            return Fixtures::load($files, $om);
+        } else {
+            $fidryLoaderServiceName = 'fidry_alice_data_fixtures.doctrine.persister_loader';
+            if ($container->has($fidryLoaderServiceName)) {
+                $container->get($fidryLoaderServiceName)->load($files);
+            } else {
+                throw new \BadMethodCallException('please add $bundles[] = new Fidry\AliceDataFixtures\Bridge\Symfony\FidryAliceDataFixturesBundle(); to appKernel, https://github.com/liip/LiipFunctionalTestBundle/issues/297');
+            }
         }
-
-        return Fixtures::load($files, $om);
     }
 
     /**
