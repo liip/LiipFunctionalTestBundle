@@ -404,10 +404,15 @@ abstract class WebTestCase extends BaseWebTestCase
                 if ($container->getParameter('liip_functional_test.cache_sqlite_db')) {
                     $backup = $container->getParameter('kernel.cache_dir').'/test_'.md5(serialize($metadatas).serialize($classNames)).'.db';
                     if (file_exists($backup) && file_exists($backup.'.ser') && $this->isBackupUpToDate($classNames, $backup)) {
+                        $connection = $this->getContainer()->get('doctrine.orm.entity_manager')->getConnection();
+                        if (null !== $connection) {
+                            $connection->close();
+                        }
+
                         $om->flush();
                         $om->clear();
 
-                        $this->preFixtureRestore($om, $referenceRepository);
+                        $this->preFixtureBackupRestore($om, $referenceRepository, $backup);
 
                         copy($backup, $name);
 
@@ -415,7 +420,7 @@ abstract class WebTestCase extends BaseWebTestCase
                         $executor->setReferenceRepository($referenceRepository);
                         $executor->getReferenceRepository()->load($backup);
 
-                        $this->postFixtureRestore();
+                        $this->postFixtureBackupRestore($backup);
 
                         return $executor;
                     }
@@ -510,6 +515,8 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param array $paths
      *
      * @return array $files
+     *
+     * @throws \InvalidArgumentException if a wrong path is given outside a bundle
      */
     private function locateResources($paths)
     {
@@ -518,7 +525,10 @@ abstract class WebTestCase extends BaseWebTestCase
         $kernel = $this->getContainer()->get('kernel');
 
         foreach ($paths as $path) {
-            if ($path[0] !== '@' && file_exists($path) === true) {
+            if ($path[0] !== '@') {
+                if (!file_exists($path)) {
+                    throw new \InvalidArgumentException(sprintf('Unable to find file "%s".', $path));
+                }
                 $files[] = $path;
                 continue;
             }
@@ -590,6 +600,8 @@ abstract class WebTestCase extends BaseWebTestCase
      * Callback function to be executed after Schema restore.
      *
      * @return WebTestCase
+     *
+     * @deprecated since version 1.8, to be removed in 2.0. Use postFixtureBackupRestore method instead.
      */
     protected function postFixtureRestore()
     {
@@ -602,9 +614,44 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param ProxyReferenceRepository $referenceRepository The reference repository
      *
      * @return WebTestCase
+     *
+     * @deprecated since version 1.8, to be removed in 2.0. Use preFixtureBackupRestore method instead.
      */
     protected function preFixtureRestore(ObjectManager $manager, ProxyReferenceRepository $referenceRepository)
     {
+    }
+
+    /**
+     * Callback function to be executed after Schema restore.
+     *
+     * @param string $backupFilePath Path of file used to backup the references of the data fixtures
+     *
+     * @return WebTestCase
+     */
+    protected function postFixtureBackupRestore($backupFilePath)
+    {
+        $this->postFixtureRestore();
+
+        return $this;
+    }
+
+    /**
+     * Callback function to be executed before Schema restore.
+     *
+     * @param ObjectManager            $manager             The object manager
+     * @param ProxyReferenceRepository $referenceRepository The reference repository
+     * @param string                   $backupFilePath      Path of file used to backup the references of the data fixtures
+     *
+     * @return WebTestCase
+     */
+    protected function preFixtureBackupRestore(
+        ObjectManager $manager,
+        ProxyReferenceRepository $referenceRepository,
+        $backupFilePath
+    ) {
+        $this->preFixtureRestore($manager, $referenceRepository);
+
+        return $this;
     }
 
     /**
