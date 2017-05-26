@@ -415,6 +415,37 @@ $fixtures = $this->loadFixtureFiles(array(
 ));
 ```
 
+If you want to clear tables you have the two ways:
+1. Only to remove records of tables;
+2. Truncate tables.
+
+The first way is consisted in using the second parameter `$append` with value `true`. It allows you **only** to remove all records of table. Values of auto increment won't be reset. 
+```php
+$fixtures = $this->loadFixtureFiles(
+    array(
+        '@AcmeBundle/DataFixtures/ORM/ObjectData.yml',
+        '@AcmeBundle/DataFixtures/ORM/AnotherObjectData.yml',
+        '../../DataFixtures/ORM/YetAnotherObjectData.yml',
+    ),
+    true
+);
+```
+
+The second way is consisted in using the second parameter `$append` with value `true` and the last parameter `$purgeMode` with value `Doctrine\Common\DataFixtures\Purger\ORMPurger::PURGE_MODE_TRUNCATE`. It allows you to remove all records of tables with resetting value of auto increment.
+
+```php
+<?php
+
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
+
+$files = array(
+     '@AcmeBundle/DataFixtures/ORM/ObjectData.yml',
+     '@AcmeBundle/DataFixtures/ORM/AnotherObjectData.yml',
+     '../../DataFixtures/ORM/YetAnotherObjectData.yml',
+ );
+$fixtures = $this->loadFixtureFiles($files, true, null, 'doctrine', ORMPurger::PURGE_MODE_TRUNCATE );
+```
+
 #### HautelookAliceBundle Faker Providers
 
 This bundle supports faker providers from HautelookAliceBundle.
