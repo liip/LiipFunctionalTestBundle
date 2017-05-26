@@ -11,9 +11,13 @@
 
 namespace Liip\FunctionalTestBundle\Test;
 
+// BC
+class_alias('\PHPUnit_Framework_Constraint', '\PHPUnit\Framework\Constraint\Constraint');
+
+use PHPUnit\Framework\Constraint\Constraint;
 use Symfony\Component\Validator\ConstraintViolationList;
 
-class ValidationErrorsConstraint extends \PHPUnit_Framework_Constraint
+class ValidationErrorsConstraint extends Constraint
 {
     private $expect;
 

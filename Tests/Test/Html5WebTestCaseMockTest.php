@@ -13,6 +13,7 @@ namespace Liip\FunctionalTestBundle\Tests\Test;
 
 /* Used by annotations */
 use Liip\FunctionalTestBundle\Test\Html5WebTestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test Html5WebTestCase class with mocked methods instead of inheriting from
@@ -24,7 +25,7 @@ use Liip\FunctionalTestBundle\Test\Html5WebTestCase;
  *
  * @see https://github.com/sebastianbergmann/phpunit/blob/b12b9c37e382c096b93c3f26e7395775f59a5eea/tests/Framework/AssertTest.php#L3560-L3574
  */
-class Html5WebTestCaseMockTest extends \PHPUnit_Framework_TestCase
+class Html5WebTestCaseMockTest extends TestCase
 {
     /**
      * @param array $methods
