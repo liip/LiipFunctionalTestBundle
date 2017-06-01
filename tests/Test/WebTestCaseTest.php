@@ -283,7 +283,7 @@ EOF;
     public function testLoadFixtures()
     {
         $fixtures = $this->loadFixtures(array(
-            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
+            'Liip\FunctionalTestBundle\Tests\App\MyLiipFunctionalTestBundle\DataFixtures\ORM\LoadUserData',
         ));
 
         $this->assertInstanceOf(
@@ -341,7 +341,7 @@ EOF;
     public function testLoadDependentFixtures()
     {
         $fixtures = $this->loadFixtures(array(
-            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadDependentUserData',
+            'Liip\FunctionalTestBundle\Tests\App\MyLiipFunctionalTestBundle\DataFixtures\ORM\LoadDependentUserData',
         ));
 
         $this->assertInstanceOf(
@@ -368,7 +368,7 @@ EOF;
     public function testLoadFixturesFiles()
     {
         $fixtures = $this->loadFixtureFiles(array(
-            '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml',
+            __DIR__.'/../App/MyLiipFunctionalTestBundle/DataFixtures/ORM/user.yml',
         ));
 
         $this->assertInternalType(
@@ -432,7 +432,7 @@ EOF;
     {
         $fixtures = $this->loadFixtureFiles(array(
             $this->client->getContainer()->get('kernel')->locateResource(
-                '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml'
+                '@MyLiipFunctionalTestBundle/DataFixtures/ORM/user.yml'
             ),
         ));
 
@@ -481,7 +481,7 @@ EOF;
     public function testLoadFixturesFilesPathsWithoutLocateResource()
     {
         $fixtures = $this->loadFixtureFiles(array(
-            dirname(__FILE__).'/../App/DataFixtures/ORM/user.yml',
+            dirname(__FILE__).'/../App/MyLiipFunctionalTestBundle/DataFixtures/ORM/user.yml',
         ));
 
         $this->assertInternalType(
@@ -521,7 +521,7 @@ EOF;
     public function testUserWithFixtures()
     {
         $fixtures = $this->loadFixtures(array(
-            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
+            'Liip\FunctionalTestBundle\Tests\App\MyLiipFunctionalTestBundle\DataFixtures\ORM\LoadUserData',
         ));
 
         $this->assertInstanceOf(

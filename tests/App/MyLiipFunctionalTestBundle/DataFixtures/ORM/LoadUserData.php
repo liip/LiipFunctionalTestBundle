@@ -9,14 +9,15 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM;
+namespace Liip\FunctionalTestBundle\Tests\App\MyLiipFunctionalTestBundle\DataFixtures\ORM;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Doctrine\Common\DataFixtures\FixtureInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Liip\FunctionalTestBundle\Tests\App\Entity\User;
 
-class LoadDependentUserData extends AbstractFixture implements DependentFixtureInterface
+class LoadUserData extends AbstractFixture implements FixtureInterface
 {
     /**
      * @var ContainerInterface
@@ -37,28 +38,25 @@ class LoadDependentUserData extends AbstractFixture implements DependentFixtureI
     public function load(ObjectManager $manager)
     {
         /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
-        $user = clone $this->getReference('user');
-
-        $user->setId(3);
-
-        $manager->persist($user);
-        $manager->flush();
-
-        $user = clone $this->getReference('user');
-
-        $user->setId(4);
+        $user = new User();
+        $user->setId(1);
+        $user->setName('foo bar');
+        $user->setEmail('foo@bar.com');
+        $user->setPassword('12341234');
+        $user->setAlgorithm('plaintext');
+        $user->setEnabled(true);
+        $user->setConfirmationToken(null);
 
         $manager->persist($user);
         $manager->flush();
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getDependencies()
-    {
-        return array(
-            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
-        );
+        $this->addReference('user', $user);
+
+        $user = clone $this->getReference('user');
+
+        $user->setId(2);
+
+        $manager->persist($user);
+        $manager->flush();
     }
 }

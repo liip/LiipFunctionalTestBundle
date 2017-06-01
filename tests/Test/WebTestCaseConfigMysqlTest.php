@@ -74,7 +74,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
     public function testLoadFixtures()
     {
         $fixtures = $this->loadFixtures(array(
-            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
+            'Liip\FunctionalTestBundle\Tests\App\MyLiipFunctionalTestBundle\DataFixtures\ORM\LoadUserData',
         ));
 
         $this->assertInstanceOf(
@@ -127,7 +127,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
     public function testLoadFixturesAndExcludeFromPurge()
     {
         $fixtures = $this->loadFixtures(array(
-            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
+            'Liip\FunctionalTestBundle\Tests\App\MyLiipFunctionalTestBundle\DataFixtures\ORM\LoadUserData',
         ));
 
         $this->assertInstanceOf(
@@ -167,7 +167,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
     public function testLoadFixturesAndPurge()
     {
         $fixtures = $this->loadFixtures(array(
-            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
+            'Liip\FunctionalTestBundle\Tests\App\MyLiipFunctionalTestBundle\DataFixtures\ORM\LoadUserData',
         ));
 
         $this->assertInstanceOf(
@@ -197,7 +197,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
 
         // Reload fixtures
         $this->loadFixtures(array(
-            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
+            'Liip\FunctionalTestBundle\Tests\App\MyLiipFunctionalTestBundle\DataFixtures\ORM\LoadUserData',
         ));
 
         // Check that there are 2 users.
@@ -226,7 +226,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
     public function testLoadFixturesFiles()
     {
         $fixtures = $this->loadFixtureFiles(array(
-            '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml',
+            __DIR__.'/../App/MyLiipFunctionalTestBundle/DataFixtures/ORM/user.yml',
         ));
 
         $this->assertInternalType(
