@@ -6,7 +6,7 @@
     xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/3.7/phpunit.xsd"
     backupGlobals="false"
     backupStaticAttributes="false"
-    bootstrap="Tests/App/bootstrap.php"
+    bootstrap="tests/App/bootstrap.php"
     colors="true"
     convertErrorsToExceptions="true"
     convertNoticesToExceptions="true"
@@ -19,15 +19,15 @@
 >
 
     <php>
-        <server name="KERNEL_DIR" value="Tests/App" />
+        <server name="KERNEL_DIR" value="tests/App" />
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
     </php>
 
     <testsuites>
         <testsuite name="Project Test Suite">
-            <directory>Tests/Command</directory>
-            <directory>Tests/DependencyInjection</directory>
-            <directory>Tests/Test</directory>
+            <directory>tests/Command</directory>
+            <directory>tests/DependencyInjection</directory>
+            <directory>tests/Test</directory>
         </testsuite>
     </testsuites>
 
@@ -45,7 +45,7 @@
             <directory>Utils</directory>
             <directory>Validator</directory>
             <exclude>
-                <directory>Tests</directory>
+                <directory>tests</directory>
                 <directory>vendor/</directory>
             </exclude>
         </whitelist>
