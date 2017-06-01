@@ -50,7 +50,8 @@
     "autoload": {
         "psr-4": {
             "Liip\\FunctionalTestBundle\\": ""
-        }
+        },
+        "exclude-from-classmap": ["/Tests/"]
     },
     "extra": {
         "branch-alias": {
