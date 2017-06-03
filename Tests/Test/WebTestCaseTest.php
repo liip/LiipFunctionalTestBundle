@@ -428,6 +428,7 @@ EOF;
 
     /**
      * Use nelmio/alice with PURGE_MODE_TRUNCATE.
+     *
      * @depends testLoadFixturesFiles
      */
     public function testLoadFixturesFilesWithPurgeModeTruncate()
@@ -449,7 +450,7 @@ EOF;
 
         $id = 1;
         /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
-        foreach($fixtures as $user){
+        foreach ($fixtures as $user) {
             $this->assertEquals($id++, $user->getId());
         }
     }
