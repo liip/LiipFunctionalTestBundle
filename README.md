@@ -415,7 +415,7 @@ $fixtures = $this->loadFixtureFiles(array(
 ));
 ```
 
-If you want to clear tables you have the two ways:
+If you want to clear tables you have the following two ways:
 1. Only to remove records of tables;
 2. Truncate tables.
 
