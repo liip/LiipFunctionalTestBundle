@@ -488,8 +488,10 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param ManagerRegistry $registry
      * @param EntityManager   $om
      * @param null            $omName
+     * @param string          $registryName
+     * @param int             $purgeMode
      */
-    private function cleanDatabase(ManagerRegistry $registry, EntityManager $om, $omName = null)
+    private function cleanDatabase(ManagerRegistry $registry, EntityManager $om, $omName = null, $registryName = 'doctrine', $purgeMode = null)
     {
         $connection = $om->getConnection();
 
@@ -500,7 +502,7 @@ abstract class WebTestCase extends BaseWebTestCase
             $connection->query('SET FOREIGN_KEY_CHECKS=0');
         }
 
-        $this->loadFixtures(array(), $omName);
+        $this->loadFixtures(array(), $omName, $registryName, $purgeMode);
 
         if ($mysql) {
             $connection->query('SET FOREIGN_KEY_CHECKS=1');
@@ -542,12 +544,13 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param bool   $append
      * @param null   $omName
      * @param string $registryName
+     * @param int    $purgeMode
      *
      * @return array
      *
      * @throws \BadMethodCallException
      */
-    public function loadFixtureFiles(array $paths = array(), $append = false, $omName = null, $registryName = 'doctrine')
+    public function loadFixtureFiles(array $paths = array(), $append = false, $omName = null, $registryName = 'doctrine', $purgeMode = null)
     {
         if (!class_exists('Nelmio\Alice\Fixtures')) {
             // This class is available during tests, no exception will be thrown.
@@ -566,7 +569,7 @@ abstract class WebTestCase extends BaseWebTestCase
         $om = $registry->getManager($omName);
 
         if ($append === false) {
-            $this->cleanDatabase($registry, $om, $omName);
+            $this->cleanDatabase($registry, $om, $omName, $registryName, $purgeMode);
         }
 
         $files = $this->locateResources($paths);

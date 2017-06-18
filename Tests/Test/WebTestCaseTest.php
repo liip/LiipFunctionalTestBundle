@@ -12,6 +12,7 @@
 namespace Liip\FunctionalTestBundle\Tests\Test;
 
 use Liip\FunctionalTestBundle\Test\WebTestCase;
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 
 class WebTestCaseTest extends WebTestCase
 {
@@ -423,6 +424,35 @@ EOF;
         $this->loadFixtureFiles(array(
             '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/nonexistent.yml',
         ));
+    }
+
+    /**
+     * Use nelmio/alice with PURGE_MODE_TRUNCATE.
+     *
+     * @depends testLoadFixturesFiles
+     */
+    public function testLoadFixturesFilesWithPurgeModeTruncate()
+    {
+        $fixtures = $this->loadFixtureFiles(array(
+            '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml',
+        ), true, null, 'doctrine', ORMPurger::PURGE_MODE_TRUNCATE);
+
+        $this->assertInternalType(
+            'array',
+            $fixtures
+        );
+
+        // 10 users are loaded
+        $this->assertCount(
+            10,
+            $fixtures
+        );
+
+        $id = 1;
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        foreach ($fixtures as $user) {
+            $this->assertEquals($id++, $user->getId());
+        }
     }
 
     /**
