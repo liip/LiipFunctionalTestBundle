@@ -12,9 +12,15 @@
 namespace Liip\FunctionalTestBundle\Test;
 
 // BC
-class_alias('\PHPUnit_Framework_Constraint', '\PHPUnit\Framework\Constraint\Constraint');
+if (class_exists('\PHPUnit_Framework_Constraint')) {
+    class_alias('\PHPUnit_Framework_Constraint', '\PHPUnit\Framework\Constraint\Constraint');
+}
+if (class_exists('\PHPUnit_Framework_ExpectationFailedException')) {
+    class_alias('\PHPUnit_Framework_ExpectationFailedException', '\PHPUnit\Framework\ExpectationFailedException');
+}
 
 use PHPUnit\Framework\Constraint\Constraint;
+use PHPUnit\Framework\ExpectationFailedException;
 use Symfony\Component\Validator\ConstraintViolationList;
 
 class ValidationErrorsConstraint extends Constraint
@@ -77,7 +83,7 @@ class ValidationErrorsConstraint extends Constraint
             }
         }
 
-        throw new \PHPUnit_Framework_ExpectationFailedException(
+        throw new ExpectationFailedException(
             $description."\n".implode("\n", $lines)
         );
     }

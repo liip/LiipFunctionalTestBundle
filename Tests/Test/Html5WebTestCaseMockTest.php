@@ -13,7 +13,9 @@ namespace Liip\FunctionalTestBundle\Tests\Test;
 
 /* Used by annotations */
 use Liip\FunctionalTestBundle\Test\Html5WebTestCase;
+use PHPUnit\Framework\SkippedTestError;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\AssertionFailedError;
 
 /**
  * Test Html5WebTestCase class with mocked methods instead of inheriting from
@@ -136,7 +138,7 @@ EOF;
 
         try {
             $mock->assertIsValidHtml5('baz');
-        } catch (\PHPUnit_Framework_AssertionFailedError $e) {
+        } catch (AssertionFailedError $e) {
             $this->assertSame($string, $e->getMessage());
 
             return;
@@ -192,7 +194,7 @@ EOF;
 
         try {
             $mock->assertIsValidHtml5('', 'baz');
-        } catch (\PHPUnit_Framework_AssertionFailedError $e) {
+        } catch (AssertionFailedError $e) {
             $this->assertSame($string, $e->getMessage());
 
             return;
@@ -214,7 +216,7 @@ EOF;
 
         try {
             $mock->assertIsValidHtml5('');
-        } catch (\PHPUnit_Framework_SkippedTestError $e) {
+        } catch (SkippedTestError $e) {
             $this->assertSame(
                 'HTML5 Validator service not found at \'http://localhost/\' !',
                 $e->getMessage()
@@ -246,7 +248,7 @@ EOF;
 
         try {
             $mock->assertIsValidHtml5('');
-        } catch (\PHPUnit_Framework_SkippedTestError $e) {
+        } catch (SkippedTestError $e) {
             $this->assertSame(
                 'HTML5 Validator service not found at \'http://localhost/\' !',
                 $e->getMessage()
@@ -277,7 +279,7 @@ EOF;
     }
 
     /**
-     * @expectedException \PHPUnit_Framework_AssertionFailedError
+     * @expectedException \PHPUnit\Framework\AssertionFailedError
      */
     public function testAssertIsValidHtml5SnippetFail()
     {

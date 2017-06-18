@@ -187,13 +187,12 @@ class CommandTest extends WebTestCase
         $this->assertContains('Verbosity level: DEBUG', $this->display);
     }
 
+    /**
+     * @expectedException \OutOfBoundsException
+     */
     public function testRunCommandVerbosityOutOfBound()
     {
         $this->setVerbosityLevel('foobar');
-
-        $this->setExpectedException(
-            'OutOfBoundsException'
-        );
 
         $this->runCommand('command:test');
     }
