@@ -11,13 +11,14 @@
 
 namespace Liip\FunctionalTestBundle\Utils;
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
 use Liip\FunctionalTestBundle\Test\ValidationErrorsConstraint;
 
-class HttpAssertions extends \PHPUnit_Framework_TestCase
+class HttpAssertions extends TestCase
 {
     /**
      * Checks the success state of a response.
