@@ -19,6 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\BrowserKit\Cookie;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -521,22 +522,44 @@ abstract class WebTestCase extends BaseWebTestCase
     private function locateResources($paths)
     {
         $files = array();
-
         $kernel = $this->getContainer()->get('kernel');
-
         foreach ($paths as $path) {
             if ($path[0] !== '@') {
+                $fs = new Filesystem();
+                if (!$fs->isAbsolutePath($path)) {
+                    $path = $this->getCallingClassPath().'/'.$path;
+                }
                 if (!file_exists($path)) {
                     throw new \InvalidArgumentException(sprintf('Unable to find file "%s".', $path));
                 }
                 $files[] = $path;
                 continue;
             }
-
             $files[] = $kernel->locateResource($path);
         }
 
         return $files;
+    }
+
+    private function getCallingClassPath()
+    {
+        $reflector = new \ReflectionClass($this->getCallingClass());
+        $callingClassFilename = $reflector->getFileName();
+
+        return dirname($callingClassFilename);
+    }
+
+    private function getCallingClass()
+    {
+        $trace = debug_backtrace();
+        $class = $trace[1]['class'];
+        for ($i = 1; $i < count($trace); ++$i) {
+            if (isset($trace[$i])) {
+                if ($class != $trace[$i]['class']) {
+                    return $trace[$i]['class'];
+                }
+            }
+        }
     }
 
     /**
