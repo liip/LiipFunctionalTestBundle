@@ -151,6 +151,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
     /**
      * @param KernelInterface $kernel
+     *
      * @return Application
      */
     protected function createApplication(KernelInterface $kernel)
@@ -215,18 +216,22 @@ abstract class WebTestCase extends BaseWebTestCase
         switch ($this->getVerbosityLevel()) {
             case OutputInterface::VERBOSITY_QUIET:
                 $params['-q'] = '-q';
+
                 break;
 
             case OutputInterface::VERBOSITY_VERBOSE:
                 $params['-v'] = '';
+
                 break;
 
             case OutputInterface::VERBOSITY_VERY_VERBOSE:
                 $params['-vv'] = '';
+
                 break;
 
             case OutputInterface::VERBOSITY_DEBUG:
                 $params['-vvv'] = '';
+
                 break;
         }
 
