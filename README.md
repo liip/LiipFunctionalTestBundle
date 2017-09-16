@@ -411,7 +411,7 @@ rather than the FunctionalTestBundle's load methods. You should be aware that th
 $fixtures = $this->loadFixtureFiles(array(
     '@AcmeBundle/DataFixtures/ORM/ObjectData.yml',
     '@AcmeBundle/DataFixtures/ORM/AnotherObjectData.yml',
-    '../../DataFixtures/ORM/YetAnotherObjectData.yml',
+    __DIR__.'/../../DataFixtures/ORM/YetAnotherObjectData.yml',
 ));
 ```
 
@@ -425,7 +425,7 @@ $fixtures = $this->loadFixtureFiles(
     array(
         '@AcmeBundle/DataFixtures/ORM/ObjectData.yml',
         '@AcmeBundle/DataFixtures/ORM/AnotherObjectData.yml',
-        '../../DataFixtures/ORM/YetAnotherObjectData.yml',
+        __DIR__.'/../../DataFixtures/ORM/YetAnotherObjectData.yml',
     ),
     true
 );
@@ -441,7 +441,7 @@ use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 $files = array(
      '@AcmeBundle/DataFixtures/ORM/ObjectData.yml',
      '@AcmeBundle/DataFixtures/ORM/AnotherObjectData.yml',
-     '../../DataFixtures/ORM/YetAnotherObjectData.yml',
+     __DIR__.'/../../DataFixtures/ORM/YetAnotherObjectData.yml',
  );
 $fixtures = $this->loadFixtureFiles($files, true, null, 'doctrine', ORMPurger::PURGE_MODE_TRUNCATE );
 ```
