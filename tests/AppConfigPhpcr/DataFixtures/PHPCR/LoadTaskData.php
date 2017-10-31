@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -18,7 +20,7 @@ use Liip\FunctionalTestBundle\Tests\AppConfigPhpcr\Document\Task;
 
 class LoadTaskData implements FixtureInterface
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         if (!$manager instanceof DocumentManager) {
             $class = get_class($manager);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -24,7 +26,7 @@ class LiipFunctionalTestExtension extends Extension
      * @param array            $configs
      * @param ContainerBuilder $container
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $this->processConfiguration(new Configuration(), $configs);
 
@@ -53,13 +55,6 @@ class LiipFunctionalTestExtension extends Extension
         }
 
         $definition = $container->getDefinition('liip_functional_test.query.count_client');
-        if (method_exists($definition, 'setShared')) {
-            $definition->setShared(false);
-        } else {
-            // This block will never be reached with Symfony <2.8
-            // @codeCoverageIgnoreStart
-            $definition->setScope('prototype');
-            // @codeCoverageIgnoreEnd
-        }
+        $definition->setShared(false);
     }
 }

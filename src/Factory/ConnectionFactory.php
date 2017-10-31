@@ -1,5 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of the Liip/FunctionalTestBundle
+ *
+ * (c) Lukas Kahwe Smith <smith@pooteeweet.org>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Liip\FunctionalTestBundle\Factory;
 
 use Doctrine\Bundle\DoctrineBundle\ConnectionFactory as BaseConnectionFactory;
@@ -35,7 +46,7 @@ class ConnectionFactory extends BaseConnectionFactory
         return parent::createConnection($params, $config, $eventManager, $mappingTypes);
     }
 
-    private function getDbNameFromEnv($dbName)
+    private function getDbNameFromEnv(string $dbName)
     {
         return 'dbTest'.getenv('TEST_TOKEN');
     }

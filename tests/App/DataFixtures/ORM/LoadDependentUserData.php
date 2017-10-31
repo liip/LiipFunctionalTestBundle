@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -26,7 +28,7 @@ class LoadDependentUserData extends AbstractFixture implements DependentFixtureI
     /**
      * {@inheritdoc}
      */
-    public function setContainer(ContainerInterface $container = null)
+    public function setContainer(ContainerInterface $container = null): void
     {
         $this->container = $container;
     }
@@ -34,7 +36,7 @@ class LoadDependentUserData extends AbstractFixture implements DependentFixtureI
     /**
      * {@inheritdoc}
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
         $user = clone $this->getReference('user');
@@ -55,7 +57,7 @@ class LoadDependentUserData extends AbstractFixture implements DependentFixtureI
     /**
      * {@inheritdoc}
      */
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',

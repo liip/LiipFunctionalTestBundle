@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -14,12 +16,13 @@ namespace Liip\FunctionalTestBundle\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\HttpKernel\Kernel;
 
 class TestCommand extends ContainerAwareCommand
 {
     private $container;
 
-    protected function configure()
+    protected function configure(): void
     {
         parent::configure();
 
@@ -31,7 +34,7 @@ class TestCommand extends ContainerAwareCommand
      * @param InputInterface  $input
      * @param OutputInterface $output
      */
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
 
@@ -42,45 +45,26 @@ class TestCommand extends ContainerAwareCommand
      * @param InputInterface  $input
      * @param OutputInterface $output
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
         // Symfony version check
-        $version = \Symfony\Component\HttpKernel\Kernel::VERSION_ID;
+        $version = Kernel::VERSION_ID;
         $output->writeln('Symfony version: '.$version);
         $output->writeln('Environment: '.$this->container->get('kernel')->getEnvironment());
         $output->writeln('Verbosity level set: '.$output->getVerbosity());
 
-        // Check for the version of Symfony: 20803 is the 2.8
-        if ($version >= 20803) {
-            $output->writeln('Environment: '.$this->container->get('kernel')->getEnvironment(), OutputInterface::VERBOSITY_NORMAL);
+        $output->writeln('Environment: '.$this->container->get('kernel')->getEnvironment(), OutputInterface::VERBOSITY_NORMAL);
 
-            // Write a line with OutputInterface::VERBOSITY_NORMAL (also if this level is set by default by Console)
-            $output->writeln('Verbosity level: NORMAL', OutputInterface::VERBOSITY_NORMAL);
+        // Write a line with OutputInterface::VERBOSITY_NORMAL (also if this level is set by default by Console)
+        $output->writeln('Verbosity level: NORMAL', OutputInterface::VERBOSITY_NORMAL);
 
-            // Write a line with OutputInterface::VERBOSITY_VERBOSE
-            $output->writeln('Verbosity level: VERBOSE', OutputInterface::VERBOSITY_VERBOSE);
+        // Write a line with OutputInterface::VERBOSITY_VERBOSE
+        $output->writeln('Verbosity level: VERBOSE', OutputInterface::VERBOSITY_VERBOSE);
 
-            // Write a line with OutputInterface::VERBOSITY_VERY_VERBOSE
-            $output->writeln('Verbosity level: VERY_VERBOSE', OutputInterface::VERBOSITY_VERY_VERBOSE);
+        // Write a line with OutputInterface::VERBOSITY_VERY_VERBOSE
+        $output->writeln('Verbosity level: VERY_VERBOSE', OutputInterface::VERBOSITY_VERY_VERBOSE);
 
-            // Write a line with OutputInterface::VERBOSITY_DEBUG
-            $output->writeln('Verbosity level: DEBUG', OutputInterface::VERBOSITY_DEBUG);
-        } else {
-            if ($output->getVerbosity() >= OutputInterface::VERBOSITY_NORMAL) {
-                $output->writeln('Verbosity level: NORMAL');
-            }
-
-            if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
-                $output->writeln('Verbosity level: VERBOSE');
-            }
-
-            if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE) {
-                $output->writeln('Verbosity level: VERY_VERBOSE');
-            }
-
-            if (OutputInterface::VERBOSITY_DEBUG === $output->getVerbosity()) {
-                $output->writeln('Verbosity level: DEBUG');
-            }
-        }
+        // Write a line with OutputInterface::VERBOSITY_DEBUG
+        $output->writeln('Verbosity level: DEBUG', OutputInterface::VERBOSITY_DEBUG);
     }
 }

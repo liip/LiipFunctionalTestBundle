@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -10,14 +12,6 @@
  */
 
 namespace Liip\FunctionalTestBundle\Test;
-
-// BC
-if (class_exists('\PHPUnit_Framework_Constraint')) {
-    class_alias('\PHPUnit_Framework_Constraint', '\PHPUnit\Framework\Constraint\Constraint');
-}
-if (class_exists('\PHPUnit_Framework_ExpectationFailedException')) {
-    class_alias('\PHPUnit_Framework_ExpectationFailedException', '\PHPUnit\Framework\ExpectationFailedException');
-}
 
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\ExpectationFailedException;
@@ -93,7 +87,7 @@ class ValidationErrorsConstraint extends Constraint
      *
      * @return string
      */
-    public function toString()
+    public function toString(): string
     {
         return 'validation errors match';
     }

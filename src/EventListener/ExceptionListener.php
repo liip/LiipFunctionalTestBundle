@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -24,24 +26,24 @@ class ExceptionListener implements EventSubscriberInterface
      */
     private $lastException;
 
-    public function setException(GetResponseForExceptionEvent $event)
+    public function setException(GetResponseForExceptionEvent $event): void
     {
         $this->lastException = $event->getException();
     }
 
-    public function clearLastException(GetResponseEvent $event)
+    public function clearLastException(GetResponseEvent $event): void
     {
         if (HttpKernelInterface::MASTER_REQUEST === $event->getRequestType()) {
             $this->lastException = null;
         }
     }
 
-    public function getLastException()
+    public function getLastException(): ?\Exception
     {
         return $this->lastException;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::EXCEPTION => ['setException', 99999],

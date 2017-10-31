@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -27,7 +29,7 @@ class LoadUserData extends AbstractFixture implements FixtureInterface
     /**
      * {@inheritdoc}
      */
-    public function setContainer(ContainerInterface $container = null)
+    public function setContainer(ContainerInterface $container = null): void
     {
         $this->container = $container;
     }
@@ -35,7 +37,7 @@ class LoadUserData extends AbstractFixture implements FixtureInterface
     /**
      * {@inheritdoc}
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
         $user = new User();

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -23,7 +25,7 @@ class ExampleFunctionalTest extends WebTestCase
     /**
      * Example using LiipFunctionalBundle the fixture loader.
      */
-    public function testUserFooIndex()
+    public function testUserFooIndex(): void
     {
         $this->loadFixtures(['Liip\FooBundle\Tests\Fixtures\LoadUserData']);
 
@@ -37,7 +39,7 @@ class ExampleFunctionalTest extends WebTestCase
     /**
      * Example using LiipFunctionalBundle WebTestCase helpers and with authentication.
      */
-    public function testBasicAuthentication()
+    public function testBasicAuthentication(): void
     {
         $this->loadFixtures(['Liip\FooBundle\Tests\Fixtures\LoadUserData']);
 
@@ -48,18 +50,18 @@ class ExampleFunctionalTest extends WebTestCase
         $this->assertContains('logout', $content);
     }
 
-    public function test404Page()
+    public function test404Page(): void
     {
         $this->fetchContent('/asdasdas', 'GET', false, false);
     }
 
-    public function testLoginPage()
+    public function testLoginPage(): void
     {
         $content = $this->fetchContent('/', 'GET', false);
         $this->assertContains('login', $content);
     }
 
-    public function testValidationErrors()
+    public function testValidationErrors(): void
     {
         $client = $this->makeClient(true);
         $crawler = $client->request('GET', '/users/1/edit');

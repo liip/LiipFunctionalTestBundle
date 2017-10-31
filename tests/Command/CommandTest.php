@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -23,7 +25,7 @@ class CommandTest extends WebTestCase
      * This method tests both the default setting of `runCommand()` and the kernel reusing, as, to reuse kernel,
      * it is needed a kernel is yet instantiated. So we test these two conditions here, to not repeat the code.
      */
-    public function testRunCommandWithoutOptionsAndReuseKernel()
+    public function testRunCommandWithoutOptionsAndReuseKernel(): void
     {
         // Run command without options
         $this->display = $this->runCommand('liipfunctionaltestbundle:test');
@@ -44,7 +46,7 @@ class CommandTest extends WebTestCase
         $this->assertContains('Verbosity level: NORMAL', $this->display);
     }
 
-    public function testRunCommandWithoutOptionsAndNotReuseKernel()
+    public function testRunCommandWithoutOptionsAndNotReuseKernel(): void
     {
         // Run command without options
         $this->display = $this->runCommand('liipfunctionaltestbundle:test');
@@ -64,7 +66,7 @@ class CommandTest extends WebTestCase
         $this->assertContains('Verbosity level: NORMAL', $this->display);
     }
 
-    public function testRunCommandWithoutDecoration()
+    public function testRunCommandWithoutDecoration(): void
     {
         // Set `decorated` to false
         $this->isDecorated(false);
@@ -79,7 +81,7 @@ class CommandTest extends WebTestCase
         $this->assertFalse($this->getDecorated());
     }
 
-    public function testRunCommandVerbosityQuiet()
+    public function testRunCommandVerbosityQuiet(): void
     {
         $this->setVerbosityLevel('quiet');
         $this->assertSame(OutputInterface::VERBOSITY_QUIET, $this->getVerbosityLevel());
@@ -99,7 +101,7 @@ class CommandTest extends WebTestCase
         $this->assertNotContains('Verbosity level: DEBUG', $this->display);
     }
 
-    public function testRunCommandVerbosityImplicitlyNormal()
+    public function testRunCommandVerbosityImplicitlyNormal(): void
     {
         // Run command without setting verbosity: default set is normal
         $this->assertSame(OutputInterface::VERBOSITY_NORMAL, $this->getVerbosityLevel());
@@ -120,7 +122,7 @@ class CommandTest extends WebTestCase
         $this->assertNotContains('Verbosity level: DEBUG', $this->display);
     }
 
-    public function testRunCommandVerbosityExplicitlyNormal()
+    public function testRunCommandVerbosityExplicitlyNormal(): void
     {
         $this->setVerbosityLevel('normal');
         $this->assertSame(OutputInterface::VERBOSITY_NORMAL, $this->getVerbosityLevel());
@@ -132,18 +134,13 @@ class CommandTest extends WebTestCase
 
         $this->assertInternalType('string', $this->display);
 
-        // In this version of Symfony, NORMAL is practically equal to VERBOSE
-        if ('203' === substr(Kernel::VERSION_ID, 0, 3)) {
-            $this->assertContains('Verbosity level: VERBOSE', $this->display);
-        } else {
-            $this->assertNotContains('Verbosity level: VERBOSE', $this->display);
-        }
+        $this->assertNotContains('Verbosity level: VERBOSE', $this->display);
 
         $this->assertNotContains('Verbosity level: VERY_VERBOSE', $this->display);
         $this->assertNotContains('Verbosity level: DEBUG', $this->display);
     }
 
-    public function testRunCommandVerbosityVerbose()
+    public function testRunCommandVerbosityVerbose(): void
     {
         $this->setVerbosityLevel('verbose');
         $this->assertSame(OutputInterface::VERBOSITY_VERBOSE, $this->getVerbosityLevel());
@@ -158,7 +155,7 @@ class CommandTest extends WebTestCase
         $this->assertNotContains('Verbosity level: DEBUG', $this->display);
     }
 
-    public function testRunCommandVerbosityVeryVerbose()
+    public function testRunCommandVerbosityVeryVerbose(): void
     {
         $this->setVerbosityLevel('very_verbose');
         $this->assertSame(OutputInterface::VERBOSITY_VERY_VERBOSE, $this->getVerbosityLevel());
@@ -177,7 +174,7 @@ class CommandTest extends WebTestCase
         $this->assertNotContains('Verbosity level: DEBUG', $this->display);
     }
 
-    public function testRunCommandVerbosityDebug()
+    public function testRunCommandVerbosityDebug(): void
     {
         $this->setVerbosityLevel('debug');
         $this->assertSame(OutputInterface::VERBOSITY_DEBUG, $this->getVerbosityLevel());
@@ -199,14 +196,14 @@ class CommandTest extends WebTestCase
     /**
      * @expectedException \OutOfBoundsException
      */
-    public function testRunCommandVerbosityOutOfBound()
+    public function testRunCommandVerbosityOutOfBound(): void
     {
         $this->setVerbosityLevel('foobar');
 
         $this->runCommand('command:test');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 

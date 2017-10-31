@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -11,11 +13,6 @@
 
 namespace Liip\FunctionalTestBundle\Tests\Test;
 
-// BC
-if (class_exists('\PHPUnit_Framework_AssertionFailedError')) {
-    class_alias('\PHPUnit_Framework_AssertionFailedError', 'PHPUnit\Framework\AssertionFailedError');
-}
-
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use PHPUnit\Framework\AssertionFailedError;
@@ -25,7 +22,7 @@ class WebTestCaseTest extends WebTestCase
     /** @var \Symfony\Bundle\FrameworkBundle\Client client */
     private $client = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->client = static::makeClient();
     }
@@ -33,7 +30,7 @@ class WebTestCaseTest extends WebTestCase
     /**
      * Call methods from the parent class.
      */
-    public function testGetContainer()
+    public function testGetContainer(): void
     {
         $this->assertInstanceOf(
             'Symfony\Component\DependencyInjection\ContainerInterface',
@@ -41,7 +38,7 @@ class WebTestCaseTest extends WebTestCase
         );
     }
 
-    public function testMakeClient()
+    public function testMakeClient(): void
     {
         $this->assertInstanceOf(
             'Symfony\Bundle\FrameworkBundle\Client',
@@ -49,7 +46,7 @@ class WebTestCaseTest extends WebTestCase
         );
     }
 
-    public function testGetUrl()
+    public function testGetUrl(): void
     {
         $path = $this->getUrl(
             'liipfunctionaltestbundle_user',
@@ -67,7 +64,7 @@ class WebTestCaseTest extends WebTestCase
     /**
      * Call methods from Symfony to ensure the Controller works.
      */
-    public function testIndex()
+    public function testIndex(): void
     {
         $path = '/';
 
@@ -95,7 +92,7 @@ class WebTestCaseTest extends WebTestCase
     /**
      * @depends testIndex
      */
-    public function testIndexAssertStatusCode()
+    public function testIndexAssertStatusCode(): void
     {
         $this->loadFixtures([]);
 
@@ -109,12 +106,8 @@ class WebTestCaseTest extends WebTestCase
     /**
      * Check the failure message returned by assertStatusCode().
      */
-    public function testAssertStatusCodeFail()
+    public function testAssertStatusCodeFail(): void
     {
-        if (!interface_exists('Symfony\Component\Validator\Validator\ValidatorInterface')) {
-            $this->markTestSkipped('The Symfony\Component\Validator\Validator\ValidatorInterface does not exist');
-        }
-
         $this->loadFixtures([]);
 
         $path = '/';
@@ -143,7 +136,7 @@ class WebTestCaseTest extends WebTestCase
     /**
      * Check the failure message returned by assertStatusCode().
      */
-    public function testAssertStatusCodeException()
+    public function testAssertStatusCodeException(): void
     {
         $this->loadFixtures([]);
 
@@ -169,7 +162,7 @@ EOF;
     /**
      * @depends testIndex
      */
-    public function testIndexIsSuccesful()
+    public function testIndexIsSuccesful(): void
     {
         $this->loadFixtures([]);
 
@@ -183,7 +176,7 @@ EOF;
     /**
      * @depends testIndex
      */
-    public function testIndexFetchCrawler()
+    public function testIndexFetchCrawler(): void
     {
         $this->loadFixtures([]);
 
@@ -213,7 +206,7 @@ EOF;
     /**
      * @depends testIndex
      */
-    public function testIndexFetchContent()
+    public function testIndexFetchContent(): void
     {
         $this->loadFixtures([]);
 
@@ -229,7 +222,7 @@ EOF;
         );
     }
 
-    public function test404Error()
+    public function test404Error(): void
     {
         $this->loadFixtures([]);
 
@@ -246,7 +239,7 @@ EOF;
      * Throw an Exception in the try/catch block and check the failure message
      * returned by assertStatusCode().
      */
-    public function testIsSuccessfulException()
+    public function testIsSuccessfulException(): void
     {
         $this->loadFixtures([]);
 
@@ -277,7 +270,7 @@ EOF;
     /**
      * Data fixtures.
      */
-    public function testLoadEmptyFixtures()
+    public function testLoadEmptyFixtures(): void
     {
         $fixtures = $this->loadFixtures([]);
 
@@ -287,7 +280,7 @@ EOF;
         );
     }
 
-    public function testLoadFixturesWithoutParameters()
+    public function testLoadFixturesWithoutParameters(): void
     {
         $fixtures = $this->loadFixtures();
 
@@ -297,7 +290,7 @@ EOF;
         );
     }
 
-    public function testLoadFixtures()
+    public function testLoadFixtures(): void
     {
         $fixtures = $this->loadFixtures([
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
@@ -355,7 +348,7 @@ EOF;
     /**
      * Load fixture which has a dependency.
      */
-    public function testLoadDependentFixtures()
+    public function testLoadDependentFixtures(): void
     {
         $fixtures = $this->loadFixtures([
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadDependentUserData',
@@ -382,7 +375,7 @@ EOF;
     /**
      * Use nelmio/alice.
      */
-    public function testLoadFixturesFiles()
+    public function testLoadFixturesFiles(): void
     {
         $fixtures = $this->loadFixtureFiles([
             '@AcmeBundle/App/DataFixtures/ORM/user.yml',
@@ -435,7 +428,7 @@ EOF;
      *
      * @expectedException \InvalidArgumentException
      */
-    public function testLoadNonexistentFixturesFiles()
+    public function testLoadNonexistentFixturesFiles(): void
     {
         $this->loadFixtureFiles([
             '@AcmeBundle/App/DataFixtures/ORM/nonexistent.yml',
@@ -447,7 +440,7 @@ EOF;
      *
      * @depends testLoadFixturesFiles
      */
-    public function testLoadFixturesFilesWithPurgeModeTruncate()
+    public function testLoadFixturesFilesWithPurgeModeTruncate(): void
     {
         $fixtures = $this->loadFixtureFiles([
             '@AcmeBundle/App/DataFixtures/ORM/user.yml',
@@ -474,7 +467,7 @@ EOF;
     /**
      * Use nelmio/alice with full path to the file.
      */
-    public function testLoadFixturesFilesPaths()
+    public function testLoadFixturesFilesPaths(): void
     {
         $fixtures = $this->loadFixtureFiles([
             $this->client->getContainer()->get('kernel')->locateResource(
@@ -524,7 +517,7 @@ EOF;
     /**
      * Use nelmio/alice with full path to the file without calling locateResource().
      */
-    public function testLoadFixturesFilesPathsWithoutLocateResource()
+    public function testLoadFixturesFilesPathsWithoutLocateResource(): void
     {
         $fixtures = $this->loadFixtureFiles([
             __DIR__.'/../App/DataFixtures/ORM/user.yml',
@@ -558,13 +551,13 @@ EOF;
      *
      * @expectedException \InvalidArgumentException
      */
-    public function testLoadNonexistentFixturesFilesPaths()
+    public function testLoadNonexistentFixturesFilesPaths(): void
     {
         $path = ['/nonexistent.yml'];
         $this->loadFixtureFiles($path);
     }
 
-    public function testUserWithFixtures()
+    public function testUserWithFixtures(): void
     {
         $fixtures = $this->loadFixtures([
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
@@ -620,12 +613,8 @@ EOF;
     /**
      * Form.
      */
-    public function testForm()
+    public function testForm(): void
     {
-        if (!interface_exists('Symfony\Component\Validator\Validator\ValidatorInterface')) {
-            $this->markTestSkipped('The Symfony\Component\Validator\Validator\ValidatorInterface does not exist');
-        }
-
         $this->loadFixtures([]);
 
         $path = '/form';
@@ -659,12 +648,8 @@ EOF;
      *
      * @expectedException \PHPUnit\Framework\ExpectationFailedException
      */
-    public function testFormWithException()
+    public function testFormWithException(): void
     {
-        if (!interface_exists('Symfony\Component\Validator\Validator\ValidatorInterface')) {
-            $this->markTestSkipped('The Symfony\Component\Validator\Validator\ValidatorInterface does not exist');
-        }
-
         $this->loadFixtures([]);
 
         $path = '/form';
@@ -685,12 +670,8 @@ EOF;
      * Check the failure message returned by assertStatusCode()
      * when an invalid form is submitted.
      */
-    public function testFormWithExceptionAssertStatusCode()
+    public function testFormWithExceptionAssertStatusCode(): void
     {
-        if (!interface_exists('Symfony\Component\Validator\Validator\ValidatorInterface')) {
-            $this->markTestSkipped('The Symfony\Component\Validator\Validator\ValidatorInterface does not exist');
-        }
-
         $this->loadFixtures([]);
 
         $path = '/form';
@@ -721,7 +702,7 @@ EOF;
     /**
      * Call isSuccessful() with "application/json" content type.
      */
-    public function testJsonIsSuccesful()
+    public function testJsonIsSuccesful(): void
     {
         $this->loadFixtures([]);
 
@@ -738,7 +719,7 @@ EOF;
         );
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 

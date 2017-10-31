@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -12,6 +14,7 @@
 namespace Liip\FunctionalTestBundle\Tests\Test;
 
 use Liip\FunctionalTestBundle\Test\WebTestCase;
+use Liip\FunctionalTestBundle\Tests\AppConfigLeanFramework\AppConfigLeanFrameworkKernel;
 
 /**
  * Test Lean Framework - with validator component disabled.
@@ -25,14 +28,12 @@ use Liip\FunctionalTestBundle\Test\WebTestCase;
  */
 class WebTestCaseConfigLeanFrameworkTest extends WebTestCase
 {
-    protected static function getKernelClass()
+    protected static function getKernelClass(): string
     {
-        require_once __DIR__.'/../AppConfigLeanFramework/AppConfigLeanFrameworkKernel.php';
-
-        return 'AppConfigLeanFrameworkKernel';
+        return AppConfigLeanFrameworkKernel::class;
     }
 
-    public function testAssertStatusCode()
+    public function testAssertStatusCode(): void
     {
         $client = static::makeClient();
 
@@ -42,7 +43,7 @@ class WebTestCaseConfigLeanFrameworkTest extends WebTestCase
         $this->assertStatusCode(200, $client);
     }
 
-    public function testAssertValidationErrorsTriggersError()
+    public function testAssertValidationErrorsTriggersError(): void
     {
         $client = static::makeClient();
 

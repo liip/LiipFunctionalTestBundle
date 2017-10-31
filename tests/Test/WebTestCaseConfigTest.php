@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -13,6 +15,7 @@ namespace Liip\FunctionalTestBundle\Tests\Test;
 
 use Liip\FunctionalTestBundle\Annotations\QueryCount;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
+use Liip\FunctionalTestBundle\Tests\AppConfig\AppConfigKernel;
 
 /**
  * Tests that configuration has been loaded and users can be logged in.
@@ -34,17 +37,15 @@ class WebTestCaseConfigTest extends WebTestCase
     /** @var \Symfony\Bundle\FrameworkBundle\Client client */
     private $client = null;
 
-    protected static function getKernelClass()
+    protected static function getKernelClass(): string
     {
-        require_once __DIR__.'/../AppConfig/AppConfigKernel.php';
-
-        return 'AppConfigKernel';
+        return AppConfigKernel::class;
     }
 
     /**
      * Log in as an user.
      */
-    public function testIndexAuthenticationArray()
+    public function testIndexAuthenticationArray(): void
     {
         $this->loadFixtures([]);
 
@@ -78,7 +79,7 @@ class WebTestCaseConfigTest extends WebTestCase
      * "liip_functional_test.authentication"
      * node from the configuration file.
      */
-    public function testIndexAuthenticationTrue()
+    public function testIndexAuthenticationTrue(): void
     {
         $this->loadFixtures([]);
 
@@ -107,7 +108,7 @@ class WebTestCaseConfigTest extends WebTestCase
     /**
      * Log in as the user defined in the Data Fixture.
      */
-    public function testIndexAuthenticationLoginAs()
+    public function testIndexAuthenticationLoginAs(): void
     {
         $fixtures = $this->loadFixtures([
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
@@ -155,7 +156,7 @@ class WebTestCaseConfigTest extends WebTestCase
      *
      * @expectedException \Liip\FunctionalTestBundle\Exception\AllowedQueriesExceededException
      */
-    public function testAllowedQueriesExceededException()
+    public function testAllowedQueriesExceededException(): void
     {
         $fixtures = $this->loadFixtures([
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
@@ -186,7 +187,7 @@ class WebTestCaseConfigTest extends WebTestCase
      *
      * @expectedException \Liip\FunctionalTestBundle\Exception\AllowedQueriesExceededException
      */
-    public function testAnnotationAndException()
+    public function testAnnotationAndException(): void
     {
         $this->loadFixtures([
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
@@ -201,93 +202,10 @@ class WebTestCaseConfigTest extends WebTestCase
     }
 
     /**
-     * Test if there is a call-out to the service if defined.
+     * Load Data Fixtures with custom loader defined in configuration.
      */
-    public function testHautelookServiceUsage()
+    public function testLoadFixturesFilesWithCustomProvider(): void
     {
-        $hautelookLoaderMock = $this->getMockBuilder('\Hautelook\AliceBundle\Alice\DataFixtures\Loader')
-            ->disableOriginalConstructor()
-            ->setMethods(['load'])
-            ->getMock();
-        $hautelookLoaderMock->expects(self::once())->method('load');
-
-        $this->getContainer()->set('hautelook_alice.fixtures.loader', $hautelookLoaderMock);
-
-        $this->loadFixtureFiles([
-            '@AcmeBundle/App/DataFixtures/ORM/user.yml',
-        ]);
-    }
-
-    /**
-     * Use hautelook.
-     */
-    public function testLoadFixturesFilesWithHautelook()
-    {
-        if (!class_exists('Hautelook\AliceBundle\Faker\Provider\ProviderChain')) {
-            self::markTestSkipped('Please use hautelook/alice-bundle >=1.2');
-        }
-
-        $fakerProcessorChain = new \Hautelook\AliceBundle\Faker\Provider\ProviderChain([]);
-        $aliceProcessorChain = new \Hautelook\AliceBundle\Alice\ProcessorChain([]);
-        $fixtureLoader = new \Hautelook\AliceBundle\Alice\DataFixtures\Fixtures\Loader('en_US', $fakerProcessorChain);
-        $loader = new \Hautelook\AliceBundle\Alice\DataFixtures\Loader($fixtureLoader, $aliceProcessorChain, true, 10);
-        $this->getContainer()->set('hautelook_alice.fixtures.loader', $loader);
-
-        $fixtures = $this->loadFixtureFiles([
-            '@AcmeBundle/App/DataFixtures/ORM/user.yml',
-        ]);
-
-        $this->assertInternalType(
-            'array',
-            $fixtures
-        );
-
-        // 10 users are loaded
-        $this->assertCount(
-            10,
-            $fixtures
-        );
-
-        $em = $this->getContainer()
-            ->get('doctrine.orm.entity_manager');
-
-        $users = $em->getRepository('LiipFunctionalTestBundle:User')
-            ->findAll();
-
-        $this->assertSame(
-            10,
-            count($users)
-        );
-
-        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
-        $user = $em->getRepository('LiipFunctionalTestBundle:User')
-            ->findOneBy([
-                'id' => 1,
-            ]);
-
-        $this->assertTrue(
-            $user->getEnabled()
-        );
-
-        $user = $em->getRepository('LiipFunctionalTestBundle:User')
-            ->findOneBy([
-                'id' => 10,
-            ]);
-
-        $this->assertTrue(
-            $user->getEnabled()
-        );
-    }
-
-    /**
-     * Load Data Fixtures with hautelook and custom loader defined in configuration.
-     */
-    public function testLoadFixturesFilesWithHautelookCustomProvider()
-    {
-        if (!class_exists('Hautelook\AliceBundle\Faker\Provider\ProviderChain')) {
-            self::markTestSkipped('Please use hautelook/alice-bundle >=1.2');
-        }
-
         // Load default Data Fixtures.
         $fixtures = $this->loadFixtureFiles([
             '@AcmeBundle/App/DataFixtures/ORM/user.yml',
@@ -331,7 +249,7 @@ class WebTestCaseConfigTest extends WebTestCase
     /**
      * Update a fixture file and check that the cache will be refreshed.
      */
-    public function testBackupIsRefreshed()
+    public function testBackupIsRefreshed(): void
     {
         // This value is generated in loadFixtures().
         $md5 = '0ded9d8daaeaeca1056b18b9d0d433b2';

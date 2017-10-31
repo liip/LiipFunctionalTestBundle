@@ -1,5 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of the Liip/FunctionalTestBundle
+ *
+ * (c) Lukas Kahwe Smith <smith@pooteeweet.org>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Liip\FunctionalTestBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -26,7 +37,7 @@ class RunParatestCommand extends ContainerAwareCommand
     /**
      * Configuration of the command.
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('paratest:run')
@@ -36,7 +47,7 @@ class RunParatestCommand extends ContainerAwareCommand
         ;
     }
 
-    protected function prepare()
+    protected function prepare(): void
     {
         $this->phpunit = $this->getContainer()->getParameter('liip_functional_test.paratest.phpunit');
         $this->process = $this->getContainer()->getParameter('liip_functional_test.paratest.process');
@@ -73,7 +84,7 @@ class RunParatestCommand extends ContainerAwareCommand
      * @param InputInterface  $input
      * @param OutputInterface $output
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
         $this->output = $output;
         $this->prepare();
@@ -88,7 +99,7 @@ class RunParatestCommand extends ContainerAwareCommand
                 '-p '.$this->process.' '.
                 $input->getArgument('options')
             );
-            $runProcess->run(function ($type, $buffer) use ($output) {
+            $runProcess->run(function ($type, $buffer) use ($output): void {
                 $output->write($buffer);
             });
         }

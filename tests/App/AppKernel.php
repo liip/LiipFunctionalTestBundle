@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -7,8 +9,17 @@
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
+ */
+
+namespace Liip\FunctionalTestBundle\Tests\App;
+
+/*
+ * This file is part of the Liip/FunctionalTestBundle
  *
- * @see http://www.whitewashing.de/2012/02/25/symfony2_controller_testing.html
+ * (c) Lukas Kahwe Smith <smith@pooteeweet.org>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
  */
 
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -17,39 +28,32 @@ use Symfony\Component\HttpKernel\Kernel;
 
 class AppKernel extends Kernel
 {
-    public function registerBundles()
+    public function registerBundles(): array
     {
         $bundles = [
-            new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
-            new Symfony\Bundle\SecurityBundle\SecurityBundle(),
-            new Symfony\Bundle\TwigBundle\TwigBundle(),
-            new Symfony\Bundle\MonologBundle\MonologBundle(),
-            new Symfony\Bundle\AsseticBundle\AsseticBundle(),
-            new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
-            new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
-            new Liip\FunctionalTestBundle\LiipFunctionalTestBundle(),
-            new Liip\FunctionalTestBundle\Tests\AcmeBundle(),
+            new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
+            new \Symfony\Bundle\SecurityBundle\SecurityBundle(),
+            new \Symfony\Bundle\TwigBundle\TwigBundle(),
+            new \Symfony\Bundle\MonologBundle\MonologBundle(),
+            new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
+            new \Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
+            new \Liip\FunctionalTestBundle\LiipFunctionalTestBundle(),
+            new \Liip\FunctionalTestBundle\Tests\AcmeBundle(),
+            new \Nelmio\Alice\Bridge\Symfony\NelmioAliceBundle(),
+            new \Fidry\AliceDataFixtures\Bridge\Symfony\FidryAliceDataFixturesBundle(),
         ];
 
         return $bundles;
     }
 
-    public function registerContainerConfiguration(LoaderInterface $loader)
+    public function registerContainerConfiguration(LoaderInterface $loader): void
     {
         $loader->load(__DIR__.'/config.yml');
 
-        // graciously stolen from https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Tests/Fixtures/App/AppKernel.php#L39-L45
-        if ($this->isSymfony3()) {
-            $loader->load(function (ContainerBuilder $container) {
-                $container->loadFromExtension('framework', [
-                    'assets' => null,
-                ]);
-            });
-        }
-    }
-
-    protected function isSymfony3()
-    {
-        return 3 === Kernel::MAJOR_VERSION;
+        $loader->load(function (ContainerBuilder $container): void {
+            $container->loadFromExtension('framework', [
+                'assets' => null,
+            ]);
+        });
     }
 }
