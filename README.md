@@ -404,8 +404,9 @@ Tips for Fixture Loading Tests
 If you would like to setup your fixtures with yml files using [Alice](https://github.com/nelmio/alice),
 [`Liip\FunctionalTestBundle\Test\WebTestCase`](Test/WebTestCase.php) has a helper function `loadFixtureFiles`
 which takes an array of resources, or paths to yml files, and returns an array of objects.
-This method uses the [Alice Loader](https://github.com/nelmio/alice/blob/master/src/Nelmio/Alice/Fixtures/Loader.php)
-rather than the FunctionalTestBundle's load methods. You should be aware that there are some difference between the ways these two libraries handle loading.
+This method uses the [Theofidry AliceDataFixtures loader](https://github.com/theofidry/AliceDataFixtures#doctrine-orm)
+rather than the FunctionalTestBundle's load methods.
+You should be aware that there are some difference between the ways these two libraries handle loading.
 
 ```php
 $fixtures = $this->loadFixtureFiles(array(
@@ -445,38 +446,6 @@ $files = array(
  );
 $fixtures = $this->loadFixtureFiles($files, true, null, 'doctrine', ORMPurger::PURGE_MODE_TRUNCATE );
 ```
-
-#### HautelookAliceBundle Faker Providers
-
-This bundle supports faker providers from HautelookAliceBundle.
-Install the bundle with `composer require --dev hautelook/alice-bundle:~1.2` and use the
-[HautelookAliceBundle documentation](https://github.com/hautelook/AliceBundle/blob/1.x/src/Resources/doc/faker-providers.md#faker-providers)
-in order to define your faker providers.
-
-You'll have to add the following line in the `app/AppKernel.php` file:
-
-```php
-<?php
-// app/AppKernel.php
-
-// ...
-class AppKernel extends Kernel
-{
-    public function registerBundles()
-    {
-        // ...
-        if (in_array($this->getEnvironment(), array('dev', 'test'))) {
-            $bundles[] = new Hautelook\AliceBundle\HautelookAliceBundle();
-        }
-
-        return $bundles;
-    }
-
-    // ...
-}
-```
-
-Then you can load fixtures with `$this->loadFixtureFiles(array('@AcmeBundle/…/fixture.yml'));`.
 
 ### Non-SQLite
 
