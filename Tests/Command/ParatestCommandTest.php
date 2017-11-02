@@ -13,7 +13,6 @@ namespace Liip\FunctionalTestBundle\Tests\Command;
 
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * Use Tests/AppConfig/AppConfigKernel.php instead of
@@ -27,9 +26,9 @@ class ParatestCommandTest extends WebTestCase
 {
     protected static function getKernelClass()
     {
-        require_once __DIR__.'/../AppConfig/AppConfigKernel.php';
+        require_once __DIR__.'/../AppParatest/AppParatestKernel.php';
 
-        return 'AppConfigKernel';
+        return 'AppParatestKernel';
     }
 
     /**
@@ -51,10 +50,6 @@ class ParatestCommandTest extends WebTestCase
         $this->assertContains('Initial schema created', $content);
         $this->assertNotContains('Error : Install paratest first', $content);
         $this->assertContains('Done...Running test.', $content);
-
-        $this->assertContains(
-            'OK (22 tests, 69 assertions)',
-            $content
-        );
+        $this->assertContains('OK (26 tests, 86 assertions)', $content);
     }
 }

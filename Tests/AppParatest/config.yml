@@ -1,0 +1,20 @@
+# inherits configuration from ../App/config.yml
+
+parameters:
+    doctrine.dbal.connection_factory.class: Liip\FunctionalTestBundle\Factory\ConnectionFactory
+
+doctrine:
+    dbal:
+        default_connection: default
+        connections:
+            default:
+                driver:  pdo_sqlite
+                dbname: ~
+                user:    test
+                path:    "%kernel.cache_dir%/__DBNAME__.db"
+                memory: false
+
+liip_functional_test:
+    paratest:
+        process: 3
+        phpunit: 'vendor/bin/phpunit'
