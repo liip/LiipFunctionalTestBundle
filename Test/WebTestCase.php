@@ -203,18 +203,22 @@ abstract class WebTestCase extends BaseWebTestCase
         switch ($this->getVerbosityLevel()) {
             case OutputInterface::VERBOSITY_QUIET:
                 $params['-q'] = '-q';
+
                 break;
 
             case OutputInterface::VERBOSITY_VERBOSE:
                 $params['-v'] = '';
+
                 break;
 
             case OutputInterface::VERBOSITY_VERY_VERBOSE:
                 $params['-vv'] = '';
+
                 break;
 
             case OutputInterface::VERBOSITY_DEBUG:
                 $params['-vvv'] = '';
+
                 break;
         }
 
@@ -495,7 +499,7 @@ abstract class WebTestCase extends BaseWebTestCase
     {
         $connection = $om->getConnection();
 
-        $mysql = ($registry->getName() === 'ORM'
+        $mysql = ('ORM' === $registry->getName()
             && $connection->getDatabasePlatform() instanceof MySqlPlatform);
 
         if ($mysql) {
@@ -525,11 +529,12 @@ abstract class WebTestCase extends BaseWebTestCase
         $kernel = $this->getContainer()->get('kernel');
 
         foreach ($paths as $path) {
-            if ($path[0] !== '@') {
+            if ('@' !== $path[0]) {
                 if (!file_exists($path)) {
                     throw new \InvalidArgumentException(sprintf('Unable to find file "%s".', $path));
                 }
                 $files[] = $path;
+
                 continue;
             }
 
@@ -568,7 +573,7 @@ abstract class WebTestCase extends BaseWebTestCase
         /** @var EntityManager $om */
         $om = $registry->getManager($omName);
 
-        if ($append === false) {
+        if (false === $append) {
             $this->cleanDatabase($registry, $om, $omName, $registryName, $purgeMode);
         }
 
@@ -751,7 +756,7 @@ abstract class WebTestCase extends BaseWebTestCase
     protected function makeClient($authentication = false, array $params = array())
     {
         if ($authentication) {
-            if ($authentication === true) {
+            if (true === $authentication) {
                 $authentication = array(
                     'username' => $this->getContainer()
                         ->getParameter('liip_functional_test.authentication.username'),

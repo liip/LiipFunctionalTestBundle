@@ -60,7 +60,7 @@ HTML;
 
         curl_close($ch);
 
-        return $res !== false;
+        return false !== $res;
     }
 
     public function getValidationServiceAvailable()
@@ -152,7 +152,7 @@ HTML;
 
         $err_count = 0;
         $err_msg = 'HTML5 validation failed';
-        if ($message != '') {
+        if ('' != $message) {
             $err_msg .= " [$message]";
         }
         $err_msg .= ":\n";
@@ -165,7 +165,7 @@ HTML;
         $ignores_extract = $this->getContainer()->getParameter('liip_functional_test.html5validation.ignores_extract');
 
         foreach ($res->messages as $row) {
-            if ($row->type == 'error') {
+            if ('error' == $row->type) {
                 foreach ($ignores as $ignore) {
                     if (preg_match($ignore, $row->message)) {
                         continue 2;
@@ -185,7 +185,7 @@ HTML;
                 }
             }
         }
-        $this->assertTrue($err_count == 0, $err_msg);
+        $this->assertTrue(0 == $err_count, $err_msg);
     }
 
     /**
