@@ -617,7 +617,7 @@ framework:
     session:
         # handler_id set to null will use default session handler from php.ini
         handler_id:  ~
-        storage_id: session.storage.filesystem
+        storage_id: session.storage.mock_file
         name: MOCKSESSID
 ```
 
