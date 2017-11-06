@@ -74,7 +74,7 @@ class RunParatestCommand extends ContainerAwareCommand
     {
         $this->output = $output;
         $this->prepare();
-        if (is_file('vendor/bin/paratest') !== true) {
+        if (true !== is_file('vendor/bin/paratest')) {
             $this->output->writeln('Error : Install paratest first');
         } else {
             $this->output->writeln('Done...Running test.');

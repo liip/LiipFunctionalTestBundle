@@ -26,7 +26,7 @@ class ConnectionFactory extends BaseConnectionFactory
     {
         $dbName = $this->getDbNameFromEnv($params['dbname']);
 
-        if ($params['driver'] === 'pdo_sqlite') {
+        if ('pdo_sqlite' === $params['driver']) {
             $params['path'] = str_replace('__DBNAME__', $dbName, $params['path']);
         } else {
             $params['dbname'] = $dbName;

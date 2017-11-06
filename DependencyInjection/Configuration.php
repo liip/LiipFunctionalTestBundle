@@ -31,13 +31,13 @@ class Configuration implements ConfigurationInterface
                 ->ifArray()->then(function ($v) {
                     if (!empty($v['query_count.max_query_count'])) {
                         // Normalization is for BC.
-    // @codeCoverageIgnoreStart
-     $v['query']['max_query_count'] = $v['query_count.max_query_count'];
+                        // @codeCoverageIgnoreStart
+                        $v['query']['max_query_count'] = $v['query_count.max_query_count'];
                         unset($v['query_count.max_query_count']);
                     }
-// @codeCoverageIgnoreEnd
+                    // @codeCoverageIgnoreEnd
 
-return $v;
+                    return $v;
                 })
             ->end()
             ->children()
