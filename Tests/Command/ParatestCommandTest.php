@@ -52,25 +52,9 @@ class ParatestCommandTest extends WebTestCase
         $this->assertNotContains('Error : Install paratest first', $content);
         $this->assertContains('Done...Running test.', $content);
 
-        // Symfony 2.7+.
-        if (interface_exists('Symfony\Component\Validator\Validator\ValidatorInterface')) {
-            $this->assertContains(
-                'OK (22 tests, 69 assertions)',
-                $content
-            );
-        }
-        // Travis CI: --prefer-lowest.
-        // Symfony 2.3.27.
-        elseif ('20327' === Kernel::VERSION_ID) {
-            self::markTestSkipped('Ignore Symfony 2.3.27');
-        }
-        // Symfony 2.3.*.
-        // Some tests will be skipped.
-        else {
-            $this->assertContains(
-                'OK (18 tests, 55 assertions)',
-                $content
-            );
-        }
+        $this->assertContains(
+            'OK (22 tests, 69 assertions)',
+            $content
+        );
     }
 }

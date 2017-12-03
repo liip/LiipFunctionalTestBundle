@@ -114,12 +114,7 @@ class CommandTest extends WebTestCase
 
         $this->assertInternalType('string', $this->display);
 
-        // In this version of Symfony, NORMAL is practically equal to VERBOSE
-        if ('203' === substr(Kernel::VERSION_ID, 0, 3)) {
-            $this->assertContains('Verbosity level: VERBOSE', $this->display);
-        } else {
-            $this->assertNotContains('Verbosity level: VERBOSE', $this->display);
-        }
+        $this->assertNotContains('Verbosity level: VERBOSE', $this->display);
 
         $this->assertNotContains('Verbosity level: VERY_VERBOSE', $this->display);
         $this->assertNotContains('Verbosity level: DEBUG', $this->display);

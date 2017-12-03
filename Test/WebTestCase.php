@@ -15,7 +15,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\BrowserKit\Cookie;
@@ -130,12 +129,6 @@ abstract class WebTestCase extends BaseWebTestCase
         $application = new Application($kernel);
         $application->setAutoExit(false);
 
-        // @codeCoverageIgnoreStart
-        if ('203' === substr(Kernel::VERSION_ID, 0, 3)) {
-            $params = $this->configureVerbosityForSymfony203($params);
-        }
-        // @codeCoverageIgnoreEnd
-
         $input = new ArrayInput($params);
         $input->setInteractive(false);
 
@@ -187,45 +180,6 @@ abstract class WebTestCase extends BaseWebTestCase
         }
 
         return $this->verbosityLevel;
-    }
-
-    /**
-     * In Symfony 2.3.* the verbosity level has to be set through {Symfony\Component\Console\Input\ArrayInput} and not
-     * in {Symfony\Component\Console\Output\OutputInterface}.
-     *
-     * This method builds $params to be passed to {Symfony\Component\Console\Input\ArrayInput}.
-     *
-     * @codeCoverageIgnore
-     *
-     * @param array $params
-     *
-     * @return array
-     */
-    private function configureVerbosityForSymfony203(array $params)
-    {
-        switch ($this->getVerbosityLevel()) {
-            case OutputInterface::VERBOSITY_QUIET:
-                $params['-q'] = '-q';
-
-                break;
-
-            case OutputInterface::VERBOSITY_VERBOSE:
-                $params['-v'] = '';
-
-                break;
-
-            case OutputInterface::VERBOSITY_VERY_VERBOSE:
-                $params['-vv'] = '';
-
-                break;
-
-            case OutputInterface::VERBOSITY_DEBUG:
-                $params['-vvv'] = '';
-
-                break;
-        }
-
-        return $params;
     }
 
     public function setVerbosityLevel($level)
