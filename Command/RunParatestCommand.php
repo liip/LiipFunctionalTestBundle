@@ -49,6 +49,7 @@ class RunParatestCommand extends ContainerAwareCommand
         $cleanProcess->run();
         $this->output->writeln("Creating Schema in $this->testDbPath ...");
         $application = new Application($this->getContainer()->get('kernel'));
+        $application->setAutoExit(false);
         $input = new ArrayInput(array('doctrine:schema:create', '--env' => 'test'));
         $application->run($input, $this->output);
 
