@@ -21,6 +21,7 @@ use Liip\FunctionalTestBundle\Test\WebTestCase;
  * So it must be loaded in a separate process.
  *
  * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
  */
 class WebTestCaseConfigLeanFrameworkTest extends WebTestCase
 {

@@ -17,6 +17,7 @@ namespace Liip\FunctionalTestBundle\Tests\DependencyInjection;
  * So it must be loaded in a separate process.
  *
  * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
  */
 class ConfigurationConfigTest extends ConfigurationTest
 {

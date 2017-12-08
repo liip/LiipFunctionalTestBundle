@@ -21,6 +21,7 @@ use Symfony\Component\HttpKernel\Kernel;
  * So it must be loaded in a separate process.
  *
  * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
  */
 class ParatestCommandTest extends WebTestCase
 {

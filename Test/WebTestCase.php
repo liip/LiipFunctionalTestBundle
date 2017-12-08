@@ -140,7 +140,10 @@ abstract class WebTestCase extends BaseWebTestCase
         $input->setInteractive(false);
 
         $fp = fopen('php://temp/maxmemory:'.$this->maxMemory, 'r+');
-        $output = new StreamOutput($fp, $this->getVerbosityLevel(), $this->getDecorated());
+        $verbosityLevel = $this->getVerbosityLevel();
+
+        $this->setVerbosityLevelEnv($verbosityLevel);
+        $output = new StreamOutput($fp, $verbosityLevel, $this->getDecorated());
 
         $application->run($input, $output);
 
@@ -152,7 +155,7 @@ abstract class WebTestCase extends BaseWebTestCase
     /**
      * Retrieves the output verbosity level.
      *
-     * @see Symfony\Component\Console\Output\OutputInterface for available levels
+     * @see \Symfony\Component\Console\Output\OutputInterface for available levels
      *
      * @return int
      *
@@ -228,6 +231,18 @@ abstract class WebTestCase extends BaseWebTestCase
     public function setVerbosityLevel($level)
     {
         $this->verbosityLevel = $level;
+    }
+
+    /**
+     * Set verbosity for Symfony 3.4+.
+     *
+     * @see https://github.com/symfony/symfony/pull/24425
+     *
+     * @param $level
+     */
+    private function setVerbosityLevelEnv($level)
+    {
+        putenv('SHELL_VERBOSITY='.$level);
     }
 
     /**

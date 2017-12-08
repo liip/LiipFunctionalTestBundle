@@ -12,6 +12,7 @@
 namespace Liip\FunctionalTestBundle\Tests\Command;
 
 use Liip\FunctionalTestBundle\Test\WebTestCase;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpKernel\Kernel;
 
 class CommandTest extends WebTestCase
@@ -81,6 +82,8 @@ class CommandTest extends WebTestCase
     public function testRunCommandVerbosityQuiet()
     {
         $this->setVerbosityLevel('quiet');
+        $this->assertSame(OutputInterface::VERBOSITY_QUIET, $this->getVerbosityLevel());
+
         $this->isDecorated(false);
         $this->assertInternalType('boolean', $this->getDecorated());
         $this->assertFalse($this->getDecorated());
@@ -89,6 +92,7 @@ class CommandTest extends WebTestCase
 
         $this->assertInternalType('string', $this->display);
 
+        $this->assertEmpty($this->display);
         $this->assertNotContains('Verbosity level: NORMAL', $this->display);
         $this->assertNotContains('Verbosity level: VERBOSE', $this->display);
         $this->assertNotContains('Verbosity level: VERY_VERBOSE', $this->display);
@@ -98,6 +102,8 @@ class CommandTest extends WebTestCase
     public function testRunCommandVerbosityImplicitlyNormal()
     {
         // Run command without setting verbosity: default set is normal
+        $this->assertSame(OutputInterface::VERBOSITY_NORMAL, $this->getVerbosityLevel());
+
         $this->isDecorated(false);
         $this->assertInternalType('boolean', $this->getDecorated());
         $this->assertFalse($this->getDecorated());
@@ -122,6 +128,8 @@ class CommandTest extends WebTestCase
     public function testRunCommandVerbosityExplicitlyNormal()
     {
         $this->setVerbosityLevel('normal');
+        $this->assertSame(OutputInterface::VERBOSITY_NORMAL, $this->getVerbosityLevel());
+
         $this->isDecorated(false);
         $this->display = $this->runCommand('liipfunctionaltestbundle:test');
 
@@ -143,6 +151,8 @@ class CommandTest extends WebTestCase
     public function testRunCommandVerbosityVerbose()
     {
         $this->setVerbosityLevel('verbose');
+        $this->assertSame(OutputInterface::VERBOSITY_VERBOSE, $this->getVerbosityLevel());
+
         $this->display = $this->runCommand('liipfunctionaltestbundle:test');
 
         $this->assertInternalType('string', $this->display);
@@ -156,6 +166,8 @@ class CommandTest extends WebTestCase
     public function testRunCommandVerbosityVeryVerbose()
     {
         $this->setVerbosityLevel('very_verbose');
+        $this->assertSame(OutputInterface::VERBOSITY_VERY_VERBOSE, $this->getVerbosityLevel());
+
         $this->isDecorated(false);
         $this->assertInternalType('boolean', $this->getDecorated());
         $this->assertFalse($this->getDecorated());
@@ -173,6 +185,8 @@ class CommandTest extends WebTestCase
     public function testRunCommandVerbosityDebug()
     {
         $this->setVerbosityLevel('debug');
+        $this->assertSame(OutputInterface::VERBOSITY_DEBUG, $this->getVerbosityLevel());
+
         $this->isDecorated(false);
         $this->assertInternalType('boolean', $this->getDecorated());
         $this->assertFalse($this->getDecorated());
