@@ -47,13 +47,17 @@ use Liip\FunctionalTestBundle\Utils\HttpAssertions;
 abstract class WebTestCase extends BaseWebTestCase
 {
     protected $environment = 'test';
+
     protected $containers;
+
     protected $kernelDir;
+
     // 5 * 1024 * 1024 KB
     protected $maxMemory = 5242880;
 
     // RUN COMMAND
     protected $verbosityLevel;
+
     protected $decorated;
 
     /**
