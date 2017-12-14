@@ -694,7 +694,13 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     protected function loadFixtureClass($loader, $className)
     {
-        $fixture = new $className();
+        $fixture = null;
+
+        if ($this->getContainer()->has($className)) {
+            $fixture = $this->getContainer()->get($className);
+        } else {
+            $fixture = new $className();
+        }
 
         if ($loader->hasFixture($fixture)) {
             unset($fixture);
