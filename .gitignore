@@ -2,14 +2,6 @@ composer.lock
 vendor
 
 # Ignore files created during tests
-/Tests/App/cache/
-/Tests/App/logs/
-/Tests/AppConfig/cache/
-/Tests/AppConfig/logs/
-/Tests/AppConfigLeanFramework/cache/
-/Tests/AppConfigLeanFramework/logs/
-/Tests/AppConfigMysql/cache/
-/Tests/AppConfigMysql/logs/
-/Tests/AppConfigPhpcr/cache/
-/Tests/AppConfigPhpcr/logs/
+/tests/App*/cache/
+/tests/App*/logs/
 /cov/
