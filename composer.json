@@ -49,7 +49,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Liip\\FunctionalTestBundle\\": ""
+            "Liip\\FunctionalTestBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Liip\\FunctionalTestBundle\\Tests\\": "tests/"
         }
     },
     "extra": {
