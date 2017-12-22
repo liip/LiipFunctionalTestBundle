@@ -21,6 +21,7 @@
         "doctrine/common": "^2.0"
     },
     "minimum-stability": "dev",
+    "prefer-stable": true,
     "require-dev": {
         "symfony/symfony": "^3.4|^4.0",
         "symfony/phpunit-bridge": "^3.4|^4.0",
