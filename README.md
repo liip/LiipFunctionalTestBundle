@@ -1,4 +1,6 @@
 [![Build status][Travis Master image]][Travis Master]
+[![Latest Stable Version](https://poser.pugx.org/liip/functional-test-bundle/v/stable)](https://packagist.org/packages/liip/functional-test-bundle)
+[![Latest Unstable Version](https://poser.pugx.org/liip/functional-test-bundle/v/unstable)](https://packagist.org/packages/liip/functional-test-bundle)
 [![Scrutinizer Code Quality][Scrutinizer image]
 ![Scrutinizer][Scrutinizer Coverage Image]][Scrutinizer]
 [![SensioLabsInsight][SensioLabsInsight Image]][SensioLabsInsight]
