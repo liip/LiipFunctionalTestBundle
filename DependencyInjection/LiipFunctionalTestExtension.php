@@ -11,6 +11,9 @@
 
 namespace Liip\FunctionalTestBundle\DependencyInjection;
 
+use Liip\FunctionalTestBundle\Command\RunParatestCommand;
+use Liip\FunctionalTestBundle\Command\TestCommand;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -59,6 +62,21 @@ class LiipFunctionalTestExtension extends Extension
             // @codeCoverageIgnoreStart
             $definition->setScope('prototype');
             // @codeCoverageIgnoreEnd
+        }
+
+        $this->registerCommands($container);
+    }
+
+    private function registerCommands(ContainerBuilder $container)
+    {
+        $commandClasses = [
+            RunParatestCommand::class,
+            TestCommand::class,
+        ];
+
+        foreach ($commandClasses as $command) {
+            $container->setDefinition($command, new Definition($command))
+                ->addTag('console.command');
         }
     }
 }
