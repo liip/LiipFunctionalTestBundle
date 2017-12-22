@@ -53,7 +53,7 @@ class ParatestCommandTest extends WebTestCase
         $this->assertContains('Done...Running test.', $content);
 
         $this->assertContains(
-            'OK (22 tests, 69 assertions)',
+            'OK (26 tests, 86 assertions)',
             $content
         );
     }
