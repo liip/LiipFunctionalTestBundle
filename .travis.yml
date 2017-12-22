@@ -10,7 +10,7 @@ sudo: false
 
 cache:
   directories:
-    - $HOME/.composer/cache
+    - $HOME/.composer/cache/files
 
 services:
   - mysql
@@ -26,7 +26,7 @@ matrix:
   fast_finish: true
 
 before_install:
-  - config-rm xdebug.ini
+  - phpenv config-rm xdebug.ini
   - echo "memory_limit = -1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - if [ "$SYMFONY_VERSION" != "" ]; then composer require --no-update symfony/symfony=$SYMFONY_VERSION; fi
 
