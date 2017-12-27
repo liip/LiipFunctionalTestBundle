@@ -375,7 +375,7 @@ EOF;
     public function testLoadFixturesFiles()
     {
         $fixtures = $this->loadFixtureFiles(array(
-            '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml',
+            '@AcmeBundle/App/DataFixtures/ORM/user.yml',
         ));
 
         $this->assertInternalType(
@@ -428,7 +428,7 @@ EOF;
     public function testLoadNonexistentFixturesFiles()
     {
         $this->loadFixtureFiles(array(
-            '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/nonexistent.yml',
+            '@AcmeBundle/App/DataFixtures/ORM/nonexistent.yml',
         ));
     }
 
@@ -440,7 +440,7 @@ EOF;
     public function testLoadFixturesFilesWithPurgeModeTruncate()
     {
         $fixtures = $this->loadFixtureFiles(array(
-            '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml',
+            '@AcmeBundle/App/DataFixtures/ORM/user.yml',
         ), true, null, 'doctrine', ORMPurger::PURGE_MODE_TRUNCATE);
 
         $this->assertInternalType(
@@ -468,7 +468,7 @@ EOF;
     {
         $fixtures = $this->loadFixtureFiles(array(
             $this->client->getContainer()->get('kernel')->locateResource(
-                '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml'
+                '@AcmeBundle/App/DataFixtures/ORM/user.yml'
             ),
         ));
 
