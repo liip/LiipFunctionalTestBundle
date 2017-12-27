@@ -20,6 +20,7 @@ use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -130,8 +131,7 @@ abstract class WebTestCase extends BaseWebTestCase
             $kernel = $this->getContainer()->get('kernel');
         }
 
-        $application = new Application($kernel);
-        $application->setAutoExit(false);
+        $application = $this->createApplication($kernel);
 
         $input = new ArrayInput($params);
         $input->setInteractive(false);
@@ -147,6 +147,19 @@ abstract class WebTestCase extends BaseWebTestCase
         rewind($fp);
 
         return stream_get_contents($fp);
+    }
+
+    /**
+     * @param KernelInterface $kernel
+     *
+     * @return Application
+     */
+    protected function createApplication(KernelInterface $kernel)
+    {
+        $application = new Application($kernel);
+        $application->setAutoExit(false);
+
+        return $application;
     }
 
     /**
