@@ -4,9 +4,12 @@
 <phpunit
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/6.5/phpunit.xsd"
+    backupGlobals="false"
+    backupStaticAttributes="false"
     bootstrap="tests/App/bootstrap.php"
     colors="true"
     beStrictAboutOutputDuringTests="true"
+    disallowTestOutput="true"
 >
 
     <php>
