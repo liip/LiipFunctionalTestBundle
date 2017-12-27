@@ -15,7 +15,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\BrowserKit\Cookie;
@@ -49,13 +48,17 @@ use Liip\FunctionalTestBundle\Utils\HttpAssertions;
 abstract class WebTestCase extends BaseWebTestCase
 {
     protected $environment = 'test';
+
     protected $containers;
+
     protected $kernelDir;
+
     // 5 * 1024 * 1024 KB
     protected $maxMemory = 5242880;
 
     // RUN COMMAND
     protected $verbosityLevel;
+
     protected $decorated;
 
     /**
@@ -130,17 +133,14 @@ abstract class WebTestCase extends BaseWebTestCase
 
         $application = $this->createApplication($kernel);
 
-        // @codeCoverageIgnoreStart
-        if ('203' === substr(Kernel::VERSION_ID, 0, 3)) {
-            $params = $this->configureVerbosityForSymfony203($params);
-        }
-        // @codeCoverageIgnoreEnd
-
         $input = new ArrayInput($params);
         $input->setInteractive(false);
 
         $fp = fopen('php://temp/maxmemory:'.$this->maxMemory, 'r+');
-        $output = new StreamOutput($fp, $this->getVerbosityLevel(), $this->getDecorated());
+        $verbosityLevel = $this->getVerbosityLevel();
+
+        $this->setVerbosityLevelEnv($verbosityLevel);
+        $output = new StreamOutput($fp, $verbosityLevel, $this->getDecorated());
 
         $application->run($input, $output);
 
@@ -165,7 +165,7 @@ abstract class WebTestCase extends BaseWebTestCase
     /**
      * Retrieves the output verbosity level.
      *
-     * @see Symfony\Component\Console\Output\OutputInterface for available levels
+     * @see \Symfony\Component\Console\Output\OutputInterface for available levels
      *
      * @return int
      *
@@ -199,48 +199,21 @@ abstract class WebTestCase extends BaseWebTestCase
         return $this->verbosityLevel;
     }
 
-    /**
-     * In Symfony 2.3.* the verbosity level has to be set through {Symfony\Component\Console\Input\ArrayInput} and not
-     * in {Symfony\Component\Console\Output\OutputInterface}.
-     *
-     * This method builds $params to be passed to {Symfony\Component\Console\Input\ArrayInput}.
-     *
-     * @codeCoverageIgnore
-     *
-     * @param array $params
-     *
-     * @return array
-     */
-    private function configureVerbosityForSymfony203(array $params)
-    {
-        switch ($this->getVerbosityLevel()) {
-            case OutputInterface::VERBOSITY_QUIET:
-                $params['-q'] = '-q';
-
-                break;
-
-            case OutputInterface::VERBOSITY_VERBOSE:
-                $params['-v'] = '';
-
-                break;
-
-            case OutputInterface::VERBOSITY_VERY_VERBOSE:
-                $params['-vv'] = '';
-
-                break;
-
-            case OutputInterface::VERBOSITY_DEBUG:
-                $params['-vvv'] = '';
-
-                break;
-        }
-
-        return $params;
-    }
-
     public function setVerbosityLevel($level)
     {
         $this->verbosityLevel = $level;
+    }
+
+    /**
+     * Set verbosity for Symfony 3.4+.
+     *
+     * @see https://github.com/symfony/symfony/pull/24425
+     *
+     * @param $level
+     */
+    private function setVerbosityLevelEnv($level)
+    {
+        putenv('SHELL_VERBOSITY='.$level);
     }
 
     /**
@@ -512,7 +485,7 @@ abstract class WebTestCase extends BaseWebTestCase
     {
         $connection = $om->getConnection();
 
-        $mysql = ($registry->getName() === 'ORM'
+        $mysql = ('ORM' === $registry->getName()
             && $connection->getDatabasePlatform() instanceof MySqlPlatform);
 
         if ($mysql) {
@@ -542,11 +515,12 @@ abstract class WebTestCase extends BaseWebTestCase
         $kernel = $this->getContainer()->get('kernel');
 
         foreach ($paths as $path) {
-            if ($path[0] !== '@') {
+            if ('@' !== $path[0]) {
                 if (!file_exists($path)) {
                     throw new \InvalidArgumentException(sprintf('Unable to find file "%s".', $path));
                 }
                 $files[] = $path;
+
                 continue;
             }
 
@@ -585,7 +559,7 @@ abstract class WebTestCase extends BaseWebTestCase
         /** @var EntityManager $om */
         $om = $registry->getManager($omName);
 
-        if ($append === false) {
+        if (false === $append) {
             $this->cleanDatabase($registry, $om, $omName, $registryName, $purgeMode);
         }
 
@@ -733,7 +707,13 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     protected function loadFixtureClass($loader, $className)
     {
-        $fixture = new $className();
+        $fixture = null;
+
+        if ($this->getContainer()->has($className)) {
+            $fixture = $this->getContainer()->get($className);
+        } else {
+            $fixture = new $className();
+        }
 
         if ($loader->hasFixture($fixture)) {
             unset($fixture);
@@ -768,7 +748,7 @@ abstract class WebTestCase extends BaseWebTestCase
     protected function makeClient($authentication = false, array $params = array())
     {
         if ($authentication) {
-            if ($authentication === true) {
+            if (true === $authentication) {
                 $authentication = array(
                     'username' => $this->getContainer()
                         ->getParameter('liip_functional_test.authentication.username'),

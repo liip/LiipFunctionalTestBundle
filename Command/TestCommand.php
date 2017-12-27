@@ -78,7 +78,7 @@ class TestCommand extends ContainerAwareCommand
                 $output->writeln('Verbosity level: VERY_VERBOSE');
             }
 
-            if ($output->getVerbosity() == OutputInterface::VERBOSITY_DEBUG) {
+            if (OutputInterface::VERBOSITY_DEBUG == $output->getVerbosity()) {
                 $output->writeln('Verbosity level: DEBUG');
             }
         }

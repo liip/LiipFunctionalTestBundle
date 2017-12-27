@@ -1,4 +1,6 @@
 [![Build status][Travis Master image]][Travis Master]
+[![Latest Stable Version](https://poser.pugx.org/liip/functional-test-bundle/v/stable)](https://packagist.org/packages/liip/functional-test-bundle)
+[![Latest Unstable Version](https://poser.pugx.org/liip/functional-test-bundle/v/unstable)](https://packagist.org/packages/liip/functional-test-bundle)
 [![Scrutinizer Code Quality][Scrutinizer image]
 ![Scrutinizer][Scrutinizer Coverage Image]][Scrutinizer]
 [![SensioLabsInsight][SensioLabsInsight Image]][SensioLabsInsight]
@@ -97,8 +99,6 @@ If it fails it will display the last exception message or validation errors
 encountered by the Client object.
 
 If you are expecting validation errors, test them with `assertValidationErrors`.
-
-Note: Both `assertStatusCode` and `assertValidationErrors` only works on Symfony 2.5+
 
 ```php
 use Liip\FunctionalTestBundle\Test\WebTestCase;
@@ -411,7 +411,7 @@ rather than the FunctionalTestBundle's load methods. You should be aware that th
 $fixtures = $this->loadFixtureFiles(array(
     '@AcmeBundle/DataFixtures/ORM/ObjectData.yml',
     '@AcmeBundle/DataFixtures/ORM/AnotherObjectData.yml',
-    '../../DataFixtures/ORM/YetAnotherObjectData.yml',
+    __DIR__.'/../../DataFixtures/ORM/YetAnotherObjectData.yml',
 ));
 ```
 
@@ -425,7 +425,7 @@ $fixtures = $this->loadFixtureFiles(
     array(
         '@AcmeBundle/DataFixtures/ORM/ObjectData.yml',
         '@AcmeBundle/DataFixtures/ORM/AnotherObjectData.yml',
-        '../../DataFixtures/ORM/YetAnotherObjectData.yml',
+        __DIR__.'/../../DataFixtures/ORM/YetAnotherObjectData.yml',
     ),
     true
 );
@@ -441,7 +441,7 @@ use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 $files = array(
      '@AcmeBundle/DataFixtures/ORM/ObjectData.yml',
      '@AcmeBundle/DataFixtures/ORM/AnotherObjectData.yml',
-     '../../DataFixtures/ORM/YetAnotherObjectData.yml',
+     __DIR__.'/../../DataFixtures/ORM/YetAnotherObjectData.yml',
  );
 $fixtures = $this->loadFixtureFiles($files, true, null, 'doctrine', ORMPurger::PURGE_MODE_TRUNCATE );
 ```
@@ -617,7 +617,7 @@ framework:
     session:
         # handler_id set to null will use default session handler from php.ini
         handler_id:  ~
-        storage_id: session.storage.filesystem
+        storage_id: session.storage.mock_file
         name: MOCKSESSID
 ```
 
