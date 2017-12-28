@@ -419,7 +419,7 @@ If you want to clear tables you have the following two ways:
 1. Only to remove records of tables;
 2. Truncate tables.
 
-The first way is consisted in using the second parameter `$append` with value `true`. It allows you **only** to remove all records of table. Values of auto increment won't be reset. 
+The first way is consisted in using the second parameter `$append` with value `false`. It allows you **only** to remove all records of table. Values of auto increment won't be reset. 
 ```php
 $fixtures = $this->loadFixtureFiles(
     array(
@@ -431,7 +431,7 @@ $fixtures = $this->loadFixtureFiles(
 );
 ```
 
-The second way is consisted in using the second parameter `$append` with value `true` and the last parameter `$purgeMode` with value `Doctrine\Common\DataFixtures\Purger\ORMPurger::PURGE_MODE_TRUNCATE`. It allows you to remove all records of tables with resetting value of auto increment.
+The second way is consisted in using the second parameter `$append` with value `false` and the last parameter `$purgeMode` with value `Doctrine\Common\DataFixtures\Purger\ORMPurger::PURGE_MODE_TRUNCATE`. It allows you to remove all records of tables with resetting value of auto increment.
 
 ```php
 <?php
