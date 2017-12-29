@@ -427,7 +427,7 @@ $fixtures = $this->loadFixtureFiles(
         '@AcmeBundle/DataFixtures/ORM/AnotherObjectData.yml',
         __DIR__.'/../../DataFixtures/ORM/YetAnotherObjectData.yml',
     ),
-    true
+    false
 );
 ```
 
@@ -443,7 +443,7 @@ $files = array(
      '@AcmeBundle/DataFixtures/ORM/AnotherObjectData.yml',
      __DIR__.'/../../DataFixtures/ORM/YetAnotherObjectData.yml',
  );
-$fixtures = $this->loadFixtureFiles($files, true, null, 'doctrine', ORMPurger::PURGE_MODE_TRUNCATE );
+$fixtures = $this->loadFixtureFiles($files, false, null, 'doctrine', ORMPurger::PURGE_MODE_TRUNCATE );
 ```
 
 #### HautelookAliceBundle Faker Providers
