@@ -227,7 +227,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
     public function testLoadFixturesFiles()
     {
         $fixtures = $this->loadFixtureFiles(array(
-            '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml',
+            '@AcmeBundle/App/DataFixtures/ORM/user.yml',
         ));
 
         $this->assertInternalType(
