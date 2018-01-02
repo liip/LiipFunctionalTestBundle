@@ -214,7 +214,7 @@ class WebTestCaseConfigTest extends WebTestCase
         $this->getContainer()->set('hautelook_alice.fixtures.loader', $hautelookLoaderMock);
 
         $this->loadFixtureFiles(array(
-            '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml',
+            '@AcmeBundle/App/DataFixtures/ORM/user.yml',
         ));
     }
 
@@ -234,7 +234,7 @@ class WebTestCaseConfigTest extends WebTestCase
         $this->getContainer()->set('hautelook_alice.fixtures.loader', $loader);
 
         $fixtures = $this->loadFixtureFiles(array(
-            '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml',
+            '@AcmeBundle/App/DataFixtures/ORM/user.yml',
         ));
 
         $this->assertInternalType(
@@ -290,7 +290,7 @@ class WebTestCaseConfigTest extends WebTestCase
 
         // Load default Data Fixtures.
         $fixtures = $this->loadFixtureFiles(array(
-            '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml',
+            '@AcmeBundle/App/DataFixtures/ORM/user.yml',
         ));
 
         $this->assertInternalType(
@@ -315,7 +315,7 @@ class WebTestCaseConfigTest extends WebTestCase
 
         // Load Data Fixtures with custom loader defined in configuration.
         $fixtures = $this->loadFixtureFiles(array(
-            '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user_with_custom_provider.yml',
+            '@AcmeBundle/App/DataFixtures/ORM/user_with_custom_provider.yml',
         ));
 
         /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
@@ -343,7 +343,7 @@ class WebTestCaseConfigTest extends WebTestCase
         $this->loadFixtures($fixtures);
 
         $dependentFixtureFilePath = $this->getContainer()->get('kernel')->locateResource(
-            '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/LoadUserData.php'
+            '@AcmeBundle/App/DataFixtures/ORM/LoadUserData.php'
         );
 
         $dependentFixtureFilemtime = filemtime($dependentFixtureFilePath);

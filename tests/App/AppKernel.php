@@ -28,6 +28,7 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
             new Liip\FunctionalTestBundle\LiipFunctionalTestBundle(),
+            new Liip\FunctionalTestBundle\Tests\AcmeBundle(),
         );
 
         return $bundles;
