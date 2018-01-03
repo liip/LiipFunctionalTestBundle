@@ -12,6 +12,4 @@ vendor
 /Tests/AppConfigMysql/logs/
 /Tests/AppConfigPhpcr/cache/
 /Tests/AppConfigPhpcr/logs/
-/Tests/AppParatest/cache/
-/Tests/AppParatest/logs/
 /cov/

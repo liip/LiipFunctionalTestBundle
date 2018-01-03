@@ -26,9 +26,9 @@ class ParatestCommandTest extends WebTestCase
 {
     protected static function getKernelClass()
     {
-        require_once __DIR__.'/../AppParatest/AppParatestKernel.php';
+        require_once __DIR__.'/../AppConfig/AppConfigKernel.php';
 
-        return 'AppParatestKernel';
+        return 'AppConfigKernel';
     }
 
     /**
