@@ -15,12 +15,12 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -48,13 +48,17 @@ use Liip\FunctionalTestBundle\Utils\HttpAssertions;
 abstract class WebTestCase extends BaseWebTestCase
 {
     protected $environment = 'test';
+
     protected $containers;
+
     protected $kernelDir;
+
     // 5 * 1024 * 1024 KB
     protected $maxMemory = 5242880;
 
     // RUN COMMAND
     protected $verbosityLevel;
+
     protected $decorated;
 
     /**
@@ -127,20 +131,16 @@ abstract class WebTestCase extends BaseWebTestCase
             $kernel = $this->getContainer()->get('kernel');
         }
 
-        $application = new Application($kernel);
-        $application->setAutoExit(false);
-
-        // @codeCoverageIgnoreStart
-        if ('203' === substr(Kernel::VERSION_ID, 0, 3)) {
-            $params = $this->configureVerbosityForSymfony203($params);
-        }
-        // @codeCoverageIgnoreEnd
+        $application = $this->createApplication($kernel);
 
         $input = new ArrayInput($params);
         $input->setInteractive(false);
 
         $fp = fopen('php://temp/maxmemory:'.$this->maxMemory, 'r+');
-        $output = new StreamOutput($fp, $this->getVerbosityLevel(), $this->getDecorated());
+        $verbosityLevel = $this->getVerbosityLevel();
+
+        $this->setVerbosityLevelEnv($verbosityLevel);
+        $output = new StreamOutput($fp, $verbosityLevel, $this->getDecorated());
 
         $application->run($input, $output);
 
@@ -150,9 +150,22 @@ abstract class WebTestCase extends BaseWebTestCase
     }
 
     /**
+     * @param KernelInterface $kernel
+     *
+     * @return Application
+     */
+    protected function createApplication(KernelInterface $kernel)
+    {
+        $application = new Application($kernel);
+        $application->setAutoExit(false);
+
+        return $application;
+    }
+
+    /**
      * Retrieves the output verbosity level.
      *
-     * @see Symfony\Component\Console\Output\OutputInterface for available levels
+     * @see \Symfony\Component\Console\Output\OutputInterface for available levels
      *
      * @return int
      *
@@ -186,48 +199,21 @@ abstract class WebTestCase extends BaseWebTestCase
         return $this->verbosityLevel;
     }
 
-    /**
-     * In Symfony 2.3.* the verbosity level has to be set through {Symfony\Component\Console\Input\ArrayInput} and not
-     * in {Symfony\Component\Console\Output\OutputInterface}.
-     *
-     * This method builds $params to be passed to {Symfony\Component\Console\Input\ArrayInput}.
-     *
-     * @codeCoverageIgnore
-     *
-     * @param array $params
-     *
-     * @return array
-     */
-    private function configureVerbosityForSymfony203(array $params)
-    {
-        switch ($this->getVerbosityLevel()) {
-            case OutputInterface::VERBOSITY_QUIET:
-                $params['-q'] = '-q';
-
-                break;
-
-            case OutputInterface::VERBOSITY_VERBOSE:
-                $params['-v'] = '';
-
-                break;
-
-            case OutputInterface::VERBOSITY_VERY_VERBOSE:
-                $params['-vv'] = '';
-
-                break;
-
-            case OutputInterface::VERBOSITY_DEBUG:
-                $params['-vvv'] = '';
-
-                break;
-        }
-
-        return $params;
-    }
-
     public function setVerbosityLevel($level)
     {
         $this->verbosityLevel = $level;
+    }
+
+    /**
+     * Set verbosity for Symfony 3.4+.
+     *
+     * @see https://github.com/symfony/symfony/pull/24425
+     *
+     * @param $level
+     */
+    private function setVerbosityLevelEnv($level)
+    {
+        putenv('SHELL_VERBOSITY='.$level);
     }
 
     /**
@@ -721,7 +707,13 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     protected function loadFixtureClass($loader, $className)
     {
-        $fixture = new $className();
+        $fixture = null;
+
+        if ($this->getContainer()->has($className)) {
+            $fixture = $this->getContainer()->get($className);
+        } else {
+            $fixture = new $className();
+        }
 
         if ($loader->hasFixture($fixture)) {
             unset($fixture);

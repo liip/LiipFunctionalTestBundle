@@ -1,4 +1,6 @@
 [![Build status][Travis Master image]][Travis Master]
+[![Latest Stable Version](https://poser.pugx.org/liip/functional-test-bundle/v/stable)](https://packagist.org/packages/liip/functional-test-bundle)
+[![Latest Unstable Version](https://poser.pugx.org/liip/functional-test-bundle/v/unstable)](https://packagist.org/packages/liip/functional-test-bundle)
 [![Scrutinizer Code Quality][Scrutinizer image]
 ![Scrutinizer][Scrutinizer Coverage Image]][Scrutinizer]
 [![SensioLabsInsight][SensioLabsInsight Image]][SensioLabsInsight]
@@ -97,8 +99,6 @@ If it fails it will display the last exception message or validation errors
 encountered by the Client object.
 
 If you are expecting validation errors, test them with `assertValidationErrors`.
-
-Note: Both `assertStatusCode` and `assertValidationErrors` only works on Symfony 2.5+
 
 ```php
 use Liip\FunctionalTestBundle\Test\WebTestCase;

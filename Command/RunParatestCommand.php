@@ -16,8 +16,11 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 class RunParatestCommand extends ContainerAwareCommand
 {
     private $output;
+
     private $process;
+
     private $testDbPath;
+
     private $phpunit;
 
     /**
