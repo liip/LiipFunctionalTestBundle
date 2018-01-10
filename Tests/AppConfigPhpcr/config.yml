@@ -13,4 +13,3 @@ doctrine_phpcr:
                         type: annotation
                         dir: "%kernel.root_dir%/../AppConfigPhpcr/Document"
                         prefix: 'Liip\FunctionalTestBundle\Tests\AppConfigPhpcr\Document'
-

@@ -25,7 +25,7 @@ class ExampleFunctionalTest extends WebTestCase
      */
     public function testUserFooIndex()
     {
-        $this->loadFixtures(array('Liip\FooBundle\Tests\Fixtures\LoadUserData'));
+        $this->loadFixtures(['Liip\FooBundle\Tests\Fixtures\LoadUserData']);
 
         $client = $this->createClient();
         $crawler = $client->request('GET', '/users/foo');
@@ -39,10 +39,10 @@ class ExampleFunctionalTest extends WebTestCase
      */
     public function testBasicAuthentication()
     {
-        $this->loadFixtures(array('Liip\FooBundle\Tests\Fixtures\LoadUserData'));
+        $this->loadFixtures(['Liip\FooBundle\Tests\Fixtures\LoadUserData']);
 
         $content = $this->fetchContent('/users/foo', 'GET', true);
-        $this->assertEquals('Hello foo!', $content);
+        $this->assertSame('Hello foo!', $content);
 
         // check if the logout button is shown
         $this->assertContains('logout', $content);
@@ -66,6 +66,6 @@ class ExampleFunctionalTest extends WebTestCase
 
         $client->submit($crawler->selectButton('Save')->form());
 
-        $this->assertValidationErrors(array('data.username', 'data.email'), $client->getContainer());
+        $this->assertValidationErrors(['data.username', 'data.email'], $client->getContainer());
     }
 }

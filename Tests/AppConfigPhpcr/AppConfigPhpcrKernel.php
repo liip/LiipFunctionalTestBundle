@@ -21,9 +21,9 @@ class AppConfigPhpcrKernel extends AppKernel
     {
         return array_merge(
             parent::registerBundles(),
-            array(
+            [
                 new Doctrine\Bundle\PHPCRBundle\DoctrinePHPCRBundle(),
-            )
+            ]
         );
     }
 
