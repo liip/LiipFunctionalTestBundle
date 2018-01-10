@@ -13,9 +13,9 @@ namespace Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\FixtureInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Liip\FunctionalTestBundle\Tests\App\Entity\User;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class LoadUserData extends AbstractFixture implements FixtureInterface
 {

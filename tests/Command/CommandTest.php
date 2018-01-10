@@ -38,7 +38,7 @@ class CommandTest extends WebTestCase
         $this->assertTrue($this->getDecorated());
 
         // Run command and reuse kernel
-        $this->display = $this->runCommand('liipfunctionaltestbundle:test', array(), true);
+        $this->display = $this->runCommand('liipfunctionaltestbundle:test', [], true);
 
         $this->assertContains('Environment: test', $this->display);
         $this->assertContains('Verbosity level: NORMAL', $this->display);
@@ -58,7 +58,7 @@ class CommandTest extends WebTestCase
 
         // Run command and not reuse kernel
         $this->environment = 'prod';
-        $this->display = $this->runCommand('liipfunctionaltestbundle:test', array(), true);
+        $this->display = $this->runCommand('liipfunctionaltestbundle:test', [], true);
 
         $this->assertContains('Environment: prod', $this->display);
         $this->assertContains('Verbosity level: NORMAL', $this->display);

@@ -61,7 +61,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
      */
     public function testLoadEmptyFixtures()
     {
-        $fixtures = $this->loadFixtures(array());
+        $fixtures = $this->loadFixtures([]);
 
         $this->assertInstanceOf(
             'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
@@ -74,9 +74,9 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
      */
     public function testLoadFixtures()
     {
-        $fixtures = $this->loadFixtures(array(
+        $fixtures = $this->loadFixtures([
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
-        ));
+        ]);
 
         $this->assertInstanceOf(
             'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
@@ -103,9 +103,9 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
 
         /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
         $user = $em->getRepository('LiipFunctionalTestBundle:User')
-            ->findOneBy(array(
+            ->findOneBy([
                 'id' => 1,
-            ));
+            ]);
 
         $this->assertSame(
             'foo@bar.com',
@@ -127,9 +127,9 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
      */
     public function testLoadFixturesAndExcludeFromPurge()
     {
-        $fixtures = $this->loadFixtures(array(
+        $fixtures = $this->loadFixtures([
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
-        ));
+        ]);
 
         $this->assertInstanceOf(
             'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
@@ -146,8 +146,8 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
                 ->findAll())
         );
 
-        $this->setExcludedDoctrineTables(array('liip_user'));
-        $this->loadFixtures(array(), null, 'doctrine', 2);
+        $this->setExcludedDoctrineTables(['liip_user']);
+        $this->loadFixtures([], null, 'doctrine', 2);
 
         // The exclusion from purge worked, the user table is still alive and well.
         $this->assertSame(
@@ -167,9 +167,9 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
      */
     public function testLoadFixturesAndPurge()
     {
-        $fixtures = $this->loadFixtures(array(
+        $fixtures = $this->loadFixtures([
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
-        ));
+        ]);
 
         $this->assertInstanceOf(
             'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
@@ -187,7 +187,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
         );
 
         // 1 → ORMPurger::PURGE_MODE_DELETE
-        $this->loadFixtures(array(), null, 'doctrine', 1);
+        $this->loadFixtures([], null, 'doctrine', 1);
 
         // The purge worked: there is no user.
         $this->assertSame(
@@ -197,9 +197,9 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
         );
 
         // Reload fixtures
-        $this->loadFixtures(array(
+        $this->loadFixtures([
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
-        ));
+        ]);
 
         // Check that there are 2 users.
         $this->assertSame(
@@ -209,7 +209,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
         );
 
         // 2 → ORMPurger::PURGE_MODE_TRUNCATE
-        $this->loadFixtures(array(), null, 'doctrine', 2);
+        $this->loadFixtures([], null, 'doctrine', 2);
 
         // The purge worked: there is no user.
         $this->assertSame(
@@ -226,9 +226,9 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
      */
     public function testLoadFixturesFiles()
     {
-        $fixtures = $this->loadFixtureFiles(array(
+        $fixtures = $this->loadFixtureFiles([
             '@AcmeBundle/App/DataFixtures/ORM/user.yml',
-        ));
+        ]);
 
         $this->assertInternalType(
             'array',
@@ -254,18 +254,18 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
 
         /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
         $user = $em->getRepository('LiipFunctionalTestBundle:User')
-            ->findOneBy(array(
+            ->findOneBy([
                 'id' => 1,
-            ));
+            ]);
 
         $this->assertTrue(
             $user->getEnabled()
         );
 
         $user = $em->getRepository('LiipFunctionalTestBundle:User')
-            ->findOneBy(array(
+            ->findOneBy([
                 'id' => 10,
-            ));
+            ]);
 
         $this->assertTrue(
             $user->getEnabled()

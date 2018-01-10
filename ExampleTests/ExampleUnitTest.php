@@ -41,6 +41,6 @@ class ExampleUnitTest extends WebTestCase
 
         $controller = new DefaultController($view);
 
-        $this->assertEquals('success', $controller->indexAction());
+        $this->assertSame('success', $controller->indexAction());
     }
 }

@@ -48,7 +48,7 @@ class DefaultController extends Controller
 
         return $this->render(
             'LiipFunctionalTestBundle:Default:user.html.twig',
-            array('user' => $user)
+            ['user' => $user]
         );
     }
 
@@ -66,10 +66,10 @@ class DefaultController extends Controller
         $submitType = method_exists('Symfony\Component\Form\AbstractType', 'getBlockPrefix') ? 'Symfony\Component\Form\Extension\Core\Type\SubmitType' : 'submit';
 
         $form = $this->createFormBuilder($object)
-            ->add('name', $textType, array(
+            ->add('name', $textType, [
                 /* @see http://symfony.com/doc/2.7/book/forms.html#adding-validation */
                 'constraints' => new NotBlank(),
-            ))
+            ])
             ->add('Submit', $submitType)
             ->getForm();
 
@@ -83,7 +83,7 @@ class DefaultController extends Controller
 
         return $this->render(
             'LiipFunctionalTestBundle:Default:form.html.twig',
-            array('form' => $form->createView())
+            ['form' => $form->createView()]
         );
     }
 
@@ -94,7 +94,7 @@ class DefaultController extends Controller
      */
     public function jsonAction()
     {
-        $response = new Response(json_encode(array('name' => 'John Doe')));
+        $response = new Response(json_encode(['name' => 'John Doe']));
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;

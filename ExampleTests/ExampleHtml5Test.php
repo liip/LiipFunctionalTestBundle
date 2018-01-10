@@ -30,16 +30,16 @@ class ExampleHtml5Test extends Html5WebTestCase
 
     public function testBasicAuthentication()
     {
-        $this->loadFixtures(array('Liip\FooBundle\Tests\Fixtures\LoadUserData'));
+        $this->loadFixtures(['Liip\FooBundle\Tests\Fixtures\LoadUserData']);
 
         $content = $this->fetchContent('/', 'GET', true);
-        $this->assertEquals('Hello foo!', $content);
+        $this->assertSame('Hello foo!', $content);
     }
 
     public function testGenerateInMissingDir()
     {
-        $this->runCommand('main:generate-html', array('output-dir' => './doesntexist'));
-        $this->assertFalse(file_exists($this->dir.'/index.html'));
+        $this->runCommand('main:generate-html', ['output-dir' => './doesntexist']);
+        $this->assertFileNotExists($this->dir.'/index.html');
     }
 
     public function testIndexAction()
@@ -60,6 +60,6 @@ class ExampleHtml5Test extends Html5WebTestCase
 
         $controller = new DefaultController($view);
 
-        $this->assertEquals('success', $controller->indexAction());
+        $this->assertSame('success', $controller->indexAction());
     }
 }
