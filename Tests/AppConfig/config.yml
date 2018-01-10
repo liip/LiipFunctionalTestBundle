@@ -18,9 +18,6 @@ liip_functional_test:
     html5validation:
         url: http://example.com/
         ignores: ['ignore_1', 'ignore_2']
-        ignores_extract:
-            - 'ignore_extract_1'
-            - 'ignore_extract_2'
     paratest:
         process: 3
         phpunit: 'vendor/bin/phpunit'
