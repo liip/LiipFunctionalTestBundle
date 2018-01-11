@@ -8,7 +8,7 @@
         <service id="liip_functional_test.exception_listener" class="Liip\FunctionalTestBundle\EventListener\ExceptionListener" public="true">
             <tag name="kernel.event_subscriber" />
         </service>
-        <service id="liip_functional_test.query.count_client" class="Liip\FunctionalTestBundle\QueryCountClient"> <!-- shared=false -->
+        <service id="liip_functional_test.query.count_client" class="Liip\FunctionalTestBundle\QueryCountClient" public="true"> <!-- shared=false -->
             <argument type="service" id="kernel" />
             <argument>%test.client.parameters%</argument>
             <argument type="service" id="test.client.history" />
@@ -19,7 +19,7 @@
             </call>
         </service>
 
-        <service id="liip_functional_test.query.counter" class="Liip\FunctionalTestBundle\QueryCounter">
+        <service id="liip_functional_test.query.counter" class="Liip\FunctionalTestBundle\QueryCounter" public="true">
             <argument>%liip_functional_test.query.max_query_count%</argument>
             <argument type="service" id="annotation_reader" />
         </service>
