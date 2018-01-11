@@ -59,9 +59,6 @@ class ConfigurationTest extends WebTestCase
             ['query.max_query_count', null],
             ['authentication.username', ''],
             ['authentication.password', ''],
-            ['html5validation.url', 'https://validator.nu/'],
-            ['html5validation.ignores', []],
-            ['html5validation.ignores_extract', []],
             ['paratest.process', 5],
             ['paratest.phpunit', './bin/phpunit'],
         ];

@@ -7,12 +7,12 @@
 
 Table of contents:
 
+- [changelog](CHANGELOG.md)
 - [Installation](#installation)
 - [Basic usage and methods](#basic-usage)
 - [Command tests](#command-tests)
 - [Database and fixtures](#database-tests)
 - [Create an already logged client](#create-an-already-logged-client)
-- [HTML5 Validator](#html5-validator)
 - [Query Counter](#query-counter)
 - [Caveats](#caveats)
 - [paratest](paratest.md)
@@ -22,7 +22,7 @@ Introduction
 ============
 
 This Bundle provides base classes for functional tests to assist in setting up
-test-databases, loading fixtures and HTML5 validation.  It also provides a DI
+test-databases and loading fixtures. It also provides a DI
 aware mock builder for unit tests.
 
 Installation
@@ -641,98 +641,6 @@ security:
 ### Final notes
 
 For more details, you can check the implementation of `WebTestCase` in that bundle.
-
-HTML5 Validator
----------------
-
-The online validator: http://validator.nu/
-The documentation: http://about.validator.nu/
-Documentation about the web service: https://github.com/validator/validator/wiki/Service:-HTTP-interface
-
-Dependencies
-------------
-
-To run the validator you require the following dependencies:
-
- * A java JDK 5 or later
- * Python
- * SVN
- * Mercurial
-
-Note: The script wants to see a Sun-compatible jar executable. Debian fastjar will not work.
-
-Compilation and Execution
--------------------------
-
-Before starting:
-
- * Set the `JAVA_HOME` environment variable to the root of the installed JDK
- * Add the location of `javac` to your `PATH` (`$JAVA_HOME/bin`).
- * Alternatively you can use the `--javac=/usr/bin/javac` parameter of the `build.py` script.
-
-Then:
-
-```sh
-$ mkdir checker; cd checker
-$ git clone https://github.com/validator/validator.git
-$ cd validator
-$ python ./build/build.py all; python ./build/build.py all
-```
-
-Note: Yes, the last line is there twice intentionally. Running the script twice tends to fix
-a `ClassCastException` on the first run.
-
-Note: If at some point for some reason the compilation fails and you are forced to re-run it,
-it may be necessary to manually remove the htmlparser directory from your disk (the compilation
-process will complain about that).
-
-This will download the necessary components, compile the validator and run it. This will require
-about 10 minutes on the first run.
-
-Once the validator is executed it can be reached at http://localhost:8888/ Further instructions on how to build the validator can be found at http://validator.github.io/validator/#build-instructions.
-
-Execution
----------
-
-Once the validator has been compiled, it can be run with the following command:
-
-```sh
-cd checker
-python build/build.py run
-```
-
-Using the Validator in Functional Tests
----------------------------------------
-
-The `Liip\FunctionalTestBundle\Test\Html5WebTestCase` class allows to write
-functional tests that validate content against the HTML5 validator. In order to
-work the validator service must be running on the machine where the tests are
-executed.
-
-This class provides the following testing methods:
-
- * **validateHtml5**: This runs a validation on the provided content and returns
-   the full messages of the validation service (including warnings and
-   information). This method is not meant as a test method but rather as a
-   helper to access the validator service. Internally the test method below will
-   use this helper to access the validation service.
-
- * **assertIsValidHtml5**: This will validate the provided content. If the
-   validation succeeds, execution silently continues, otherwise the calling test
-   will fail and display a list of validation errors.
-
- * **assertIsValidHtml5Snippet**: This will validate an HTML5 snippets (i.e. not
-   a full HTML5 document) by wrapping it into an HTML5 document. If the
-   validation succeeds, execution silently continues, otherwise the calling test
-   will fail and display a list of validation errors.
-
- * **assertIsValidHtml5AjaxResponse**: This will validate an AJAX response in a
-   specific format (probably not generic enough). If the validation succeeds,
-   execution silently continues, otherwise the calling test will fail and
-   display a list of validation errors.
-
- * **setHtml5Wrapper**: Allow to change the default HTML5 code that is used as a
-   wrapper around snippets to validate
 
 Query Counter
 =============
