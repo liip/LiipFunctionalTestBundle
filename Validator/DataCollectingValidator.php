@@ -83,8 +83,8 @@ class DataCollectingValidator implements ValidatorInterface, EventSubscriberInte
 
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::REQUEST => array('clearLastErrors', 99999),
-        );
+        return [
+            KernelEvents::REQUEST => ['clearLastErrors', 99999],
+        ];
     }
 }

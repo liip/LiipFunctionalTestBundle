@@ -22,7 +22,7 @@ class ConnectionFactory extends BaseConnectionFactory
      *
      * @return \Doctrine\DBAL\Connection
      */
-    public function createConnection(array $params, Configuration $config = null, EventManager $eventManager = null, array $mappingTypes = array())
+    public function createConnection(array $params, Configuration $config = null, EventManager $eventManager = null, array $mappingTypes = [])
     {
         $dbName = $this->getDbNameFromEnv($params['dbname']);
 

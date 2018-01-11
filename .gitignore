@@ -1,5 +1,6 @@
 composer.lock
 vendor
+.php_cs.cache
 
 # Ignore files created during tests
 /Tests/App/cache/

@@ -1,0 +1,20 @@
+extends: default
+
+ignore: |
+  /vendor/
+
+rules:
+  braces:
+    min-spaces-inside: 1
+    max-spaces-inside: 1
+  brackets:
+    min-spaces-inside: 0
+    max-spaces-inside: 1
+  colons:
+    max-spaces-after: -1
+  document-start: disable
+  line-length:
+    max: 120
+    level: warning
+    ignore: |
+      /.travis.yml

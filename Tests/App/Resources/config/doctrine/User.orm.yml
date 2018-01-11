@@ -30,4 +30,4 @@ Liip\FunctionalTestBundle\Tests\App\Entity\User:
             type: string
             length: '255'
             nullable: true
-    lifecycleCallbacks: {  }
+    lifecycleCallbacks: { }

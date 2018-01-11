@@ -52,18 +52,18 @@ class ConfigurationTest extends WebTestCase
 
     public function parametersProvider()
     {
-        return array(
-            array('cache_sqlite_db', false),
-            array('command_verbosity', 'normal'),
-            array('command_decoration', true),
-            array('query.max_query_count', null),
-            array('authentication.username', ''),
-            array('authentication.password', ''),
-            array('html5validation.url', 'https://validator.nu/'),
-            array('html5validation.ignores', array()),
-            array('html5validation.ignores_extract', array()),
-            array('paratest.process', 5),
-            array('paratest.phpunit', './bin/phpunit'),
-        );
+        return [
+            ['cache_sqlite_db', false],
+            ['command_verbosity', 'normal'],
+            ['command_decoration', true],
+            ['query.max_query_count', null],
+            ['authentication.username', ''],
+            ['authentication.password', ''],
+            ['html5validation.url', 'https://validator.nu/'],
+            ['html5validation.ignores', []],
+            ['html5validation.ignores_extract', []],
+            ['paratest.process', 5],
+            ['paratest.phpunit', './bin/phpunit'],
+        ];
     }
 }

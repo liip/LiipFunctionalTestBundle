@@ -266,7 +266,7 @@ class User implements UserInterface
 
     public function getRoles()
     {
-        return array('ROLE_ADMIN');
+        return ['ROLE_ADMIN'];
     }
 
     public function getUsername()
@@ -305,6 +305,6 @@ class User implements UserInterface
     {
         // these are field names to be serialized, others will be excluded
         // but note that you have to fill other field values by your own
-        return array('id', 'name', 'password', 'salt');
+        return ['id', 'name', 'password', 'salt'];
     }
 }

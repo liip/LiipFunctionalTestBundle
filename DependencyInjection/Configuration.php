@@ -11,8 +11,8 @@
 
 namespace Liip\FunctionalTestBundle\DependencyInjection;
 
-use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
  * This class contains the configuration information for the bundle.
@@ -71,11 +71,11 @@ class Configuration implements ConfigurationInterface
                         ->end()
                         ->arrayNode('ignores')
                             ->prototype('scalar')->end()
-                            ->defaultValue(array())
+                            ->defaultValue([])
                         ->end()
                         ->arrayNode('ignores_extract')
                             ->prototype('scalar')->end()
-                            ->defaultValue(array())
+                            ->defaultValue([])
                         ->end()
                     ->end()
                 ->end()

@@ -48,7 +48,7 @@ class ValidationErrorsConstraint extends Constraint
      */
     public function evaluate($other, $description = '', $returnResult = false)
     {
-        $actual = array();
+        $actual = [];
 
         foreach ($other as $error) {
             $actual[$error->getPropertyPath()][] = $error->getMessage();
@@ -56,7 +56,7 @@ class ValidationErrorsConstraint extends Constraint
 
         ksort($actual);
 
-        if (array_keys($actual) == $this->expect) {
+        if (array_keys($actual) === $this->expect) {
             return true;
         }
 
@@ -71,7 +71,7 @@ class ValidationErrorsConstraint extends Constraint
         );
         sort($mismatchedKeys);
 
-        $lines = array();
+        $lines = [];
 
         foreach ($mismatchedKeys as $key) {
             if (isset($actual[$key])) {

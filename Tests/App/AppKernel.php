@@ -11,15 +11,15 @@
  * @see http://www.whitewashing.de/2012/02/25/symfony2_controller_testing.html
  */
 
-use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\Kernel;
 
 class AppKernel extends Kernel
 {
     public function registerBundles()
     {
-        $bundles = array(
+        $bundles = [
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new Symfony\Bundle\SecurityBundle\SecurityBundle(),
             new Symfony\Bundle\TwigBundle\TwigBundle(),
@@ -28,7 +28,7 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
             new Liip\FunctionalTestBundle\LiipFunctionalTestBundle(),
-        );
+        ];
 
         return $bundles;
     }
@@ -40,9 +40,9 @@ class AppKernel extends Kernel
         // graciously stolen from https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Tests/Fixtures/App/AppKernel.php#L39-L45
         if ($this->isSymfony3()) {
             $loader->load(function (ContainerBuilder $container) {
-                $container->loadFromExtension('framework', array(
+                $container->loadFromExtension('framework', [
                     'assets' => null,
-                ));
+                ]);
             });
         }
     }

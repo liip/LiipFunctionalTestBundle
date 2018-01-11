@@ -31,7 +31,7 @@ class ExceptionListener implements EventSubscriberInterface
 
     public function clearLastException(GetResponseEvent $event)
     {
-        if (HttpKernelInterface::MASTER_REQUEST == $event->getRequestType()) {
+        if (HttpKernelInterface::MASTER_REQUEST === $event->getRequestType()) {
             $this->lastException = null;
         }
     }
@@ -43,9 +43,9 @@ class ExceptionListener implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::EXCEPTION => array('setException', 99999),
-            KernelEvents::REQUEST => array('clearLastException', 99999),
-        );
+        return [
+            KernelEvents::EXCEPTION => ['setException', 99999],
+            KernelEvents::REQUEST => ['clearLastException', 99999],
+        ];
     }
 }
