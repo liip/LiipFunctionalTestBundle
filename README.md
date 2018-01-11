@@ -446,6 +446,8 @@ $files = array(
 $fixtures = $this->loadFixtureFiles($files, true, null, 'doctrine', ORMPurger::PURGE_MODE_TRUNCATE );
 ```
 
+Note, you should either use nelmio/alice v2.*.* OR add https://github.com/theofidry/AliceDataFixtures because nelmio/alice v3.*.* do not have persistence layer.
+
 #### HautelookAliceBundle Faker Providers
 
 This bundle supports faker providers from HautelookAliceBundle.
