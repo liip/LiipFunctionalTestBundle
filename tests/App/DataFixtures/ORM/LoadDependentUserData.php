@@ -13,8 +13,8 @@ namespace Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class LoadDependentUserData extends AbstractFixture implements DependentFixtureInterface
 {
@@ -57,8 +57,8 @@ class LoadDependentUserData extends AbstractFixture implements DependentFixtureI
      */
     public function getDependencies()
     {
-        return array(
+        return [
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
-        );
+        ];
     }
 }

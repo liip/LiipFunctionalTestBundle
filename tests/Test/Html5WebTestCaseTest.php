@@ -20,7 +20,7 @@ class Html5WebTestCaseTest extends Html5WebTestCase
 {
     public function __construct()
     {
-        parent::__construct('', array(), '');
+        parent::__construct('', [], '');
     }
 
     public function testGetValidationServiceAvailable()
