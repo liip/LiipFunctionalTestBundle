@@ -338,7 +338,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return null|AbstractExecutor
      */
-    protected function loadFixtures(array $classNames, $omName = null, $registryName = 'doctrine', $purgeMode = null)
+    protected function loadFixtures(array $classNames = [], $omName = null, $registryName = 'doctrine', $purgeMode = null)
     {
         $container = $this->getContainer();
         /** @var ManagerRegistry $registry */
