@@ -13,9 +13,9 @@ namespace Liip\FunctionalTestBundle\Tests\Test;
 
 /* Used by annotations */
 use Liip\FunctionalTestBundle\Test\Html5WebTestCase;
+use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\SkippedTestError;
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\AssertionFailedError;
 
 /**
  * Test Html5WebTestCase class with mocked methods instead of inheriting from
@@ -34,7 +34,7 @@ class Html5WebTestCaseMockTest extends TestCase
      *
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    private function getMockedClass($methods = array())
+    private function getMockedClass($methods = [])
     {
         return $this->getMockBuilder('Liip\FunctionalTestBundle\Test\Html5WebTestCase')
             ->disableOriginalConstructor()
@@ -72,7 +72,7 @@ class Html5WebTestCaseMockTest extends TestCase
     public function testIsValidationServiceAvailable()
     {
         /** @var Html5WebTestCase $mock */
-        $mock = $this->getMockedClass(array('getHtml5ValidatorServiceUrl'));
+        $mock = $this->getMockedClass(['getHtml5ValidatorServiceUrl']);
 
         $this->addMethodGetHtml5ValidatorServiceUrl($mock, null);
 
@@ -85,7 +85,7 @@ class Html5WebTestCaseMockTest extends TestCase
     public function testValidateHtml5()
     {
         /** @var Html5WebTestCase $mock */
-        $mock = $this->getMockedClass(array('getHtml5ValidatorServiceUrl'));
+        $mock = $this->getMockedClass(['getHtml5ValidatorServiceUrl']);
 
         $this->addMethodGetHtml5ValidatorServiceUrl($mock, null);
 
@@ -98,14 +98,14 @@ class Html5WebTestCaseMockTest extends TestCase
     {
         /** @var Html5WebTestCase $mock */
         $mock = $this->getMockedClass(
-            array('getValidationServiceAvailable', 'validateHtml5')
+            ['getValidationServiceAvailable', 'validateHtml5']
         );
 
         $this->addMethodGetValidationServiceAvailable($mock, true);
 
         // Return successful result from validator.
         $res = new \ArrayObject();
-        $res->messages = array();
+        $res->messages = [];
 
         $this->addMethodValidateHtml5($mock, $res);
 
@@ -116,16 +116,16 @@ class Html5WebTestCaseMockTest extends TestCase
     {
         /** @var Html5WebTestCase $mock */
         $mock = $this->getMockedClass(
-            array('getValidationServiceAvailable', 'validateHtml5')
+            ['getValidationServiceAvailable', 'validateHtml5']
         );
 
         $this->addMethodGetValidationServiceAvailable($mock, true);
 
         // Return error messages from validator.
         $res = new \ArrayObject();
-        $res->messages = array(
-            (object) array('type' => 'error', 'message' => 'foo', 'lastLine' => 1),
-        );
+        $res->messages = [
+            (object) ['type' => 'error', 'message' => 'foo', 'lastLine' => 1],
+        ];
 
         $this->addMethodValidateHtml5($mock, $res);
 
@@ -155,28 +155,28 @@ EOF;
             ->getMock();
         $container->expects($this->any())
             ->method('getParameter')
-            ->will($this->onConsecutiveCalls(array('#foo#'), array('#bar#')));
+            ->will($this->onConsecutiveCalls(['#foo#'], ['#bar#']));
 
         /** @var Html5WebTestCase $mock */
         $mock = $this->getMockedClass(
-            array(
+            [
                 'getValidationServiceAvailable',
                 'validateHtml5',
                 'getContainer',
-            )
+            ]
         );
 
         $this->addMethodGetValidationServiceAvailable($mock, true);
 
         // Return error messages from validator.
         $res = new \ArrayObject();
-        $res->messages = array(
-            (object) array('type' => 'error', 'message' => 'no', 'lastLine' => 1, 'extract' => 'no'),
-            (object) array('type' => 'error', 'message' => '', 'lastLine' => 2, 'extract' => 'no'),
+        $res->messages = [
+            (object) ['type' => 'error', 'message' => 'no', 'lastLine' => 1, 'extract' => 'no'],
+            (object) ['type' => 'error', 'message' => '', 'lastLine' => 2, 'extract' => 'no'],
             // $ignores and $ignores_extract arrays.
-            (object) array('type' => 'error', 'message' => 'foo', 'lastLine' => 3),
-            (object) array('type' => 'error', 'message' => 'bar', 'lastLine' => 4, 'extract' => 'bar'),
-        );
+            (object) ['type' => 'error', 'message' => 'foo', 'lastLine' => 3],
+            (object) ['type' => 'error', 'message' => 'bar', 'lastLine' => 4, 'extract' => 'bar'],
+        ];
 
         $this->addMethodValidateHtml5($mock, $res);
 
@@ -207,7 +207,7 @@ EOF;
     {
         /** @var Html5WebTestCase $mock */
         $mock = $this->getMockedClass(
-            array('getValidationServiceAvailable', 'getHtml5ValidatorServiceUrl')
+            ['getValidationServiceAvailable', 'getHtml5ValidatorServiceUrl']
         );
 
         $this->addMethodGetValidationServiceAvailable($mock, false);
@@ -232,11 +232,11 @@ EOF;
     {
         /** @var Html5WebTestCase $mock */
         $mock = $this->getMockedClass(
-            array(
+            [
                 'getValidationServiceAvailable',
                 'getHtml5ValidatorServiceUrl',
                 'validateHtml5',
-            )
+            ]
         );
 
         $this->addMethodGetValidationServiceAvailable($mock, true);
@@ -264,14 +264,14 @@ EOF;
     {
         /** @var Html5WebTestCase $mock */
         $mock = $this->getMockedClass(
-            array('getValidationServiceAvailable', 'validateHtml5')
+            ['getValidationServiceAvailable', 'validateHtml5']
         );
 
         $this->addMethodGetValidationServiceAvailable($mock, true);
 
         // Return successful result from validator.
         $res = new \ArrayObject();
-        $res->messages = array();
+        $res->messages = [];
 
         $this->addMethodValidateHtml5($mock, $res);
 
@@ -285,16 +285,16 @@ EOF;
     {
         /** @var Html5WebTestCase $mock */
         $mock = $this->getMockedClass(
-            array('getValidationServiceAvailable', 'validateHtml5')
+            ['getValidationServiceAvailable', 'validateHtml5']
         );
 
         $this->addMethodGetValidationServiceAvailable($mock, true);
 
         // Return error messages from validator.
         $res = new \ArrayObject();
-        $res->messages = array(
-            (object) array('type' => 'error', 'message' => 'foo', 'lastLine' => 1),
-        );
+        $res->messages = [
+            (object) ['type' => 'error', 'message' => 'foo', 'lastLine' => 1],
+        ];
 
         $this->addMethodValidateHtml5($mock, $res);
 

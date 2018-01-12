@@ -42,10 +42,10 @@ class ParatestCommandTest extends WebTestCase
         $application->setAutoExit(false);
 
         $this->isDecorated(false);
-        $content = $this->runCommand('paratest:run', array(
+        $content = $this->runCommand('paratest:run', [
             // Only launch one test class, launching more classes may start an infinite loop.
             'options' => 'Tests/Test/WebTestCaseTest.php',
-        ));
+        ]);
 
         $this->assertContains('Running phpunit in 3 processes with vendor/bin/phpunit', $content);
         $this->assertContains('Initial schema created', $content);

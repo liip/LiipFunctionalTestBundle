@@ -36,24 +36,24 @@ class ConfigurationConfigTest extends ConfigurationTest
      */
     public function parametersProvider()
     {
-        return array(
-            array('cache_sqlite_db', true),
-            array('command_verbosity', 'very_verbose'),
-            array('command_decoration', false),
-            array('query.max_query_count', 1),
-            array('authentication.username', 'foobar'),
-            array('authentication.password', '12341234'),
-            array('html5validation.url', 'http://example.com/'),
-            array('html5validation.ignores', array(
+        return [
+            ['cache_sqlite_db', true],
+            ['command_verbosity', 'very_verbose'],
+            ['command_decoration', false],
+            ['query.max_query_count', 1],
+            ['authentication.username', 'foobar'],
+            ['authentication.password', '12341234'],
+            ['html5validation.url', 'http://example.com/'],
+            ['html5validation.ignores', [
                 'ignore_1',
                 'ignore_2',
-            )),
-            array('html5validation.ignores_extract', array(
+            ]],
+            ['html5validation.ignores_extract', [
                 'ignore_extract_1',
                 'ignore_extract_2',
-            )),
-            array('paratest.process', 3),
-            array('paratest.phpunit', 'vendor/bin/phpunit'),
-        );
+            ]],
+            ['paratest.process', 3],
+            ['paratest.phpunit', 'vendor/bin/phpunit'],
+        ];
     }
 }

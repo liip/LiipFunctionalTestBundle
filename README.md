@@ -340,8 +340,8 @@ Tips for Fixture Loading Tests
     ```
 
  4. If you don't need any fixtures to be loaded and just want to start off with
-    an empty database (initialized with your schema), you can simply pass an
-    empty array to `loadFixtures`.
+    an empty database (initialized with your schema), you can simply call
+    `loadFixtures` without any argument.
 
     ```php
     use Liip\FunctionalTestBundle\Test\WebTestCase;
@@ -350,7 +350,7 @@ Tips for Fixture Loading Tests
     {
         public function testIndex()
         {
-            $this->loadFixtures(array());
+            $this->loadFixtures();
 
             // you can now run your functional tests with a populated database
             $client = $this->createClient();

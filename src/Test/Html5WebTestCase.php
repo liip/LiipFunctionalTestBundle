@@ -39,7 +39,7 @@ HTML;
 
     protected $validationServiceAvailable = false;
 
-    public function __construct($name = null, array $data = array(), $dataName = '')
+    public function __construct($name = null, array $data = [], $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
 
@@ -105,11 +105,11 @@ HTML;
         curl_setopt($ch, CURLOPT_URL, $validationUrl);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, array(
+        curl_setopt($ch, CURLOPT_POSTFIELDS, [
             'out' => 'json',
             'parser' => 'html5',
             'content' => $content,
-        ));
+        ]);
 
         $res = curl_exec($ch);
 
@@ -152,7 +152,7 @@ HTML;
 
         $err_count = 0;
         $err_msg = 'HTML5 validation failed';
-        if ('' != $message) {
+        if ('' !== $message) {
             $err_msg .= " [$message]";
         }
         $err_msg .= ":\n";
@@ -165,7 +165,7 @@ HTML;
         $ignores_extract = $this->getContainer()->getParameter('liip_functional_test.html5validation.ignores_extract');
 
         foreach ($res->messages as $row) {
-            if ('error' == $row->type) {
+            if ('error' === $row->type) {
                 foreach ($ignores as $ignore) {
                     if (preg_match($ignore, $row->message)) {
                         continue 2;
@@ -185,7 +185,7 @@ HTML;
                 }
             }
         }
-        $this->assertTrue(0 == $err_count, $err_msg);
+        $this->assertTrue(0 === $err_count, $err_msg);
     }
 
     /**

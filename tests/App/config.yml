@@ -25,7 +25,7 @@ monolog:
             handler:      nested
         nested:
             type:  stream
-            path:  %kernel.logs_dir%/%kernel.environment%.log
+            path:  "%kernel.logs_dir%/%kernel.environment%.log"
             level: debug
 
 liip_functional_test: ~
@@ -33,7 +33,7 @@ liip_functional_test: ~
 doctrine:
     dbal:
         driver: pdo_sqlite
-        path: %kernel.cache_dir%/test.db
+        path: "%kernel.cache_dir%/test.db"
         charset: UTF8
     orm:
         default_entity_manager: default
@@ -77,4 +77,3 @@ security:
             provider: chain_provider
     access_control:
         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-

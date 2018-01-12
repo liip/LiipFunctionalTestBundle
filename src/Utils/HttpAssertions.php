@@ -11,12 +11,12 @@
 
 namespace Liip\FunctionalTestBundle\Utils;
 
+use Liip\FunctionalTestBundle\Test\ValidationErrorsConstraint;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
-use Liip\FunctionalTestBundle\Test\ValidationErrorsConstraint;
 
 class HttpAssertions extends TestCase
 {

@@ -11,33 +11,33 @@
 
 namespace Liip\FunctionalTestBundle\Test;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Bundle\FrameworkBundle\Client;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\StreamOutput;
-use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\BrowserKit\Cookie;
-use Symfony\Component\HttpKernel\Kernel;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Bridge\Doctrine\ManagerRegistry;
-use Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader;
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
 use Doctrine\Common\DataFixtures\ProxyReferenceRepository;
+use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
-use Nelmio\Alice\Fixtures;
 use Liip\FunctionalTestBundle\Utils\HttpAssertions;
+use Nelmio\Alice\Fixtures;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
+use Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader;
+use Symfony\Bundle\FrameworkBundle\Client;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
+use Symfony\Component\BrowserKit\Cookie;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\StreamOutput;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @author Lea Haensenberger
@@ -63,17 +63,17 @@ abstract class WebTestCase extends BaseWebTestCase
     /**
      * @var array
      */
-    private $firewallLogins = array();
+    private $firewallLogins = [];
 
     /**
      * @var array
      */
-    private $excludedDoctrineTables = array();
+    private $excludedDoctrineTables = [];
 
     /**
      * @var array
      */
-    private static $cachedMetadatas = array();
+    private static $cachedMetadatas = [];
 
     protected static function getKernelClass()
     {
@@ -115,7 +115,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return string
      */
-    protected function runCommand($name, array $params = array(), $reuseKernel = false)
+    protected function runCommand($name, array $params = [], $reuseKernel = false)
     {
         array_unshift($params, $name);
 
@@ -124,7 +124,7 @@ abstract class WebTestCase extends BaseWebTestCase
                 static::$kernel->shutdown();
             }
 
-            $kernel = static::$kernel = $this->createKernel(array('environment' => $this->environment));
+            $kernel = static::$kernel = $this->createKernel(['environment' => $this->environment]);
             $kernel->boot();
         } else {
             $kernel = $this->getContainer()->get('kernel');
@@ -154,9 +154,9 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @see \Symfony\Component\Console\Output\OutputInterface for available levels
      *
-     * @return int
-     *
      * @throws \OutOfBoundsException If the set value isn't accepted
+     *
+     * @return int
      */
     protected function getVerbosityLevel()
     {
@@ -245,9 +245,9 @@ abstract class WebTestCase extends BaseWebTestCase
 
         $cacheKey = $this->kernelDir.'|'.$this->environment;
         if (empty($this->containers[$cacheKey])) {
-            $options = array(
+            $options = [
                 'environment' => $this->environment,
-            );
+            ];
             $kernel = $this->createKernel($options);
             $kernel->boot();
 
@@ -338,7 +338,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return null|AbstractExecutor
      */
-    protected function loadFixtures(array $classNames, $omName = null, $registryName = 'doctrine', $purgeMode = null)
+    protected function loadFixtures(array $classNames = [], $omName = null, $registryName = 'doctrine', $purgeMode = null)
     {
         $container = $this->getContainer();
         /** @var ManagerRegistry $registry */
@@ -447,7 +447,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
         $executor->execute($loader->getFixtures(), true);
 
-        if (isset($name) && isset($backup)) {
+        if (isset($name, $backup)) {
             $this->preReferenceSave($om, $executor, $backup);
 
             $executor->getReferenceRepository()->save($backup);
@@ -479,7 +479,7 @@ abstract class WebTestCase extends BaseWebTestCase
             $connection->query('SET FOREIGN_KEY_CHECKS=0');
         }
 
-        $this->loadFixtures(array(), $omName, $registryName, $purgeMode);
+        $this->loadFixtures([], $omName, $registryName, $purgeMode);
 
         if ($mysql) {
             $connection->query('SET FOREIGN_KEY_CHECKS=1');
@@ -491,13 +491,13 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @param array $paths
      *
-     * @return array $files
-     *
      * @throws \InvalidArgumentException if a wrong path is given outside a bundle
+     *
+     * @return array $files
      */
     private function locateResources($paths)
     {
-        $files = array();
+        $files = [];
 
         $kernel = $this->getContainer()->get('kernel');
 
@@ -524,11 +524,11 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param string $registryName
      * @param int    $purgeMode
      *
-     * @return array
-     *
      * @throws \BadMethodCallException
+     *
+     * @return array
      */
-    public function loadFixtureFiles(array $paths = array(), $append = false, $omName = null, $registryName = 'doctrine', $purgeMode = null)
+    public function loadFixtureFiles(array $paths = [], $append = false, $omName = null, $registryName = 'doctrine', $purgeMode = null)
     {
         if (!class_exists('Nelmio\Alice\Fixtures')) {
             // This class is available during tests, no exception will be thrown.
@@ -732,25 +732,25 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return Client
      */
-    protected function makeClient($authentication = false, array $params = array())
+    protected function makeClient($authentication = false, array $params = [])
     {
         if ($authentication) {
             if (true === $authentication) {
-                $authentication = array(
+                $authentication = [
                     'username' => $this->getContainer()
                         ->getParameter('liip_functional_test.authentication.username'),
                     'password' => $this->getContainer()
                         ->getParameter('liip_functional_test.authentication.password'),
-                );
+                ];
             }
 
-            $params = array_merge($params, array(
+            $params = array_merge($params, [
                 'PHP_AUTH_USER' => $authentication['username'],
                 'PHP_AUTH_PW' => $authentication['password'],
-            ));
+            ]);
         }
 
-        $client = static::createClient(array('environment' => $this->environment), $params);
+        $client = static::createClient(['environment' => $this->environment], $params);
 
         if ($this->firewallLogins) {
             // has to be set otherwise "hasPreviousSession" in Request returns false.
@@ -772,16 +772,7 @@ abstract class WebTestCase extends BaseWebTestCase
             foreach ($this->firewallLogins as $firewallName => $user) {
                 $token = $this->createUserToken($user, $firewallName);
 
-                // BC: security.token_storage is available on Symfony 2.6+
-                // see http://symfony.com/blog/new-in-symfony-2-6-security-component-improvements
-                if ($client->getContainer()->has('security.token_storage')) {
-                    $tokenStorage = $client->getContainer()->get('security.token_storage');
-                } else {
-                    // This block will never be reached with Symfony 2.6+
-                    // @codeCoverageIgnoreStart
-                    $tokenStorage = $client->getContainer()->get('security.context');
-                    // @codeCoverageIgnoreEnd
-                }
+                $tokenStorage = $client->getContainer()->get('security.token_storage');
 
                 $tokenStorage->setToken($token);
                 $session->set('_security_'.$firewallName, serialize($token));
@@ -825,7 +816,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return string
      */
-    protected function getUrl($route, $params = array(), $absolute = UrlGeneratorInterface::ABSOLUTE_PATH)
+    protected function getUrl($route, $params = [], $absolute = UrlGeneratorInterface::ABSOLUTE_PATH)
     {
         return $this->getContainer()->get('router')->generate($route, $params, $absolute);
     }

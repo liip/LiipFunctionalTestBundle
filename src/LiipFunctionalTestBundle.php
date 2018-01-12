@@ -11,10 +11,10 @@
 
 namespace Liip\FunctionalTestBundle;
 
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Liip\FunctionalTestBundle\DependencyInjection\Compiler\SetTestClientPass;
 use Liip\FunctionalTestBundle\DependencyInjection\Compiler\OptionalValidatorPass;
+use Liip\FunctionalTestBundle\DependencyInjection\Compiler\SetTestClientPass;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class LiipFunctionalTestBundle extends Bundle
 {

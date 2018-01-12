@@ -21,9 +21,9 @@ class AppConfigKernel extends AppKernel
     {
         return array_merge(
             parent::registerBundles(),
-            array(
+            [
                 new Hautelook\AliceBundle\HautelookAliceBundle(),
-            )
+            ]
         );
     }
 
