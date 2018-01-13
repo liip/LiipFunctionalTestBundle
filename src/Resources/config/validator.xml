@@ -5,7 +5,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="liip_functional_test.validator" class="Liip\FunctionalTestBundle\Validator\DataCollectingValidator" decorates="validator" decoration-inner-name="validator.inner">
+        <service id="liip_functional_test.validator" class="Liip\FunctionalTestBundle\Validator\DataCollectingValidator" decorates="validator" decoration-inner-name="validator.inner" public="true">
             <argument type="service" id="validator.inner" />
 
             <tag name="kernel.event_subscriber" />
