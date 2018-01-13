@@ -50,8 +50,6 @@ abstract class WebTestCase extends BaseWebTestCase
 
     protected $containers;
 
-    protected $kernelDir;
-
     // 5 * 1024 * 1024 KB
     protected $maxMemory = 5242880;
 
@@ -74,22 +72,6 @@ abstract class WebTestCase extends BaseWebTestCase
      * @var array
      */
     private static $cachedMetadatas = [];
-
-    protected static function getKernelClass()
-    {
-        $dir = isset($_SERVER['KERNEL_DIR']) ? $_SERVER['KERNEL_DIR'] : static::getPhpUnitXmlDir();
-
-        list($appname) = explode('\\', get_called_class());
-
-        $class = $appname.'Kernel';
-        $file = $dir.'/'.strtolower($appname).'/'.$class.'.php';
-        if (!file_exists($file)) {
-            return parent::getKernelClass();
-        }
-        require_once $file;
-
-        return $class;
-    }
 
     /**
      * Creates a mock object of a service identified by its id.
@@ -238,12 +220,7 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     protected function getContainer()
     {
-        if (!empty($this->kernelDir)) {
-            $tmpKernelDir = isset($_SERVER['KERNEL_DIR']) ? $_SERVER['KERNEL_DIR'] : null;
-            $_SERVER['KERNEL_DIR'] = getcwd().$this->kernelDir;
-        }
-
-        $cacheKey = $this->kernelDir.'|'.$this->environment;
+        $cacheKey = $this->environment;
         if (empty($this->containers[$cacheKey])) {
             $options = [
                 'environment' => $this->environment,
@@ -252,10 +229,6 @@ abstract class WebTestCase extends BaseWebTestCase
             $kernel->boot();
 
             $this->containers[$cacheKey] = $kernel->getContainer();
-        }
-
-        if (isset($tmpKernelDir)) {
-            $_SERVER['KERNEL_DIR'] = $tmpKernelDir;
         }
 
         return $this->containers[$cacheKey];
