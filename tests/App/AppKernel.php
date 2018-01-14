@@ -24,11 +24,12 @@ class AppKernel extends Kernel
             new Symfony\Bundle\SecurityBundle\SecurityBundle(),
             new Symfony\Bundle\TwigBundle\TwigBundle(),
             new Symfony\Bundle\MonologBundle\MonologBundle(),
-            new Symfony\Bundle\AsseticBundle\AsseticBundle(),
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
             new Liip\FunctionalTestBundle\LiipFunctionalTestBundle(),
             new Liip\FunctionalTestBundle\Tests\AcmeBundle(),
+            new Nelmio\Alice\Bridge\Symfony\NelmioAliceBundle(),
+            new Fidry\AliceDataFixtures\Bridge\Symfony\FidryAliceDataFixturesBundle(),
         ];
 
         return $bundles;
@@ -37,19 +38,10 @@ class AppKernel extends Kernel
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load(__DIR__.'/config.yml');
-
-        // graciously stolen from https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Tests/Fixtures/App/AppKernel.php#L39-L45
-        if ($this->isSymfony3()) {
-            $loader->load(function (ContainerBuilder $container) {
-                $container->loadFromExtension('framework', [
-                    'assets' => null,
-                ]);
-            });
-        }
-    }
-
-    protected function isSymfony3()
-    {
-        return 3 === Kernel::MAJOR_VERSION;
+        $loader->load(function (ContainerBuilder $container) {
+            $container->loadFromExtension('framework', [
+                'assets' => null,
+            ]);
+        });
     }
 }
