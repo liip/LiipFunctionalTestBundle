@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -21,7 +23,7 @@ use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
  */
 class LoadUserData implements FixtureInterface
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $user = new \Liip\FooBundle\Entity\User();
         $user->setName('foo bar');

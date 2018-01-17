@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -11,8 +13,10 @@
 
 namespace Liip\FunctionalTestBundle\Tests\Test;
 
+use Doctrine\Bundle\PHPCRBundle\DoctrinePHPCRBundle;
 use Doctrine\ORM\Tools\SchemaTool;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
+use Liip\FunctionalTestBundle\Tests\AppConfigPhpcr\AppConfigPhpcrKernel;
 
 /**
  * Test PHPCR.
@@ -26,15 +30,17 @@ use Liip\FunctionalTestBundle\Test\WebTestCase;
  */
 class WebTestCaseConfigPhpcrTest extends WebTestCase
 {
-    protected static function getKernelClass()
+    protected static function getKernelClass(): string
     {
-        require_once __DIR__.'/../AppConfigPhpcr/AppConfigPhpcrKernel.php';
-
-        return 'AppConfigPhpcrKernel';
+        return AppConfigPhpcrKernel::class;
     }
 
-    public function setUp()
+    public function setUp(): void
     {
+        if (!class_exists(DoctrinePHPCRBundle::class)) {
+            $this->markTestSkipped('Need doctrine/phpcr-bundle package.');
+        }
+
         // https://github.com/liip/LiipFunctionalTestBundle#non-sqlite
         $em = $this->getContainer()->get('doctrine')->getManager();
         if (!isset($metadatas)) {
@@ -50,7 +56,7 @@ class WebTestCaseConfigPhpcrTest extends WebTestCase
         $this->runCommand('doctrine:phpcr:repository:init');
     }
 
-    public function testLoadFixturesPhPCr()
+    public function testLoadFixturesPhPCr(): void
     {
         $fixtures = $this->loadFixtures([
             'Liip\FunctionalTestBundle\Tests\AppConfigPhpcr\DataFixtures\PHPCR\LoadTaskData',

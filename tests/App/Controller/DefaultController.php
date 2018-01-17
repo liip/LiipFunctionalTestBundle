@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -12,6 +14,8 @@
 namespace Liip\FunctionalTestBundle\Tests\App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -19,9 +23,9 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 class DefaultController extends Controller
 {
     /**
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function indexAction()
+    public function indexAction(): Response
     {
         return $this->render(
             'LiipFunctionalTestBundle::layout.html.twig'
@@ -31,9 +35,9 @@ class DefaultController extends Controller
     /**
      * @param int $userId
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function userAction($userId)
+    public function userAction(int $userId): Response
     {
         /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
         $user = $this->getDoctrine()
@@ -55,22 +59,19 @@ class DefaultController extends Controller
     /**
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function formAction(Request $request)
+    public function formAction(Request $request): Response
     {
         $object = new \ArrayObject();
         $object->name = null;
 
-        $textType = method_exists('Symfony\Component\Form\AbstractType', 'getBlockPrefix') ? 'Symfony\Component\Form\Extension\Core\Type\TextType' : 'text';
-        $submitType = method_exists('Symfony\Component\Form\AbstractType', 'getBlockPrefix') ? 'Symfony\Component\Form\Extension\Core\Type\SubmitType' : 'submit';
-
         $form = $this->createFormBuilder($object)
-            ->add('name', $textType, [
+            ->add('name', TextType::class, [
                 /* @see http://symfony.com/doc/2.7/book/forms.html#adding-validation */
                 'constraints' => new NotBlank(),
             ])
-            ->add('Submit', $submitType)
+            ->add('Submit', SubmitType::class)
             ->getForm();
 
         $form->handleRequest($request);
@@ -90,9 +91,9 @@ class DefaultController extends Controller
     /**
      * Used to test a JSON content with corresponding Content-Type.
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function jsonAction()
+    public function jsonAction(): Response
     {
         $response = new Response(json_encode(['name' => 'John Doe']));
         $response->headers->set('Content-Type', 'application/json');

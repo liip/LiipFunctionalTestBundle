@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -16,6 +18,8 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Validator\Mapping\MetadataInterface;
+use Symfony\Component\Validator\Validator\ContextualValidatorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class DataCollectingValidator implements ValidatorInterface, EventSubscriberInterface
@@ -36,52 +40,52 @@ class DataCollectingValidator implements ValidatorInterface, EventSubscriberInte
         $this->clearLastErrors();
     }
 
-    public function clearLastErrors()
+    public function clearLastErrors(): void
     {
         $this->lastErrors = new ConstraintViolationList();
     }
 
-    public function getLastErrors()
+    public function getLastErrors(): ConstraintViolationListInterface
     {
         return $this->lastErrors;
     }
 
-    public function getMetadataFor($value)
+    public function getMetadataFor($value): MetadataInterface
     {
         return $this->wrappedValidator->getMetadataFor($value);
     }
 
-    public function hasMetadataFor($value)
+    public function hasMetadataFor($value): bool
     {
         return $this->wrappedValidator->hasMetadataFor($value);
     }
 
-    public function validate($value, $constraints = null, $groups = null)
+    public function validate($value, $constraints = null, $groups = null): ConstraintViolationListInterface
     {
         return $this->lastErrors = $this->wrappedValidator->validate($value, $constraints, $groups);
     }
 
-    public function validateProperty($object, $propertyName, $groups = null)
+    public function validateProperty($object, $propertyName, $groups = null): ConstraintViolationListInterface
     {
         return $this->wrappedValidator->validateProperty($object, $propertyName, $groups);
     }
 
-    public function validatePropertyValue($objectOrClass, $propertyName, $value, $groups = null)
+    public function validatePropertyValue($objectOrClass, $propertyName, $value, $groups = null): ConstraintViolationListInterface
     {
         return $this->wrappedValidator->validatePropertyValue($objectOrClass, $propertyName, $value, $groups);
     }
 
-    public function startContext()
+    public function startContext(): ContextualValidatorInterface
     {
         return $this->wrappedValidator->startContext();
     }
 
-    public function inContext(ExecutionContextInterface $context)
+    public function inContext(ExecutionContextInterface $context): ContextualValidatorInterface
     {
         return $this->wrappedValidator->inContext($context);
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => ['clearLastErrors', 99999],

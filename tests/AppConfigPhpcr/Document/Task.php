@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -38,12 +40,12 @@ class Task
      */
     protected $parentDocument;
 
-    public function setDescription($description)
+    public function setDescription($description): void
     {
         $this->description = $description;
     }
 
-    public function setParentDocument($parentDocument)
+    public function setParentDocument($parentDocument): void
     {
         $this->parentDocument = $parentDocument;
     }

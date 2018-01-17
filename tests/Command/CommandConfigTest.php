@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -12,6 +14,7 @@
 namespace Liip\FunctionalTestBundle\Tests\Command;
 
 use Liip\FunctionalTestBundle\Test\WebTestCase;
+use Liip\FunctionalTestBundle\Tests\AppConfig\AppConfigKernel;
 
 /**
  * Use Tests/AppConfig/AppConfigKernel.php instead of
@@ -25,14 +28,12 @@ class CommandConfigTest extends WebTestCase
 {
     private $display;
 
-    protected static function getKernelClass()
+    protected static function getKernelClass(): string
     {
-        require_once __DIR__.'/../AppConfig/AppConfigKernel.php';
-
-        return 'AppConfigKernel';
+        return AppConfigKernel::class;
     }
 
-    public function testRunCommand()
+    public function testRunCommand(): void
     {
         // Run command without options
         $this->display = $this->runCommand('liipfunctionaltestbundle:test');

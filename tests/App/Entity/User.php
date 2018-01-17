@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -274,7 +276,7 @@ class User implements UserInterface
         return $this->getName();
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
     }
 

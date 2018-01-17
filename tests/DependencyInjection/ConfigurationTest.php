@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -21,7 +23,7 @@ class ConfigurationTest extends WebTestCase
     /** @var \Symfony\Component\DependencyInjection\ContainerInterface $container */
     private $container = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         $client = static::makeClient();
         $this->container = $client->getContainer();
@@ -33,7 +35,7 @@ class ConfigurationTest extends WebTestCase
      * @param string $node  Array key from parametersProvider
      * @param string $value Array value from parametersProvider
      */
-    public function testParameter($node, $value)
+    public function testParameter($node, $value): void
     {
         $name = 'liip_functional_test.'.$node;
 
@@ -50,7 +52,7 @@ class ConfigurationTest extends WebTestCase
         );
     }
 
-    public function parametersProvider()
+    public function parametersProvider(): array
     {
         return [
             ['cache_sqlite_db', false],

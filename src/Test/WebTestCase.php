@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -13,6 +15,7 @@ namespace Liip\FunctionalTestBundle\Test;
 
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
+use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\ProxyReferenceRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
@@ -21,8 +24,9 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
 use Liip\FunctionalTestBundle\Utils\HttpAssertions;
 use Nelmio\Alice\Fixtures;
+use PHPUnit\Framework\MockObject\MockBuilder;
+use Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
-use Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
@@ -50,8 +54,6 @@ abstract class WebTestCase extends BaseWebTestCase
 
     protected $containers;
 
-    protected $kernelDir;
-
     // 5 * 1024 * 1024 KB
     protected $maxMemory = 5242880;
 
@@ -75,30 +77,14 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     private static $cachedMetadatas = [];
 
-    protected static function getKernelClass()
-    {
-        $dir = isset($_SERVER['KERNEL_DIR']) ? $_SERVER['KERNEL_DIR'] : static::getPhpUnitXmlDir();
-
-        list($appname) = explode('\\', get_called_class());
-
-        $class = $appname.'Kernel';
-        $file = $dir.'/'.strtolower($appname).'/'.$class.'.php';
-        if (!file_exists($file)) {
-            return parent::getKernelClass();
-        }
-        require_once $file;
-
-        return $class;
-    }
-
     /**
      * Creates a mock object of a service identified by its id.
      *
      * @param string $id
      *
-     * @return \PHPUnit_Framework_MockObject_MockBuilder
+     * @return MockBuilder
      */
-    protected function getServiceMockBuilder($id)
+    protected function getServiceMockBuilder(string $id): MockBuilder
     {
         $service = $this->getContainer()->get($id);
         $class = get_class($service);
@@ -115,7 +101,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return string
      */
-    protected function runCommand($name, array $params = [], $reuseKernel = false)
+    protected function runCommand(string $name, array $params = [], bool $reuseKernel = false): string
     {
         array_unshift($params, $name);
 
@@ -158,7 +144,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return int
      */
-    protected function getVerbosityLevel()
+    protected function getVerbosityLevel(): int
     {
         // If `null`, is not yet set
         if (null === $this->verbosityLevel) {
@@ -186,7 +172,7 @@ abstract class WebTestCase extends BaseWebTestCase
         return $this->verbosityLevel;
     }
 
-    public function setVerbosityLevel($level)
+    public function setVerbosityLevel($level): void
     {
         $this->verbosityLevel = $level;
     }
@@ -198,7 +184,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @param $level
      */
-    private function setVerbosityLevelEnv($level)
+    private function setVerbosityLevelEnv($level): void
     {
         putenv('SHELL_VERBOSITY='.$level);
     }
@@ -208,7 +194,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return bool
      */
-    protected function getDecorated()
+    protected function getDecorated(): bool
     {
         if (null === $this->decorated) {
             // Set the global decoration flag that is set to `true` by the TreeBuilder in Configuration
@@ -225,7 +211,7 @@ abstract class WebTestCase extends BaseWebTestCase
         return $this->decorated;
     }
 
-    public function isDecorated($decorated)
+    public function isDecorated(bool $decorated): void
     {
         $this->decorated = $decorated;
     }
@@ -236,14 +222,9 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return ContainerInterface
      */
-    protected function getContainer()
+    protected function getContainer(): ContainerInterface
     {
-        if (!empty($this->kernelDir)) {
-            $tmpKernelDir = isset($_SERVER['KERNEL_DIR']) ? $_SERVER['KERNEL_DIR'] : null;
-            $_SERVER['KERNEL_DIR'] = getcwd().$this->kernelDir;
-        }
-
-        $cacheKey = $this->kernelDir.'|'.$this->environment;
+        $cacheKey = $this->environment;
         if (empty($this->containers[$cacheKey])) {
             $options = [
                 'environment' => $this->environment,
@@ -252,10 +233,6 @@ abstract class WebTestCase extends BaseWebTestCase
             $kernel->boot();
 
             $this->containers[$cacheKey] = $kernel->getContainer();
-        }
-
-        if (isset($tmpKernelDir)) {
-            $_SERVER['KERNEL_DIR'] = $tmpKernelDir;
         }
 
         return $this->containers[$cacheKey];
@@ -271,7 +248,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return \DateTime|null
      */
-    protected function getFixtureLastModified($class)
+    protected function getFixtureLastModified($class): ?\DateTime
     {
         $lastModifiedDateTime = null;
 
@@ -296,7 +273,7 @@ abstract class WebTestCase extends BaseWebTestCase
      * @return bool TRUE if the backup was made since the modifications to the
      *              fixtures; FALSE otherwise
      */
-    protected function isBackupUpToDate(array $classNames, $backup)
+    protected function isBackupUpToDate(array $classNames, string $backup): bool
     {
         $backupLastModifiedDateTime = new \DateTime();
         $backupLastModifiedDateTime->setTimestamp(filemtime($backup));
@@ -338,7 +315,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return null|AbstractExecutor
      */
-    protected function loadFixtures(array $classNames = [], $omName = null, $registryName = 'doctrine', $purgeMode = null)
+    protected function loadFixtures(array $classNames = [], ?string $omName = null, string $registryName = 'doctrine', ?int $purgeMode = null): ?AbstractExecutor
     {
         $container = $this->getContainer();
         /** @var ManagerRegistry $registry */
@@ -365,7 +342,7 @@ abstract class WebTestCase extends BaseWebTestCase
                     $params = $params['master'];
                 }
 
-                $name = isset($params['path']) ? $params['path'] : (isset($params['dbname']) ? $params['dbname'] : false);
+                $name = $params['path'] ?? ($params['dbname'] ?? false);
                 if (!$name) {
                     throw new \InvalidArgumentException("Connection does not contain a 'path' or 'dbname' parameter and cannot be dropped.");
                 }
@@ -464,11 +441,11 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @param ManagerRegistry $registry
      * @param EntityManager   $om
-     * @param null            $omName
+     * @param string|null     $omName
      * @param string          $registryName
      * @param int             $purgeMode
      */
-    private function cleanDatabase(ManagerRegistry $registry, EntityManager $om, $omName = null, $registryName = 'doctrine', $purgeMode = null)
+    private function cleanDatabase(ManagerRegistry $registry, EntityManager $om, ?string $omName = null, $registryName = 'doctrine', ?int $purgeMode = null): void
     {
         $connection = $om->getConnection();
 
@@ -495,7 +472,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return array $files
      */
-    private function locateResources($paths)
+    private function locateResources(array $paths): array
     {
         $files = [];
 
@@ -528,17 +505,15 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return array
      */
-    public function loadFixtureFiles(array $paths = [], $append = false, $omName = null, $registryName = 'doctrine', $purgeMode = null)
+    public function loadFixtureFiles(array $paths = [], bool $append = false, ?string $omName = null, $registryName = 'doctrine', ?int $purgeMode = null)
     {
-        if (!class_exists('Nelmio\Alice\Fixtures')) {
-            // This class is available during tests, no exception will be thrown.
-            // @codeCoverageIgnoreStart
-            throw new \BadMethodCallException('nelmio/alice should be installed to use this method.');
-            // @codeCoverageIgnoreEnd
-        }
-
         /** @var ContainerInterface $container */
         $container = $this->getContainer();
+
+        $persisterLoaderServiceName = 'fidry_alice_data_fixtures.loader.doctrine';
+        if (!$container->has($persisterLoaderServiceName)) {
+            throw new \BadMethodCallException('theofidry/alice-data-fixtures must be installed to use this method.');
+        }
 
         /** @var ManagerRegistry $registry */
         $registry = $container->get($registryName);
@@ -552,25 +527,14 @@ abstract class WebTestCase extends BaseWebTestCase
 
         $files = $this->locateResources($paths);
 
-        // Check if the Hautelook AliceBundle is registered and if yes, use it instead of Nelmio Alice
-        $hautelookLoaderServiceName = 'hautelook_alice.fixtures.loader';
-        if ($container->has($hautelookLoaderServiceName)) {
-            $loaderService = $container->get($hautelookLoaderServiceName);
-            $persisterClass = class_exists('Nelmio\Alice\ORM\Doctrine') ?
-                'Nelmio\Alice\ORM\Doctrine' :
-                'Nelmio\Alice\Persister\Doctrine';
-
-            return $loaderService->load(new $persisterClass($om), $files);
-        }
-
-        return Fixtures::load($files, $om);
+        return $container->get($persisterLoaderServiceName)->load($files);
     }
 
     /**
      * Callback function to be executed after Schema creation.
      * Use this to execute acl:init or other things necessary.
      */
-    protected function postFixtureSetup()
+    protected function postFixtureSetup(): void
     {
     }
 
@@ -606,7 +570,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return WebTestCase
      */
-    protected function postFixtureBackupRestore($backupFilePath)
+    protected function postFixtureBackupRestore($backupFilePath): self
     {
         $this->postFixtureRestore();
 
@@ -625,8 +589,8 @@ abstract class WebTestCase extends BaseWebTestCase
     protected function preFixtureBackupRestore(
         ObjectManager $manager,
         ProxyReferenceRepository $referenceRepository,
-        $backupFilePath
-    ) {
+        string $backupFilePath
+    ): self {
         $this->preFixtureRestore($manager, $referenceRepository);
 
         return $this;
@@ -639,10 +603,11 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param AbstractExecutor $executor       Executor of the data fixtures
      * @param string           $backupFilePath Path of file used to backup the references of the data fixtures
      *
-     * @return WebTestCase
+     * @return WebTestCase|null
      */
-    protected function postReferenceSave(ObjectManager $manager, AbstractExecutor $executor, $backupFilePath)
+    protected function postReferenceSave(ObjectManager $manager, AbstractExecutor $executor, string $backupFilePath): self
     {
+        return $this;
     }
 
     /**
@@ -652,10 +617,11 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param AbstractExecutor $executor       Executor of the data fixtures
      * @param string           $backupFilePath Path of file used to backup the references of the data fixtures
      *
-     * @return WebTestCase
+     * @return WebTestCase|null
      */
-    protected function preReferenceSave(ObjectManager $manager, AbstractExecutor $executor, $backupFilePath)
+    protected function preReferenceSave(ObjectManager $manager, AbstractExecutor $executor, ?string $backupFilePath): self
     {
+        return $this;
     }
 
     /**
@@ -666,18 +632,9 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return Loader
      */
-    protected function getFixtureLoader(ContainerInterface $container, array $classNames)
+    protected function getFixtureLoader(ContainerInterface $container, array $classNames): Loader
     {
-        $loaderClass = class_exists('Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader')
-            ? 'Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader'
-            : (class_exists('Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader')
-                // This class is not available during tests.
-                // @codeCoverageIgnoreStart
-                ? 'Doctrine\Bundle\FixturesBundle\Common\DataFixtures\Loader'
-                // @codeCoverageIgnoreEnd
-                : 'Symfony\Bundle\DoctrineFixturesBundle\Common\DataFixtures\Loader');
-
-        $loader = new $loaderClass($container);
+        $loader = new ContainerAwareLoader($container);
 
         foreach ($classNames as $className) {
             $this->loadFixtureClass($loader, $className);
@@ -692,7 +649,7 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param Loader $loader
      * @param string $className
      */
-    protected function loadFixtureClass($loader, $className)
+    protected function loadFixtureClass(Loader $loader, string $className): void
     {
         $fixture = null;
 
@@ -732,7 +689,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return Client
      */
-    protected function makeClient($authentication = false, array $params = [])
+    protected function makeClient($authentication = false, array $params = []): Client
     {
         if ($authentication) {
             if (true === $authentication) {
@@ -797,7 +754,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return TokenInterface The token to be used in the security context
      */
-    protected function createUserToken(UserInterface $user, $firewallName)
+    protected function createUserToken(UserInterface $user, string $firewallName): TokenInterface
     {
         return new UsernamePasswordToken(
             $user,
@@ -816,7 +773,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return string
      */
-    protected function getUrl($route, $params = [], $absolute = UrlGeneratorInterface::ABSOLUTE_PATH)
+    protected function getUrl(string $route, array $params = [], int $absolute = UrlGeneratorInterface::ABSOLUTE_PATH): string
     {
         return $this->getContainer()->get('router')->generate($route, $params, $absolute);
     }
@@ -828,7 +785,7 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param bool     $success  to define whether the response is expected to be successful
      * @param string   $type
      */
-    public function isSuccessful(Response $response, $success = true, $type = 'text/html')
+    public function isSuccessful(Response $response, $success = true, $type = 'text/html'): void
     {
         HttpAssertions::isSuccessful($response, $success, $type);
     }
@@ -845,7 +802,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return string
      */
-    public function fetchContent($path, $method = 'GET', $authentication = false, $success = true)
+    public function fetchContent(string $path, string $method = 'GET', bool $authentication = false, bool $success = true): string
     {
         $client = $this->makeClient($authentication);
         $client->request($method, $path);
@@ -870,7 +827,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return Crawler
      */
-    public function fetchCrawler($path, $method = 'GET', $authentication = false, $success = true)
+    public function fetchCrawler(string $path, string $method = 'GET', bool $authentication = false, bool $success = true): Crawler
     {
         $client = $this->makeClient($authentication);
         $crawler = $client->request($method, $path);
@@ -886,7 +843,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return WebTestCase
      */
-    public function loginAs(UserInterface $user, $firewallName)
+    public function loginAs(UserInterface $user, string $firewallName): self
     {
         $this->firewallLogins[$firewallName] = $user;
 
@@ -898,10 +855,10 @@ abstract class WebTestCase extends BaseWebTestCase
      * $client matches the expected code. If not, raises an error with more
      * information.
      *
-     * @param $expectedStatusCode
+     * @param int    $expectedStatusCode
      * @param Client $client
      */
-    public function assertStatusCode($expectedStatusCode, Client $client)
+    public function assertStatusCode(int $expectedStatusCode, Client $client): void
     {
         HttpAssertions::assertStatusCode($expectedStatusCode, $client);
     }
@@ -913,7 +870,7 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param array              $expected  A flat array of field names
      * @param ContainerInterface $container
      */
-    public function assertValidationErrors(array $expected, ContainerInterface $container)
+    public function assertValidationErrors(array $expected, ContainerInterface $container): void
     {
         HttpAssertions::assertValidationErrors($expected, $container);
     }
@@ -921,7 +878,7 @@ abstract class WebTestCase extends BaseWebTestCase
     /**
      * @param array $excludedDoctrineTables
      */
-    public function setExcludedDoctrineTables($excludedDoctrineTables)
+    public function setExcludedDoctrineTables(array $excludedDoctrineTables): void
     {
         $this->excludedDoctrineTables = $excludedDoctrineTables;
     }

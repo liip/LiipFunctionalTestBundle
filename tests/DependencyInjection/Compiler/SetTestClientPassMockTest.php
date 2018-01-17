@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -26,7 +28,7 @@ class SetTestClientPassMockTest extends TestCase
     /**
      * Simulate Symfony 2.8.
      */
-    public function testSetTestClientPassHasAlias()
+    public function testSetTestClientPassHasAlias(): void
     {
         /* @see http://gianarb.it/blog/symfony-unit-test-controller-with-phpunit#expectations */
         /** @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
@@ -56,7 +58,7 @@ class SetTestClientPassMockTest extends TestCase
     /**
      * Simulate a wrong environment.
      */
-    public function testSetTestClientPassElse()
+    public function testSetTestClientPassElse(): void
     {
         /* @see http://gianarb.it/blog/symfony-unit-test-controller-with-phpunit#expectations */
         /** @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */

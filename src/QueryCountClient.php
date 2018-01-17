@@ -1,30 +1,43 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of the Liip/FunctionalTestBundle
+ *
+ * (c) Lukas Kahwe Smith <smith@pooteeweet.org>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Liip\FunctionalTestBundle;
 
 use Symfony\Bundle\FrameworkBundle\Client;
+use Symfony\Bundle\FrameworkBundle\DependencyInjection\Compiler\CompilerDebugDumpPass;
+
+// Symfony <4 BC
+if (class_exists(CompilerDebugDumpPass::class)) {
+    class_alias(QueryCountClientSymfony3Trait::class, QueryCountClientTrait::class);
+}
 
 class QueryCountClient extends Client
 {
+    /*
+     * We use trait only because of Client::request signature strict type mismatch between Symfony 3 and 4.
+     */
+    use QueryCountClientTrait;
+
     /** @var QueryCounter */
     private $queryCounter;
 
-    public function setQueryCounter(QueryCounter $queryCounter)
+    public function setQueryCounter(QueryCounter $queryCounter): void
     {
         $this->queryCounter = $queryCounter;
     }
 
-    public function request(
-        $method,
-        $uri,
-        array $parameters = [],
-        array $files = [],
-        array $server = [],
-        $content = null,
-        $changeHistory = true
-    ) {
-        $crawler = parent::request($method, $uri, $parameters, $files, $server, $content, $changeHistory);
-
+    private function checkQueryCount(): void
+    {
         if ($this->getProfile()) {
             $this->queryCounter->checkQueryCount(
                 $this->getProfile()->getCollector('db')->getQueryCount()
@@ -38,7 +51,5 @@ class QueryCountClient extends Client
                 "\n";
             // @codeCoverageIgnoreEnd
         }
-
-        return $crawler;
     }
 }

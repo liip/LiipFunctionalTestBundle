@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -7,12 +9,20 @@
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
- *
- * @see http://www.whitewashing.de/2012/02/25/symfony2_controller_testing.html
  */
 
-require_once __DIR__.'/../App/AppKernel.php';
+namespace Liip\FunctionalTestBundle\Tests\AppConfigLeanFramework;
 
+/*
+ * This file is part of the Liip/FunctionalTestBundle
+ *
+ * (c) Lukas Kahwe Smith <smith@pooteeweet.org>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
+use Liip\FunctionalTestBundle\Tests\App\AppKernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
 class AppConfigLeanFrameworkKernel extends AppKernel
@@ -20,7 +30,7 @@ class AppConfigLeanFrameworkKernel extends AppKernel
     /**
      * Load the config.yml from the current directory.
      */
-    public function registerContainerConfiguration(LoaderInterface $loader)
+    public function registerContainerConfiguration(LoaderInterface $loader): void
     {
         // Load the default file.
         parent::registerContainerConfiguration($loader);

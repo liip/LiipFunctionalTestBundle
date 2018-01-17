@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -27,7 +29,7 @@ class HttpAssertions extends TestCase
      * @param bool     $success  to define whether the response is expected to be successful
      * @param string   $type
      */
-    public static function isSuccessful(Response $response, $success = true, $type = 'text/html')
+    public static function isSuccessful(Response $response, bool $success = true, string $type = 'text/html'): void
     {
         try {
             $crawler = new Crawler();
@@ -53,10 +55,10 @@ class HttpAssertions extends TestCase
      * $client matches the expected code. If not, raises an error with more
      * information.
      *
-     * @param $expectedStatusCode
+     * @param int    $expectedStatusCode
      * @param Client $client
      */
-    public static function assertStatusCode($expectedStatusCode, Client $client)
+    public static function assertStatusCode(int $expectedStatusCode, Client $client): void
     {
         $helpfulErrorMessage = null;
 
@@ -74,7 +76,7 @@ class HttpAssertions extends TestCase
                     $helpfulErrorMessage .= sprintf("+ %s: %s\n", $error->getPropertyPath(), $error->getMessage());
                 }
             } else {
-                $helpfulErrorMessage = substr($client->getResponse(), 0, 200);
+                $helpfulErrorMessage = substr((string) $client->getResponse(), 0, 200);
             }
         }
 
@@ -88,7 +90,7 @@ class HttpAssertions extends TestCase
      * @param array              $expected  A flat array of field names
      * @param ContainerInterface $container
      */
-    public static function assertValidationErrors(array $expected, ContainerInterface $container)
+    public static function assertValidationErrors(array $expected, ContainerInterface $container): void
     {
         if (!$container->has('liip_functional_test.validator')) {
             trigger_error(sprintf('Method %s() can not be used as the validation component of the Symfony framework is disabled.', __METHOD__, __CLASS__), E_USER_WARNING);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -23,7 +25,7 @@ class ExampleUnitTest extends WebTestCase
     /**
      * Example using LiipFunctionalBundle the service mock builder.
      */
-    public function testIndexAction()
+    public function testIndexAction(): void
     {
         $view = $this->getServiceMockBuilder('FooView')->getMock();
 

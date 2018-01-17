@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -10,6 +12,8 @@
  */
 
 namespace Liip\FunctionalTestBundle\Tests\DependencyInjection;
+
+use Liip\FunctionalTestBundle\Tests\AppConfig\AppConfigKernel;
 
 /**
  * Use Tests/AppConfig/AppConfigKernel.php instead of
@@ -24,17 +28,15 @@ class ConfigurationConfigTest extends ConfigurationTest
     /**
      * Use another Kernel to load another config file.
      */
-    protected static function getKernelClass()
+    protected static function getKernelClass(): string
     {
-        require_once __DIR__.'/../AppConfig/AppConfigKernel.php';
-
-        return 'AppConfigKernel';
+        return AppConfigKernel::class;
     }
 
     /**
      * Override values to be tested.
      */
-    public function parametersProvider()
+    public function parametersProvider(): array
     {
         return [
             ['cache_sqlite_db', true],

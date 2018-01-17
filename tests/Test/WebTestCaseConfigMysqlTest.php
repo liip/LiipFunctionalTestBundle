@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Liip/FunctionalTestBundle
  *
@@ -13,6 +15,7 @@ namespace Liip\FunctionalTestBundle\Tests\Test;
 
 use Doctrine\ORM\Tools\SchemaTool;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
+use Liip\FunctionalTestBundle\Tests\AppConfigMysql\AppConfigMysqlKernel;
 
 /**
  * Test MySQL database.
@@ -33,14 +36,12 @@ use Liip\FunctionalTestBundle\Test\WebTestCase;
  */
 class WebTestCaseConfigMysqlTest extends WebTestCase
 {
-    protected static function getKernelClass()
+    protected static function getKernelClass(): string
     {
-        require_once __DIR__.'/../AppConfigMysql/AppConfigMysqlKernel.php';
-
-        return 'AppConfigMysqlKernel';
+        return AppConfigMysqlKernel::class;
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         // https://github.com/liip/LiipFunctionalTestBundle#non-sqlite
         $em = $this->getContainer()->get('doctrine')->getManager();
@@ -59,7 +60,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
      *
      * @group mysql
      */
-    public function testLoadEmptyFixtures()
+    public function testLoadEmptyFixtures(): void
     {
         $fixtures = $this->loadFixtures([]);
 
@@ -72,7 +73,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
     /**
      * @group mysql
      */
-    public function testLoadFixtures()
+    public function testLoadFixtures(): void
     {
         $fixtures = $this->loadFixtures([
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
@@ -125,7 +126,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
      *
      * @group mysql
      */
-    public function testLoadFixturesAndExcludeFromPurge()
+    public function testLoadFixturesAndExcludeFromPurge(): void
     {
         $fixtures = $this->loadFixtures([
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
@@ -165,7 +166,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
      *
      * @group mysql
      */
-    public function testLoadFixturesAndPurge()
+    public function testLoadFixturesAndPurge(): void
     {
         $fixtures = $this->loadFixtures([
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
@@ -224,7 +225,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
      *
      * @group mysql
      */
-    public function testLoadFixturesFiles()
+    public function testLoadFixturesFiles(): void
     {
         $fixtures = $this->loadFixtureFiles([
             '@AcmeBundle/App/DataFixtures/ORM/user.yml',
