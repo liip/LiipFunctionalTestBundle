@@ -2,9 +2,9 @@
 
 ## 2.0 [TBA]
 ### Added
- * Applied `declare(strict_types=1)` everywhere
- * Added support fro Symfony 4
+ * Added support for Symfony 4
  * Added `.gitattributes` to make package slimmer 
+ * Applied `declare(strict_types=1)` everywhere
 
 ### Changed
  * Switched to PSR-4 dir structure with `src` and `tests` subfolders
