@@ -379,7 +379,26 @@ Tips for Fixture Loading Tests
     }
     ```
 
- 6. This bundle uses Doctrine ORM by default. If you are using another driver just
+ 6. If you want to append fixtures instead of clean database and load them, you have
+ to consider use the second parameter $append with value true.
+
+    ```php
+        use Liip\FunctionalTestBundle\Test\WebTestCase;
+
+        class MyControllerTest extends WebTestCase
+        {
+            public function testIndex()
+            {
+                $this->loadFixtures(array(
+                    'Me\MyBundle\DataFixtures\ORM\LoadAnotherObjectData',
+                    true
+                ));
+                // ...
+            }
+        }
+    ```
+
+ 7. This bundle uses Doctrine ORM by default. If you are using another driver just
     specify the service id of the registry manager:
 
     ```php
@@ -393,7 +412,7 @@ Tips for Fixture Loading Tests
                 'Me\MyBundle\DataFixtures\MongoDB\LoadData'
             );
 
-            $this->loadFixtures($fixtures, null, 'doctrine_mongodb');
+            $this->loadFixtures($fixtures, false, null, 'doctrine_mongodb');
 
             $client = $this->createClient();
         }

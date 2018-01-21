@@ -60,7 +60,7 @@ class WebTestCaseConfigPhpcrTest extends WebTestCase
     {
         $fixtures = $this->loadFixtures([
             'Liip\FunctionalTestBundle\Tests\AppConfigPhpcr\DataFixtures\PHPCR\LoadTaskData',
-        ], null, 'doctrine_phpcr');
+        ], false, null, 'doctrine_phpcr');
 
         $this->assertInstanceOf(
             'Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor',

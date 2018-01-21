@@ -309,13 +309,14 @@ abstract class WebTestCase extends BaseWebTestCase
      * class path.
      *
      * @param array  $classNames   List of fully qualified class names of fixtures to load
+     * @param bool   $append
      * @param string $omName       The name of object manager to use
      * @param string $registryName The service id of manager registry to use
      * @param int    $purgeMode    Sets the ORM purge mode
      *
      * @return null|AbstractExecutor
      */
-    protected function loadFixtures(array $classNames = [], ?string $omName = null, string $registryName = 'doctrine', ?int $purgeMode = null): ?AbstractExecutor
+    protected function loadFixtures(array $classNames = [], bool $append = false, ?string $omName = null, string $registryName = 'doctrine', ?int $purgeMode = null): ?AbstractExecutor
     {
         $container = $this->getContainer();
         /** @var ManagerRegistry $registry */
@@ -417,7 +418,9 @@ abstract class WebTestCase extends BaseWebTestCase
             }
 
             $executor->setReferenceRepository($referenceRepository);
-            $executor->purge();
+            if (false === $append) {
+                $executor->purge();
+            }
         }
 
         $loader = $this->getFixtureLoader($container, $classNames);
@@ -456,7 +459,7 @@ abstract class WebTestCase extends BaseWebTestCase
             $connection->query('SET FOREIGN_KEY_CHECKS=0');
         }
 
-        $this->loadFixtures([], $omName, $registryName, $purgeMode);
+        $this->loadFixtures([], false, $omName, $registryName, $purgeMode);
 
         if ($mysql) {
             $connection->query('SET FOREIGN_KEY_CHECKS=1');
