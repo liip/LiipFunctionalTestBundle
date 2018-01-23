@@ -1,6 +1,8 @@
 # Changelog
 
 ## 2.0 [TBA]
+This new major version introduces a number of breaking changes; see the [upgrade guide](UPGRADE-2.0.md) for more details.
+
 ### Added
  * Added support for Symfony 4
  * Added `.gitattributes` to make package slimmer 
