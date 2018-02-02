@@ -58,7 +58,7 @@ class HttpAssertions extends TestCase
      */
     public static function assertStatusCode($expectedStatusCode, Client $client)
     {
-        $helpfulErrorMessage = null;
+        $helpfulErrorMessage = '';
 
         if ($expectedStatusCode !== $client->getResponse()->getStatusCode()) {
             // Get a more useful error message, if available
