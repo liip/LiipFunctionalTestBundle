@@ -38,6 +38,9 @@
         "brianium/paratest": "~0.12.0|~0.13.2",
         "doctrine/data-fixtures": "1.2.2"
     },
+    "conflict": {
+        "phpunit/phpunit": ">=7"
+    },
     "suggest": {
         "symfony/framework-bundle": "To use assertStatusCode and assertValidationErrors ~2.5",
         "doctrine/doctrine-fixtures-bundle": "Required when using the fixture loading functionality",

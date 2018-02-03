@@ -40,6 +40,9 @@ Installation
     This command requires you to have Composer installed globally, as explained
     in the [installation chapter](https://getcomposer.org/doc/00-intro.md)
     of the Composer documentation.
+    
+    Note: if you are using PHPUnit 7 or later, you MUST require at least version
+    2.0 of this bundle; the 1.x versions are incompatible.
 
  2. Enable the Bundle
 
