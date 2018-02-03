@@ -27,7 +27,7 @@
         "symfony/monolog-bundle": "^3.1",
         "doctrine/doctrine-fixtures-bundle": "^3.0",
         "doctrine/doctrine-bundle": "^1.8",
-        "phpunit/phpunit": "^6.1",
+        "phpunit/phpunit": "^6.1|^7.0",
         "twig/twig": "^2.0",
         "theofidry/alice-data-fixtures": "^1.0.1",
         "jackalope/jackalope-doctrine-dbal": "^1.3",
