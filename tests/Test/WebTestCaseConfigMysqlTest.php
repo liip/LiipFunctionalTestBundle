@@ -119,6 +119,55 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
     }
 
     /**
+     * @group mysql
+     */
+    public function testAppendFixtures(): void
+    {
+        $this->loadFixtures([
+            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
+        ]);
+
+        $this->loadFixtures(
+            ['Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadSecondUserData'],
+            true
+        );
+
+        // Load data from database
+        $em = $this->getContainer()
+            ->get('doctrine.orm.entity_manager');
+
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        $user = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findOneBy([
+                'id' => 1,
+            ]);
+
+        $this->assertSame(
+            'foo@bar.com',
+            $user->getEmail()
+        );
+
+        $this->assertTrue(
+            $user->getEnabled()
+        );
+
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        $user = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findOneBy([
+                'id' => 3,
+            ]);
+
+        $this->assertSame(
+            'bar@foo.com',
+            $user->getEmail()
+        );
+
+        $this->assertTrue(
+            $user->getEnabled()
+        );
+    }
+
+    /**
      * Data fixtures and purge.
      *
      * Purge modes are defined in
@@ -148,7 +197,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
         );
 
         $this->setExcludedDoctrineTables(['liip_user']);
-        $this->loadFixtures([], null, 'doctrine', 2);
+        $this->loadFixtures([], false, null, 'doctrine', 2);
 
         // The exclusion from purge worked, the user table is still alive and well.
         $this->assertSame(
@@ -188,7 +237,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
         );
 
         // 1 → ORMPurger::PURGE_MODE_DELETE
-        $this->loadFixtures([], null, 'doctrine', 1);
+        $this->loadFixtures([], false, null, 'doctrine', 1);
 
         // The purge worked: there is no user.
         $this->assertSame(
@@ -210,7 +259,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
         );
 
         // 2 → ORMPurger::PURGE_MODE_TRUNCATE
-        $this->loadFixtures([], null, 'doctrine', 2);
+        $this->loadFixtures([], false, null, 'doctrine', 2);
 
         // The purge worked: there is no user.
         $this->assertSame(

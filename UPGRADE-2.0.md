@@ -8,3 +8,7 @@ This is the list of actions that you need to take when upgrading this bundle fro
 composer remove --dev nelmio/alice
 composer require --dev liip/functional-test-bundle "~2.0"
 ```
+
+ * The interface of `LoadFixtures` had to be changed to allow append fixtures. The main difference is it had been added
+ a boolean second parameter. You will have to add it to `false` if you had changed the default manager, driver
+ or purge mode.
