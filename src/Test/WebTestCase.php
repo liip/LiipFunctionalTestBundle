@@ -383,9 +383,11 @@ abstract class WebTestCase extends BaseWebTestCase
 
                 // TODO: handle case when using persistent connections. Fail loudly?
                 $schemaTool = new SchemaTool($om);
-                $schemaTool->dropDatabase();
-                if (!empty($metadatas)) {
-                    $schemaTool->createSchema($metadatas);
+                if (false === $append) {
+                    $schemaTool->dropDatabase();
+                    if (!empty($metadatas)) {
+                        $schemaTool->createSchema($metadatas);
+                    }
                 }
                 $this->postFixtureSetup();
 
