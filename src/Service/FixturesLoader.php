@@ -382,8 +382,6 @@ class FixturesLoader
      */
     protected function postFixtureBackupRestore($backupFilePath): self
     {
-        $this->postFixtureRestore();
-
         return $this;
     }
 
@@ -401,8 +399,6 @@ class FixturesLoader
         ProxyReferenceRepository $referenceRepository,
         string $backupFilePath
     ): self {
-        $this->preFixtureRestore($manager, $referenceRepository);
-
         return $this;
     }
 
