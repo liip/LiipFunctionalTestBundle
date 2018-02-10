@@ -291,7 +291,7 @@ class FixturesLoader
             $connection->query('SET FOREIGN_KEY_CHECKS=0');
         }
 
-        $this->container->get('liip_functional_test.fixtures_loader')->loadFixtures([], false, $omName, $registryName, $purgeMode);
+        $this->loadFixtures([], false, $omName, $registryName, $purgeMode);
 
         if ($mysql) {
             $connection->query('SET FOREIGN_KEY_CHECKS=1');
