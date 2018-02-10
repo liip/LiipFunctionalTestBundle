@@ -376,31 +376,6 @@ class FixturesLoader
     /**
      * Callback function to be executed after Schema restore.
      *
-     * @return WebTestCase
-     *
-     * @deprecated since version 1.8, to be removed in 2.0. Use postFixtureBackupRestore method instead.
-     */
-    protected function postFixtureRestore()
-    {
-    }
-
-    /**
-     * Callback function to be executed before Schema restore.
-     *
-     * @param ObjectManager            $manager             The object manager
-     * @param ProxyReferenceRepository $referenceRepository The reference repository
-     *
-     * @return WebTestCase
-     *
-     * @deprecated since version 1.8, to be removed in 2.0. Use preFixtureBackupRestore method instead.
-     */
-    protected function preFixtureRestore(ObjectManager $manager, ProxyReferenceRepository $referenceRepository)
-    {
-    }
-
-    /**
-     * Callback function to be executed after Schema restore.
-     *
      * @param string $backupFilePath Path of file used to backup the references of the data fixtures
      *
      * @return WebTestCase
