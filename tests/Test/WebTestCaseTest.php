@@ -282,7 +282,7 @@ EOF;
 
     public function testLoadFixturesWithoutParameters(): void
     {
-        $fixtures = $this->loadFixtures([]);
+        $fixtures = $this->loadFixtures();
 
         $this->assertInstanceOf(
             'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
