@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Liip\FunctionalTestBundle\Test;
 
 use Liip\FunctionalTestBundle\Utils\HttpAssertions;
-use Nelmio\Alice\Fixtures;
 use PHPUnit\Framework\MockObject\MockBuilder;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Console\Application;

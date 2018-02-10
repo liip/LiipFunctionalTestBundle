@@ -61,8 +61,7 @@ class FixturesLoader
 
     public function __construct(
         $container
-    )
-    {
+    ) {
         $this->container = $container;
     }
 
