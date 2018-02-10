@@ -94,7 +94,7 @@ class WebTestCaseTest extends WebTestCase
      */
     public function testIndexAssertStatusCode(): void
     {
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures();
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([]);
 
         $path = '/';
 
@@ -108,7 +108,7 @@ class WebTestCaseTest extends WebTestCase
      */
     public function testAssertStatusCodeFail(): void
     {
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures();
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([]);
 
         $path = '/';
 
@@ -138,7 +138,7 @@ class WebTestCaseTest extends WebTestCase
      */
     public function testAssertStatusCodeException(): void
     {
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures();
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([]);
 
         $path = '/user/2';
 
@@ -164,7 +164,7 @@ EOF;
      */
     public function testIndexIsSuccesful(): void
     {
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures();
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([]);
 
         $path = '/';
 
@@ -178,7 +178,7 @@ EOF;
      */
     public function testIndexFetchCrawler(): void
     {
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures();
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([]);
 
         $path = '/';
 
@@ -208,7 +208,7 @@ EOF;
      */
     public function testIndexFetchContent(): void
     {
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures();
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([]);
 
         $path = '/';
 
@@ -224,7 +224,7 @@ EOF;
 
     public function test404Error(): void
     {
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures();
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([]);
 
         $path = '/missing_page';
 
@@ -241,7 +241,7 @@ EOF;
      */
     public function testIsSuccessfulException(): void
     {
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures();
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([]);
 
         $response = $this->getMockBuilder('Symfony\Component\HttpFoundation\Response')
             ->disableOriginalConstructor()
@@ -272,7 +272,7 @@ EOF;
      */
     public function testLoadEmptyFixtures(): void
     {
-        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures();
+        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([]);
 
         $this->assertInstanceOf(
             'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
@@ -282,7 +282,7 @@ EOF;
 
     public function testLoadFixturesWithoutParameters(): void
     {
-        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures();
+        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([]);
 
         $this->assertInstanceOf(
             'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
@@ -615,7 +615,7 @@ EOF;
      */
     public function testForm(): void
     {
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures();
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([]);
 
         $path = '/form';
 
@@ -650,7 +650,7 @@ EOF;
      */
     public function testFormWithException(): void
     {
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures();
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([]);
 
         $path = '/form';
 
@@ -672,7 +672,7 @@ EOF;
      */
     public function testFormWithExceptionAssertStatusCode(): void
     {
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures();
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([]);
 
         $path = '/form';
 
@@ -704,7 +704,7 @@ EOF;
      */
     public function testJsonIsSuccesful(): void
     {
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures();
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([]);
 
         $this->client = static::makeClient();
 

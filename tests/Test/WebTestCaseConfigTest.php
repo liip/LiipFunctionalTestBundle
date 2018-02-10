@@ -47,7 +47,7 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testIndexAuthenticationArray(): void
     {
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures();
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([]);
 
         $this->client = static::makeClient([
             'username' => 'foobar',
@@ -81,7 +81,7 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testIndexAuthenticationTrue(): void
     {
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures();
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([]);
 
         $this->client = static::makeClient(true);
 
