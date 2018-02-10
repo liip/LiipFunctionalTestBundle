@@ -432,6 +432,6 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     public function setExcludedDoctrineTables(array $excludedDoctrineTables): void
     {
-        $this->excludedDoctrineTables = $excludedDoctrineTables;
+        $this->getContainer()->get('liip_functional_test.fixtures_loader')->setExcludedDoctrineTables($excludedDoctrineTables);
     }
 }
