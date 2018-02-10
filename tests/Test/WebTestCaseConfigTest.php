@@ -47,7 +47,7 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testIndexAuthenticationArray(): void
     {
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([]);
+        $this->loadFixtures([]);
 
         $this->client = static::makeClient([
             'username' => 'foobar',
@@ -81,7 +81,7 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testIndexAuthenticationTrue(): void
     {
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([]);
+        $this->loadFixtures([]);
 
         $this->client = static::makeClient(true);
 
@@ -110,7 +110,7 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testIndexAuthenticationLoginAs(): void
     {
-        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([
+        $fixtures = $this->loadFixtures([
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ]);
 
@@ -158,7 +158,7 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testAllowedQueriesExceededException(): void
     {
-        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([
+        $fixtures = $this->loadFixtures([
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ]);
 
@@ -189,7 +189,7 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testAnnotationAndException(): void
     {
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([
+        $this->loadFixtures([
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ]);
 
@@ -207,7 +207,7 @@ class WebTestCaseConfigTest extends WebTestCase
     public function testLoadFixturesFilesWithCustomProvider(): void
     {
         // Load default Data Fixtures.
-        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtureFiles([
+        $fixtures = $this->loadFixtureFiles([
             '@AcmeBundle/App/DataFixtures/ORM/user.yml',
         ]);
 
@@ -232,7 +232,7 @@ class WebTestCaseConfigTest extends WebTestCase
         );
 
         // Load Data Fixtures with custom loader defined in configuration.
-        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtureFiles([
+        $fixtures = $this->loadFixtureFiles([
             '@AcmeBundle/App/DataFixtures/ORM/user_with_custom_provider.yml',
         ]);
 
@@ -258,7 +258,7 @@ class WebTestCaseConfigTest extends WebTestCase
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadDependentUserData',
         ];
 
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures($fixtures);
+        $this->loadFixtures($fixtures);
 
         $dependentFixtureFilePath = $this->getContainer()->get('kernel')->locateResource(
             '@AcmeBundle/App/DataFixtures/ORM/LoadUserData.php'
@@ -278,7 +278,7 @@ class WebTestCaseConfigTest extends WebTestCase
         sleep(2);
 
         // Reload the fixtures.
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures($fixtures);
+        $this->loadFixtures($fixtures);
 
         // The mtime of the file has not changed.
         $this->assertSame(
@@ -300,7 +300,7 @@ class WebTestCaseConfigTest extends WebTestCase
         // set a date in the future.
         touch($dependentFixtureFilePath);
 
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures($fixtures);
+        $this->loadFixtures($fixtures);
 
         // The mtime of the fixture file has been updated.
         $this->assertGreaterThan(

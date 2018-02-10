@@ -62,7 +62,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
      */
     public function testLoadEmptyFixtures(): void
     {
-        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([]);
+        $fixtures = $this->loadFixtures([]);
 
         $this->assertInstanceOf(
             'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
@@ -75,7 +75,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
      */
     public function testLoadFixtures(): void
     {
-        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([
+        $fixtures = $this->loadFixtures([
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ]);
 
@@ -123,11 +123,11 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
      */
     public function testAppendFixtures(): void
     {
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([
+        $this->loadFixtures([
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ]);
 
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures(
+        $this->loadFixtures(
             ['Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadSecondUserData'],
             true
         );
@@ -177,7 +177,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
      */
     public function testLoadFixturesAndExcludeFromPurge(): void
     {
-        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([
+        $fixtures = $this->loadFixtures([
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ]);
 
@@ -197,7 +197,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
         );
 
         $this->setExcludedDoctrineTables(['liip_user']);
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([], true, null, 'doctrine', 2);
+        $this->loadFixtures([], false, null, 'doctrine', 2);
 
         // The exclusion from purge worked, the user table is still alive and well.
         $this->assertSame(
@@ -217,7 +217,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
      */
     public function testLoadFixturesAndPurge(): void
     {
-        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([
+        $fixtures = $this->loadFixtures([
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ]);
 
@@ -237,7 +237,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
         );
 
         // 1 → ORMPurger::PURGE_MODE_DELETE
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([], false, null, 'doctrine', 1);
+        $this->loadFixtures([], false, null, 'doctrine', 1);
 
         // The purge worked: there is no user.
         $this->assertSame(
@@ -247,7 +247,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
         );
 
         // Reload fixtures
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([
+        $this->loadFixtures([
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ]);
 
@@ -259,7 +259,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
         );
 
         // 2 → ORMPurger::PURGE_MODE_TRUNCATE
-        $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures([], false, null, 'doctrine', 2);
+        $this->loadFixtures([], false, null, 'doctrine', 2);
 
         // The purge worked: there is no user.
         $this->assertSame(
@@ -276,7 +276,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
      */
     public function testLoadFixturesFiles(): void
     {
-        $fixtures = $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtureFiles([
+        $fixtures = $this->loadFixtureFiles([
             '@AcmeBundle/App/DataFixtures/ORM/user.yml',
         ]);
 

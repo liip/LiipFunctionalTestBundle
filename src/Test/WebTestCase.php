@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Liip\FunctionalTestBundle\Test;
 
+use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
 use Liip\FunctionalTestBundle\Utils\HttpAssertions;
 use PHPUnit\Framework\MockObject\MockBuilder;
 use Symfony\Bundle\FrameworkBundle\Client;
@@ -213,6 +214,16 @@ abstract class WebTestCase extends BaseWebTestCase
         }
 
         return $this->containers[$cacheKey];
+    }
+
+    protected function loadFixtures(array $classNames = [], bool $append = false, ?string $omName = null, string $registryName = 'doctrine', ?int $purgeMode = null): ?AbstractExecutor
+    {
+        return $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtures($classNames, $append, $omName, $registryName, $purgeMode);
+    }
+
+    public function loadFixtureFiles(array $paths = [], bool $append = false, ?string $omName = null, $registryName = 'doctrine', ?int $purgeMode = null)
+    {
+        return $this->getContainer()->get('liip_functional_test.fixtures_loader')->loadFixtureFiles($paths, $append, $omName, $registryName, $purgeMode);
     }
 
     /**
