@@ -124,6 +124,7 @@ abstract class AbstractDatabaseTool
 
     /**
      * @param array $classNames
+     *
      * @return AbstractExecutor
      */
     abstract public function loadFixtures(array $classNames);
@@ -131,6 +132,7 @@ abstract class AbstractDatabaseTool
     /**
      * @param array $paths
      * @param bool  $append
+     *
      * @return array
      */
     public function loadAliceFixture(array $paths = [], $append = false)

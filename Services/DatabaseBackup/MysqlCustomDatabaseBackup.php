@@ -12,7 +12,6 @@
 namespace Liip\FunctionalTestBundle\Services\DatabaseBackup;
 
 use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
-use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 
 /**
  * @author Aleksey Tupichenkov <alekseytupichenkov@gmail.com>
