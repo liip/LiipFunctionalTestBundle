@@ -57,6 +57,11 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     private $firewallLogins = [];
 
+    /**
+     * @var array
+     */
+    private $excludedDoctrineTables = [];
+
     protected static function getKernelClass()
     {
         $dir = isset($_SERVER['KERNEL_DIR']) ? $_SERVER['KERNEL_DIR'] : static::getPhpUnitXmlDir();
@@ -284,6 +289,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
         $dbToolCollection = $container->get('liip_functional_test.services.database_tool_collection');
         $dbTool = $dbToolCollection->get($omName, $registryName, $purgeMode, $this);
+        $dbTool->setExcludedDoctrineTables($this->excludedDoctrineTables);
 
         return $dbTool->loadFixtures($classNames);
     }
@@ -306,6 +312,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
         $dbToolCollection = $container->get('liip_functional_test.services.database_tool_collection');
         $dbTool = $dbToolCollection->get($omName, $registryName, $purgeMode, $this);
+        $dbTool->setExcludedDoctrineTables($this->excludedDoctrineTables);
 
         return $dbTool->loadAliceFixture($paths, $append);
     }
@@ -610,5 +617,10 @@ abstract class WebTestCase extends BaseWebTestCase
     public function assertValidationErrors(array $expected, ContainerInterface $container)
     {
         HttpAssertions::assertValidationErrors($expected, $container);
+    }
+
+    public function setExcludedDoctrineTables(array $excludedDoctrineTables)
+    {
+        $this->excludedDoctrineTables = $excludedDoctrineTables;
     }
 }
