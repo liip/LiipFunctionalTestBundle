@@ -130,7 +130,7 @@ abstract class AbstractDatabaseTool
 
     /**
      * @param array $paths
-     * @param bool $append
+     * @param bool  $append
      * @return array
      */
     public function loadAliceFixture(array $paths = [], $append = false)

@@ -75,7 +75,7 @@ class ORMDatabaseTool extends AbstractDatabaseTool
             $cacheDriver->deleteAll();
         }
 
-        $backupServiceName = 'liip_functional_test.cache_db.' . $this->connection->getDatabasePlatform()->getName();
+        $backupServiceName = 'liip_functional_test.cache_db.'.$this->connection->getDatabasePlatform()->getName();
         if ($this->container->hasParameter($backupServiceName)) {
             $backupService = $this->container->get($this->container->getParameter($backupServiceName));
         }

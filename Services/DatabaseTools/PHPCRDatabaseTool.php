@@ -38,7 +38,7 @@ class PHPCRDatabaseTool extends AbstractDatabaseTool
     {
         $executorClass = class_exists('Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor')
             ? 'Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor'
-            : 'Doctrine\\Common\\DataFixtures\\Executor\\' . $this->getType() . 'Executor';
+            : 'Doctrine\\Common\\DataFixtures\\Executor\\'.$this->getType().'Executor';
 
         return new $executorClass($this->om, $purger, $initializerManager);
     }

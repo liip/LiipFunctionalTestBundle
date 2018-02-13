@@ -42,7 +42,7 @@ abstract class AbstractDatabaseBackup
     protected $metadatas;
 
     /**
-     * The fixture classnames
+     * The fixture classnames.
      *
      * @var array
      */
@@ -67,7 +67,7 @@ abstract class AbstractDatabaseBackup
     abstract public function getBackupName();
 
     /**
-     * @return boolean
+     * @return bool
      */
     abstract public function isBackupActual();
 

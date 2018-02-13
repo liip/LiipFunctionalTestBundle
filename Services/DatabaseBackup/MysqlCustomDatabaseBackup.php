@@ -29,7 +29,7 @@ class MysqlCustomDatabaseBackup extends AbstractDatabaseBackup
     public function isBackupActual()
     {
         $backupDBFileName = $this->getBackupName();
-        $backupReferenceFileName = $backupDBFileName . '.ser';
+        $backupReferenceFileName = $backupDBFileName.'.ser';
 
         return file_exists($backupDBFileName) && file_exists($backupReferenceFileName) && $this->isBackupUpToDate($backupDBFileName);
     }
@@ -47,7 +47,6 @@ class MysqlCustomDatabaseBackup extends AbstractDatabaseBackup
         $dbUser = isset($params['user']) ? $params['user'] : '';
         $dbPass = isset($params['password']) ? $params['password'] : '';
 
-        /** @var ORMExecutor $executor */
         $executor->getReferenceRepository()->save($this->getBackupName());
 
         exec("mysqldump -h $dbHost -u $dbUser -p$dbPass $dbName > {$this->getBackupName()}");

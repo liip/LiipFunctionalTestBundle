@@ -41,7 +41,7 @@ class SqliteDatabaseBackup extends AbstractDatabaseBackup
     public function isBackupActual()
     {
         $backupDBFileName = $this->getBackupName();
-        $backupReferenceFileName = $backupDBFileName . '.ser';
+        $backupReferenceFileName = $backupDBFileName.'.ser';
 
         return file_exists($backupDBFileName) && file_exists($backupReferenceFileName) && $this->isBackupUpToDate($backupDBFileName);
     }
