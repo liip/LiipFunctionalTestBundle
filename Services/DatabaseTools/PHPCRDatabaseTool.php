@@ -35,8 +35,9 @@ class PHPCRDatabaseTool extends AbstractDatabaseTool
     }
 
     /**
-     * @param PHPCRPurger|null $purger
+     * @param PHPCRPurger|null        $purger
      * @param InitializerManager|null $initializerManager
+     *
      * @return mixed
      */
     protected function getExecutor(PHPCRPurger $purger = null, InitializerManager $initializerManager = null)
