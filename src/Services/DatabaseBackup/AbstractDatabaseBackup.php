@@ -22,6 +22,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 abstract class AbstractDatabaseBackup
 {
     protected $container;
+
     protected $fixturesLoaderFactory;
 
     /**

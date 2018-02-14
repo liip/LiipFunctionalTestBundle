@@ -26,6 +26,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 abstract class AbstractDatabaseTool
 {
     protected $container;
+
     protected $fixturesLoaderFactory;
 
     /**
@@ -120,7 +121,6 @@ abstract class AbstractDatabaseTool
 
         return $this->container->get($persisterLoaderServiceName)->load($files);
     }
-
 
     protected function cleanDatabase(): void
     {
