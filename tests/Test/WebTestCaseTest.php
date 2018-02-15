@@ -345,6 +345,52 @@ EOF;
         );
     }
 
+    public function testAppendFixtures(): void
+    {
+        $this->loadFixtures([
+            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
+        ]);
+
+        $this->loadFixtures(
+            ['Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadSecondUserData'],
+            true
+        );
+
+        // Load data from database
+        $em = $this->getContainer()
+            ->get('doctrine.orm.entity_manager');
+
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        $user = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findOneBy([
+                'id' => 1,
+            ]);
+
+        $this->assertSame(
+            'foo@bar.com',
+            $user->getEmail()
+        );
+
+        $this->assertTrue(
+            $user->getEnabled()
+        );
+
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        $user = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findOneBy([
+                'id' => 3,
+            ]);
+
+        $this->assertSame(
+            'bar@foo.com',
+            $user->getEmail()
+        );
+
+        $this->assertTrue(
+            $user->getEnabled()
+        );
+    }
+
     /**
      * Load fixture which has a dependency.
      */
