@@ -21,11 +21,11 @@ use Doctrine\ORM\EntityManager;
  */
 class MysqlCustomDatabaseBackup extends AbstractDatabaseBackup
 {
-    static protected $referenceData;
+    protected static $referenceData;
 
-    static protected $sql;
+    protected static $sql;
 
-    static protected $metadata;
+    protected static $metadata;
 
     public function getBackupName()
     {
