@@ -64,11 +64,13 @@ class ORMSqlliteDatabaseTool extends ORMDatabaseTool
             }
         }
 
-        // TODO: handle case when using persistent connections. Fail loudly?
-        $schemaTool = new SchemaTool($this->om);
-        $schemaTool->dropDatabase();
-        if (!empty($this->getMetadatas())) {
-            $schemaTool->createSchema($this->getMetadatas());
+        if (false === $append) {
+            // TODO: handle case when using persistent connections. Fail loudly?
+            $schemaTool = new SchemaTool($this->om);
+            $schemaTool->dropDatabase();
+            if (!empty($this->getMetadatas())) {
+                $schemaTool->createSchema($this->getMetadatas());
+            }
         }
         $this->webTestCase->postFixtureSetup();
 
