@@ -81,17 +81,17 @@ class MysqlCustomDatabaseBackup extends AbstractDatabaseBackup
         $em = $executor->getReferenceRepository()->getManager();
         self::$metadata = $em->getMetadataFactory()->getLoadedMetadata();
 
-        exec("mysqldump -h $dbHost -u $dbUser -p$dbPass --no-create-info --skip-triggers --no-create-db $dbName > {$this->getBackupName()}");
+        exec("mysqldump -h $dbHost -u $dbUser -p$dbPass --no-create-db $dbName > {$this->getBackupName()}");
     }
 
     public function restore(AbstractExecutor $executor): void
     {
         $this->connection->query('SET FOREIGN_KEY_CHECKS = 0;');
-        $truncateSql = [];
+        $tables = [];
         foreach ($this->metadatas as $classMetadata) {
-            $truncateSql[] = 'TRUNCATE '.$classMetadata->table['name'];
+            $tables[] = $classMetadata->table['name'];
         }
-        $this->connection->query(implode(';', $truncateSql));
+        $this->connection->query('DROP TABLE IF EXISTS '.implode(',', $tables));
         $this->connection->query($this->getBackup());
         $this->connection->query('SET FOREIGN_KEY_CHECKS = 1;');
 
