@@ -123,7 +123,7 @@ class ORMDatabaseTool extends AbstractDatabaseTool
 
         // TODO: handle case when using persistent connections. Fail loudly?
         $schemaTool = new SchemaTool($this->om);
-        if (count($this->excludedDoctrineTables) > 0) {
+        if (count($this->excludedDoctrineTables) > 0 || true === $append) {
             if (!empty($this->getMetadatas())) {
                 $schemaTool->updateSchema($this->getMetadatas());
             }
