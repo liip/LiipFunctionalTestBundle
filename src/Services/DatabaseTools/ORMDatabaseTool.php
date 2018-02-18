@@ -15,8 +15,10 @@ use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\ProxyReferenceRepository;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Tools\SchemaTool;
 
 /**
  * @author Aleksey Tupichenkov <alekseytupichenkov@gmail.com>
@@ -49,6 +51,24 @@ class ORMDatabaseTool extends AbstractDatabaseTool
         return $purger;
     }
 
+    protected function createDatabaseIfNotExists(): void
+    {
+        $params = $this->connection->getParams();
+        if (isset($params['master'])) {
+            $params = $params['master'];
+        }
+        $dbName = isset($params['dbname']) ? $params['dbname'] : '';
+        unset($params['dbname']);
+        $tmpConnection = DriverManager::getConnection($params);
+        $tmpConnection->connect();
+
+        if (!in_array($dbName, $tmpConnection->getSchemaManager()->listDatabases())) {
+            $tmpConnection->getSchemaManager()->createDatabase($dbName);
+        }
+
+        $tmpConnection->close();
+    }
+
     protected function cleanDatabase(): void
     {
         $isMysql = ($this->connection->getDatabasePlatform() instanceof MySqlPlatform);
@@ -72,6 +92,8 @@ class ORMDatabaseTool extends AbstractDatabaseTool
         if ($cacheDriver) {
             $cacheDriver->deleteAll();
         }
+
+        $this->createDatabaseIfNotExists();
 
         $backupServiceName = 'liip_functional_test.cache_db.'.$this->connection->getDatabasePlatform()->getName();
         if ($this->container->hasParameter($backupServiceName)) {
@@ -98,6 +120,20 @@ class ORMDatabaseTool extends AbstractDatabaseTool
                 return $executor;
             }
         }
+
+        // TODO: handle case when using persistent connections. Fail loudly?
+        $schemaTool = new SchemaTool($this->om);
+        if (count($this->excludedDoctrineTables) > 0) {
+            if (!empty($this->getMetadatas())) {
+                $schemaTool->updateSchema($this->getMetadatas());
+            }
+        } else {
+            $schemaTool->dropDatabase();
+            if (!empty($this->getMetadatas())) {
+                $schemaTool->createSchema($this->getMetadatas());
+            }
+        }
+        $this->webTestCase->postFixtureSetup();
 
         $executor = $this->getExecutor($this->getPurger());
         $executor->setReferenceRepository($referenceRepository);

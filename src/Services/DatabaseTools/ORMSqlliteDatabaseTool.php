@@ -20,9 +20,9 @@ use Doctrine\ORM\Tools\SchemaTool;
  */
 class ORMSqlliteDatabaseTool extends ORMDatabaseTool
 {
-    public function getDatabasePlatform(): string
+    public function getDriverName(): string
     {
-        return 'sqlite';
+        return 'pdo_sqlite';
     }
 
     public function loadFixtures(array $classNames = [], bool $append = false): AbstractExecutor
@@ -37,7 +37,7 @@ class ORMSqlliteDatabaseTool extends ORMDatabaseTool
         if ($this->container->getParameter('liip_functional_test.cache_sqlite_db')) {
             $backupService = $this->container->get('liip_functional_test.services_database_backup.sqlite');
         } else {
-            $backupServiceName = 'liip_functional_test.cache_db'.$this->connection->getDriver()->getName();
+            $backupServiceName = 'liip_functional_test.cache_db'.$this->connection->getDatabasePlatform()->getName();
             if ($this->container->hasParameter($backupServiceName)) {
                 $backupService = $this->container->get($backupServiceName);
             }

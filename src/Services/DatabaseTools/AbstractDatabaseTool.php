@@ -96,7 +96,7 @@ abstract class AbstractDatabaseTool
 
     abstract public function getType(): string;
 
-    public function getDatabasePlatform(): string
+    public function getDriverName(): string
     {
         return 'default';
     }

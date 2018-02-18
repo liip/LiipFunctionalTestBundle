@@ -35,14 +35,14 @@ class DatabaseToolCollection
 
     public function add(AbstractDatabaseTool $databaseTool): void
     {
-        $this->items[$databaseTool->getType()][$databaseTool->getDatabasePlatform()] = $databaseTool;
+        $this->items[$databaseTool->getType()][$databaseTool->getDriverName()] = $databaseTool;
     }
 
     public function get($omName = null, $registryName = 'doctrine', $purgeMode = null, WebTestCase $webTestCase): AbstractDatabaseTool
     {
         /** @var ManagerRegistry $registry */
         $registry = $this->container->get($registryName);
-        $driverName = ('PHPCR' !== $registry->getName()) ? $registry->getConnection()->getDatabasePlatform()->getName() : 'default';
+        $driverName = ('ORM' === $registry->getName()) ? $registry->getConnection()->getDriver()->getName() : 'default';
 
         $databaseTool = isset($this->items[$registry->getName()][$driverName])
             ? $this->items[$registry->getName()][$driverName]
