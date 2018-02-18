@@ -22,7 +22,9 @@ use Doctrine\ORM\EntityManager;
 class MysqlCustomDatabaseBackup extends AbstractDatabaseBackup
 {
     static protected $referenceData;
+
     static protected $sql;
+
     static protected $metadata;
 
     public function getBackupName()
@@ -32,7 +34,7 @@ class MysqlCustomDatabaseBackup extends AbstractDatabaseBackup
 
     public function getReferenceBackupName()
     {
-        return $this->getBackupName() . '.ser';
+        return $this->getBackupName().'.ser';
     }
 
     protected function getBackup()
@@ -86,8 +88,8 @@ class MysqlCustomDatabaseBackup extends AbstractDatabaseBackup
     {
         $this->connection->query('SET FOREIGN_KEY_CHECKS = 0;');
         $truncateSql = [];
-        foreach($this->metadatas as $classMetadata) {
-            $truncateSql[] = 'TRUNCATE ' . $classMetadata->table['name'];
+        foreach ($this->metadatas as $classMetadata) {
+            $truncateSql[] = 'TRUNCATE '.$classMetadata->table['name'];
         }
         $this->connection->query(implode(';', $truncateSql));
         $this->connection->query($this->getBackup());
