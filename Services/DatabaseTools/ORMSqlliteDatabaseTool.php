@@ -22,9 +22,9 @@ class ORMSqlliteDatabaseTool extends ORMDatabaseTool
     /**
      * @return string
      */
-    public function getDatabasePlatform()
+    public function getDriverName()
     {
-        return 'sqlite';
+        return 'pdo_sqlite';
     }
 
     public function loadFixtures(array $classNames)
@@ -39,7 +39,7 @@ class ORMSqlliteDatabaseTool extends ORMDatabaseTool
         if ($this->container->getParameter('liip_functional_test.cache_sqlite_db')) {
             $backupService = $this->container->get('liip_functional_test.services_database_backup.sqlite');
         } else {
-            $backupServiceName = 'liip_functional_test.cache_db'.$this->connection->getDriver()->getName();
+            $backupServiceName = 'liip_functional_test.cache_db'.$this->connection->getDatabasePlatform()->getName();
             if ($this->container->hasParameter($backupServiceName)) {
                 $backupService = $this->container->get($backupServiceName);
             }

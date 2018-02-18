@@ -38,7 +38,7 @@ class DatabaseToolCollection
 
     public function add(AbstractDatabaseTool $databaseTool)
     {
-        $this->items[$databaseTool->getType()][$databaseTool->getDatabasePlatform()] = $databaseTool;
+        $this->items[$databaseTool->getType()][$databaseTool->getDriverName()] = $databaseTool;
     }
 
     /**
@@ -48,7 +48,8 @@ class DatabaseToolCollection
     {
         /** @var ManagerRegistry $registry */
         $registry = $this->container->get($registryName);
-        $driverName = ('PHPCR' !== $registry->getName()) ? $registry->getConnection()->getDatabasePlatform()->getName() : 'default';
+
+        $driverName = ('ORM' === $registry->getName()) ? $registry->getConnection()->getDriver()->getName() : 'default';
 
         $databaseTool = isset($this->items[$registry->getName()][$driverName])
             ? $this->items[$registry->getName()][$driverName]

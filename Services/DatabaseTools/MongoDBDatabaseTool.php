@@ -53,7 +53,7 @@ class MongoDBDatabaseTool extends AbstractDatabaseTool
             $cacheDriver->deleteAll();
         }
 
-        $backupServiceName = 'liip_functional_test.cache_db.'.$this->connection->getDatabasePlatform()->getName();
+        $backupServiceName = 'liip_functional_test.cache_db.default';
         if ($this->container->hasParameter($backupServiceName)) {
             $backupService = $this->container->get($this->container->getParameter($backupServiceName));
         }
