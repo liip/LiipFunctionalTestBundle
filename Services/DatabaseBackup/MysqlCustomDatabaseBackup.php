@@ -13,6 +13,7 @@ namespace Liip\FunctionalTestBundle\Services\DatabaseBackup;
 
 use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Tools\SchemaTool;
 
 /**
  * @author Aleksey Tupichenkov <alekseytupichenkov@gmail.com>
@@ -26,6 +27,8 @@ class MysqlCustomDatabaseBackup extends AbstractDatabaseBackup
     protected static $sql;
 
     protected static $metadata;
+
+    protected static $schemaUpdatedFlag = false;
 
     public function getBackupName()
     {
@@ -81,17 +84,31 @@ class MysqlCustomDatabaseBackup extends AbstractDatabaseBackup
         $em = $executor->getReferenceRepository()->getManager();
         self::$metadata = $em->getMetadataFactory()->getLoadedMetadata();
 
-        exec("mysqldump -h $dbHost -u $dbUser -p$dbPass --no-create-db $dbName > {$this->getBackupName()}");
+        exec("mysqldump -h $dbHost -u $dbUser -p$dbPass --no-create-info --skip-triggers --no-create-db --no-tablespaces --compact $dbName > {$this->getBackupName()}");
+    }
+
+    protected function updateSchemaIfNeed(AbstractExecutor $executor)
+    {
+        if (!self::$schemaUpdatedFlag) {
+            $schemaTool = new SchemaTool($executor->getReferenceRepository()->getManager());
+            $schemaTool->dropDatabase();
+            if (!empty($this->metadatas)) {
+                $schemaTool->createSchema($this->metadatas);
+            }
+
+            self::$schemaUpdatedFlag = true;
+        }
     }
 
     public function restore(AbstractExecutor $executor)
     {
         $this->connection->query('SET FOREIGN_KEY_CHECKS = 0;');
-        $tables = [];
+        $this->updateSchemaIfNeed($executor);
+        $truncateSql = [];
         foreach ($this->metadatas as $classMetadata) {
-            $tables[] = $classMetadata->table['name'];
+            $truncateSql[] = 'DELETE FROM '.$classMetadata->table['name']; // in small tables it's really faster than truncate
         }
-        $this->connection->query('DROP TABLE IF EXISTS '.implode(',', $tables));
+        $this->connection->query(implode(';', $truncateSql));
         $this->connection->query($this->getBackup());
         $this->connection->query('SET FOREIGN_KEY_CHECKS = 1;');
 
