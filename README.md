@@ -323,7 +323,7 @@ Tips for Fixture Loading Tests
     # app/config/config_test.yml
     liip_functional_test:
         cache_db:
-            sqlite: liip_functional_test.database_backup.sqllite
+            sqlite: liip_functional_test.database_backup.sqlite
             mysql: liip_functional_test.services_database_backup.mysql_custom
     ```
  
