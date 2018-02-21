@@ -76,12 +76,8 @@ class PHPCRDatabaseTool extends AbstractDatabaseTool
             $cacheDriver->deleteAll();
         }
 
-        $backupServiceName = 'liip_functional_test.cache_db.phpcr';
-        if ($this->container->hasParameter($backupServiceName)) {
-            $backupService = $this->container->get($this->container->getParameter($backupServiceName));
-        }
-
-        if (isset($backupService)) {
+        $backupService = $this->getBackupService();
+        if ($backupService) {
             $backupService->init($this->connection, $this->getMetadatas(), $classNames);
 
             if ($backupService->isBackupActual()) {
@@ -109,7 +105,7 @@ class PHPCRDatabaseTool extends AbstractDatabaseTool
         $loader = $this->fixturesLoaderFactory->getFixtureLoader($classNames);
         $executor->execute($loader->getFixtures(), true);
 
-        if (isset($backupService)) {
+        if ($backupService) {
             $this->webTestCase->preReferenceSave($this->om, $executor, $backupService->getBackupName());
             $backupService->backup($executor);
             $this->webTestCase->postReferenceSave($this->om, $executor, $backupService->getBackupName());

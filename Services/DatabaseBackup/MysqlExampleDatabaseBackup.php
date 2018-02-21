@@ -20,7 +20,7 @@ use Doctrine\ORM\Tools\SchemaTool;
  *
  * It's class created just for example that how to create database backup/restore service
  */
-class MysqlCustomDatabaseBackup extends AbstractDatabaseBackup
+class MysqlExampleDatabaseBackup extends AbstractDatabaseBackup implements DatabaseBackupInterface
 {
     protected static $referenceData;
 

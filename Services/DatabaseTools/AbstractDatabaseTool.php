@@ -14,6 +14,7 @@ namespace Liip\FunctionalTestBundle\Services\DatabaseTools;
 use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\DBAL\Connection;
+use Liip\FunctionalTestBundle\Services\DatabaseBackup\DatabaseBackupInterface;
 use Liip\FunctionalTestBundle\Services\FixturesLoaderFactory;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Nelmio\Alice\Fixtures;
@@ -120,6 +121,25 @@ abstract class AbstractDatabaseTool
     public function getDriverName()
     {
         return 'default';
+    }
+
+    /**
+     * @return DatabaseBackupInterface|null
+     */
+    protected function getBackupService()
+    {
+        $backupServiceParamName = strtolower('liip_functional_test.cache_db.'.(
+            ('ORM' === $this->registry->getName())
+                ? $this->connection->getDatabasePlatform()->getName()
+                : $this->getType()
+            ));
+        if ($this->container->hasParameter($backupServiceParamName)) {
+            $backupServiceName = $this->container->getParameter($backupServiceParamName);
+            if ($this->container->has($backupServiceName)) {
+                $backupService = $this->container->get($backupServiceName);
+            }
+        }
+        return (isset($backupService) && $backupService instanceof DatabaseBackupInterface) ? $backupService : null;
     }
 
     /**

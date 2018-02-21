@@ -38,8 +38,8 @@ class ConfigurationConfigTest extends ConfigurationTest
     {
         return [
             ['cache_sqlite_db', true],
-            ['cache_db.sqlite', 'liip_functional_test.database_backup.sqllite'],
-            ['cache_db.mysql', 'liip_functional_test.services_database_backup.mysql_custom'],
+            ['cache_db.sqlite', 'liip_functional_test.services_database_backup.sqlite'],
+            ['cache_db.mysql', 'liip_functional_test.services_database_backup.mysql_example'],
             ['command_verbosity', 'very_verbose'],
             ['command_decoration', false],
             ['query.max_query_count', 1],

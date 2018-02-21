@@ -103,12 +103,8 @@ class ORMDatabaseTool extends AbstractDatabaseTool
 
         $this->createDatabaseIfNotExists();
 
-        $backupServiceName = 'liip_functional_test.cache_db.'.$this->connection->getDatabasePlatform()->getName();
-        if ($this->container->hasParameter($backupServiceName)) {
-            $backupService = $this->container->get($this->container->getParameter($backupServiceName));
-        }
-
-        if (isset($backupService)) {
+        $backupService = $this->getBackupService();
+        if ($backupService) {
             $backupService->init($this->connection, $this->getMetadatas(), $classNames);
 
             if ($backupService->isBackupActual()) {
@@ -150,7 +146,7 @@ class ORMDatabaseTool extends AbstractDatabaseTool
         $loader = $this->fixturesLoaderFactory->getFixtureLoader($classNames);
         $executor->execute($loader->getFixtures(), true);
 
-        if (isset($backupService)) {
+        if ($backupService) {
             $this->webTestCase->preReferenceSave($this->om, $executor, $backupService->getBackupName());
             $backupService->backup($executor);
             $this->webTestCase->postReferenceSave($this->om, $executor, $backupService->getBackupName());
