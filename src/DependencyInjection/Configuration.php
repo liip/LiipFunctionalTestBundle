@@ -30,7 +30,6 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('liip_functional_test', 'array');
         $rootNode
             ->children()
-                ->booleanNode('cache_sqlite_db')->defaultFalse()->end()
                 ->arrayNode('cache_db')
                     ->addDefaultsIfNotSet()
                     ->ignoreExtraKeys(false)
