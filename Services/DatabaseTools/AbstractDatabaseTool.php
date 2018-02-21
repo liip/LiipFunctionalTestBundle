@@ -139,6 +139,7 @@ abstract class AbstractDatabaseTool
                 $backupService = $this->container->get($backupServiceName);
             }
         }
+
         return (isset($backupService) && $backupService instanceof DatabaseBackupInterface) ? $backupService : null;
     }
 
