@@ -46,7 +46,6 @@ class MongoDBDatabaseTool extends AbstractDatabaseTool
         }
 
         $backupService = $this->getBackupService();
-
         if ($backupService) {
             $backupService->init($this->connection, $this->getMetadatas(), $classNames);
 

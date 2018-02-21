@@ -27,7 +27,7 @@
             <argument type="service" id="service_container" />
             <argument type="service" id="liip_functional_test.services.fixtures_loader_factory" />
         </service>
-        <service id="liip_functional_test.services_database_tools.mongo_dbdatabase_tool" class="Liip\FunctionalTestBundle\Services\DatabaseTools\MongoDBDatabaseTool" public="false">
+        <service id="liip_functional_test.services_database_tools.mongodb_database_tool" class="Liip\FunctionalTestBundle\Services\DatabaseTools\MongoDBDatabaseTool" public="false">
             <argument type="service" id="service_container" />
             <argument type="service" id="liip_functional_test.services.fixtures_loader_factory" />
         </service>
@@ -45,7 +45,7 @@
                 <argument type="service" id="liip_functional_test.services_database_tools.orm_sqlite_database_tool" />
             </call>
             <call method="add">
-                <argument type="service" id="liip_functional_test.services_database_tools.mongo_dbdatabase_tool" />
+                <argument type="service" id="liip_functional_test.services_database_tools.mongodb_database_tool" />
             </call>
             <call method="add">
                 <argument type="service" id="liip_functional_test.services_database_tools.phpcr_database_tool" />
