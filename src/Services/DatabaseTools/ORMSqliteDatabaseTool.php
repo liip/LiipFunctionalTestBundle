@@ -18,7 +18,7 @@ use Doctrine\ORM\Tools\SchemaTool;
 /**
  * @author Aleksey Tupichenkov <alekseytupichenkov@gmail.com>
  */
-class ORMSqlliteDatabaseTool extends ORMDatabaseTool
+class ORMSqliteDatabaseTool extends ORMDatabaseTool
 {
     public function getDriverName(): string
     {
@@ -34,16 +34,8 @@ class ORMSqlliteDatabaseTool extends ORMDatabaseTool
             $cacheDriver->deleteAll();
         }
 
-        if ($this->container->getParameter('liip_functional_test.cache_sqlite_db')) {
-            $backupService = $this->container->get('liip_functional_test.services_database_backup.sqlite');
-        } else {
-            $backupServiceName = 'liip_functional_test.cache_db'.$this->connection->getDatabasePlatform()->getName();
-            if ($this->container->hasParameter($backupServiceName)) {
-                $backupService = $this->container->get($backupServiceName);
-            }
-        }
-
-        if (isset($backupService)) {
+        $backupService = $this->getBackupService();
+        if ($backupService) {
             $backupService->init($this->connection, $this->getMetadatas(), $classNames);
 
             if ($backupService->isBackupActual()) {
@@ -83,7 +75,7 @@ class ORMSqlliteDatabaseTool extends ORMDatabaseTool
         $loader = $this->fixturesLoaderFactory->getFixtureLoader($classNames);
         $executor->execute($loader->getFixtures(), true);
 
-        if (isset($backupService)) {
+        if ($backupService) {
             $this->webTestCase->preReferenceSave($this->om, $executor, $backupService->getBackupName());
             $backupService->backup($executor);
             $this->webTestCase->postReferenceSave($this->om, $executor, $backupService->getBackupName());

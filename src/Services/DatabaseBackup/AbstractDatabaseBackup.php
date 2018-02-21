@@ -11,7 +11,6 @@
 
 namespace Liip\FunctionalTestBundle\Services\DatabaseBackup;
 
-use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
 use Doctrine\DBAL\Connection;
 use Liip\FunctionalTestBundle\Services\FixturesLoaderFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -19,7 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * @author Aleksey Tupichenkov <alekseytupichenkov@gmail.com>
  */
-abstract class AbstractDatabaseBackup
+abstract class AbstractDatabaseBackup implements DatabaseBackupInterface
 {
     protected $container;
 
@@ -54,14 +53,6 @@ abstract class AbstractDatabaseBackup
         $this->metadatas = $metadatas;
         $this->classNames = $classNames;
     }
-
-    abstract public function getBackupName(): string;
-
-    abstract public function isBackupActual(): bool;
-
-    abstract public function backup(AbstractExecutor $executor): void;
-
-    abstract public function restore(AbstractExecutor $executor): void;
 
     /**
      * Determine if the Fixtures that define a database backup have been

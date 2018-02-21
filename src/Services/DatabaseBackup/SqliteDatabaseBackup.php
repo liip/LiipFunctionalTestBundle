@@ -16,11 +16,11 @@ use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
 /**
  * @author Aleksey Tupichenkov <alekseytupichenkov@gmail.com>
  */
-class SqliteDatabaseBackup extends AbstractDatabaseBackup
+class SqliteDatabaseBackup extends AbstractDatabaseBackup implements DatabaseBackupInterface
 {
     public function getBackupName(): string
     {
-        return $this->container->getParameter('kernel.cache_dir').'/test_sqllite_'.md5(serialize($this->metadatas).serialize($this->classNames)).'.db';
+        return $this->container->getParameter('kernel.cache_dir').'/test_sqlite_'.md5(serialize($this->metadatas).serialize($this->classNames)).'.db';
     }
 
     private function getDatabaseName(): string

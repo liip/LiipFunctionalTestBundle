@@ -45,12 +45,9 @@ class MongoDBDatabaseTool extends AbstractDatabaseTool
             $cacheDriver->deleteAll();
         }
 
-        $backupServiceName = 'liip_functional_test.cache_db.default';
-        if ($this->container->hasParameter($backupServiceName)) {
-            $backupService = $this->container->get($this->container->getParameter($backupServiceName));
-        }
+        $backupService = $this->getBackupService();
 
-        if (isset($backupService)) {
+        if ($backupService) {
             $backupService->init($this->connection, $this->getMetadatas(), $classNames);
 
             if ($backupService->isBackupActual()) {
@@ -80,7 +77,7 @@ class MongoDBDatabaseTool extends AbstractDatabaseTool
         $loader = $this->fixturesLoaderFactory->getFixtureLoader($classNames);
         $executor->execute($loader->getFixtures(), true);
 
-        if (isset($backupService)) {
+        if ($backupService) {
             $this->webTestCase->preReferenceSave($this->om, $executor, $backupService->getBackupName());
             $backupService->backup($executor);
             $this->webTestCase->postReferenceSave($this->om, $executor, $backupService->getBackupName());
