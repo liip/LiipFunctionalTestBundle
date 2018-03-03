@@ -17,7 +17,6 @@ use Doctrine\DBAL\Connection;
 use Liip\FunctionalTestBundle\Services\DatabaseBackup\DatabaseBackupInterface;
 use Liip\FunctionalTestBundle\Services\FixturesLoaderFactory;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
-use Nelmio\Alice\Fixtures;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 

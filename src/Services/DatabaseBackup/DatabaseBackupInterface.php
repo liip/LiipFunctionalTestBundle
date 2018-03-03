@@ -21,7 +21,7 @@ interface DatabaseBackupInterface
 {
     public function init(Connection $connection, array $metadatas, array $classNames): void;
 
-    public function getBackupName(): string;
+    public function getBackupFilePath(): string;
 
     public function isBackupActual(): bool;
 
