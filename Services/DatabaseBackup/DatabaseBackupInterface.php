@@ -24,7 +24,7 @@ interface DatabaseBackupInterface
     /**
      * @return string
      */
-    public function getBackupName();
+    public function getBackupFilePath();
 
     /**
      * @return bool

@@ -64,7 +64,7 @@ abstract class AbstractDatabaseBackup implements DatabaseBackupInterface
      * Determine if the Fixtures that define a database backup have been
      * modified since the backup was made.
      *
-     * @param string $backup The fixture backup SQLite database file path
+     * @param string $backup The fixture backup database file path
      *
      * @return bool TRUE if the backup was made since the modifications to the
      *              fixtures; FALSE otherwise

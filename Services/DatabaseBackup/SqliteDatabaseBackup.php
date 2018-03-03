@@ -18,7 +18,7 @@ use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
  */
 class SqliteDatabaseBackup extends AbstractDatabaseBackup implements DatabaseBackupInterface
 {
-    public function getBackupName()
+    public function getBackupFilePath()
     {
         return $this->container->getParameter('kernel.cache_dir').'/test_sqlite_'.md5(serialize($this->metadatas).serialize($this->classNames)).'.db';
     }
@@ -40,7 +40,7 @@ class SqliteDatabaseBackup extends AbstractDatabaseBackup implements DatabaseBac
 
     public function isBackupActual()
     {
-        $backupDBFileName = $this->getBackupName();
+        $backupDBFileName = $this->getBackupFilePath();
         $backupReferenceFileName = $backupDBFileName.'.ser';
 
         return file_exists($backupDBFileName) && file_exists($backupReferenceFileName) && $this->isBackupUpToDate($backupDBFileName);
@@ -48,13 +48,13 @@ class SqliteDatabaseBackup extends AbstractDatabaseBackup implements DatabaseBac
 
     public function backup(AbstractExecutor $executor)
     {
-        $executor->getReferenceRepository()->save($this->getBackupName());
-        copy($this->getDatabaseName(), $this->getBackupName());
+        $executor->getReferenceRepository()->save($this->getBackupFilePath());
+        copy($this->getDatabaseName(), $this->getBackupFilePath());
     }
 
     public function restore(AbstractExecutor $executor)
     {
-        copy($this->getBackupName(), $this->getDatabaseName());
-        $executor->getReferenceRepository()->load($this->getBackupName());
+        copy($this->getBackupFilePath(), $this->getDatabaseName());
+        $executor->getReferenceRepository()->load($this->getBackupFilePath());
     }
 }

@@ -133,6 +133,7 @@ abstract class AbstractDatabaseTool
                 ? $this->connection->getDatabasePlatform()->getName()
                 : $this->getType()
             ));
+
         if ($this->container->hasParameter($backupServiceParamName)) {
             $backupServiceName = $this->container->getParameter($backupServiceParamName);
             if ($this->container->has($backupServiceName)) {

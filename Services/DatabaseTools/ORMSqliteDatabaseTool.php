@@ -53,11 +53,11 @@ class ORMSqliteDatabaseTool extends ORMDatabaseTool
                 $this->om->flush();
                 $this->om->clear();
 
-                $this->webTestCase->preFixtureBackupRestore($this->om, $referenceRepository, $backupService->getBackupName());
+                $this->webTestCase->preFixtureBackupRestore($this->om, $referenceRepository, $backupService->getBackupFilePath());
                 $executor = $this->getExecutor($this->getPurger());
                 $executor->setReferenceRepository($referenceRepository);
                 $backupService->restore($executor);
-                $this->webTestCase->postFixtureBackupRestore($backupService->getBackupName());
+                $this->webTestCase->postFixtureBackupRestore($backupService->getBackupFilePath());
 
                 return $executor;
             }
@@ -79,9 +79,9 @@ class ORMSqliteDatabaseTool extends ORMDatabaseTool
         $executor->execute($loader->getFixtures(), true);
 
         if ($backupService) {
-            $this->webTestCase->preReferenceSave($this->om, $executor, $backupService->getBackupName());
+            $this->webTestCase->preReferenceSave($this->om, $executor, $backupService->getBackupFilePath());
             $backupService->backup($executor);
-            $this->webTestCase->postReferenceSave($this->om, $executor, $backupService->getBackupName());
+            $this->webTestCase->postReferenceSave($this->om, $executor, $backupService->getBackupFilePath());
         }
 
         return $executor;
