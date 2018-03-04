@@ -43,7 +43,7 @@ class ORMSqliteDatabaseTool extends ORMDatabaseTool
         }
 
         if ($backupService) {
-            $backupService->init($this->connection, $this->getMetadatas(), $classNames);
+            $backupService->init($this->getMetadatas(), $classNames);
 
             if ($backupService->isBackupActual()) {
                 if (null !== $this->connection) {

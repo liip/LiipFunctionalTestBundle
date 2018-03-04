@@ -12,6 +12,8 @@
 namespace Liip\FunctionalTestBundle\Services\DatabaseBackup;
 
 use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
+use Doctrine\DBAL\Connection;
+use Doctrine\ORM\EntityManager;
 
 /**
  * @author Aleksey Tupichenkov <alekseytupichenkov@gmail.com>
@@ -23,9 +25,9 @@ class SqliteDatabaseBackup extends AbstractDatabaseBackup implements DatabaseBac
         return $this->container->getParameter('kernel.cache_dir').'/test_sqlite_'.md5(serialize($this->metadatas).serialize($this->classNames)).'.db';
     }
 
-    private function getDatabaseName()
+    private function getDatabaseName(Connection $connection)
     {
-        $params = $this->connection->getParams();
+        $params = $connection->getParams();
         if (isset($params['master'])) {
             $params = $params['master'];
         }
@@ -48,13 +50,21 @@ class SqliteDatabaseBackup extends AbstractDatabaseBackup implements DatabaseBac
 
     public function backup(AbstractExecutor $executor)
     {
+        /** @var EntityManager $em */
+        $em = $executor->getReferenceRepository()->getManager();
+        $connection = $em->getConnection();
+
         $executor->getReferenceRepository()->save($this->getBackupFilePath());
-        copy($this->getDatabaseName(), $this->getBackupFilePath());
+        copy($this->getDatabaseName($connection), $this->getBackupFilePath());
     }
 
     public function restore(AbstractExecutor $executor)
     {
-        copy($this->getBackupFilePath(), $this->getDatabaseName());
+        /** @var EntityManager $em */
+        $em = $executor->getReferenceRepository()->getManager();
+        $connection = $em->getConnection();
+
+        copy($this->getBackupFilePath(), $this->getDatabaseName($connection));
         $executor->getReferenceRepository()->load($this->getBackupFilePath());
     }
 }
