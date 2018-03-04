@@ -21,6 +21,8 @@ use Doctrine\Common\DataFixtures\Purger\MongoDBPurger;
  */
 class MongoDBDatabaseTool extends AbstractDatabaseTool
 {
+    protected static $databaseCreated = false;
+
     public function getType(): string
     {
         return 'MongoDB';
@@ -36,6 +38,16 @@ class MongoDBDatabaseTool extends AbstractDatabaseTool
         return new MongoDBPurger();
     }
 
+    protected function createDatabaseOnce(): void
+    {
+        if (!self::$databaseCreated) {
+            $sm = $this->om->getSchemaManager();
+            $sm->createDatabases();
+            $sm->updateIndexes();
+            self::$databaseCreated = true;
+        }
+    }
+
     public function loadFixtures(array $classNames = [], bool $append = false): AbstractExecutor
     {
         $referenceRepository = new ProxyReferenceRepository($this->om);
@@ -45,9 +57,11 @@ class MongoDBDatabaseTool extends AbstractDatabaseTool
             $cacheDriver->deleteAll();
         }
 
+        $this->createDatabaseOnce();
+
         $backupService = $this->getBackupService();
         if ($backupService) {
-            $backupService->init($this->connection, $this->getMetadatas(), $classNames);
+            $backupService->init($this->getMetadatas(), $classNames);
 
             if ($backupService->isBackupActual()) {
                 if (null !== $this->connection) {

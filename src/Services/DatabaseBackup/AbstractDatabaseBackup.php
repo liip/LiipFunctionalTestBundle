@@ -11,7 +11,6 @@
 
 namespace Liip\FunctionalTestBundle\Services\DatabaseBackup;
 
-use Doctrine\DBAL\Connection;
 use Liip\FunctionalTestBundle\Services\FixturesLoaderFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -23,11 +22,6 @@ abstract class AbstractDatabaseBackup implements DatabaseBackupInterface
     protected $container;
 
     protected $fixturesLoaderFactory;
-
-    /**
-     * @var Connection
-     */
-    protected $connection;
 
     /**
      * @var array
@@ -47,9 +41,8 @@ abstract class AbstractDatabaseBackup implements DatabaseBackupInterface
         $this->fixturesLoaderFactory = $fixturesLoaderFactory;
     }
 
-    public function init(Connection $connection, array $metadatas, array $classNames): void
+    public function init(array $metadatas, array $classNames): void
     {
-        $this->connection = $connection;
         $this->metadatas = $metadatas;
         $this->classNames = $classNames;
     }

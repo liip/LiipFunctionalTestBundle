@@ -174,14 +174,16 @@ abstract class AbstractDatabaseTool
 
     protected function getMetadatas(): array
     {
-        if (!isset(self::$cachedMetadatas[$this->omName])) {
-            self::$cachedMetadatas[$this->omName] = $this->om->getMetadataFactory()->getAllMetadata();
-            usort(self::$cachedMetadatas[$this->omName], function ($a, $b) {
+        $key = $this->getDriverName().$this->getType().$this->omName;
+
+        if (!isset(self::$cachedMetadatas[$key])) {
+            self::$cachedMetadatas[$key] = $this->om->getMetadataFactory()->getAllMetadata();
+            usort(self::$cachedMetadatas[$key], function ($a, $b) {
                 return strcmp($a->name, $b->name);
             });
         }
 
-        return self::$cachedMetadatas[$this->omName];
+        return self::$cachedMetadatas[$key];
     }
 
     public function setExcludedDoctrineTables(array $excludedDoctrineTables): void

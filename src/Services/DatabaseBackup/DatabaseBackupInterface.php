@@ -12,14 +12,13 @@
 namespace Liip\FunctionalTestBundle\Services\DatabaseBackup;
 
 use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
-use Doctrine\DBAL\Connection;
 
 /**
  * @author Aleksey Tupichenkov <alekseytupichenkov@gmail.com>
  */
 interface DatabaseBackupInterface
 {
-    public function init(Connection $connection, array $metadatas, array $classNames): void;
+    public function init(array $metadatas, array $classNames): void;
 
     public function getBackupFilePath(): string;
 
