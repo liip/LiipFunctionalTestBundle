@@ -329,12 +329,17 @@ Tips for Fixture Loading Tests
     # app/config/config_test.yml
     liip_functional_test:
         cache_db:
-            mysql: ...
-            mongodb: ...
+            mysql: liip_functional_test.services_database_backup.mysql
+            mongodb: liip_functional_test.services_database_backup.mongodb
             phpcr: ...
             db2: ...
             [Other \Doctrine\DBAL\Platforms\AbstractPlatform name]: ... 
     ```
+    
+    **Attention: `liip_functional_test.services_database_backup.mysql` required `mysql-client` installed on server.**
+
+    **Attention: `liip_functional_test.services_database_backup.mongodb` required `mongodb-clients` installed on server.**
+
  
  4. Load your Doctrine fixtures in your tests:
 
