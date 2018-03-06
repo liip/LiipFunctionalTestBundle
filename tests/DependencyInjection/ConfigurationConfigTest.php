@@ -39,7 +39,7 @@ class ConfigurationConfigTest extends ConfigurationTest
     public function parametersProvider(): array
     {
         return [
-            ['cache_sqlite_db', true],
+            ['cache_db.sqlite', 'liip_functional_test.services_database_backup.sqlite'],
             ['command_verbosity', 'very_verbose'],
             ['command_decoration', false],
             ['query.max_query_count', 1],

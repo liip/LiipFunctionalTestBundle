@@ -55,7 +55,7 @@ class ConfigurationTest extends WebTestCase
     public function parametersProvider(): array
     {
         return [
-            ['cache_sqlite_db', false],
+            ['cache_db.sqlite', null],
             ['command_verbosity', 'normal'],
             ['command_decoration', true],
             ['query.max_query_count', null],

@@ -313,10 +313,27 @@ Tips for Fixture Loading Tests
     ```yaml
     # app/config/config_test.yml
     liip_functional_test:
-        cache_sqlite_db: true
+        cache_db:
+            sqlite: liip_functional_test.services_database_backup.sqlite
     ```
 
- 3. Load your Doctrine fixtures in your tests:
+ 3. For create custom database cache service:
+ 
+    Create cache class, implement `\Liip\FunctionalTestBundle\Services\DatabaseBackup\DatabaseBackupInterface` and add it to config
+    
+    For example:
+    ```yaml
+    # app/config/config_test.yml
+    liip_functional_test:
+        cache_db:
+            mysql: ...
+            mongodb: ... 
+            phpcr: ...
+            db2: ...
+            [Other \Doctrine\DBAL\Platforms\AbstractPlatform name]: ...
+    ```
+ 
+ 4. Load your Doctrine fixtures in your tests:
 
     ```php
     use Liip\FunctionalTestBundle\Test\WebTestCase;
@@ -339,7 +356,7 @@ Tips for Fixture Loading Tests
     }
     ```
 
- 4. If you don't need any fixtures to be loaded and just want to start off with
+ 5. If you don't need any fixtures to be loaded and just want to start off with
     an empty database (initialized with your schema), you can simply call
     `loadFixtures` without any argument.
 
@@ -359,7 +376,7 @@ Tips for Fixture Loading Tests
     }
     ```
 
- 5. Given that you want to exclude some of your doctrine tables from being purged
+ 6. Given that you want to exclude some of your doctrine tables from being purged
     when loading the fixtures, you can do so by passing an array of tablenames 
     to the `setExcludedDoctrineTables` method before loading the fixtures.
 
@@ -379,7 +396,7 @@ Tips for Fixture Loading Tests
     }
     ```
 
- 6. If you want to append fixtures instead of clean database and load them, you have
+ 7. If you want to append fixtures instead of clean database and load them, you have
  to consider use the second parameter $append with value true.
 
     ```php
@@ -398,7 +415,7 @@ Tips for Fixture Loading Tests
         }
     ```
 
- 7. This bundle uses Doctrine ORM by default. If you are using another driver just
+ 8. This bundle uses Doctrine ORM by default. If you are using another driver just
     specify the service id of the registry manager:
 
     ```php
