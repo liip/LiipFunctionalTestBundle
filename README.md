@@ -25,6 +25,24 @@ This Bundle provides base classes for functional tests to assist in setting up
 test-databases, loading fixtures and HTML5 validation.  It also provides a DI
 aware mock builder for unit tests.
 
+Versions
+--------
+
+We are currently working on the `2.x` release.
+
+If you are using PHPUnit 7 or later, or Symfony 4, you MUST require version
+2.0 of this bundle:
+
+```bash
+$ composer require --dev liip/functional-test-bundle:~2.0@alpha
+```
+
+Please see the [upgrade guide for 2.0](https://github.com/liip/LiipFunctionalTestBundle/blob/2.x/UPGRADE-2.0.md)
+
+The `1.x` or `master` branch is in maintenance mode, bug fixes will be accepted but
+new features or refactorings will be refused. 
+
+
 Installation
 ------------
 
@@ -40,9 +58,6 @@ Installation
     This command requires you to have Composer installed globally, as explained
     in the [installation chapter](https://getcomposer.org/doc/00-intro.md)
     of the Composer documentation.
-    
-    Note: if you are using PHPUnit 7 or later, you MUST require at least version
-    2.0 of this bundle; the 1.x versions are incompatible.
 
  2. Enable the Bundle
 
