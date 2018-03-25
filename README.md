@@ -34,7 +34,7 @@ Installation
     following command to download the latest stable version of this bundle:
 
     ```bash
-    $ composer require --dev liip/functional-test-bundle
+    $ composer require --dev liip/functional-test-bundle:~1.9.4
     ```
 
     This command requires you to have Composer installed globally, as explained
