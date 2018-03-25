@@ -348,8 +348,7 @@ class WebTestCaseConfigTest extends WebTestCase
 
         $dependentFixtureFilemtime = filemtime($dependentFixtureFilePath);
 
-        $databaseFilePath = $this->getContainer()->getParameter('kernel.cache_dir')
-            .'/test_'.$md5.'.db';
+        $databaseFilePath = $this->getContainer()->getParameter('kernel.cache_dir').'/test_sqlite_'.$md5.'.db';
 
         if (!is_file($databaseFilePath)) {
             $this->markTestSkipped($databaseFilePath.' is not a file.');
