@@ -25,6 +25,7 @@ use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ResettableContainerInterface;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -553,5 +554,20 @@ abstract class WebTestCase extends BaseWebTestCase
     public function setExcludedDoctrineTables(array $excludedDoctrineTables): void
     {
         $this->excludedDoctrineTables = $excludedDoctrineTables;
+    }
+
+    protected function tearDown()
+    {
+        if (null !== $this->containers) {
+            foreach ($this->containers as $container) {
+                if ($container instanceof ResettableContainerInterface) {
+                    $container->reset();
+                }
+            }
+        }
+
+        $this->containers = null;
+
+        parent::tearDown();
     }
 }
