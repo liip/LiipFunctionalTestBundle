@@ -5,8 +5,11 @@ This is the list of actions that you need to take when upgrading this bundle fro
 
  *  Since 1.x uses `nelmio/alice` <= 2 and 2.0 switched to 3 with `theofidry/alice-data-fixtures`: 
     ```bash
+    # If you had “nelmio/alice” installed:
     composer remove --dev nelmio/alice
     composer require --dev liip/functional-test-bundle "~2.0"
+    # If you had “nelmio/alice” installed:
+    composer require --dev theofidry/alice-data-fixtures
     ```
 
  *  The interface of `LoadFixtures` had to be changed to allow append fixtures. The main difference is it had been added
