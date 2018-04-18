@@ -77,3 +77,11 @@ security:
             provider: chain_provider
     access_control:
         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+
+services:
+    Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadDependentUserWithServiceData:
+        autowire: true
+        tags: [doctrine.fixture.orm]
+    Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserWithServiceData:
+        autowire: true
+        tags: [doctrine.fixture.orm]
