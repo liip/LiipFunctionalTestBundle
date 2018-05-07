@@ -14,6 +14,16 @@
             <argument type="service" id="liip_functional_test.services.fixtures_loader_factory" />
         </service>
 
+        <service id="liip_functional_test.services_database_backup.mysql" class="Liip\FunctionalTestBundle\Services\DatabaseBackup\MysqlDatabaseBackup" public="true">
+            <argument type="service" id="service_container" />
+            <argument type="service" id="liip_functional_test.services.fixtures_loader_factory" />
+        </service>
+
+        <service id="liip_functional_test.services_database_backup.mongodb" class="Liip\FunctionalTestBundle\Services\DatabaseBackup\MongodbDatabaseBackup" public="true">
+            <argument type="service" id="service_container" />
+            <argument type="service" id="liip_functional_test.services.fixtures_loader_factory" />
+        </service>
+
         <service id="liip_functional_test.services_database_tools.orm_database_tool" class="Liip\FunctionalTestBundle\Services\DatabaseTools\ORMDatabaseTool" public="false">
             <argument type="service" id="service_container" />
             <argument type="service" id="liip_functional_test.services.fixtures_loader_factory" />
