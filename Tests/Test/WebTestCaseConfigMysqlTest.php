@@ -11,6 +11,7 @@
 
 namespace Liip\FunctionalTestBundle\Tests\Test;
 
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\Tools\SchemaTool;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 
@@ -33,6 +34,10 @@ use Liip\FunctionalTestBundle\Test\WebTestCase;
  */
 class WebTestCaseConfigMysqlTest extends WebTestCase
 {
+    const FIXTURES_ARRAY = [
+        '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml',
+    ];
+
     protected static function getKernelClass()
     {
         require_once __DIR__.'/../AppConfigMysql/AppConfigMysqlKernel.php';
@@ -120,9 +125,6 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
     /**
      * Data fixtures and purge.
      *
-     * Purge modes are defined in
-     * Doctrine\Common\DataFixtures\Purger\ORMPurger.
-     *
      * @group mysql
      */
     public function testLoadFixturesAndExcludeFromPurge()
@@ -160,9 +162,6 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
     /**
      * Data fixtures and purge.
      *
-     * Purge modes are defined in
-     * Doctrine\Common\DataFixtures\Purger\ORMPurger.
-     *
      * @group mysql
      */
     public function testLoadFixturesAndPurge()
@@ -186,8 +185,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
                 ->findAll())
         );
 
-        // 1 → ORMPurger::PURGE_MODE_DELETE
-        $this->loadFixtures([], null, 'doctrine', 1);
+        $this->loadFixtures([], null, 'doctrine', ORMPurger::PURGE_MODE_DELETE);
 
         // The purge worked: there is no user.
         $this->assertSame(
@@ -208,8 +206,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
                 ->findAll())
         );
 
-        // 2 → ORMPurger::PURGE_MODE_TRUNCATE
-        $this->loadFixtures([], null, 'doctrine', 2);
+        $this->loadFixtures([], null, 'doctrine', ORMPurger::PURGE_MODE_TRUNCATE);
 
         // The purge worked: there is no user.
         $this->assertSame(
@@ -217,6 +214,86 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
             count($em->getRepository('LiipFunctionalTestBundle:User')
                 ->findAll())
         );
+    }
+
+    /**
+     * Data fixtures and purge delete: auto-increments are not reset.
+     *
+     * @group mysql
+     */
+    public function testLoadFixturesFilesAndPurgeDelete()
+    {
+        $this->loadDefaultData();
+
+        // The default behaviour is to delete data from tables
+        $fixtures = $this->loadFixtureFiles(self::FIXTURES_ARRAY, false, null, 'doctrine', ORMPurger::PURGE_MODE_DELETE);
+
+        $em = $this->getContainer()
+            ->get('doctrine.orm.entity_manager');
+
+        // Check that there are 10 users in database.
+        $this->assertSame(
+            10,
+            count($em->getRepository('LiipFunctionalTestBundle:User')
+                ->findAll())
+        );
+
+        // Check that ids go from 11 to 20
+        $id = 11;
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        foreach ($fixtures as $user) {
+            $this->assertSame($id++, $user->getId());
+        }
+
+        // Check that ids in database go from 11 to 20
+        $usersInDb = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findAll();
+
+        $id = 11;
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        foreach ($usersInDb as $user) {
+            $this->assertSame($id++, $user->getId());
+        }
+    }
+
+    /**
+     * Data fixtures and purge truncate: auto-increments are reset.
+     *
+     * @group mysql
+     */
+    public function testLoadFixturesFilesAndPurgeTruncate()
+    {
+        $this->loadDefaultData();
+
+        // Truncate data instead of deleting it
+        $fixtures = $this->loadFixtureFiles(self::FIXTURES_ARRAY, false, null, 'doctrine', ORMPurger::PURGE_MODE_TRUNCATE);
+
+        $em = $this->getContainer()
+            ->get('doctrine.orm.entity_manager');
+
+        /// Check that there are 10 users in database.
+        $this->assertSame(
+            10,
+            count($em->getRepository('LiipFunctionalTestBundle:User')
+                ->findAll())
+        );
+
+        // Check that ids go from 1 to 10
+        $id = 1;
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        foreach ($fixtures as $user) {
+            $this->assertSame($id++, $user->getId());
+        }
+
+        $usersInDb = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findAll();
+
+        // Check that ids in database go from 1 to 10
+        $id = 1;
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        foreach ($usersInDb as $user) {
+            $this->assertSame($id++, $user->getId());
+        }
     }
 
     /**
@@ -270,5 +347,38 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
         $this->assertTrue(
             $user->getEnabled()
         );
+    }
+
+    private function loadDefaultData()
+    {
+        $fixtures = $this->loadFixtureFiles(self::FIXTURES_ARRAY);
+
+        $this->assertInternalType(
+            'array',
+            $fixtures
+        );
+
+        // 10 users are loaded
+        $this->assertCount(
+            10,
+            $fixtures
+        );
+
+        $em = $this->getContainer()
+            ->get('doctrine.orm.entity_manager');
+
+        // Check that there are 10 users in database.
+        $this->assertSame(
+            10,
+            count($em->getRepository('LiipFunctionalTestBundle:User')
+                ->findAll())
+        );
+
+        // Check that ids go from 1 to 10
+        $id = 1;
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        foreach ($fixtures as $user) {
+            $this->assertSame($id++, $user->getId());
+        }
     }
 }
