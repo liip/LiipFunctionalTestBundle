@@ -22,6 +22,10 @@ use PHPUnit\Framework\AssertionFailedError;
 
 class WebTestCaseTest extends WebTestCase
 {
+    const FIXTURES_ARRAY = [
+        '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml',
+    ];
+
     /** @var \Symfony\Bundle\FrameworkBundle\Client client */
     private $client = null;
 
@@ -433,30 +437,77 @@ EOF;
     }
 
     /**
-     * Use nelmio/alice with PURGE_MODE_TRUNCATE.
-     *
-     * @depends testLoadFixturesFiles
+     * Data fixtures and purge delete: auto-increments are not reset.
      */
-    public function testLoadFixturesFilesWithPurgeModeTruncate()
+    public function testLoadFixturesFilesAndPurgeDelete()
     {
-        $fixtures = $this->loadFixtureFiles([
-            '@LiipFunctionalTestBundle/Tests/App/DataFixtures/ORM/user.yml',
-        ], true, null, 'doctrine', ORMPurger::PURGE_MODE_TRUNCATE);
+        $this->loadDefaultData();
 
-        $this->assertInternalType(
-            'array',
-            $fixtures
-        );
+        // The default behaviour is to delete data from tables
+        $fixtures = $this->loadFixtureFiles(self::FIXTURES_ARRAY, false, null, 'doctrine', ORMPurger::PURGE_MODE_DELETE);
 
-        // 10 users are loaded
-        $this->assertCount(
+        $em = $this->getContainer()
+            ->get('doctrine.orm.entity_manager');
+
+        // Check that there are 10 users in database.
+        $this->assertSame(
             10,
-            $fixtures
+            count($em->getRepository('LiipFunctionalTestBundle:User')
+                ->findAll())
         );
 
+        // Check that ids go from 11 to 20
+        $id = 11;
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        foreach ($fixtures as $user) {
+            $this->assertSame($id++, $user->getId());
+        }
+
+        // Check that ids in database go from 11 to 20
+        $usersInDb = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findAll();
+
+        $id = 11;
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        foreach ($usersInDb as $user) {
+            $this->assertSame($id++, $user->getId());
+        }
+    }
+
+    /**
+     * Use nelmio/alice with PURGE_MODE_TRUNCATE: auto-increments are reset.
+     */
+    public function testLoadFixturesFilesAndPurgeTruncate()
+    {
+        $this->loadDefaultData();
+
+        // Truncate data instead of deleting it
+        $fixtures = $this->loadFixtureFiles(self::FIXTURES_ARRAY, false, null, 'doctrine', ORMPurger::PURGE_MODE_TRUNCATE);
+
+        $em = $this->getContainer()
+            ->get('doctrine.orm.entity_manager');
+
+        /// Check that there are 10 users in database.
+        $this->assertSame(
+            10,
+            count($em->getRepository('LiipFunctionalTestBundle:User')
+                ->findAll())
+        );
+
+        // Check that ids go from 1 to 10
         $id = 1;
         /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
         foreach ($fixtures as $user) {
+            $this->assertSame($id++, $user->getId());
+        }
+
+        $usersInDb = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findAll();
+
+        // Check that ids in database go from 1 to 10
+        $id = 1;
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        foreach ($usersInDb as $user) {
             $this->assertSame($id++, $user->getId());
         }
     }
@@ -733,5 +784,38 @@ EOF;
         parent::tearDown();
 
         $this->client = null;
+    }
+
+    private function loadDefaultData()
+    {
+        $fixtures = $this->loadFixtureFiles(self::FIXTURES_ARRAY);
+
+        $this->assertInternalType(
+            'array',
+            $fixtures
+        );
+
+        // 10 users are loaded
+        $this->assertCount(
+            10,
+            $fixtures
+        );
+
+        $em = $this->getContainer()
+            ->get('doctrine.orm.entity_manager');
+
+        // Check that there are 10 users in database.
+        $this->assertSame(
+            10,
+            count($em->getRepository('LiipFunctionalTestBundle:User')
+                ->findAll())
+        );
+
+        // Check that ids go from 1 to 10
+        $id = 1;
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        foreach ($fixtures as $user) {
+            $this->assertSame($id++, $user->getId());
+        }
     }
 }
