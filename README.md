@@ -89,21 +89,28 @@ Installation
     ```
 
  3. Enable the `functionalTest` service adding the following empty configuration:
-
-    ```yaml
-    # app/config/config_test.yml
-    liip_functional_test: ~
-    ```
-    Ensure that the framework is using the filesystem for session storage:
-
-    ```yaml
-    # app/config/config_test.yml
-    framework:
-        test: ~
-        session:
-            storage_id: session.storage.mock_file
-    ```
-
+    * For symfony 3:
+        ```yaml
+        # app/config/config_test.yml
+        liip_functional_test: ~
+        ```
+        Ensure that the framework is using the filesystem for session storage:
+    
+        ```yaml
+        # app/config/config_test.yml
+        framework:
+            test: ~
+            session:
+                storage_id: session.storage.mock_file
+        ```
+    * For symfony 4:
+        ```yaml
+        # config/packages/test/framework.yaml
+        framework:
+            test: true
+            session:
+                storage_id: session.storage.mock_file
+        ```
 Basic usage
 -----------
 
@@ -242,7 +249,8 @@ Command Tests
 If you need to test commands, you might need to tweak the output to your needs.
 You can adjust the command verbosity:
 ```yaml
-# app/config/config_test.yml
+# sf3: app/config/config_test.yml
+# sf4: config/packages/test/framework.yaml
 liip_functional_test:
     command_verbosity: debug
 ```
@@ -265,7 +273,8 @@ class MyTestCase extends WebTestCase {
 Depending where your tests are running, you might want to disable the output
 decorator:
 ```yaml
-# app/config/config_test.yml
+# sf3: app/config/config_test.yml
+# sf4: config/packages/test/framework.yaml
 liip_functional_test:
     command_decoration: false
 ```
@@ -309,16 +318,25 @@ Tips for Fixture Loading Tests
     test-environment to use a SQLite-database. This will make your tests run
     faster and will create a fresh, predictable database for every test you run.
 
-    ```yaml
-    # app/config/config_test.yml
-    doctrine:
-        dbal:
-            default_connection: default
-            connections:
-                default:
-                    driver:   pdo_sqlite
-                    path:     %kernel.cache_dir%/test.db
-    ```
+    * For symfony 3 add those lines to `app/config/config_test.yml`:
+        ```yaml
+        # app/config/config_test.yml
+        doctrine:
+            dbal:
+                default_connection: default
+                connections:
+                    default:
+                        driver:   pdo_sqlite
+                        path:     %kernel.cache_dir%/test.db
+        ```
+    
+    * For symfony 4 create file if it doesn't exists `config/packages/test/doctrine.yaml`, and if it does append those lines:
+        ```yaml
+        # config/packages/test/doctrine.yaml
+        doctrine:
+            dbal:
+                url: %kernel.cache_dir%/test.db
+        ```
 
     NB: If you have an existing Doctrine configuration which uses slaves be sure to separate out the configuration for the slaves. Further detail is provided at the bottom of this README.
 
@@ -329,7 +347,8 @@ Tips for Fixture Loading Tests
     **Attention: you need Doctrine >= 2.2 to use this feature.**
 
     ```yaml
-    # app/config/config_test.yml
+    # sf3: app/config/config_test.yml
+    # sf4: config/packages/test/framework.yaml
     liip_functional_test:
         cache_sqlite_db: true
     ```
