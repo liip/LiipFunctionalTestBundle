@@ -328,20 +328,19 @@ Tips for Fixture Loading Tests
     and re-load them when required.
 
     **Attention: you need Doctrine >= 2.2 to use this feature.**
-    
+
     ```yaml
     # sf3: app/config/config_test.yml
     # sf4: config/packages/test/framework.yaml
     liip_functional_test:
         cache_db:
             sqlite: liip_functional_test.services_database_backup.sqlite
-
     ```
 
  3. For create custom database cache service:
  
     Create cache class, implement `\Liip\FunctionalTestBundle\Services\DatabaseBackup\DatabaseBackupInterface` and add it to config
-    
+
     For example:
     ```yaml
     # app/config/config_test.yml
