@@ -37,7 +37,7 @@ If you are using PHPUnit 7 or later, or Symfony 4, you MUST require version
 $ composer require --dev liip/functional-test-bundle:~2.0@alpha
 ```
 
-Please see the [upgrade guide for 2.0](https://github.com/liip/LiipFunctionalTestBundle/blob/2.x/UPGRADE-2.0.md)
+Please see the [documentation for 2.0](https://github.com/liip/LiipFunctionalTestBundle/blob/2.x/README.md) and  [upgrade guide for 2.0](https://github.com/liip/LiipFunctionalTestBundle/blob/2.x/UPGRADE-2.0.md)
 
 The `1.x` or `master` branch is in maintenance mode, bug fixes will be accepted but
 new features or refactorings will be refused. 
