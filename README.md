@@ -509,8 +509,18 @@ $fixtures = $this->loadFixtureFiles($files, true, null, 'doctrine', ORMPurger::P
 
 ### Non-SQLite
 
-The Bundle will not automatically create your schema for you unless you use SQLite.
-If you prefer to use another database but want your schema/fixtures loaded
+The Bundle will not automatically create your schema for you unless you use SQLite
+or use `doctrine/orm` < 2.6.
+
+So you have several options:
+
+1. use SQLite driver in tests
+2. upgrade `doctrine/orm` :
+   
+   ```bash
+   composer require doctrine/orm:^2.6
+   ```
+3. if you prefer to use another database but want your schema/fixtures loaded
 automatically, you'll need to do that yourself. For example, you could write a
 `setUp()` function in your test, like so:
 
