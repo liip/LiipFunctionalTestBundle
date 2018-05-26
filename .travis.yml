@@ -39,10 +39,6 @@ install:
   # use "update" instead of "install" since it allows using the "--prefer-lowest" option
   - composer update $COMPOSER_FLAGS
 
-# http://jubianchi.fr/how-to-test-your-symfony2-project-with-behat-on-travisci.htm
-before_script:
-  - mysql -u root -e 'CREATE DATABASE liip;'
-
 # In phpunit.xml.dist, tests annotated with "@group mysql" are excluded,
 # revert this.
 script: php ./vendor/bin/phpunit --exclude-group ""
