@@ -251,7 +251,7 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testBackupIsRefreshed(): void
     {
-        // This value is generated in loadFixtures().
+        // MD5 hash corresponding to these fixtures files.
         $md5 = '0ded9d8daaeaeca1056b18b9d0d433b2';
 
         $fixtures = [
@@ -259,6 +259,16 @@ class WebTestCaseConfigTest extends WebTestCase
         ];
 
         $this->loadFixtures($fixtures);
+
+        // Load data from database
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user1 */
+        $user1 = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findOneBy(['id' => 1]);
+
+        // Store random data, in order to check it after reloading fixtures.
+        $user1Salt = $user1->getSalt();
 
         $dependentFixtureFilePath = $this->getContainer()->get('kernel')->locateResource(
             '@AcmeBundle/App/DataFixtures/ORM/LoadUserData.php'
@@ -293,10 +303,14 @@ class WebTestCaseConfigTest extends WebTestCase
             'File modification time of the backup has been updated.'
         );
 
+        $user1 = $em->getRepository('LiipFunctionalTestBundle:User')->findOneBy(['id' => 1]);
+
+        // Check that random data has not been changed, to ensure that backup was created and loaded successfully.
+        $this->assertSame($user1Salt, $user1->getSalt());
+
         sleep(2);
 
-        // Update the filemtime of the fixture file used as a dependency:
-        // set a date in the future.
+        // Update the filemtime of the fixture file used as a dependency.
         touch($dependentFixtureFilePath);
 
         $this->loadFixtures($fixtures);
@@ -314,5 +328,10 @@ class WebTestCaseConfigTest extends WebTestCase
             filemtime($databaseFilePath),
             'File modification time of the backup has not been updated.'
         );
+
+        $user1 = $em->getRepository('LiipFunctionalTestBundle:User')->findOneBy(['id' => 1]);
+
+        // Check that random data has been changed, to ensure that backup was not used.
+        $this->assertNotSame($user1Salt, $user1->getSalt());
     }
 }
