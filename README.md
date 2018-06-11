@@ -311,7 +311,7 @@ Tips for Fixture Loading Tests
                 connections:
                     default:
                         driver:   pdo_sqlite
-                        path:     %kernel.cache_dir%/test.db
+                        path:     "%kernel.cache_dir%/test.db"
         ```
     
     * For symfony 4 : create file if it doesn't exists `config/packages/test/doctrine.yaml`, and if it does append those lines:
@@ -319,7 +319,7 @@ Tips for Fixture Loading Tests
         # config/packages/test/doctrine.yaml
         doctrine:
             dbal:
-                url: %kernel.cache_dir%/test.db
+                url: "%kernel.cache_dir%/test.db"
 
     NB: If you have an existing Doctrine configuration which uses slaves be sure to separate out the configuration for the slaves. Further detail is provided at the bottom of this README.
 
