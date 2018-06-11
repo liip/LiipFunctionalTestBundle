@@ -16,14 +16,17 @@ This is the list of actions that you need to take when upgrading this bundle fro
     a boolean second parameter. You will have to add it to `false` if you had changed the default manager, driver
     or purge mode.
 
- *  Changed config format for cache database, use 
+ *  Changed config format for cache database, use:
     ```
         liip_functional_test:
             cache_db:
                 sqlite: liip_functional_test.services_database_backup.sqlite
     ```
-    instead
+    instead of:
     ```
         liip_functional_test:
             cache_sqlite_db: true
     ```
+
+ * MySQL database is created automatically with `doctrine/orm` ≥ 2.6, see [Non-SQLite documentation](README.md#non-sqlite)
+ 

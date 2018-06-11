@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Liip\FunctionalTestBundle\Tests\Test;
 
-use Doctrine\ORM\Tools\SchemaTool;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Liip\FunctionalTestBundle\Tests\AppConfigMysql\AppConfigMysqlKernel;
 
@@ -39,20 +38,6 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
     protected static function getKernelClass(): string
     {
         return AppConfigMysqlKernel::class;
-    }
-
-    public function setUp(): void
-    {
-        // https://github.com/liip/LiipFunctionalTestBundle#non-sqlite
-        $em = $this->getContainer()->get('doctrine')->getManager();
-        if (!isset($metadatas)) {
-            $metadatas = $em->getMetadataFactory()->getAllMetadata();
-        }
-        $schemaTool = new SchemaTool($em);
-        $schemaTool->dropDatabase();
-        if (!empty($metadatas)) {
-            $schemaTool->createSchema($metadatas);
-        }
     }
 
     /**
