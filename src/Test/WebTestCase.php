@@ -218,7 +218,9 @@ abstract class WebTestCase extends BaseWebTestCase
             $kernel = $this->createKernel($options);
             $kernel->boot();
 
-            $this->containers[$cacheKey] = $kernel->getContainer();
+            $baseContainer = $kernel->getContainer();
+            // Try to check for the special test container
+            $this->containers[$cacheKey] = $baseContainer->has('test.service_container') ? $baseContainer->get('test.service_container') : $baseContainer;
         }
 
         return $this->containers[$cacheKey];
