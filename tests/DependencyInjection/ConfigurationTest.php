@@ -20,13 +20,13 @@ use Liip\FunctionalTestBundle\Test\WebTestCase;
  */
 class ConfigurationTest extends WebTestCase
 {
-    /** @var \Symfony\Component\DependencyInjection\ContainerInterface $container */
-    private $container = null;
+    /** @var \Symfony\Component\DependencyInjection\ContainerInterface $clientContainer */
+    private $clientContainer = null;
 
     public function setUp(): void
     {
         $client = static::makeClient();
-        $this->container = $client->getContainer();
+        $this->clientContainer = $client->getContainer();
     }
 
     /**
@@ -39,16 +39,16 @@ class ConfigurationTest extends WebTestCase
     {
         $name = 'liip_functional_test.'.$node;
 
-        $this->assertNotNull($this->container);
+        $this->assertNotNull($this->clientContainer);
 
         $this->assertTrue(
-            $this->container->hasParameter($name),
+            $this->clientContainer->hasParameter($name),
             $name.' parameter is not defined.'
         );
 
         $this->assertSame(
             $value,
-            $this->container->getParameter($name)
+            $this->clientContainer->getParameter($name)
         );
     }
 
