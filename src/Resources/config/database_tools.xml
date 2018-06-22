@@ -7,6 +7,7 @@
     <services>
         <service id="liip_functional_test.services.fixtures_loader_factory" class="Liip\FunctionalTestBundle\Services\FixturesLoaderFactory" public="true">
             <argument type="service" id="service_container" />
+            <argument type="service" id="doctrine.fixtures.loader" />
         </service>
 
         <service id="liip_functional_test.services_database_backup.sqlite" class="Liip\FunctionalTestBundle\Services\DatabaseBackup\SqliteDatabaseBackup" public="true">

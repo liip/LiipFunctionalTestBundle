@@ -419,6 +419,33 @@ EOF;
     }
 
     /**
+     * Load fixture which has a dependency, with the dependent service requiring a service.
+     */
+    public function testLoadDependentFixturesWithDependencyInjected(): void
+    {
+        $fixtures = $this->loadFixtures([
+            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadDependentUserWithServiceData',
+        ]);
+
+        $this->assertInstanceOf(
+            'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
+            $fixtures
+        );
+
+        $em = $this->client->getContainer()
+            ->get('doctrine.orm.entity_manager');
+
+        $users = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findAll();
+
+        // The two files with fixtures have been loaded, there are 4 users.
+        $this->assertSame(
+            4,
+            count($users)
+        );
+    }
+
+    /**
      * Use nelmio/alice.
      */
     public function testLoadFixturesFiles(): void
