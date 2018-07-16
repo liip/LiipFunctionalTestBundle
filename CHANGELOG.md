@@ -17,6 +17,7 @@ This new major version introduces a number of breaking changes; see the [upgrade
  * Compatibility to Twig at least 2.0
  * Compatibility to JackalopeDoctrineDBAL at least 1.3
  * Switched from `nelmio/alice` to `theofidry/alice-data-fixtures` (which uses `nelmio/alice` 3)
+ * The fixtures should be declared as services and tagged with `doctrine.fixture.orm`. It's done automatically if you use [autoconfigure](https://symfony.com/doc/current/service_container.html#service-container-services-load-example)
 
 ### Removed
  * Drop support for Symfony 2.x
