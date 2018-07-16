@@ -22,8 +22,8 @@ liip_functional_test:
         process: 3
         phpunit: 'vendor/bin/phpunit'
 
-# HautelookAliceBundle: custom Faker provider
 services:
+    # HautelookAliceBundle: custom Faker provider
     faker.provider.foo:
         class: Liip\FunctionalTestBundle\Tests\AppConfig\DataFixtures\Faker\Provider\FooProvider
         tags: [ { name: nelmio_alice.faker.provider } ]

@@ -15,6 +15,7 @@ namespace Liip\FunctionalTestBundle\Tests\Test;
 
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
+use Liip\FunctionalTestBundle\Tests\App\AppKernel;
 use PHPUnit\Framework\AssertionFailedError;
 
 class WebTestCaseTest extends WebTestCase
@@ -24,7 +25,13 @@ class WebTestCaseTest extends WebTestCase
 
     public function setUp(): void
     {
+        static::$class = AppKernel::class;
         $this->client = static::makeClient();
+    }
+
+    public static function getKernelClass()
+    {
+        return AppKernel::class;
     }
 
     /**
@@ -290,6 +297,9 @@ EOF;
         );
     }
 
+    /**
+     * @group toto
+     */
     public function testLoadFixtures(): void
     {
         $fixtures = $this->loadFixtures([

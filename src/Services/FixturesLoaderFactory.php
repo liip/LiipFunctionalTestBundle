@@ -11,9 +11,8 @@
 
 namespace Liip\FunctionalTestBundle\Services;
 
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Doctrine\Bundle\FixturesBundle\Loader\SymfonyFixturesLoader;
 use Doctrine\Common\DataFixtures\Loader;
-use Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -23,9 +22,12 @@ class FixturesLoaderFactory
 {
     private $container;
 
-    public function __construct(ContainerInterface $container)
+    private $loader;
+
+    public function __construct(ContainerInterface $container, SymfonyFixturesLoader $loader)
     {
         $this->container = $container;
+        $this->loader = $loader;
     }
 
     /**
@@ -33,40 +35,11 @@ class FixturesLoaderFactory
      */
     public function getFixtureLoader(array $classNames): Loader
     {
-        $loader = new ContainerAwareLoader($this->container);
-
+        $loader = new SymfonyFixturesLoaderWrapper($this->loader);
         foreach ($classNames as $className) {
-            $this->loadFixtureClass($loader, $className);
+            $loader->loadFixturesClass($className);
         }
 
         return $loader;
-    }
-
-    /**
-     * Load a data fixture class.
-     */
-    protected function loadFixtureClass(Loader $loader, string $className): void
-    {
-        $fixture = null;
-
-        if ($this->container->has($className)) {
-            $fixture = $this->container->get($className);
-        } else {
-            $fixture = new $className();
-        }
-
-        if ($loader->hasFixture($fixture)) {
-            unset($fixture);
-
-            return;
-        }
-
-        $loader->addFixture($fixture);
-
-        if ($fixture instanceof DependentFixtureInterface) {
-            foreach ($fixture->getDependencies() as $dependency) {
-                $this->loadFixtureClass($loader, $dependency);
-            }
-        }
     }
 }
