@@ -18,7 +18,7 @@ use Doctrine\ORM\Tools\SchemaTool;
 /**
  * @author Aleksey Tupichenkov <alekseytupichenkov@gmail.com>
  */
-class MysqlDatabaseBackup extends AbstractDatabaseBackup implements DatabaseBackupInterface
+final class MysqlDatabaseBackup extends AbstractDatabaseBackup implements DatabaseBackupInterface
 {
     protected static $referenceData;
 

@@ -17,7 +17,7 @@ use Doctrine\Common\Annotations\Reader;
 use Liip\FunctionalTestBundle\Annotations\QueryCount;
 use Liip\FunctionalTestBundle\Exception\AllowedQueriesExceededException;
 
-class QueryCounter
+final class QueryCounter
 {
     /** @var int */
     private $defaultMaxCount;

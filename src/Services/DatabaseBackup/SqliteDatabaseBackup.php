@@ -18,7 +18,7 @@ use Doctrine\ORM\EntityManager;
 /**
  * @author Aleksey Tupichenkov <alekseytupichenkov@gmail.com>
  */
-class SqliteDatabaseBackup extends AbstractDatabaseBackup implements DatabaseBackupInterface
+final class SqliteDatabaseBackup extends AbstractDatabaseBackup implements DatabaseBackupInterface
 {
     public function getBackupFilePath(): string
     {

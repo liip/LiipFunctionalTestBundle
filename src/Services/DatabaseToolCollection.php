@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * @author Aleksey Tupichenkov <alekseytupichenkov@gmail.com>
  */
-class DatabaseToolCollection
+final class DatabaseToolCollection
 {
     private $container;
 

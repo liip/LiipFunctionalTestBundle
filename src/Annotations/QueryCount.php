@@ -17,7 +17,7 @@ namespace Liip\FunctionalTestBundle\Annotations;
  * @Annotation
  * @Target({"METHOD"})
  */
-class QueryCount
+final class QueryCount
 {
     /** @var int */
     public $maxQueries;

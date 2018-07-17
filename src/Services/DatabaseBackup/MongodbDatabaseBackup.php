@@ -17,7 +17,7 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 /**
  * @author Aleksey Tupichenkov <alekseytupichenkov@gmail.com>
  */
-class MongodbDatabaseBackup extends AbstractDatabaseBackup implements DatabaseBackupInterface
+final class MongodbDatabaseBackup extends AbstractDatabaseBackup implements DatabaseBackupInterface
 {
     protected static $referenceData;
 

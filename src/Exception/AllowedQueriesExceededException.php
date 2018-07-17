@@ -13,6 +13,6 @@ declare(strict_types=1);
 
 namespace Liip\FunctionalTestBundle\Exception;
 
-class AllowedQueriesExceededException extends \Exception
+final class AllowedQueriesExceededException extends \Exception
 {
 }
