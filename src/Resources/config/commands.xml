@@ -7,8 +7,5 @@
         <service id="Liip\FunctionalTestBundle\Command\RunParatestCommand" class="Liip\FunctionalTestBundle\Command\RunParatestCommand">
             <tag name="console.command" />
         </service>
-        <service id="Liip\FunctionalTestBundle\Command\TestCommand" class="Liip\FunctionalTestBundle\Command\TestCommand">
-            <tag name="console.command" />
-        </service>
     </services>
 </container>
