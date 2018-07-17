@@ -24,7 +24,7 @@ class FixturesLoaderFactory
 
     private $loader;
 
-    public function __construct(ContainerInterface $container, SymfonyFixturesLoader $loader)
+    public function __construct(ContainerInterface $container, SymfonyFixturesLoader $loader = null)
     {
         $this->container = $container;
         $this->loader = $loader;
@@ -35,6 +35,10 @@ class FixturesLoaderFactory
      */
     public function getFixtureLoader(array $classNames): Loader
     {
+        if (null === $this->loader) {
+            throw new \BadMethodCallException('doctrine/doctrine-fixtures-bundle must be installed to use this method.');
+        }
+
         $loader = new SymfonyFixturesLoaderWrapper($this->loader);
         foreach ($classNames as $className) {
             $loader->loadFixturesClass($className);

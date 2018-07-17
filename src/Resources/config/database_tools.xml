@@ -7,7 +7,7 @@
     <services>
         <service id="liip_functional_test.services.fixtures_loader_factory" class="Liip\FunctionalTestBundle\Services\FixturesLoaderFactory" public="true">
             <argument type="service" id="service_container" />
-            <argument type="service" id="doctrine.fixtures.loader" />
+            <argument type="service" id="doctrine.fixtures.loader" on-invalid="null"/>
         </service>
 
         <service id="liip_functional_test.services_database_backup.sqlite" class="Liip\FunctionalTestBundle\Services\DatabaseBackup\SqliteDatabaseBackup" public="true">
@@ -43,7 +43,6 @@
         </service>
         <service id="liip_functional_test.services.database_tool_collection" class="Liip\FunctionalTestBundle\Services\DatabaseToolCollection" public="true">
             <argument type="service" id="service_container" />
-            <argument type="service" id="liip_functional_test.services.fixtures_loader_factory" />
             <call method="add">
                 <argument type="service" id="liip_functional_test.services_database_tools.orm_database_tool" />
             </call>
