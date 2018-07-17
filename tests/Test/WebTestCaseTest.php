@@ -461,7 +461,7 @@ EOF;
     public function testLoadFixturesFiles(): void
     {
         $fixtures = $this->loadFixtureFiles([
-            '@AcmeBundle/App/DataFixtures/ORM/user.yml',
+            '@AcmeBundle/DataFixtures/ORM/user.yml',
         ]);
 
         $this->assertInternalType(
@@ -514,7 +514,7 @@ EOF;
     public function testLoadNonexistentFixturesFiles(): void
     {
         $this->loadFixtureFiles([
-            '@AcmeBundle/App/DataFixtures/ORM/nonexistent.yml',
+            '@AcmeBundle/DataFixtures/ORM/nonexistent.yml',
         ]);
     }
 
@@ -526,7 +526,7 @@ EOF;
     public function testLoadFixturesFilesWithPurgeModeTruncate(): void
     {
         $fixtures = $this->loadFixtureFiles([
-            '@AcmeBundle/App/DataFixtures/ORM/user.yml',
+            '@AcmeBundle/DataFixtures/ORM/user.yml',
         ], true, null, 'doctrine', ORMPurger::PURGE_MODE_TRUNCATE);
 
         $this->assertInternalType(
@@ -554,7 +554,7 @@ EOF;
     {
         $fixtures = $this->loadFixtureFiles([
             $this->client->getContainer()->get('kernel')->locateResource(
-                '@AcmeBundle/App/DataFixtures/ORM/user.yml'
+                '@AcmeBundle/DataFixtures/ORM/user.yml'
             ),
         ]);
 

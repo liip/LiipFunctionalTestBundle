@@ -262,7 +262,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
     public function testLoadFixturesFiles(): void
     {
         $fixtures = $this->loadFixtureFiles([
-            '@AcmeBundle/App/DataFixtures/ORM/user.yml',
+            '@AcmeBundle/DataFixtures/ORM/user.yml',
         ]);
 
         $this->assertInternalType(
