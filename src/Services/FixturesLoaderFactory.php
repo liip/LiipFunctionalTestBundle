@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * @author Aleksey Tupichenkov <alekseytupichenkov@gmail.com>
  */
-class FixturesLoaderFactory
+final class FixturesLoaderFactory
 {
     private $container;
 

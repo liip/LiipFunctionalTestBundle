@@ -19,7 +19,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-class ExceptionListener implements EventSubscriberInterface
+final class ExceptionListener implements EventSubscriberInterface
 {
     /**
      * @var \Exception|null
