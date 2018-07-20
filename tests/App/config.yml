@@ -85,3 +85,5 @@ services:
     Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\:
         resource: 'DataFixtures/ORM/*'
         tags: ['doctrine.fixture.orm']
+    Liip\FunctionalTestBundle\Tests\App\Command\TestCommand:
+        tags: ['console.command']

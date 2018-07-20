@@ -28,7 +28,7 @@ class DefaultController extends Controller
     public function indexAction(): Response
     {
         return $this->render(
-            'LiipFunctionalTestBundle::layout.html.twig'
+            'AcmeBundle::layout.html.twig'
         );
     }
 
@@ -51,7 +51,7 @@ class DefaultController extends Controller
         }
 
         return $this->render(
-            'LiipFunctionalTestBundle:Default:user.html.twig',
+            'user.html.twig',
             ['user' => $user]
         );
     }
@@ -83,7 +83,7 @@ class DefaultController extends Controller
         }
 
         return $this->render(
-            'LiipFunctionalTestBundle:Default:form.html.twig',
+            'form.html.twig',
             ['form' => $form->createView()]
         );
     }

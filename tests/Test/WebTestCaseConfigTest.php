@@ -208,7 +208,7 @@ class WebTestCaseConfigTest extends WebTestCase
     {
         // Load default Data Fixtures.
         $fixtures = $this->loadFixtureFiles([
-            '@AcmeBundle/App/DataFixtures/ORM/user.yml',
+            '@AcmeBundle/DataFixtures/ORM/user.yml',
         ]);
 
         $this->assertInternalType(
@@ -233,7 +233,7 @@ class WebTestCaseConfigTest extends WebTestCase
 
         // Load Data Fixtures with custom loader defined in configuration.
         $fixtures = $this->loadFixtureFiles([
-            '@AcmeBundle/App/DataFixtures/ORM/user_with_custom_provider.yml',
+            '@AcmeBundle/DataFixtures/ORM/user_with_custom_provider.yml',
         ]);
 
         /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
@@ -271,7 +271,7 @@ class WebTestCaseConfigTest extends WebTestCase
         $user1Salt = $user1->getSalt();
 
         $dependentFixtureFilePath = $this->getContainer()->get('kernel')->locateResource(
-            '@AcmeBundle/App/DataFixtures/ORM/LoadUserData.php'
+            '@AcmeBundle/DataFixtures/ORM/LoadUserData.php'
         );
 
         $dependentFixtureFilemtime = filemtime($dependentFixtureFilePath);

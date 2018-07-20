@@ -16,7 +16,6 @@ namespace Liip\FunctionalTestBundle\Tests\Command;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Liip\FunctionalTestBundle\Tests\AppConfig\AppConfigKernel;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * Use Tests/AppConfig/AppConfigKernel.php instead of

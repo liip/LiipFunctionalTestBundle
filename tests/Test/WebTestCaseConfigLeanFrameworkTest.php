@@ -38,7 +38,7 @@ class WebTestCaseConfigLeanFrameworkTest extends WebTestCase
         $client = static::makeClient();
 
         $path = '/';
-        $crawler = $client->request('GET', $path);
+        $client->request('GET', $path);
 
         $this->assertStatusCode(200, $client);
     }
@@ -48,7 +48,7 @@ class WebTestCaseConfigLeanFrameworkTest extends WebTestCase
         $client = static::makeClient();
 
         $path = '/form';
-        $crawler = $client->request('GET', $path);
+        $client->request('GET', $path);
 
         try {
             $this->assertValidationErrors([], $client->getContainer());
