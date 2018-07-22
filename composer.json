@@ -1,7 +1,7 @@
 {
     "name": "liip/functional-test-bundle",
-    "description": "This bundles provides additional functional test-cases for Symfony2 applications",
-    "keywords": ["symfony2"],
+    "description": "This bundles provides additional functional test-cases for Symfony applications",
+    "keywords": ["symfony", "testing", "fixtures"],
     "type": "symfony-bundle",
     "license": "MIT",
     "authors": [
