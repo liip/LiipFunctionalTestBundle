@@ -94,7 +94,7 @@ Installation
     # app/config/config_test.yml
     liip_functional_test: ~
     ```
-    Ensure that the framework is using the filesystem for session storage:
+    Ensure that the framework sets the session name and is using the filesystem for session storage:
 
     ```yaml
     # app/config/config_test.yml
@@ -102,6 +102,7 @@ Installation
         test: ~
         session:
             storage_id: session.storage.mock_file
+            name: MOCKSESSION
     ```
 
 Basic usage
