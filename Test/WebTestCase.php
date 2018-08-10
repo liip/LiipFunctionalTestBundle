@@ -76,6 +76,31 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     private static $cachedMetadatas = [];
 
+    /**
+     * Asserts that the HTTP response code of the last request performed by
+     * $client matches the expected code. If not, raises an error with more
+     * information.
+     *
+     * @param $expectedStatusCode
+     * @param Client $client
+     */
+    public static function assertStatusCode($expectedStatusCode, Client $client)
+    {
+        HttpAssertions::assertStatusCode($expectedStatusCode, $client);
+    }
+
+    /**
+     * Assert that the last validation errors within $container match the
+     * expected keys.
+     *
+     * @param array              $expected  A flat array of field names
+     * @param ContainerInterface $container
+     */
+    public static function assertValidationErrors(array $expected, ContainerInterface $container)
+    {
+        HttpAssertions::assertValidationErrors($expected, $container);
+    }
+
     protected static function getKernelClass()
     {
         $dir = isset($_SERVER['KERNEL_DIR']) ? $_SERVER['KERNEL_DIR'] : static::getPhpUnitXmlDir();
@@ -916,31 +941,6 @@ abstract class WebTestCase extends BaseWebTestCase
         $this->firewallLogins[$firewallName] = $user;
 
         return $this;
-    }
-
-    /**
-     * Asserts that the HTTP response code of the last request performed by
-     * $client matches the expected code. If not, raises an error with more
-     * information.
-     *
-     * @param $expectedStatusCode
-     * @param Client $client
-     */
-    public function assertStatusCode($expectedStatusCode, Client $client)
-    {
-        HttpAssertions::assertStatusCode($expectedStatusCode, $client);
-    }
-
-    /**
-     * Assert that the last validation errors within $container match the
-     * expected keys.
-     *
-     * @param array              $expected  A flat array of field names
-     * @param ContainerInterface $container
-     */
-    public function assertValidationErrors(array $expected, ContainerInterface $container)
-    {
-        HttpAssertions::assertValidationErrors($expected, $container);
     }
 
     /**
