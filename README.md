@@ -70,21 +70,21 @@ Installation
     }
     ```
 
- 3. Enable the `functionalTest` service adding the following empty configuration:
+ 3. Enable the `functionalTest` service adding the following empty configuration, ensuring that the framework sets the session name and is using the filesystem for session storage:
 
     * For symfony 3:
         ```yaml
         # app/config/config_test.yml
         liip_functional_test: ~
         ```
-        Ensure that the framework is using the filesystem for session storage:
-            
+ 
         ```yaml
         # app/config/config_test.yml
         framework:
             test: ~
             session:
                 storage_id: session.storage.mock_file
+                name: MOCKSESSION
         ```
     * For symfony 4:
         ```yaml
@@ -93,6 +93,7 @@ Installation
             test: true
             session:
                 storage_id: session.storage.mock_file
+                name: MOCKSESSION
 
         liip_functional_test: ~
         ```
