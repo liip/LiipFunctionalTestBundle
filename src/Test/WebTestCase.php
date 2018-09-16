@@ -536,7 +536,7 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param int    $expectedStatusCode
      * @param Client $client
      */
-    public function assertStatusCode(int $expectedStatusCode, Client $client): void
+    public static function assertStatusCode(int $expectedStatusCode, Client $client): void
     {
         HttpAssertions::assertStatusCode($expectedStatusCode, $client);
     }
@@ -548,7 +548,7 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param array              $expected  A flat array of field names
      * @param ContainerInterface $container
      */
-    public function assertValidationErrors(array $expected, ContainerInterface $container): void
+    public static function assertValidationErrors(array $expected, ContainerInterface $container): void
     {
         HttpAssertions::assertValidationErrors($expected, $container);
     }
