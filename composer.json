@@ -16,13 +16,13 @@
     ],
     "require": {
         "php": "^7.1",
-        "symfony/framework-bundle": "^3.4 || ^4.0",
-        "symfony/browser-kit": "^3.4 || ^4.0",
+        "symfony/framework-bundle": "^3.4 || ^4.1",
+        "symfony/browser-kit": "^3.4 || ^4.1",
         "doctrine/common": "^2.0"
     },
     "require-dev": {
-        "symfony/symfony": "^3.4 || ^4.0",
-        "symfony/phpunit-bridge": "^3.4 || ^4.0",
+        "symfony/symfony": "^3.4|^4.1",
+        "symfony/phpunit-bridge": "^3.4|^4.1",
         "doctrine/orm": "^2.6",
         "symfony/monolog-bundle": "^3.1",
         "doctrine/doctrine-fixtures-bundle": "^3.0.2",
