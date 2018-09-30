@@ -37,10 +37,6 @@
             <argument type="service" id="service_container" />
             <argument type="service" id="liip_functional_test.services.fixtures_loader_factory" />
         </service>
-        <service id="liip_functional_test.services_database_tools.phpcr_database_tool" class="Liip\FunctionalTestBundle\Services\DatabaseTools\PHPCRDatabaseTool" public="false">
-            <argument type="service" id="service_container" />
-            <argument type="service" id="liip_functional_test.services.fixtures_loader_factory" />
-        </service>
         <service id="liip_functional_test.services.database_tool_collection" class="Liip\FunctionalTestBundle\Services\DatabaseToolCollection" public="true">
             <argument type="service" id="service_container" />
             <call method="add">
@@ -51,9 +47,6 @@
             </call>
             <call method="add">
                 <argument type="service" id="liip_functional_test.services_database_tools.mongodb_database_tool" />
-            </call>
-            <call method="add">
-                <argument type="service" id="liip_functional_test.services_database_tools.phpcr_database_tool" />
             </call>
         </service>
     </services>
