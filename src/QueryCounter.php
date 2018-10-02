@@ -25,7 +25,7 @@ final class QueryCounter
     /** @var Reader */
     private $annotationReader;
 
-    public function __construct(int $defaultMaxCount, Reader $annotationReader)
+    public function __construct(?int $defaultMaxCount, Reader $annotationReader)
     {
         $this->defaultMaxCount = $defaultMaxCount;
         $this->annotationReader = $annotationReader;
@@ -46,7 +46,7 @@ final class QueryCounter
         }
     }
 
-    private function getMaxQueryCount(): int
+    private function getMaxQueryCount(): ?int
     {
         $maxQueryCount = $this->getMaxQueryAnnotation();
 
