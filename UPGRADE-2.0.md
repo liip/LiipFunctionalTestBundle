@@ -7,7 +7,7 @@ This is the list of actions that you need to take when upgrading this bundle fro
     ```bash
     # If you had “nelmio/alice” installed:
     composer remove --dev nelmio/alice
-    composer require --dev liip/functional-test-bundle "~2.0"
+    composer require --dev liip/functional-test-bundle:~2.0@alpha
     # If you had “nelmio/alice” installed:
     composer require --dev theofidry/alice-data-fixtures
     ```
