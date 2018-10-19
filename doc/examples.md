@@ -1,25 +1,72 @@
+Examples
+========
+
+Fixtures
+--------
+
+The bundle's internal tests show several ways to load fixtures:
+
+- [data with fixtures dependencies](../tests/App/DataFixtures/ORM/LoadDependentUserData.php)
+- [data with dependency injection](../tests/App/DataFixtures/ORM/LoadUserWithServiceData.php)
+- [fixture loading with Alice](../tests/App/DataFixtures/ORM/user.yml)
+- custom provider:
+  - [fixture to load](../tests/App/DataFixtures/ORM/user_with_custom_provider.yml)
+  - [custom provider](../tests/AppConfig/DataFixtures/Faker/Provider/FooProvider.php)
+  - [service declaration](../tests/AppConfig/config.yml)
+
+Unit test
+---------
+
+```php
 <?php
 
 declare(strict_types=1);
 
-/*
- * This file is part of the Liip/FunctionalTestBundle
- *
- * (c) Lukas Kahwe Smith <smith@pooteeweet.org>
- *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.
- */
+namespace Liip\FooBundle\Tests;
+
+use Liip\FunctionalTestBundle\Controller\DefaultController;
+use Liip\FunctionalTestBundle\Test\WebTestCase;
+
+class ExampleUnitTest extends WebTestCase
+{
+    /**
+     * Example using LiipFunctionalBundle the service mock builder.
+     */
+    public function testIndexAction(): void
+    {
+        $view = $this->getServiceMockBuilder('FooView')->getMock();
+
+        $view->expects($this->once())
+            ->method('setTemplate')
+            ->with('FooBundle:Default:index.twig')
+            ->will($this->returnValue(null))
+        ;
+
+        $view->expects($this->once())
+            ->method('handle')
+            ->with()
+            ->will($this->returnValue('success'))
+        ;
+
+        $controller = new DefaultController($view);
+
+        $this->assertSame('success', $controller->indexAction());
+    }
+}
+```
+
+Functional test
+---------------
+
+```php
+<?php
+
+declare(strict_types=1);
 
 namespace Liip\FooBundle\Tests;
 
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 
-/**
- * @author Lukas Smith
- * @author Daniel Barsotti
- * @author Albert Jessurum
- */
 class ExampleFunctionalTest extends WebTestCase
 {
     /**
@@ -71,3 +118,4 @@ class ExampleFunctionalTest extends WebTestCase
         $this->assertValidationErrors(['data.username', 'data.email'], $client->getContainer());
     }
 }
+```
