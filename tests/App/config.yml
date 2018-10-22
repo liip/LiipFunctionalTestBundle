@@ -87,3 +87,5 @@ services:
         tags: ['doctrine.fixture.orm']
     Liip\FunctionalTestBundle\Tests\App\Command\TestCommand:
         tags: ['console.command']
+    Liip\FunctionalTestBundle\Tests\App\Command\TestStatusCodeCommand:
+        tags: ['console.command']
