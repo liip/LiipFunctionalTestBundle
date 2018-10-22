@@ -9,48 +9,54 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Liip\FunctionalTestBundle\Services\DatabaseTools;
+namespace Liip\FunctionalTestBundle\Database\Tools;
 
-use Doctrine\Bundle\PHPCRBundle\Initializer\InitializerManager;
 use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
+use Doctrine\Common\DataFixtures\Executor\MongoDBExecutor;
 use Doctrine\Common\DataFixtures\ProxyReferenceRepository;
-use Doctrine\Common\DataFixtures\Purger\PHPCRPurger;
-use Doctrine\ODM\PHPCR\DocumentManager;
+use Doctrine\Common\DataFixtures\Purger\MongoDBPurger;
+use Doctrine\Common\DataFixtures\Purger\PurgerInterface;
 
 /**
  * @author Aleksey Tupichenkov <alekseytupichenkov@gmail.com>
  */
-class PHPCRDatabaseTool extends AbstractDatabaseTool
+class MongoDBDatabaseTool extends AbstractDatabaseTool
 {
-    /**
-     * @var DocumentManager
-     */
-    protected $om;
+    protected static $databaseCreated = false;
+
+    /** @var ProxyReferenceRepository|null */
+    protected static $referenceRepository;
 
     public function getType(): string
     {
-        return 'PHPCR';
+        return 'MongoDB';
     }
 
-    protected function getExecutor(PHPCRPurger $purger = null, InitializerManager $initializerManager = null): AbstractExecutor
+    public function getExecutor(bool $append = false): AbstractExecutor
     {
-        $executorClass = class_exists('Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor')
-            ? 'Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor'
-            : 'Doctrine\\Common\\DataFixtures\\Executor\\'.$this->getType().'Executor';
+        if (false === $append || !self::$referenceRepository) {
+            self::$referenceRepository = new ProxyReferenceRepository($this->om);
+        }
 
-        return new $executorClass($this->om, $purger, $initializerManager);
+        $executor = new MongoDBExecutor($this->om, $this->getPurger());
+        $executor->setReferenceRepository(self::$referenceRepository);
+
+        return $executor;
     }
 
-    protected function getPurger(): PHPCRPurger
+    public function getPurger(): PurgerInterface
     {
-        return new PHPCRPurger($this->om);
+        return new MongoDBPurger($this->om);
     }
 
-    protected function getInitializerManager(): ?InitializerManager
+    protected function createDatabaseOnce(): void
     {
-        $serviceName = 'doctrine_phpcr.initializer_manager';
-
-        return $this->container->has($serviceName) ? $this->container->get($serviceName) : null;
+        if (!self::$databaseCreated) {
+            $sm = $this->om->getSchemaManager();
+            $sm->createDatabases();
+            $sm->updateIndexes();
+            self::$databaseCreated = true;
+        }
     }
 
     public function loadFixtures(array $classNames = [], bool $append = false): AbstractExecutor
@@ -61,6 +67,8 @@ class PHPCRDatabaseTool extends AbstractDatabaseTool
         if ($cacheDriver) {
             $cacheDriver->deleteAll();
         }
+
+        $this->createDatabaseOnce();
 
         $backupService = $this->getBackupService();
         if ($backupService) {
@@ -84,7 +92,7 @@ class PHPCRDatabaseTool extends AbstractDatabaseTool
             }
         }
 
-        $executor = $this->getExecutor($this->getPurger(), $this->getInitializerManager());
+        $executor = $this->getExecutor($this->getPurger());
         $executor->setReferenceRepository($referenceRepository);
         if (false === $append) {
             $executor->purge();

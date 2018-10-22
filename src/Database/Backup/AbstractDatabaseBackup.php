@@ -9,8 +9,10 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Liip\FunctionalTestBundle\Services\DatabaseBackup;
+namespace Liip\FunctionalTestBundle\Database\Backup;
 
+use Doctrine\Common\Persistence\ObjectManager;
+use Liip\FunctionalTestBundle\Database\Tools\DatabaseToolInterface;
 use Liip\FunctionalTestBundle\Services\FixturesLoaderFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -41,7 +43,7 @@ abstract class AbstractDatabaseBackup implements DatabaseBackupInterface
         $this->fixturesLoaderFactory = $fixturesLoaderFactory;
     }
 
-    public function init(array $metadatas, array $classNames): void
+    public function init(ObjectManager $om, DatabaseToolInterface $databaseTool): void
     {
         $this->metadatas = $metadatas;
         $this->classNames = $classNames;

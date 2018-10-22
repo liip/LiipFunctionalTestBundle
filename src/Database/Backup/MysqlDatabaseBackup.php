@@ -9,11 +9,10 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Liip\FunctionalTestBundle\Services\DatabaseBackup;
+namespace Liip\FunctionalTestBundle\Database\Backup;
 
 use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Tools\SchemaTool;
 
 /**
  * @author Aleksey Tupichenkov <alekseytupichenkov@gmail.com>
@@ -56,7 +55,7 @@ final class MysqlDatabaseBackup extends AbstractDatabaseBackup implements Databa
         return self::$referenceData;
     }
 
-    public function isBackupActual(): bool
+    public function isBackupExists(): bool
     {
         return
             file_exists($this->getBackupFilePath()) &&
@@ -85,19 +84,6 @@ final class MysqlDatabaseBackup extends AbstractDatabaseBackup implements Databa
         self::$metadata = $em->getMetadataFactory()->getLoadedMetadata();
 
         exec("mysqldump -h $dbHost -u $dbUser -p$dbPass --no-create-info --skip-triggers --no-create-db --no-tablespaces --compact $dbName > {$this->getBackupFilePath()}");
-    }
-
-    protected function updateSchemaIfNeed(EntityManager $em)
-    {
-        if (!self::$schemaUpdatedFlag) {
-            $schemaTool = new SchemaTool($em);
-            $schemaTool->dropDatabase();
-            if (!empty($this->metadatas)) {
-                $schemaTool->createSchema($this->metadatas);
-            }
-
-            self::$schemaUpdatedFlag = true;
-        }
     }
 
     public function restore(AbstractExecutor $executor): void

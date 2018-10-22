@@ -9,10 +9,9 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Liip\FunctionalTestBundle\Services\DatabaseBackup;
+namespace Liip\FunctionalTestBundle\Database\Backup;
 
 use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
-use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 
 /**

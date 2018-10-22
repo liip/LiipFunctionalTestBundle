@@ -16,6 +16,12 @@ namespace Liip\FunctionalTestBundle\Test;
 use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
 use Doctrine\Common\DataFixtures\ProxyReferenceRepository;
 use Doctrine\Common\Persistence\ObjectManager;
+use Liip\FunctionalTestBundle\Database\DatabaseManagerBuilder;
+use Liip\FunctionalTestBundle\Database\DatabaseManagerBuilderFactory;
+use Liip\FunctionalTestBundle\Database\DatabaseManagerFactory;
+use Liip\FunctionalTestBundle\Database\DatabaseManagerInterface;
+use Liip\FunctionalTestBundle\Database\DatabaseServiceBuilder;
+use Liip\FunctionalTestBundle\Database\DatabaseServiceBuilderFactory;
 use Liip\FunctionalTestBundle\Utils\HttpAssertions;
 use PHPUnit\Framework\MockObject\MockBuilder;
 use Symfony\Bundle\FrameworkBundle\Client;
@@ -255,13 +261,24 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     protected function loadFixtures(array $classNames = [], bool $append = false, ?string $omName = null, string $registryName = 'doctrine', ?int $purgeMode = null): ?AbstractExecutor
     {
-        $container = $this->getContainer();
+        $databaseManager = $this->getDatabaseManager($omName, $registryName);
+        $this->initDatabaseManager($databaseManager, $purgeMode);
 
-        $dbToolCollection = $container->get('liip_functional_test.services.database_tool_collection');
-        $dbTool = $dbToolCollection->get($omName, $registryName, $purgeMode, $this);
-        $dbTool->setExcludedDoctrineTables($this->excludedDoctrineTables);
+        if ($databaseManager->isBackupExists($classNames)) {
+            $executor = $databaseManager->restore($classNames);
+        } else {
+            if (!$databaseManager->isDatabaseExists()) {
+                $databaseManager->createDatabase();
+                $databaseManager->createSchema();
+            } else {
+                $databaseManager->updateSchema();
+            }
 
-        return $dbTool->loadFixtures($classNames, $append);
+            $executor = $databaseManager->loadFixtures($classNames, $append);
+            $databaseManager->backup($classNames);
+        }
+
+        return $executor;
     }
 
     /**
@@ -277,14 +294,58 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     public function loadFixtureFiles(array $paths = [], bool $append = false, ?string $omName = null, $registryName = 'doctrine', ?int $purgeMode = null)
     {
-        /** @var ContainerInterface $container */
+        $databaseManager = $this->getDatabaseManager($omName, $registryName);
+        $this->initDatabaseManager($databaseManager, $purgeMode);
+
+        if (!$databaseManager->isDatabaseExists()) {
+            $databaseManager->createDatabase();
+            $databaseManager->createSchema();
+        }
+
+        return $databaseManager->loadAliceFixture($paths, $append);
+    }
+
+    private function initDatabaseManager(DatabaseManagerInterface $manager, ?int $purgeMode = null): void
+    {
+        $manager->setPostFixtureSetupCallback(function () {
+            $this->postFixtureSetup();
+        });
+        $manager->setPreFixtureBackupRestoreCallback(function (
+            ObjectManager $manager,
+            ProxyReferenceRepository $referenceRepository,
+            string $backupFilePath
+        ) {
+            return $this->preFixtureBackupRestore($manager, $referenceRepository, $backupFilePath);
+        });
+        $manager->setPostFixtureBackupRestoreCallback(function (string $backupFilePath) {
+            return $this->postFixtureBackupRestore($backupFilePath);
+        });
+        $manager->setPreReferenceSaveCallback(function (
+            ObjectManager $manager,
+            AbstractExecutor $executor,
+            ?string $backupFilePath
+        ) {
+            return $this->preReferenceSave($manager, $executor, $backupFilePath);
+        });
+        $manager->setPostReferenceSaveCallback(function (
+            ObjectManager $manager,
+            AbstractExecutor $executor,
+            string $backupFilePath) {
+            return $this->postReferenceSave($manager, $executor, $backupFilePath);
+        });
+
+        $manager->setPurgeMode($purgeMode);
+        $manager->setExcludedDoctrineTables($this->excludedDoctrineTables);
+    }
+
+    private function getDatabaseManager(?string $omName = null, string $registryName = 'doctrine'): DatabaseManagerInterface
+    {
         $container = $this->getContainer();
 
-        $dbToolCollection = $container->get('liip_functional_test.services.database_tool_collection');
-        $dbTool = $dbToolCollection->get($omName, $registryName, $purgeMode, $this);
-        $dbTool->setExcludedDoctrineTables($this->excludedDoctrineTables);
+//        $dbToolCollection = $container->get('liip_functional_test.services.database_tool_collection');
+        $factory = new DatabaseManagerFactory($container);
 
-        return $dbTool->loadAliceFixture($paths, $append);
+        return $factory->createDatabaseManager($omName, $registryName);
     }
 
     /**
@@ -302,7 +363,7 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return WebTestCase
      */
-    public function postFixtureBackupRestore($backupFilePath): self
+    public function postFixtureBackupRestore(string $backupFilePath): self
     {
         return $this;
     }

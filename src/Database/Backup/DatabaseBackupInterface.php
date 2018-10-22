@@ -9,20 +9,20 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Liip\FunctionalTestBundle\Services\DatabaseBackup;
+namespace Liip\FunctionalTestBundle\Database\Backup;
 
 use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
+use Doctrine\Common\Persistence\ObjectManager;
+use Liip\FunctionalTestBundle\Database\Tools\DatabaseToolInterface;
 
 /**
  * @author Aleksey Tupichenkov <alekseytupichenkov@gmail.com>
  */
 interface DatabaseBackupInterface
 {
-    public function init(array $metadatas, array $classNames): void;
+    public function getBackupFilePath(): ?string;
 
-    public function getBackupFilePath(): string;
-
-    public function isBackupActual(): bool;
+    public function isBackupExists(): bool;
 
     public function backup(AbstractExecutor $executor): void;
 

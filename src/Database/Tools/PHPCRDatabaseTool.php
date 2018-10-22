@@ -9,20 +9,48 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Liip\FunctionalTestBundle\Services\DatabaseTools;
+namespace Liip\FunctionalTestBundle\Database\Tools;
 
+use Doctrine\Bundle\PHPCRBundle\Initializer\InitializerManager;
 use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
 use Doctrine\Common\DataFixtures\ProxyReferenceRepository;
-use Doctrine\ORM\Tools\SchemaTool;
+use Doctrine\Common\DataFixtures\Purger\PHPCRPurger;
+use Doctrine\ODM\PHPCR\DocumentManager;
 
 /**
  * @author Aleksey Tupichenkov <alekseytupichenkov@gmail.com>
  */
-class ORMSqliteDatabaseTool extends ORMDatabaseTool
+class PHPCRDatabaseTool extends AbstractDatabaseTool
 {
-    public function getDriverName(): string
+    /**
+     * @var DocumentManager
+     */
+    protected $om;
+
+    public function getType(): string
     {
-        return 'pdo_sqlite';
+        return 'PHPCR';
+    }
+
+    protected function getExecutor(PHPCRPurger $purger = null, InitializerManager $initializerManager = null): AbstractExecutor
+    {
+        $executorClass = class_exists('Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor')
+            ? 'Doctrine\Bundle\PHPCRBundle\DataFixtures\PHPCRExecutor'
+            : 'Doctrine\\Common\\DataFixtures\\Executor\\'.$this->getType().'Executor';
+
+        return new $executorClass($this->om, $purger, $initializerManager);
+    }
+
+    protected function getPurger(): PHPCRPurger
+    {
+        return new PHPCRPurger($this->om);
+    }
+
+    protected function getInitializerManager(): ?InitializerManager
+    {
+        $serviceName = 'doctrine_phpcr.initializer_manager';
+
+        return $this->container->has($serviceName) ? $this->container->get($serviceName) : null;
     }
 
     public function loadFixtures(array $classNames = [], bool $append = false): AbstractExecutor
@@ -56,17 +84,7 @@ class ORMSqliteDatabaseTool extends ORMDatabaseTool
             }
         }
 
-        if (false === $append) {
-            // TODO: handle case when using persistent connections. Fail loudly?
-            $schemaTool = new SchemaTool($this->om);
-            $schemaTool->dropDatabase();
-            if (!empty($this->getMetadatas())) {
-                $schemaTool->createSchema($this->getMetadatas());
-            }
-        }
-        $this->webTestCase->postFixtureSetup();
-
-        $executor = $this->getExecutor($this->getPurger());
+        $executor = $this->getExecutor($this->getPurger(), $this->getInitializerManager());
         $executor->setReferenceRepository($referenceRepository);
         if (false === $append) {
             $executor->purge();
