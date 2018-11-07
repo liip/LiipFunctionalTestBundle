@@ -15,6 +15,7 @@ namespace Liip\FunctionalTestBundle\Tests\Command;
 
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Liip\FunctionalTestBundle\Tests\AppConfig\AppConfigKernel;
+use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * Use Tests/AppConfig/AppConfigKernel.php instead of
@@ -26,7 +27,7 @@ use Liip\FunctionalTestBundle\Tests\AppConfig\AppConfigKernel;
  */
 class CommandConfigTest extends WebTestCase
 {
-    private $display;
+    private $commandTester;
 
     protected static function getKernelClass(): string
     {
@@ -36,13 +37,13 @@ class CommandConfigTest extends WebTestCase
     public function testRunCommand(): void
     {
         // Run command without options
-        $this->display = $this->runCommand('liipfunctionaltestbundle:test');
+        $this->commandTester = $this->runCommand('liipfunctionaltestbundle:test');
 
-        $this->assertInternalType('string', $this->display);
+        $this->assertInstanceOf(CommandTester::class, $this->commandTester);
 
         // Test values from configuration
-        $this->assertContains('Environment: test', $this->display);
-        $this->assertContains('Verbosity level: VERY_VERBOSE', $this->display);
+        $this->assertContains('Environment: test', $this->commandTester->getDisplay());
+        $this->assertContains('Verbosity level: VERY_VERBOSE', $this->commandTester->getDisplay());
 
         $this->assertInternalType('boolean', $this->getDecorated());
         $this->assertFalse($this->getDecorated());

@@ -22,8 +22,7 @@ use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\StreamOutput;
+use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ResettableContainerInterface;
 use Symfony\Component\DomCrawler\Crawler;
@@ -87,38 +86,33 @@ abstract class WebTestCase extends BaseWebTestCase
      *
      * @return string
      */
-    protected function runCommand(string $name, array $params = [], bool $reuseKernel = false): string
+    protected function runCommand(string $name, array $params = [], bool $reuseKernel = false): CommandTester
     {
-        array_unshift($params, $name);
-
         if (!$reuseKernel) {
             if (null !== static::$kernel) {
                 static::$kernel->shutdown();
             }
 
-            $kernel = static::$kernel = $this->createKernel(['environment' => $this->environment]);
+            $kernel = static::$kernel = static::createKernel(['environment' => $this->environment]);
             $kernel->boot();
         } else {
             $kernel = $this->getContainer()->get('kernel');
         }
 
         $application = new Application($kernel);
-        $application->setAutoExit(false);
 
-        $input = new ArrayInput($params);
-        $input->setInteractive(false);
+        $command = $application->find($name);
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            array_merge(['command' => $command->getName()], $params),
+            [
+                'interactive' => false,
+                'decorated' => $this->getDecorated(),
+                'verbosity' => $this->getVerbosityLevel(),
+            ]
+        );
 
-        $fp = fopen('php://temp/maxmemory:'.$this->maxMemory, 'r+');
-        $verbosityLevel = $this->getVerbosityLevel();
-
-        $this->setVerbosityLevelEnv($verbosityLevel);
-        $output = new StreamOutput($fp, $verbosityLevel, $this->getDecorated());
-
-        $application->run($input, $output);
-
-        rewind($fp);
-
-        return stream_get_contents($fp);
+        return $commandTester;
     }
 
     /**
