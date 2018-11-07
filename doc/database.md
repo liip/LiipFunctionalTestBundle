@@ -40,7 +40,9 @@ Tips for Fixture Loading Tests
         # config/packages/test/doctrine.yaml
         doctrine:
             dbal:
-                url: "%kernel.cache_dir%/test.db"
+                driver: pdo_sqlite
+                path: "%kernel.cache_dir%/test.db"
+                url: null
 
     NB: If you have an existing Doctrine configuration which uses slaves be sure to separate out the configuration for the slaves. Further detail is provided at the bottom of this README.
 
