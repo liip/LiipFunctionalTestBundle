@@ -84,7 +84,7 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param array  $params
      * @param bool   $reuseKernel
      *
-     * @return string
+     * @return CommandTester
      */
     protected function runCommand(string $name, array $params = [], bool $reuseKernel = false): CommandTester
     {
