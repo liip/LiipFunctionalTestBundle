@@ -1,3 +1,8 @@
+Upgrade from 1.x version
+========================
+
+See [Upgrade guide from 1.x to 2.0](../UPGRADE-2.0.md).
+
 Installation
 ============
 
