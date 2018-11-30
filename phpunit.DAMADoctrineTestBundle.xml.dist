@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- https://phpunit.de/manual/3.7/en/appendixes.configuration.html -->
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/6.5/phpunit.xsd"
+    bootstrap="tests/App/bootstrap.php"
+    colors="true"
+    beStrictAboutOutputDuringTests="true"
+>
+
+    <php>
+        <server name="KERNEL_CLASS" value="Liip\FunctionalTestBundle\Tests\App\AppKernel" />
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
+    </php>
+
+    <testsuites>
+        <testsuite name="Project Test Suite">
+            <file>tests/Test/WebTestCaseConfigDAMADoctrineTestBundleTest.php</file>
+        </testsuite>
+    </testsuites>
+
+    <listeners>
+        <listener class="\DAMA\DoctrineTestBundle\PHPUnit\PHPUnitListener" />
+    </listeners>
+</phpunit>
