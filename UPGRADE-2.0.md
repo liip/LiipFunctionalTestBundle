@@ -28,8 +28,8 @@ This is the list of actions that you need to take when upgrading this bundle fro
             cache_sqlite_db: true
     ```
 
- * MySQL database is created automatically with `doctrine/orm` ≥ 2.6, see [Non-SQLite documentation](README.md#non-sqlite)
- * Declare your fixtures as services and tag when with `doctrine.fixture.orm`.
+ * MySQL database is created automatically with `doctrine/orm` ≥ 2.6, see [Non-SQLite documentation](doc/database.md#non-sqlite)
+ * Declare your fixtures as services and tag them with `doctrine.fixture.orm`.
    It's done automatically if you use [autoconfigure](https://symfony.com/doc/current/service_container.html#service-container-services-load-example). 
 
  * The `runCommand` method returns a `CommandTester`, you need to call `getDisplay()` to keep the old behavior of getting the output.
