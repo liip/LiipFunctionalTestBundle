@@ -13,19 +13,23 @@ declare(strict_types=1);
 
 namespace Liip\FunctionalTestBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\Process\Process;
 
 /**
  * Command used to update the project.
  */
-class RunParatestCommand extends ContainerAwareCommand
+class RunParatestCommand extends Command implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
     private $output;
 
     private $process;
@@ -49,17 +53,17 @@ class RunParatestCommand extends ContainerAwareCommand
 
     protected function prepare(): void
     {
-        $this->phpunit = $this->getContainer()->getParameter('liip_functional_test.paratest.phpunit');
-        $this->process = $this->getContainer()->getParameter('liip_functional_test.paratest.process');
+        $this->phpunit = $this->container->getParameter('liip_functional_test.paratest.phpunit');
+        $this->process = $this->container->getParameter('liip_functional_test.paratest.process');
 
-        $this->testDbPath = $this->getContainer()->get('kernel')->getCacheDir();
+        $this->testDbPath = $this->container->get('kernel')->getCacheDir();
         $this->output->writeln("Cleaning old dbs in $this->testDbPath ...");
         $createDirProcess = new Process('mkdir -p '.$this->testDbPath);
         $createDirProcess->run();
         $cleanProcess = new Process("rm -fr $this->testDbPath/dbTest.db $this->testDbPath/dbTest*.db*");
         $cleanProcess->run();
         $this->output->writeln("Creating Schema in $this->testDbPath ...");
-        $application = new Application($this->getContainer()->get('kernel'));
+        $application = new Application($this->container->get('kernel'));
         $input = new ArrayInput(['doctrine:schema:create', '--env' => 'test']);
         $application->run($input, $this->output);
 
