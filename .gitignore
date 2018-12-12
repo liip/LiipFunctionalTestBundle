@@ -3,7 +3,5 @@ vendor
 .php_cs.cache
 
 # Ignore files created during tests
-/tests/App*/cache/*
-/tests/App*/logs/*
 /cov/
 !.gitkeep

@@ -47,4 +47,19 @@ class AppKernel extends Kernel
             ]);
         });
     }
+
+    public function getCacheDir()
+    {
+        return $this->getBaseDir().'cache';
+    }
+
+    public function getLogDir()
+    {
+        return $this->getBaseDir().'log';
+    }
+
+    protected function getBaseDir()
+    {
+        return sys_get_temp_dir().'/LiipFunctionalTestBundle/'.(new \ReflectionClass($this))->getShortName().'/var/';
+    }
 }
