@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Liip\FunctionalTestBundle\Tests\Test;
 
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Liip\FunctionalTestBundle\Tests\AppConfigMysql\AppConfigMysqlKernel;
 
@@ -121,11 +122,22 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
         $em = $this->getContainer()
             ->get('doctrine.orm.entity_manager');
 
+        $users = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findAll();
+
+        // Check that there are 3 users.
+        $this->assertCount(
+            3,
+            $users
+        );
+
         /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
         $user1 = $em->getRepository('LiipFunctionalTestBundle:User')
             ->findOneBy([
                 'id' => 1,
             ]);
+
+        $this->assertNotNull($user1);
 
         $this->assertSame(
             'foo@bar.com',
