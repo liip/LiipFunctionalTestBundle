@@ -122,35 +122,35 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
             ->get('doctrine.orm.entity_manager');
 
         /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
-        $user = $em->getRepository('LiipFunctionalTestBundle:User')
+        $user1 = $em->getRepository('LiipFunctionalTestBundle:User')
             ->findOneBy([
                 'id' => 1,
             ]);
 
         $this->assertSame(
             'foo@bar.com',
-            $user->getEmail()
+            $user1->getEmail()
         );
 
         $this->assertTrue(
-            $user->getEnabled()
+            $user1->getEnabled()
         );
 
         /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
-        $user = $em->getRepository('LiipFunctionalTestBundle:User')
+        $user3 = $em->getRepository('LiipFunctionalTestBundle:User')
             ->findOneBy([
                 'id' => 3,
             ]);
 
-        $this->assertNotNull($user);
+        $this->assertNotNull($user3);
 
         $this->assertSame(
             'bar@foo.com',
-            $user->getEmail()
+            $user3->getEmail()
         );
 
         $this->assertTrue(
-            $user->getEnabled()
+            $user3->getEnabled()
         );
     }
 
@@ -216,21 +216,25 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
         $em = $this->getContainer()
             ->get('doctrine.orm.entity_manager');
 
+        $users = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findAll();
+
         // Check that there are 2 users.
-        $this->assertSame(
+        $this->assertCount(
             2,
-            count($em->getRepository('LiipFunctionalTestBundle:User')
-                ->findAll())
+            $users
         );
 
         // 1 → ORMPurger::PURGE_MODE_DELETE
         $this->loadFixtures([], false, null, 'doctrine', 1);
 
         // The purge worked: there is no user.
-        $this->assertSame(
+        $users = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findAll();
+
+        $this->assertCount(
             0,
-            count($em->getRepository('LiipFunctionalTestBundle:User')
-                ->findAll())
+            $users
         );
 
         // Reload fixtures
@@ -238,11 +242,13 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
             'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
         ]);
 
+        $users = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findAll();
+
         // Check that there are 2 users.
-        $this->assertSame(
+        $this->assertCount(
             2,
-            count($em->getRepository('LiipFunctionalTestBundle:User')
-                ->findAll())
+            $users
         );
 
         // 2 → ORMPurger::PURGE_MODE_TRUNCATE
