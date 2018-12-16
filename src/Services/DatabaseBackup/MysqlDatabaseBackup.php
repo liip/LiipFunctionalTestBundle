@@ -113,7 +113,14 @@ final class MysqlDatabaseBackup extends AbstractDatabaseBackup implements Databa
             $truncateSql[] = 'DELETE FROM '.$classMetadata->table['name']; // in small tables it's really faster than truncate
         }
         $connection->query(implode(';', $truncateSql));
-        $connection->query($this->getBackup());
+
+        // Only run query if it exists, to avoid the following exception:
+        // SQLSTATE[42000]: Syntax error or access violation: 1065 Query was empty
+        $backup = $this->getBackup();
+        if (!empty($backup)) {
+            $connection->query($backup);
+        }
+
         $connection->query('SET FOREIGN_KEY_CHECKS = 1;');
 
         if (self::$metadata) {

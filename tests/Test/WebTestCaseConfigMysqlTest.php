@@ -142,6 +142,8 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
                 'id' => 3,
             ]);
 
+        $this->assertNotNull($user);
+
         $this->assertSame(
             'bar@foo.com',
             $user->getEmail()
