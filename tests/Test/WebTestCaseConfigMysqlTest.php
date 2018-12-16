@@ -196,7 +196,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
         );
 
         $this->setExcludedDoctrineTables(['liip_user']);
-        $this->loadFixtures([], false, null, 'doctrine', 2);
+        $this->loadFixtures([], false, null, 'doctrine', ORMPurger::PURGE_MODE_TRUNCATE);
 
         // The exclusion from purge worked, the user table is still alive and well.
         $this->assertSame(
@@ -237,8 +237,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
             $users
         );
 
-        // 1 → ORMPurger::PURGE_MODE_DELETE
-        $this->loadFixtures([], false, null, 'doctrine', 1);
+        $this->loadFixtures([], false, null, 'doctrine', ORMPurger::PURGE_MODE_DELETE);
 
         // The purge worked: there is no user.
         $users = $em->getRepository('LiipFunctionalTestBundle:User')
@@ -263,8 +262,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
             $users
         );
 
-        // 2 → ORMPurger::PURGE_MODE_TRUNCATE
-        $this->loadFixtures([], false, null, 'doctrine', 2);
+        $this->loadFixtures([], false, null, 'doctrine', ORMPurger::PURGE_MODE_TRUNCATE);
 
         // The purge worked: there is no user.
         $this->assertSame(
