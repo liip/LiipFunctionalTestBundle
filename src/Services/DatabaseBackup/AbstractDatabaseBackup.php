@@ -33,7 +33,7 @@ abstract class AbstractDatabaseBackup implements DatabaseBackupInterface
      *
      * @var array
      */
-    protected $classNames;
+    protected $classNames = [];
 
     public function __construct(ContainerInterface $container, FixturesLoaderFactory $fixturesLoaderFactory)
     {
@@ -41,10 +41,15 @@ abstract class AbstractDatabaseBackup implements DatabaseBackupInterface
         $this->fixturesLoaderFactory = $fixturesLoaderFactory;
     }
 
-    public function init(array $metadatas, array $classNames): void
+    public function init(array $metadatas, array $classNames, bool $append = false): void
     {
         $this->metadatas = $metadatas;
-        $this->classNames = $classNames;
+
+        if ($append) {
+            $this->classNames = array_merge($this->classNames, $classNames);
+        } else {
+            $this->classNames = $classNames;
+        }
     }
 
     /**

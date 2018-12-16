@@ -96,8 +96,9 @@ class ORMDatabaseTool extends AbstractDatabaseTool
         $this->createDatabaseIfNotExists();
 
         $backupService = $this->getBackupService();
+
         if ($backupService) {
-            $backupService->init($this->getMetadatas(), $classNames);
+            $backupService->init($this->getMetadatas(), $classNames, $append);
 
             if ($backupService->isBackupActual()) {
                 if (null !== $this->connection) {

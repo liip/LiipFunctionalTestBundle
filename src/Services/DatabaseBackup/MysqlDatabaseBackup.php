@@ -22,8 +22,6 @@ final class MysqlDatabaseBackup extends AbstractDatabaseBackup implements Databa
 {
     protected static $referenceData;
 
-    protected static $sql;
-
     protected static $metadata;
 
     protected static $schemaUpdatedFlag = false;
@@ -40,11 +38,7 @@ final class MysqlDatabaseBackup extends AbstractDatabaseBackup implements Databa
 
     protected function getBackup()
     {
-        if (empty(self::$sql)) {
-            self::$sql = file_get_contents($this->getBackupFilePath());
-        }
-
-        return self::$sql;
+        return file_get_contents($this->getBackupFilePath());
     }
 
     protected function getReferenceBackup(): string

@@ -25,12 +25,6 @@ final class MongodbDatabaseBackup extends AbstractDatabaseBackup implements Data
 
     protected static $databases;
 
-    public function init(array $metadatas, array $classNames): void
-    {
-        $this->metadatas = $metadatas;
-        $this->classNames = $classNames;
-    }
-
     public function getBackupFilePath(): string
     {
         return $this->container->getParameter('kernel.cache_dir').'/test_mongodb_'.md5(serialize($this->metadatas).serialize($this->classNames));
