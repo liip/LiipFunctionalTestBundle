@@ -1,5 +1,9 @@
 # inherits configuration from ../AppConfigMysql/config.yml
 
+liip_functional_test:
+    cache_db:
+        mysql: liip_functional_test.services_database_backup.mysql
+
 dama_doctrine_test:
     enable_static_connection: true
     enable_static_meta_data_cache: true
