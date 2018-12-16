@@ -58,7 +58,7 @@ final class SqliteDatabaseBackup extends AbstractDatabaseBackup implements Datab
         copy($this->getDatabaseName($connection), $this->getBackupFilePath());
     }
 
-    public function restore(AbstractExecutor $executor): void
+    public function restore(AbstractExecutor $executor, array $excludedTables = []): void
     {
         /** @var EntityManager $em */
         $em = $executor->getReferenceRepository()->getManager();

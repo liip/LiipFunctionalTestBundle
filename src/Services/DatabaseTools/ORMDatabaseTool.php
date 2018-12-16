@@ -111,7 +111,7 @@ class ORMDatabaseTool extends AbstractDatabaseTool
                 $this->webTestCase->preFixtureBackupRestore($this->om, $referenceRepository, $backupService->getBackupFilePath());
                 $executor = $this->getExecutor($this->getPurger());
                 $executor->setReferenceRepository($referenceRepository);
-                $backupService->restore($executor);
+                $backupService->restore($executor, $this->excludedDoctrineTables);
                 $this->webTestCase->postFixtureBackupRestore($backupService->getBackupFilePath());
 
                 return $executor;

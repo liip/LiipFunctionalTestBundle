@@ -84,7 +84,7 @@ final class MongodbDatabaseBackup extends AbstractDatabaseBackup implements Data
         self::$metadata = $dm->getMetadataFactory()->getLoadedMetadata();
     }
 
-    public function restore(AbstractExecutor $executor): void
+    public function restore(AbstractExecutor $executor, array $excludedTables = []): void
     {
         /** @var DocumentManager $dm */
         $dm = $executor->getReferenceRepository()->getManager();

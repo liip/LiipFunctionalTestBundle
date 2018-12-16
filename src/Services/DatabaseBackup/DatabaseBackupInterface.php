@@ -26,5 +26,5 @@ interface DatabaseBackupInterface
 
     public function backup(AbstractExecutor $executor): void;
 
-    public function restore(AbstractExecutor $executor): void;
+    public function restore(AbstractExecutor $executor, array $excludedTables = []): void;
 }

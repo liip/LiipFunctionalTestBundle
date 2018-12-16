@@ -94,7 +94,7 @@ final class MysqlDatabaseBackup extends AbstractDatabaseBackup implements Databa
         }
     }
 
-    public function restore(AbstractExecutor $executor): void
+    public function restore(AbstractExecutor $executor, array $excludedTables = []): void
     {
         /** @var EntityManager $em */
         $em = $executor->getReferenceRepository()->getManager();
@@ -104,9 +104,15 @@ final class MysqlDatabaseBackup extends AbstractDatabaseBackup implements Databa
         $this->updateSchemaIfNeed($em);
         $truncateSql = [];
         foreach ($this->metadatas as $classMetadata) {
-            $truncateSql[] = 'DELETE FROM '.$classMetadata->table['name']; // in small tables it's really faster than truncate
+            $tableName = $classMetadata->table['name'];
+
+            if (!in_array($tableName, $excludedTables)) {
+                $truncateSql[] = 'DELETE FROM '.$tableName; // in small tables it's really faster than truncate
+            }
         }
-        $connection->query(implode(';', $truncateSql));
+        if (!empty($truncateSql)) {
+            $connection->query(implode(';', $truncateSql));
+        }
 
         // Only run query if it exists, to avoid the following exception:
         // SQLSTATE[42000]: Syntax error or access violation: 1065 Query was empty
