@@ -38,4 +38,83 @@ class WebTestCaseConfigMysqlCacheDbTest extends WebTestCaseConfigMysqlTest
     {
         return AppConfigMysqlKernelCacheDb::class;
     }
+
+    /**
+     * @group mysql
+     */
+    public function testLoadFixturesAndCheckBackup(): void
+    {
+        $this->loadFixtures([
+            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
+        ]);
+
+        // Load data from database
+        $em = $this->getContainer()
+            ->get('doctrine.orm.entity_manager');
+
+        $users = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findAll();
+
+        // Check that all User have been saved to database
+        $this->assertCount(
+            2,
+            $users
+        );
+
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user1 */
+        $user1 = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findOneBy([
+                'id' => 1,
+            ]);
+
+        $this->assertSame(
+            'foo@bar.com',
+            $user1->getEmail()
+        );
+
+        $this->assertTrue(
+            $user1->getEnabled()
+        );
+
+        // Store salt for later use
+        $salt = $user1->getSalt();
+
+        // Clean database
+        $this->loadFixtures();
+
+        $users = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findAll();
+
+        // Check that all User have been removed from database
+        $this->assertCount(
+            0,
+            $users
+        );
+
+        // Load fixtures again
+        $this->loadFixtures([
+            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
+        ]);
+
+        $users = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findAll();
+
+        // Check that all User have been loaded again in database
+        $this->assertCount(
+            2,
+            $users
+        );
+
+        $user1 = $em->getRepository('LiipFunctionalTestBundle:User')
+            ->findOneBy([
+                'id' => 1,
+            ]);
+
+        // Salt is a random string, if it's the same as before it means that the backup has been saved and loaded
+        // successfully
+        $this->assertSame(
+            $salt,
+            $user1->getSalt()
+        );
+    }
 }
