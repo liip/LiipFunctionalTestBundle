@@ -1,0 +1,5 @@
+# inherits configuration from ../AppConfigMysql/config.yml
+
+liip_functional_test:
+    cache_db:
+        mysql: liip_functional_test.services_database_backup.mysql

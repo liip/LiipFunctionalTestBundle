@@ -22,8 +22,6 @@ final class MysqlDatabaseBackup extends AbstractDatabaseBackup implements Databa
 {
     protected static $referenceData;
 
-    protected static $sql;
-
     protected static $metadata;
 
     protected static $schemaUpdatedFlag = false;
@@ -40,11 +38,7 @@ final class MysqlDatabaseBackup extends AbstractDatabaseBackup implements Databa
 
     protected function getBackup()
     {
-        if (empty(self::$sql)) {
-            self::$sql = file_get_contents($this->getBackupFilePath());
-        }
-
-        return self::$sql;
+        return file_get_contents($this->getBackupFilePath());
     }
 
     protected function getReferenceBackup(): string
@@ -84,7 +78,7 @@ final class MysqlDatabaseBackup extends AbstractDatabaseBackup implements Databa
         $executor->getReferenceRepository()->save($this->getBackupFilePath());
         self::$metadata = $em->getMetadataFactory()->getLoadedMetadata();
 
-        exec("mysqldump -h $dbHost -u $dbUser -p$dbPass --no-create-info --skip-triggers --no-create-db --no-tablespaces --compact $dbName > {$this->getBackupFilePath()}");
+        exec("MYSQL_PWD=$dbPass mysqldump --host $dbHost --port=$dbPort --user $dbUser --no-create-info --skip-triggers --no-create-db --no-tablespaces --compact $dbName > {$this->getBackupFilePath()}");
     }
 
     protected function updateSchemaIfNeed(EntityManager $em)
@@ -100,7 +94,7 @@ final class MysqlDatabaseBackup extends AbstractDatabaseBackup implements Databa
         }
     }
 
-    public function restore(AbstractExecutor $executor): void
+    public function restore(AbstractExecutor $executor, array $excludedTables = []): void
     {
         /** @var EntityManager $em */
         $em = $executor->getReferenceRepository()->getManager();
@@ -110,10 +104,23 @@ final class MysqlDatabaseBackup extends AbstractDatabaseBackup implements Databa
         $this->updateSchemaIfNeed($em);
         $truncateSql = [];
         foreach ($this->metadatas as $classMetadata) {
-            $truncateSql[] = 'DELETE FROM '.$classMetadata->table['name']; // in small tables it's really faster than truncate
+            $tableName = $classMetadata->table['name'];
+
+            if (!in_array($tableName, $excludedTables)) {
+                $truncateSql[] = 'DELETE FROM '.$tableName; // in small tables it's really faster than truncate
+            }
         }
-        $connection->query(implode(';', $truncateSql));
-        $connection->query($this->getBackup());
+        if (!empty($truncateSql)) {
+            $connection->query(implode(';', $truncateSql));
+        }
+
+        // Only run query if it exists, to avoid the following exception:
+        // SQLSTATE[42000]: Syntax error or access violation: 1065 Query was empty
+        $backup = $this->getBackup();
+        if (!empty($backup)) {
+            $connection->query($backup);
+        }
+
         $connection->query('SET FOREIGN_KEY_CHECKS = 1;');
 
         if (self::$metadata) {

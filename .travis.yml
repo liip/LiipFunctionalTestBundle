@@ -41,4 +41,7 @@ install:
 
 # In phpunit.xml.dist, tests annotated with "@group mysql" are excluded,
 # revert this.
-script: php ./vendor/bin/phpunit --exclude-group ""
+# Run tests twice to ensure that tests are idempotent even if database caching is enabled
+script:
+  - php ./vendor/bin/phpunit --exclude-group ""
+  - php ./vendor/bin/phpunit --exclude-group ""

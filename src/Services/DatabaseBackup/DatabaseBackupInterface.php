@@ -18,7 +18,7 @@ use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
  */
 interface DatabaseBackupInterface
 {
-    public function init(array $metadatas, array $classNames): void;
+    public function init(array $metadatas, array $classNames, bool $append = false): void;
 
     public function getBackupFilePath(): string;
 
@@ -26,5 +26,5 @@ interface DatabaseBackupInterface
 
     public function backup(AbstractExecutor $executor): void;
 
-    public function restore(AbstractExecutor $executor): void;
+    public function restore(AbstractExecutor $executor, array $excludedTables = []): void;
 }

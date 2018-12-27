@@ -11,12 +11,12 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Liip\FunctionalTestBundle\Tests\AppConfigLeanFramework;
+namespace Liip\FunctionalTestBundle\Tests\AppConfigMysqlCacheDb;
 
-use Liip\FunctionalTestBundle\Tests\App\AppKernel;
+use Liip\FunctionalTestBundle\Tests\AppConfigMysql\AppConfigMysqlKernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
-class AppConfigLeanFrameworkKernel extends AppKernel
+class AppConfigMysqlKernelCacheDb extends AppConfigMysqlKernel
 {
     /**
      * Load the config.yml from the current directory.
@@ -26,7 +26,7 @@ class AppConfigLeanFrameworkKernel extends AppKernel
         // Load the default file.
         parent::registerContainerConfiguration($loader);
 
-        // Load the file with lean framework configuration
+        // Load the file with MySQL configuration
         $loader->load(__DIR__.'/config.yml');
     }
 }
