@@ -13,15 +13,6 @@ declare(strict_types=1);
 
 namespace Liip\FunctionalTestBundle\Tests\AppConfigLeanFramework;
 
-/*
- * This file is part of the Liip/FunctionalTestBundle
- *
- * (c) Lukas Kahwe Smith <smith@pooteeweet.org>
- *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.
- */
-
 use Liip\FunctionalTestBundle\Tests\App\AppKernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
