@@ -12,6 +12,7 @@
     <php>
         <server name="KERNEL_CLASS" value="Liip\FunctionalTestBundle\Tests\App\AppKernel" />
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
+        <env name="SYMFONY_ENV" value="test" />
     </php>
 
     <testsuites>
