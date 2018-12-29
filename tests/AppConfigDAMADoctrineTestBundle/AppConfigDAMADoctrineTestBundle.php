@@ -13,11 +13,10 @@ declare(strict_types=1);
 
 namespace Liip\FunctionalTestBundle\Tests\AppConfigDAMADoctrineTestBundle;
 
-use DAMA\DoctrineTestBundle\DAMADoctrineTestBundle;
-use Liip\FunctionalTestBundle\Tests\AppConfigMysql\AppConfigMysqlKernel;
+use Liip\FunctionalTestBundle\Tests\AppConfigMysqlCacheDb\AppConfigMysqlKernelCacheDb;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
-class AppConfigDAMADoctrineTestBundle extends AppConfigMysqlKernel
+class AppConfigDAMADoctrineTestBundle extends AppConfigMysqlKernelCacheDb
 {
     public function registerBundles(): array
     {
