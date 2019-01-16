@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Liip\FunctionalTestBundle\Tests\Test;
 
+use Doctrine\Common\Annotations\Annotation\IgnoreAnnotation;
 use Liip\FunctionalTestBundle\Tests\AppConfigMysqlCacheDb\AppConfigMysqlKernelCacheDb;
 
 /**
@@ -31,6 +32,7 @@ use Liip\FunctionalTestBundle\Tests\AppConfigMysqlCacheDb\AppConfigMysqlKernelCa
  *
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
+ * @IgnoreAnnotation("group")
  */
 class WebTestCaseConfigMysqlCacheDbTest extends WebTestCaseConfigMysqlTest
 {

@@ -11,6 +11,8 @@
 
 namespace Liip\FunctionalTestBundle\Services;
 
+use Doctrine\Common\Annotations\AnnotationReader;
+use Liip\FunctionalTestBundle\Annotations\DisableDatabaseCache;
 use Liip\FunctionalTestBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
@@ -23,14 +25,17 @@ final class DatabaseToolCollection
 {
     private $container;
 
+    private $annotationReader;
+
     /**
      * @var AbstractDatabaseTool[][]
      */
     private $items = [];
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, AnnotationReader $annotationReader)
     {
         $this->container = $container;
+        $this->annotationReader = $annotationReader;
     }
 
     public function add(AbstractDatabaseTool $databaseTool): void
@@ -53,6 +58,27 @@ final class DatabaseToolCollection
         $databaseTool->setPurgeMode($purgeMode);
         $databaseTool->setWebTestCase($webTestCase);
 
+        $databaseTool->setDatabaseCacheEnabled($this->isCacheEnabled());
+
         return $databaseTool;
+    }
+
+    public function isCacheEnabled(): bool
+    {
+        foreach (debug_backtrace() as $step) {
+            if ('test' === substr($step['function'], 0, 4)) { //TODO: handle tests with the @test annotation
+                $annotations = $this->annotationReader->getMethodAnnotations(
+                    new \ReflectionMethod($step['class'], $step['function'])
+                );
+
+                foreach ($annotations as $annotationClass) {
+                    if ($annotationClass instanceof DisableDatabaseCache) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 }

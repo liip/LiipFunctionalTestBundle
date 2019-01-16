@@ -8,6 +8,7 @@ This new major version introduces a number of breaking changes; see the [upgrade
  * Added `.gitattributes` to make package slimmer 
  * Applied `declare(strict_types=1)` everywhere
  * Added append fixture feature on `LoadFixtues`
+ * Added annotation `@DisableDatabaseCache` to disable database cache for a test
 
 ### Changed
  * Switched to PSR-4 dir structure with `src` and `tests` subfolders
