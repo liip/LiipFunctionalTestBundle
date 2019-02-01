@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Liip\FunctionalTestBundle\Validator;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -85,10 +86,17 @@ class DataCollectingValidator implements ValidatorInterface, EventSubscriberInte
         return $this->wrappedValidator->inContext($context);
     }
 
+    public function onKernelRequest(GetResponseEvent $event): void
+    {
+        if ($event->isMasterRequest()) {
+            $this->clearLastErrors();
+        }
+    }
+
     public static function getSubscribedEvents(): array
     {
         return [
-            KernelEvents::REQUEST => ['clearLastErrors', 99999],
+            KernelEvents::REQUEST => ['onKernelRequest', 99999],
         ];
     }
 }

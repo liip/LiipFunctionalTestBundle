@@ -63,6 +63,30 @@ class DefaultController extends Controller
      */
     public function formAction(Request $request): Response
     {
+        return $this->form($request, 'form.html.twig');
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function formWithEmbedAction(Request $request): Response
+    {
+        return $this->form($request, 'form_with_embed.html.twig');
+    }
+
+    /**
+     * Common form functionality used to test form submissions both
+     * with and without an embedded request.
+     *
+     * @param Request $request
+     * @param string  $template
+     *
+     * @return Response
+     */
+    private function form(Request $request, string $template): Response
+    {
         $object = new \ArrayObject();
         $object->name = null;
 
@@ -83,7 +107,7 @@ class DefaultController extends Controller
         }
 
         return $this->render(
-            'form.html.twig',
+            $template,
             ['form' => $form->createView()]
         );
     }
@@ -99,5 +123,15 @@ class DefaultController extends Controller
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
+    }
+
+    /**
+     * Used to embed content as a sub-request.
+     *
+     * @return Response
+     */
+    public function embeddedAction(): Response
+    {
+        return new Response('Embedded Content', Response::HTTP_OK);
     }
 }
