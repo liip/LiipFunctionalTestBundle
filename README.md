@@ -332,7 +332,8 @@ Tips for Fixture Loading Tests
     ```yaml
     # app/config/config_test.yml
     liip_functional_test:
-        cache_sqlite_db: true
+        cache_db:
+            sqlite: liip_functional_test.services_database_backup.sqlite
     ```
 
  3. Load your Doctrine fixtures in your tests:
