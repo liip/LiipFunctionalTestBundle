@@ -553,7 +553,7 @@ abstract class WebTestCase extends BaseWebTestCase
         $this->excludedDoctrineTables = $excludedDoctrineTables;
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if (null !== $this->containers) {
             foreach ($this->containers as $container) {
