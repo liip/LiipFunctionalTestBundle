@@ -43,6 +43,7 @@
         </service>
         <service id="liip_functional_test.services.database_tool_collection" class="Liip\FunctionalTestBundle\Services\DatabaseToolCollection" public="true">
             <argument type="service" id="service_container" />
+            <argument type="service" id="annotations.reader" />
             <call method="add">
                 <argument type="service" id="liip_functional_test.services_database_tools.orm_database_tool" />
             </call>

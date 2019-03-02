@@ -60,6 +60,11 @@ abstract class AbstractDatabaseTool
     protected $webTestCase;
 
     /**
+     * @var bool
+     */
+    protected $databaseCacheEnabled = true;
+
+    /**
      * @var array
      */
     private static $cachedMetadatas = [];
@@ -75,6 +80,11 @@ abstract class AbstractDatabaseTool
     public function setRegistry(ManagerRegistry $registry): void
     {
         $this->registry = $registry;
+    }
+
+    public function setDatabaseCacheEnabled(bool $databaseCacheEnabled): void
+    {
+        $this->databaseCacheEnabled = $databaseCacheEnabled;
     }
 
     public function setObjectManagerName(string $omName = null): void

@@ -35,7 +35,7 @@ class ORMSqliteDatabaseTool extends ORMDatabaseTool
         }
 
         $backupService = $this->getBackupService();
-        if ($backupService) {
+        if ($backupService && $this->databaseCacheEnabled) {
             $backupService->init($this->getMetadatas(), $classNames);
 
             if ($backupService->isBackupActual()) {

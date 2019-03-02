@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Liip\FunctionalTestBundle\Tests\Test;
 
+use Doctrine\Common\Annotations\Annotation\IgnoreAnnotation;
+use Liip\FunctionalTestBundle\Annotations\DisableDatabaseCache;
 use Liip\FunctionalTestBundle\Annotations\QueryCount;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Liip\FunctionalTestBundle\Tests\AppConfig\AppConfigKernel;
@@ -244,6 +246,42 @@ class WebTestCaseConfigTest extends WebTestCase
             'fooa string',
             $user->getName()
         );
+    }
+
+    /**
+     * @DisableDatabaseCache()
+     */
+    public function testCacheCanBeDisabled(): void
+    {
+        // MD5 hash corresponding to these fixtures files.
+        $md5 = '0ded9d8daaeaeca1056b18b9d0d433b2';
+        $databaseFilePath = $this->getContainer()->getParameter('kernel.cache_dir').'/test_sqlite_'.$md5.'.db';
+
+        $fixtures = [
+            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadDependentUserData',
+        ];
+
+        $this->loadFixtures($fixtures);
+
+        // Load data from database
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user1 */
+        $user1 = $em->getRepository('LiipFunctionalTestBundle:User')->findOneBy(['id' => 1]);
+
+        // Store random data, in order to check it after reloading fixtures.
+        $user1Salt = $user1->getSalt();
+
+        sleep(2);
+
+        // Reload the fixtures.
+        $this->loadFixtures($fixtures);
+
+        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user1 */
+        $user1 = $em->getRepository('LiipFunctionalTestBundle:User')->findOneBy(['id' => 1]);
+
+        //The salt are not the same because cache were not used
+        $this->assertNotSame($user1Salt, $user1->getSalt());
     }
 
     /**

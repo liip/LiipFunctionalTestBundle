@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Liip\FunctionalTestBundle\Tests\Test;
 
+use Doctrine\Common\Annotations\Annotation\IgnoreAnnotation;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Liip\FunctionalTestBundle\Tests\AppConfigMysql\AppConfigMysqlKernel;
@@ -33,6 +34,7 @@ use Liip\FunctionalTestBundle\Tests\AppConfigMysql\AppConfigMysqlKernel;
  *
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
+ * @IgnoreAnnotation("group")
  */
 class WebTestCaseConfigMysqlTest extends WebTestCase
 {

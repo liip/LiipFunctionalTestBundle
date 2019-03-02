@@ -97,7 +97,7 @@ class ORMDatabaseTool extends AbstractDatabaseTool
 
         $backupService = $this->getBackupService();
 
-        if ($backupService) {
+        if ($backupService && $this->databaseCacheEnabled) {
             $backupService->init($this->getMetadatas(), $classNames, $append);
 
             if ($backupService->isBackupActual()) {

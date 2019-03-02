@@ -13,11 +13,16 @@ declare(strict_types=1);
 
 namespace Liip\FunctionalTestBundle\Tests\Test;
 
+use Doctrine\Common\Annotations\Annotation\IgnoreAnnotation;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Liip\FunctionalTestBundle\Tests\App\AppKernel;
 use PHPUnit\Framework\AssertionFailedError;
 
+/**
+ * @IgnoreAnnotation("depends")
+ * @IgnoreAnnotation("expectedException")
+ */
 class WebTestCaseTest extends WebTestCase
 {
     /** @var \Symfony\Bundle\FrameworkBundle\Client client */
@@ -297,9 +302,6 @@ EOF;
         );
     }
 
-    /**
-     * @group toto
-     */
     public function testLoadFixtures(): void
     {
         $fixtures = $this->loadFixtures([
