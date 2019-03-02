@@ -43,6 +43,16 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
         return AppConfigMysqlKernel::class;
     }
 
+    protected function setUp()
+    {
+        self::bootKernel();
+
+        $this->testLoadFixtures();
+        $this->testLoadFixturesFiles();
+
+        parent::setUp();
+    }
+
     /**
      * Data fixtures.
      *
