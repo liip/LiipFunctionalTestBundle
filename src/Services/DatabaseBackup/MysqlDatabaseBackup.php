@@ -102,16 +102,17 @@ final class MysqlDatabaseBackup extends AbstractDatabaseBackup implements Databa
 
         $connection->query('SET FOREIGN_KEY_CHECKS = 0;');
         $this->updateSchemaIfNeed($em);
-        $truncateSql = [];
+        $queries = [];
         foreach ($this->metadatas as $classMetadata) {
             $tableName = $classMetadata->table['name'];
 
             if (!in_array($tableName, $excludedTables)) {
-                $truncateSql[] = 'DELETE FROM '.$tableName; // in small tables it's really faster than truncate
+                $queries[] = 'DELETE FROM '.$tableName; // in small tables it's really faster than truncate
+                $queries[] = 'ALTER TABLE '.$tableName.' AUTO_INCREMENT = 1';
             }
         }
-        if (!empty($truncateSql)) {
-            $connection->query(implode(';', $truncateSql));
+        if (!empty($queries)) {
+            $connection->query(implode(';', $queries));
         }
 
         // Only run query if it exists, to avoid the following exception:
