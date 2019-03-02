@@ -12,6 +12,10 @@ liipfunctionaltestbundle_form:
     path:  /form
     defaults: { _controller: 'Liip\FunctionalTestBundle\Tests\App\Controller\DefaultController::formAction' }
 
+liipfunctionaltestbundle_form_with_embed:
+    path:  /form-with-embed
+    defaults: { _controller: 'Liip\FunctionalTestBundle\Tests\App\Controller\DefaultController::formWithEmbedAction' }
+
 liipfunctionaltestbundle_json:
     path:  /json
     defaults: { _controller: 'Liip\FunctionalTestBundle\Tests\App\Controller\DefaultController::jsonAction' }

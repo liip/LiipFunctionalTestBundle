@@ -727,6 +727,41 @@ EOF;
     }
 
     /**
+     * Ensure form validation helpers still work with embedded controllers.
+     *
+     * @see https://github.com/liip/LiipFunctionalTestBundle/issues/273
+     */
+    public function testFormWithEmbed(): void
+    {
+        $this->loadFixtures([]);
+
+        $path = '/form-with-embed';
+
+        $crawler = $this->client->request('GET', $path);
+
+        $this->assertStatusCode(200, $this->client);
+
+        $form = $crawler->selectButton('Submit')->form();
+        $crawler = $this->client->submit($form);
+
+        $this->assertStatusCode(200, $this->client);
+
+        $this->assertValidationErrors(['children[name].data'], $this->client->getContainer());
+
+        // Try again with the fields filled out.
+        $form = $crawler->selectButton('Submit')->form();
+        $form->setValues(['form[name]' => 'foo bar']);
+        $crawler = $this->client->submit($form);
+
+        $this->assertStatusCode(200, $this->client);
+
+        $this->assertContains(
+            'Name submitted.',
+            $crawler->filter('div.flash-notice')->text()
+        );
+    }
+
+    /**
      * @depends testForm
      *
      * @expectedException \PHPUnit\Framework\ExpectationFailedException
