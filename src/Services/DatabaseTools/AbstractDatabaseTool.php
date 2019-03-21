@@ -12,12 +12,12 @@
 namespace Liip\FunctionalTestBundle\Services\DatabaseTools;
 
 use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\DBAL\Connection;
 use Liip\FunctionalTestBundle\Services\DatabaseBackup\DatabaseBackupInterface;
 use Liip\FunctionalTestBundle\Services\FixturesLoaderFactory;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
-use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -114,7 +114,7 @@ abstract class AbstractDatabaseTool
     protected function getBackupService(): ?DatabaseBackupInterface
     {
         $backupServiceParamName = strtolower('liip_functional_test.cache_db.'.(
-            ('ORM' === $this->registry->getName())
+            ('ORM' === $this->getType())
                 ? $this->connection->getDatabasePlatform()->getName()
                 : $this->getType()
         ));
