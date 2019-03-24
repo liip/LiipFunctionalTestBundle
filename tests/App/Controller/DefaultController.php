@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Liip\FunctionalTestBundle\Tests\App\Controller;
+namespace Liip\Acme\Tests\App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -39,7 +39,7 @@ class DefaultController extends Controller
      */
     public function userAction(int $userId): Response
     {
-        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        /** @var \Liip\Acme\Tests\App\Entity\User $user */
         $user = $this->getDoctrine()
             ->getRepository('LiipFunctionalTestBundle:User')
             ->find($userId);

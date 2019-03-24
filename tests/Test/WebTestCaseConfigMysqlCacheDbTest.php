@@ -11,10 +11,10 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Liip\FunctionalTestBundle\Tests\Test;
+namespace Liip\Acme\Tests\Test;
 
 use Doctrine\Common\Annotations\Annotation\IgnoreAnnotation;
-use Liip\FunctionalTestBundle\Tests\AppConfigMysqlCacheDb\AppConfigMysqlKernelCacheDb;
+use Liip\Acme\Tests\AppConfigMysqlCacheDb\AppConfigMysqlKernelCacheDb;
 
 /**
  * Test MySQL database with database caching enabled.
@@ -47,7 +47,7 @@ class WebTestCaseConfigMysqlCacheDbTest extends WebTestCaseConfigMysqlTest
     public function testLoadFixturesAndCheckBackup(): void
     {
         $this->loadFixtures([
-            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
+            'Liip\Acme\Tests\App\DataFixtures\ORM\LoadUserData',
         ]);
 
         // Load data from database
@@ -63,7 +63,7 @@ class WebTestCaseConfigMysqlCacheDbTest extends WebTestCaseConfigMysqlTest
             $users
         );
 
-        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user1 */
+        /** @var \Liip\Acme\Tests\App\Entity\User $user1 */
         $user1 = $em->getRepository('LiipFunctionalTestBundle:User')
             ->findOneBy([
                 'id' => 1,
@@ -95,7 +95,7 @@ class WebTestCaseConfigMysqlCacheDbTest extends WebTestCaseConfigMysqlTest
 
         // Load fixtures again
         $this->loadFixtures([
-            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
+            'Liip\Acme\Tests\App\DataFixtures\ORM\LoadUserData',
         ]);
 
         $users = $em->getRepository('LiipFunctionalTestBundle:User')

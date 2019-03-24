@@ -48,7 +48,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Liip\\FunctionalTestBundle\\Tests\\": "tests/"
+            "Liip\\Acme\\Tests\\": "tests/"
         }
     },
     "config": {

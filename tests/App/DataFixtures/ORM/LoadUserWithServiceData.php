@@ -11,12 +11,12 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM;
+namespace Liip\Acme\Tests\App\DataFixtures\ORM;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Liip\FunctionalTestBundle\Tests\App\Entity\User;
+use Liip\Acme\Tests\App\Entity\User;
 use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
 
 class LoadUserWithServiceData extends AbstractFixture implements FixtureInterface
@@ -35,7 +35,7 @@ class LoadUserWithServiceData extends AbstractFixture implements FixtureInterfac
     {
         $this->tokenStorage->setToken('id', 'value');
 
-        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        /** @var \Liip\Acme\Tests\App\Entity\User $user */
         $user = new User();
         $user->setId(1);
         $user->setName('foo bar');

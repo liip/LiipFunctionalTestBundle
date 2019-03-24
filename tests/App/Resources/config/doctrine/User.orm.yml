@@ -1,4 +1,4 @@
-Liip\FunctionalTestBundle\Tests\App\Entity\User:
+Liip\Acme\Tests\App\Entity\User:
     type: entity
     table: 'liip_user'
     id:

@@ -11,12 +11,12 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM;
+namespace Liip\Acme\Tests\App\DataFixtures\ORM;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Liip\FunctionalTestBundle\Tests\App\Entity\User;
+use Liip\Acme\Tests\App\Entity\User;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class LoadSecondUserData extends AbstractFixture implements FixtureInterface
@@ -39,7 +39,7 @@ class LoadSecondUserData extends AbstractFixture implements FixtureInterface
      */
     public function load(ObjectManager $manager): void
     {
-        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        /** @var \Liip\Acme\Tests\App\Entity\User $user */
         $user = new User();
         $user->setName('bar foo');
         $user->setEmail('bar@foo.com');
