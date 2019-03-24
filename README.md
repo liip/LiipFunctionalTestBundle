@@ -8,9 +8,8 @@
 Introduction
 ============
 
-This Bundle provides base classes for functional tests to assist in setting up
-test-databases and loading fixtures. It also provides a DI
-aware mock builder for unit tests.
+This Bundle provides base classes for functional tests.
+It also provides a DI aware mock builder for unit tests.
 
 Documentation
 ------------
@@ -18,7 +17,6 @@ Documentation
 * [Installation](doc/installation.md)
 * [Basic usage](doc/basic.md)
 * [Command test](doc/command.md)
-* [Database test](doc/database.md)
 * [Logged client](doc/logged.md)
 * [Query counter](doc/query.md)
 * [Examples](doc/examples.md)

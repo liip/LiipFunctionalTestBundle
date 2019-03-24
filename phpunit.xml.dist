@@ -27,10 +27,4 @@
             <directory>src</directory>
         </whitelist>
     </filter>
-
-    <groups>
-        <exclude>
-            <group>mysql</group>
-        </exclude>
-    </groups>
 </phpunit>

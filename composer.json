@@ -1,7 +1,7 @@
 {
     "name": "liip/functional-test-bundle",
     "description": "This bundles provides additional functional test-cases for Symfony applications",
-    "keywords": ["symfony", "testing", "fixtures"],
+    "keywords": ["symfony", "testing"],
     "type": "symfony-bundle",
     "license": "MIT",
     "authors": [
@@ -21,25 +21,19 @@
         "symfony/framework-bundle": "^3.4 || ^4.1"
     },
     "require-dev": {
-        "doctrine/data-fixtures": "^1.3",
         "doctrine/doctrine-bundle": "^1.8",
         "doctrine/doctrine-fixtures-bundle": "^3.0.2",
         "doctrine/orm": "^2.6",
-        "jackalope/jackalope-doctrine-dbal": "^1.3",
         "phpunit/phpunit": "^6.1 || ^7.0",
         "symfony/monolog-bundle": "^3.1",
         "symfony/phpunit-bridge": "^3.4 || ^4.1",
         "symfony/symfony": "^3.4 || ^4.1",
-        "theofidry/alice-data-fixtures": "^1.0.1",
         "twig/twig": "^2.0"
     },
     "suggest": {
         "brianium/paratest": "Required when using paratest to parallelize tests",
         "doctrine/dbal": "Required when using the fixture loading functionality with an ORM and SQLite",
-        "doctrine/doctrine-fixtures-bundle": "Required when using the fixture loading functionality",
-        "doctrine/orm": "Required when using the fixture loading functionality with an ORM and SQLite",
-        "hautelook/alice-bundle": "Required when using loadFixtureFiles functionality with custom providers",
-        "theofidry/alice-data-fixtures": "Required when using loadFixtureFiles functionality"
+        "doctrine/orm": "Required when using the fixture loading functionality with an ORM and SQLite"
     },
     "autoload": {
         "psr-4": {
