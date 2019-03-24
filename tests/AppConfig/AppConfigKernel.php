@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Liip\FunctionalTestBundle\Tests\AppConfig;
+namespace Liip\Acme\Tests\AppConfig;
 
 /*
  * This file is part of the Liip/FunctionalTestBundle
@@ -22,7 +22,7 @@ namespace Liip\FunctionalTestBundle\Tests\AppConfig;
  * with this source code in the file LICENSE.
  */
 
-use Liip\FunctionalTestBundle\Tests\App\AppKernel;
+use Liip\Acme\Tests\App\AppKernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
 class AppConfigKernel extends AppKernel

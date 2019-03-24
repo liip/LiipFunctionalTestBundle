@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM;
+namespace Liip\Acme\Tests\App\DataFixtures\ORM;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -38,7 +38,7 @@ class LoadDependentUserWithServiceData extends AbstractFixture implements Depend
      */
     public function load(ObjectManager $manager): void
     {
-        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        /** @var \Liip\Acme\Tests\App\Entity\User $user */
         $user = clone $this->getReference('user');
 
         $user->setId(3);
@@ -60,7 +60,7 @@ class LoadDependentUserWithServiceData extends AbstractFixture implements Depend
     public function getDependencies(): array
     {
         return [
-            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserWithServiceData',
+            'Liip\Acme\Tests\App\DataFixtures\ORM\LoadUserWithServiceData',
         ];
     }
 }

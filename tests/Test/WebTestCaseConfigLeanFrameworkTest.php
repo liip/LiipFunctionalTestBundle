@@ -11,10 +11,10 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Liip\FunctionalTestBundle\Tests\Test;
+namespace Liip\Acme\Tests\Test;
 
 use Liip\FunctionalTestBundle\Test\WebTestCase;
-use Liip\FunctionalTestBundle\Tests\AppConfigLeanFramework\AppConfigLeanFrameworkKernel;
+use Liip\Acme\Tests\AppConfigLeanFramework\AppConfigLeanFrameworkKernel;
 
 /**
  * Test Lean Framework - with validator component disabled.

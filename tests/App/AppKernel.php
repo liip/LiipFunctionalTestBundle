@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Liip\FunctionalTestBundle\Tests\App;
+namespace Liip\Acme\Tests\App;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -29,7 +29,7 @@ class AppKernel extends Kernel
             new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new \Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
             new \Liip\FunctionalTestBundle\LiipFunctionalTestBundle(),
-            new \Liip\FunctionalTestBundle\Tests\App\AcmeBundle(),
+            new \Liip\Acme\Tests\App\AcmeBundle(),
             new \Nelmio\Alice\Bridge\Symfony\NelmioAliceBundle(),
             new \Fidry\AliceDataFixtures\Bridge\Symfony\FidryAliceDataFixturesBundle(),
         ];

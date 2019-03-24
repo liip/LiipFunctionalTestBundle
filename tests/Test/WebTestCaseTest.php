@@ -11,12 +11,12 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Liip\FunctionalTestBundle\Tests\Test;
+namespace Liip\Acme\Tests\Test;
 
 use Doctrine\Common\Annotations\Annotation\IgnoreAnnotation;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
-use Liip\FunctionalTestBundle\Tests\App\AppKernel;
+use Liip\Acme\Tests\App\AppKernel;
 use PHPUnit\Framework\AssertionFailedError;
 
 /**
@@ -305,7 +305,7 @@ EOF;
     public function testLoadFixtures(): void
     {
         $fixtures = $this->loadFixtures([
-            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
+            'Liip\Acme\Tests\App\DataFixtures\ORM\LoadUserData',
         ]);
 
         $this->assertInstanceOf(
@@ -320,7 +320,7 @@ EOF;
             $repository
         );
 
-        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user1 */
+        /** @var \Liip\Acme\Tests\App\Entity\User $user1 */
         $user1 = $repository->getReference('user');
 
         $this->assertSame(1, $user1->getId());
@@ -341,7 +341,7 @@ EOF;
             count($users)
         );
 
-        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        /** @var \Liip\Acme\Tests\App\Entity\User $user */
         $user = $em->getRepository('LiipFunctionalTestBundle:User')
             ->findOneBy([
                 'id' => 1,
@@ -360,11 +360,11 @@ EOF;
     public function testAppendFixtures(): void
     {
         $this->loadFixtures([
-            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
+            'Liip\Acme\Tests\App\DataFixtures\ORM\LoadUserData',
         ]);
 
         $this->loadFixtures(
-            ['Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadSecondUserData'],
+            ['Liip\Acme\Tests\App\DataFixtures\ORM\LoadSecondUserData'],
             true
         );
 
@@ -372,7 +372,7 @@ EOF;
         $em = $this->getContainer()
             ->get('doctrine.orm.entity_manager');
 
-        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        /** @var \Liip\Acme\Tests\App\Entity\User $user */
         $user = $em->getRepository('LiipFunctionalTestBundle:User')
             ->findOneBy([
                 'id' => 1,
@@ -387,7 +387,7 @@ EOF;
             $user->getEnabled()
         );
 
-        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        /** @var \Liip\Acme\Tests\App\Entity\User $user */
         $user = $em->getRepository('LiipFunctionalTestBundle:User')
             ->findOneBy([
                 'id' => 3,
@@ -409,7 +409,7 @@ EOF;
     public function testLoadDependentFixtures(): void
     {
         $fixtures = $this->loadFixtures([
-            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadDependentUserData',
+            'Liip\Acme\Tests\App\DataFixtures\ORM\LoadDependentUserData',
         ]);
 
         $this->assertInstanceOf(
@@ -436,7 +436,7 @@ EOF;
     public function testLoadDependentFixturesWithDependencyInjected(): void
     {
         $fixtures = $this->loadFixtures([
-            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadDependentUserWithServiceData',
+            'Liip\Acme\Tests\App\DataFixtures\ORM\LoadDependentUserWithServiceData',
         ]);
 
         $this->assertInstanceOf(
@@ -488,7 +488,7 @@ EOF;
             count($users)
         );
 
-        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        /** @var \Liip\Acme\Tests\App\Entity\User $user */
         $user = $em->getRepository('LiipFunctionalTestBundle:User')
             ->findOneBy([
                 'id' => 1,
@@ -543,7 +543,7 @@ EOF;
         );
 
         $id = 1;
-        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        /** @var \Liip\Acme\Tests\App\Entity\User $user */
         foreach ($fixtures as $user) {
             $this->assertSame($id++, $user->getId());
         }
@@ -571,7 +571,7 @@ EOF;
             $fixtures
         );
 
-        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user1 */
+        /** @var \Liip\Acme\Tests\App\Entity\User $user1 */
         $user1 = $fixtures['id1'];
 
         $this->assertInternalType('string', $user1->getUsername());
@@ -588,7 +588,7 @@ EOF;
             count($users)
         );
 
-        /** @var \Liip\FunctionalTestBundle\Tests\App\Entity\User $user */
+        /** @var \Liip\Acme\Tests\App\Entity\User $user */
         $user = $em->getRepository('LiipFunctionalTestBundle:User')
             ->findOneBy([
                 'id' => 1,
@@ -645,7 +645,7 @@ EOF;
     public function testUserWithFixtures(): void
     {
         $fixtures = $this->loadFixtures([
-            'Liip\FunctionalTestBundle\Tests\App\DataFixtures\ORM\LoadUserData',
+            'Liip\Acme\Tests\App\DataFixtures\ORM\LoadUserData',
         ]);
 
         $this->assertInstanceOf(

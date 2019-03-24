@@ -11,9 +11,9 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Liip\FunctionalTestBundle\Tests\AppConfigMysqlCacheDb;
+namespace Liip\Acme\Tests\AppConfigMysqlCacheDb;
 
-use Liip\FunctionalTestBundle\Tests\AppConfigMysql\AppConfigMysqlKernel;
+use Liip\Acme\Tests\AppConfigMysql\AppConfigMysqlKernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
 class AppConfigMysqlKernelCacheDb extends AppConfigMysqlKernel

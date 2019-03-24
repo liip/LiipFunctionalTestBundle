@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Liip\FunctionalTestBundle\Tests\App\Entity;
+namespace Liip\Acme\Tests\App\Entity;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 
