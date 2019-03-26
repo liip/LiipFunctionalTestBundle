@@ -30,8 +30,6 @@ class AppKernel extends Kernel
             new \Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
             new \Liip\FunctionalTestBundle\LiipFunctionalTestBundle(),
             new \Liip\Acme\Tests\App\AcmeBundle(),
-            new \Nelmio\Alice\Bridge\Symfony\NelmioAliceBundle(),
-            new \Fidry\AliceDataFixtures\Bridge\Symfony\FidryAliceDataFixturesBundle(),
         ];
 
         return $bundles;
