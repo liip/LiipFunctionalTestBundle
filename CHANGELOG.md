@@ -3,6 +3,14 @@
 ## 3.0 [TBA]
 This new major version introduces a number of breaking changes; see the [upgrade guide](UPGRADE-3.0.md) for more details.
 
+### Added
+ * Added `makeAuthenticatedClient()` and `makeClientWithCredentials()` methods
+
+### Changed
+ * `makeClient()` doesn't accept a boolean or array as the first argument, use
+ `makeAuthenticatedClient()` or
+ `makeClientWithCredentials($username, $password)` instead
+
 ### Removed
  * Removed fixtures loading in favor of https://github.com/liip/LiipTestFixturesBundle
 

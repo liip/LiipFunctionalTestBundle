@@ -10,3 +10,29 @@ This is the list of actions that you need to take when upgrading this bundle fro
    
 [LiipTestFixturesBundle]: https://github.com/liip/LiipTestFixturesBundle
 [LiipTestFixturesBundle installation]: https://github.com/liip/LiipTestFixturesBundle/blob/master/doc/installation.md
+
+ * `makeClient()` doesn't accept a boolean or array as its first argument, it has been split in 2 functions:
+   Old code:
+   ```
+   $client = static::makeClient(true);
+   ```
+    
+   New code:
+   ```
+   $client = static::makeAuthenticatedClient();
+   ```
+   
+   Old code:
+   ```
+   $client = static::makeClient([
+       'username' => 'foobar',
+       'password' => '12341234',
+   ]);
+   ```
+   
+   New code:
+   ```
+   $client = static::makeClientWithCredentials('foobar', '12341234');
+   ```
+
+   These 2 new methods still accept an array for parameters as the last argument.
