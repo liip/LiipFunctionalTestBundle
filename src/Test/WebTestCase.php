@@ -24,7 +24,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ResettableContainerInterface;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -464,10 +463,7 @@ abstract class WebTestCase extends BaseWebTestCase
             }
 
             $session = $client->getContainer()->get('session');
-            // Since the namespace of the session changed in symfony 2.1, instanceof can be used to check the version.
-            if ($session instanceof Session) {
-                $session->setId(uniqid());
-            }
+            $session->setId(uniqid());
 
             $client->getCookieJar()->set(new Cookie($options['name'], $session->getId()));
 
