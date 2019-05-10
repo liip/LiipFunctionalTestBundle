@@ -20,15 +20,12 @@ matrix:
     - php: 7.1
       env: COMPOSER_FLAGS="--prefer-lowest"
     - php: 7.1
-      env: SYMFONY_VERSION="2.7.*"
-    - php: 7.1
       env: SYMFONY_VERSION="2.8.*"
     - php: 7.2
       env: SYMFONY_VERSION="3.4.*"
   fast_finish: true
 
 before_install:
-  - if [[ $TRAVIS_PHP_VERSION != '7.1' && $TRAVIS_PHP_VERSION != '7.2' ]]; then phpenv config-rm xdebug.ini; fi
   - echo "memory_limit = -1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - if [ "$SYMFONY_VERSION" != "" ]; then composer require --no-update symfony/symfony=$SYMFONY_VERSION; fi
 
