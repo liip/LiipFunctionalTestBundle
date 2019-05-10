@@ -93,7 +93,7 @@ class ValidationErrorsConstraint extends Constraint
      *
      * @return string
      */
-    public function toString()
+    public function toString(): string
     {
         return 'validation errors match';
     }

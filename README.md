@@ -511,7 +511,7 @@ use Liip\FunctionalTestBundle\Test\WebTestCase;
 
 class AccountControllerTest extends WebTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $em = $this->getContainer()->get('doctrine')->getManager();
         if (!isset($metadatas)) {
@@ -557,7 +557,7 @@ class LoadMemberAccounts extends AbstractFixture
 and then in the test case setup:
 ```php
 ...
-    public function setUp()
+    public function setUp(): void
     {
         $this->fixtures = $this->loadFixtures([
             'AppBundle\Tests\Fixtures\LoadMemberAccounts'

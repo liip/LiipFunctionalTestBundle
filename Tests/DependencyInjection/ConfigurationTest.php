@@ -21,7 +21,7 @@ class ConfigurationTest extends WebTestCase
     /** @var \Symfony\Component\DependencyInjection\ContainerInterface $container */
     private $container = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         $client = static::makeClient();
         $this->container = $client->getContainer();
