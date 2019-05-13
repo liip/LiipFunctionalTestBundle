@@ -25,7 +25,7 @@ class WebTestCaseTest extends WebTestCase
     /** @var \Symfony\Bundle\FrameworkBundle\Client client */
     private $client = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->client = static::makeClient();
     }
@@ -728,7 +728,7 @@ EOF;
         );
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 

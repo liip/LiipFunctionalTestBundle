@@ -206,7 +206,7 @@ class CommandTest extends WebTestCase
         $this->runCommand('command:test');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 

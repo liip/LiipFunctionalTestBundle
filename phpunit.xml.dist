@@ -3,7 +3,7 @@
 <!-- https://phpunit.de/manual/3.7/en/appendixes.configuration.html -->
 <phpunit
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/3.7/phpunit.xsd"
+    xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/6.1/phpunit.xsd"
     backupGlobals="false"
     backupStaticAttributes="false"
     bootstrap="Tests/App/bootstrap.php"
@@ -13,9 +13,6 @@
     convertWarningsToExceptions="true"
     beStrictAboutTestsThatDoNotTestAnything="true"
     beStrictAboutOutputDuringTests="true"
-    beStrictAboutTestSize="true"
-    reportUselessTests="true"
-    disallowTestOutput="true"
 >
 
     <php>

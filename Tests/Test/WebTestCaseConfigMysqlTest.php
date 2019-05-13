@@ -40,7 +40,7 @@ class WebTestCaseConfigMysqlTest extends WebTestCase
         return 'AppConfigMysqlKernel';
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         // https://github.com/liip/LiipFunctionalTestBundle#non-sqlite
         $em = $this->getContainer()->get('doctrine')->getManager();
