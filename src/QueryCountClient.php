@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Liip\FunctionalTestBundle;
 
-use Symfony\Bundle\FrameworkBundle\Client;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\DependencyInjection\Compiler\CompilerDebugDumpPass;
 
 // Symfony <4 BC
@@ -21,10 +21,10 @@ if (class_exists(CompilerDebugDumpPass::class)) {
     class_alias(QueryCountClientSymfony3Trait::class, QueryCountClientTrait::class);
 }
 
-class QueryCountClient extends Client
+class QueryCountClient extends KernelBrowser
 {
     /*
-     * We use trait only because of Client::request signature strict type mismatch between Symfony 3 and 4.
+     * We use trait only because of KernelBrowser::request signature strict type mismatch between Symfony 3 and 4.
      */
     use QueryCountClientTrait;
 

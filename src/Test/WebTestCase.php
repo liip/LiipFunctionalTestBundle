@@ -18,7 +18,7 @@ use Doctrine\Common\DataFixtures\ProxyReferenceRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Liip\FunctionalTestBundle\Utils\HttpAssertions;
 use PHPUnit\Framework\MockObject\MockBuilder;
-use Symfony\Bundle\FrameworkBundle\Client;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
@@ -359,9 +359,9 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param bool|array $authentication
      * @param array      $params
      *
-     * @return Client
+     * @return KernelBrowser
      */
-    protected function makeClient($authentication = false, array $params = []): Client
+    protected function makeClient($authentication = false, array $params = []): KernelBrowser
     {
         if ($authentication) {
             if (true === $authentication) {
@@ -526,9 +526,9 @@ abstract class WebTestCase extends BaseWebTestCase
      * information.
      *
      * @param int    $expectedStatusCode
-     * @param Client $client
+     * @param KernelBrowser $client
      */
-    public static function assertStatusCode(int $expectedStatusCode, Client $client): void
+    public static function assertStatusCode(int $expectedStatusCode, KernelBrowser $client): void
     {
         HttpAssertions::assertStatusCode($expectedStatusCode, $client);
     }

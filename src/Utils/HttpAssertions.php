@@ -15,7 +15,7 @@ namespace Liip\FunctionalTestBundle\Utils;
 
 use Liip\FunctionalTestBundle\Test\ValidationErrorsConstraint;
 use PHPUnit\Framework\TestCase;
-use Symfony\Bundle\FrameworkBundle\Client;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
@@ -56,9 +56,9 @@ class HttpAssertions extends TestCase
      * information.
      *
      * @param int    $expectedStatusCode
-     * @param Client $client
+     * @param KernelBrowser $client
      */
-    public static function assertStatusCode(int $expectedStatusCode, Client $client): void
+    public static function assertStatusCode(int $expectedStatusCode, KernelBrowser $client): void
     {
         $helpfulErrorMessage = '';
 
