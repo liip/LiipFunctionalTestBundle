@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.0 [TBA]
+This new major version introduces a number of breaking changes; see the [upgrade guide](UPGRADE-3.0.md) for more details.
+
+### Removed
+ * Removed fixtures loading in favor of https://github.com/liip/LiipTestFixturesBundle
+
 ## 2.0 [TBA]
 This new major version introduces a number of breaking changes; see the [upgrade guide](UPGRADE-2.0.md) for more details.
 

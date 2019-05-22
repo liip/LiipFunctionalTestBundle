@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Liip\Acme\Tests\Test;
 
 use Doctrine\Common\Annotations\Annotation\IgnoreAnnotation;
-use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Liip\Acme\Tests\App\AppKernel;
 use PHPUnit\Framework\AssertionFailedError;
@@ -103,8 +102,6 @@ class WebTestCaseTest extends WebTestCase
      */
     public function testIndexAssertStatusCode(): void
     {
-        $this->loadFixtures([]);
-
         $path = '/';
 
         static::$client->request('GET', $path);
@@ -117,8 +114,6 @@ class WebTestCaseTest extends WebTestCase
      */
     public function testAssertStatusCodeFail(): void
     {
-        $this->loadFixtures([]);
-
         $path = '/';
 
         static::$client->request('GET', $path);
@@ -147,9 +142,7 @@ class WebTestCaseTest extends WebTestCase
      */
     public function testAssertStatusCodeException(): void
     {
-        $this->loadFixtures([]);
-
-        $path = '/user/2';
+        $path = '/9999';
 
         static::$client->request('GET', $path);
 
@@ -157,7 +150,7 @@ class WebTestCaseTest extends WebTestCase
             $this->assertStatusCode(-1, static::$client);
         } catch (AssertionFailedError $e) {
             $string = <<<'EOF'
-No user found
+No route found for "GET /9999"
 Failed asserting that 404 matches expected -1.
 EOF;
             $this->assertSame($string, $e->getMessage());
@@ -173,8 +166,6 @@ EOF;
      */
     public function testIndexIsSuccesful(): void
     {
-        $this->loadFixtures([]);
-
         $path = '/';
 
         static::$client->request('GET', $path);
@@ -187,8 +178,6 @@ EOF;
      */
     public function testIndexFetchCrawler(): void
     {
-        $this->loadFixtures([]);
-
         $path = '/';
 
         $crawler = $this->fetchCrawler($path);
@@ -217,8 +206,6 @@ EOF;
      */
     public function testIndexFetchContent(): void
     {
-        $this->loadFixtures([]);
-
         $path = '/';
 
         $content = $this->fetchContent($path);
@@ -233,8 +220,6 @@ EOF;
 
     public function test404Error(): void
     {
-        $this->loadFixtures([]);
-
         $path = '/missing_page';
 
         static::$client->request('GET', $path);
@@ -250,8 +235,6 @@ EOF;
      */
     public function testIsSuccessfulException(): void
     {
-        $this->loadFixtures([]);
-
         $response = $this->getMockBuilder('Symfony\Component\HttpFoundation\Response')
             ->disableOriginalConstructor()
             ->setMethods(['getContent'])
@@ -277,428 +260,10 @@ EOF;
     }
 
     /**
-     * Data fixtures.
-     */
-    public function testLoadEmptyFixtures(): void
-    {
-        $fixtures = $this->loadFixtures([]);
-
-        $this->assertInstanceOf(
-            'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
-            $fixtures
-        );
-    }
-
-    public function testLoadFixturesWithoutParameters(): void
-    {
-        $fixtures = $this->loadFixtures();
-
-        $this->assertInstanceOf(
-            'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
-            $fixtures
-        );
-    }
-
-    public function testLoadFixtures(): void
-    {
-        $fixtures = $this->loadFixtures([
-            'Liip\Acme\Tests\App\DataFixtures\ORM\LoadUserData',
-        ]);
-
-        $this->assertInstanceOf(
-            'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
-            $fixtures
-        );
-
-        $repository = $fixtures->getReferenceRepository();
-
-        $this->assertInstanceOf(
-            'Doctrine\Common\DataFixtures\ProxyReferenceRepository',
-            $repository
-        );
-
-        /** @var \Liip\Acme\Tests\App\Entity\User $user1 */
-        $user1 = $repository->getReference('user');
-
-        $this->assertSame(1, $user1->getId());
-        $this->assertSame('foo bar', $user1->getName());
-        $this->assertSame('foo@bar.com', $user1->getEmail());
-        $this->assertTrue($user1->getEnabled());
-
-        // Load data from database
-        $em = static::$client->getContainer()
-            ->get('doctrine.orm.entity_manager');
-
-        $users = $em->getRepository('LiipFunctionalTestBundle:User')
-            ->findAll();
-
-        // There are 2 users.
-        $this->assertSame(
-            2,
-            count($users)
-        );
-
-        /** @var \Liip\Acme\Tests\App\Entity\User $user */
-        $user = $em->getRepository('LiipFunctionalTestBundle:User')
-            ->findOneBy([
-                'id' => 1,
-            ]);
-
-        $this->assertSame(
-            'foo@bar.com',
-            $user->getEmail()
-        );
-
-        $this->assertTrue(
-            $user->getEnabled()
-        );
-    }
-
-    public function testAppendFixtures(): void
-    {
-        $this->loadFixtures([
-            'Liip\Acme\Tests\App\DataFixtures\ORM\LoadUserData',
-        ]);
-
-        $this->loadFixtures(
-            ['Liip\Acme\Tests\App\DataFixtures\ORM\LoadSecondUserData'],
-            true
-        );
-
-        // Load data from database
-        $em = $this->getContainer()
-            ->get('doctrine.orm.entity_manager');
-
-        /** @var \Liip\Acme\Tests\App\Entity\User $user */
-        $user = $em->getRepository('LiipFunctionalTestBundle:User')
-            ->findOneBy([
-                'id' => 1,
-            ]);
-
-        $this->assertSame(
-            'foo@bar.com',
-            $user->getEmail()
-        );
-
-        $this->assertTrue(
-            $user->getEnabled()
-        );
-
-        /** @var \Liip\Acme\Tests\App\Entity\User $user */
-        $user = $em->getRepository('LiipFunctionalTestBundle:User')
-            ->findOneBy([
-                'id' => 3,
-            ]);
-
-        $this->assertSame(
-            'bar@foo.com',
-            $user->getEmail()
-        );
-
-        $this->assertTrue(
-            $user->getEnabled()
-        );
-    }
-
-    /**
-     * Load fixture which has a dependency.
-     */
-    public function testLoadDependentFixtures(): void
-    {
-        $fixtures = $this->loadFixtures([
-            'Liip\Acme\Tests\App\DataFixtures\ORM\LoadDependentUserData',
-        ]);
-
-        $this->assertInstanceOf(
-            'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
-            $fixtures
-        );
-
-        $em = static::$client->getContainer()
-            ->get('doctrine.orm.entity_manager');
-
-        $users = $em->getRepository('LiipFunctionalTestBundle:User')
-            ->findAll();
-
-        // The two files with fixtures have been loaded, there are 4 users.
-        $this->assertSame(
-            4,
-            count($users)
-        );
-    }
-
-    /**
-     * Load fixture which has a dependency, with the dependent service requiring a service.
-     */
-    public function testLoadDependentFixturesWithDependencyInjected(): void
-    {
-        $fixtures = $this->loadFixtures([
-            'Liip\Acme\Tests\App\DataFixtures\ORM\LoadDependentUserWithServiceData',
-        ]);
-
-        $this->assertInstanceOf(
-            'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
-            $fixtures
-        );
-
-        $em = static::$client->getContainer()
-            ->get('doctrine.orm.entity_manager');
-
-        $users = $em->getRepository('LiipFunctionalTestBundle:User')
-            ->findAll();
-
-        // The two files with fixtures have been loaded, there are 4 users.
-        $this->assertSame(
-            4,
-            count($users)
-        );
-    }
-
-    /**
-     * Use nelmio/alice.
-     */
-    public function testLoadFixturesFiles(): void
-    {
-        $fixtures = $this->loadFixtureFiles([
-            '@AcmeBundle/DataFixtures/ORM/user.yml',
-        ]);
-
-        $this->assertInternalType(
-            'array',
-            $fixtures
-        );
-
-        // 10 users are loaded
-        $this->assertCount(
-            10,
-            $fixtures
-        );
-
-        $em = static::$client->getContainer()
-            ->get('doctrine.orm.entity_manager');
-
-        $users = $em->getRepository('LiipFunctionalTestBundle:User')
-            ->findAll();
-
-        $this->assertSame(
-            10,
-            count($users)
-        );
-
-        /** @var \Liip\Acme\Tests\App\Entity\User $user */
-        $user = $em->getRepository('LiipFunctionalTestBundle:User')
-            ->findOneBy([
-                'id' => 1,
-            ]);
-
-        $this->assertTrue(
-            $user->getEnabled()
-        );
-
-        $user = $em->getRepository('LiipFunctionalTestBundle:User')
-            ->findOneBy([
-                'id' => 10,
-            ]);
-
-        $this->assertTrue(
-            $user->getEnabled()
-        );
-    }
-
-    /**
-     * Load nonexistent resource.
-     *
-     * @expectedException \InvalidArgumentException
-     */
-    public function testLoadNonexistentFixturesFiles(): void
-    {
-        $this->loadFixtureFiles([
-            '@AcmeBundle/DataFixtures/ORM/nonexistent.yml',
-        ]);
-    }
-
-    /**
-     * Use nelmio/alice with PURGE_MODE_TRUNCATE.
-     *
-     * @depends testLoadFixturesFiles
-     */
-    public function testLoadFixturesFilesWithPurgeModeTruncate(): void
-    {
-        $fixtures = $this->loadFixtureFiles([
-            '@AcmeBundle/DataFixtures/ORM/user.yml',
-        ], true, null, 'doctrine', ORMPurger::PURGE_MODE_TRUNCATE);
-
-        $this->assertInternalType(
-            'array',
-            $fixtures
-        );
-
-        // 10 users are loaded
-        $this->assertCount(
-            10,
-            $fixtures
-        );
-
-        $id = 1;
-        /** @var \Liip\Acme\Tests\App\Entity\User $user */
-        foreach ($fixtures as $user) {
-            $this->assertSame($id++, $user->getId());
-        }
-    }
-
-    /**
-     * Use nelmio/alice with full path to the file.
-     */
-    public function testLoadFixturesFilesPaths(): void
-    {
-        $fixtures = $this->loadFixtureFiles([
-            static::$client->getContainer()->get('kernel')->locateResource(
-                '@AcmeBundle/DataFixtures/ORM/user.yml'
-            ),
-        ]);
-
-        $this->assertInternalType(
-            'array',
-            $fixtures
-        );
-
-        // 10 users are loaded
-        $this->assertCount(
-            10,
-            $fixtures
-        );
-
-        /** @var \Liip\Acme\Tests\App\Entity\User $user1 */
-        $user1 = $fixtures['id1'];
-
-        $this->assertInternalType('string', $user1->getUsername());
-        $this->assertTrue($user1->getEnabled());
-
-        $em = static::$client->getContainer()
-            ->get('doctrine.orm.entity_manager');
-
-        $users = $em->getRepository('LiipFunctionalTestBundle:User')
-            ->findAll();
-
-        $this->assertSame(
-            10,
-            count($users)
-        );
-
-        /** @var \Liip\Acme\Tests\App\Entity\User $user */
-        $user = $em->getRepository('LiipFunctionalTestBundle:User')
-            ->findOneBy([
-                'id' => 1,
-            ]);
-
-        $this->assertTrue(
-            $user->getEnabled()
-        );
-    }
-
-    /**
-     * Use nelmio/alice with full path to the file without calling locateResource().
-     */
-    public function testLoadFixturesFilesPathsWithoutLocateResource(): void
-    {
-        $fixtures = $this->loadFixtureFiles([
-            __DIR__.'/../App/DataFixtures/ORM/user.yml',
-        ]);
-
-        $this->assertInternalType(
-            'array',
-            $fixtures
-        );
-
-        // 10 users are loaded
-        $this->assertCount(
-            10,
-            $fixtures
-        );
-
-        $em = static::$client->getContainer()
-            ->get('doctrine.orm.entity_manager');
-
-        $users = $em->getRepository('LiipFunctionalTestBundle:User')
-            ->findAll();
-
-        $this->assertSame(
-            10,
-            count($users)
-        );
-    }
-
-    /**
-     * Load nonexistent file with full path.
-     *
-     * @expectedException \InvalidArgumentException
-     */
-    public function testLoadNonexistentFixturesFilesPaths(): void
-    {
-        $path = ['/nonexistent.yml'];
-        $this->loadFixtureFiles($path);
-    }
-
-    public function testUserWithFixtures(): void
-    {
-        $fixtures = $this->loadFixtures([
-            'Liip\Acme\Tests\App\DataFixtures\ORM\LoadUserData',
-        ]);
-
-        $this->assertInstanceOf(
-            'Doctrine\Common\DataFixtures\Executor\ORMExecutor',
-            $fixtures
-        );
-
-        $path = '/user/1';
-
-        static::$client->enableProfiler();
-
-        /** @var \Symfony\Component\DomCrawler\Crawler $crawler */
-        $crawler = static::$client->request('GET', $path);
-
-        $this->assertStatusCode(200, static::$client);
-
-        if ($profile = static::$client->getProfile()) {
-            // One query
-            $this->assertSame(1,
-                $profile->getCollector('db')->getQueryCount());
-        } else {
-            $this->markTestIncomplete(
-                'Profiler is disabled.'
-            );
-        }
-
-        $this->assertSame(1,
-            $crawler->filter('html > body')->count());
-
-        $this->assertSame(
-            'Not logged in.',
-            $crawler->filter('p#user')->text()
-        );
-
-        $this->assertSame(
-            'LiipFunctionalTestBundle',
-            $crawler->filter('h1')->text()
-        );
-
-        $this->assertSame(
-            'Name: foo bar',
-            $crawler->filter('div#content p')->eq(0)->text()
-        );
-        $this->assertSame(
-            'Email: foo@bar.com',
-            $crawler->filter('div#content p')->eq(1)->text()
-        );
-    }
-
-    /**
      * Form.
      */
     public function testForm(): void
     {
-        $this->loadFixtures([]);
-
         $path = '/form';
 
         $crawler = static::$client->request('GET', $path);
@@ -732,8 +297,6 @@ EOF;
      */
     public function testFormWithEmbed(): void
     {
-        $this->loadFixtures([]);
-
         $path = '/form-with-embed';
 
         $crawler = static::$client->request('GET', $path);
@@ -767,8 +330,6 @@ EOF;
      */
     public function testFormWithException(): void
     {
-        $this->loadFixtures([]);
-
         $path = '/form';
 
         $crawler = static::$client->request('GET', $path);
@@ -789,8 +350,6 @@ EOF;
      */
     public function testFormWithExceptionAssertStatusCode(): void
     {
-        $this->loadFixtures([]);
-
         $path = '/form';
 
         $crawler = static::$client->request('GET', $path);
@@ -821,8 +380,6 @@ EOF;
      */
     public function testJsonIsSuccesful(): void
     {
-        $this->loadFixtures([]);
-
         $client = $this->makeClient();
 
         $path = '/json';

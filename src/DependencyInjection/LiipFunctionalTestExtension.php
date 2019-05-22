@@ -33,7 +33,7 @@ class LiipFunctionalTestExtension extends Extension
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('commands.xml');
         $loader->load('functional_test.xml');
-        $loader->load('database_tools.xml');
+
         if (interface_exists('Symfony\Component\Validator\Validator\ValidatorInterface')) {
             $loader->load('validator.xml');
         }

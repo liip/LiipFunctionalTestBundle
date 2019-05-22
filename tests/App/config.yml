@@ -82,9 +82,6 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
-    Liip\Acme\Tests\App\DataFixtures\ORM\:
-        resource: 'DataFixtures/ORM/*'
-        tags: ['doctrine.fixture.orm']
     Liip\Acme\Tests\App\Command\TestCommand:
         tags: ['console.command']
     Liip\Acme\Tests\App\Command\TestStatusCodeCommand:

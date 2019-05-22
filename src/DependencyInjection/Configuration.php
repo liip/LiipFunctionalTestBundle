@@ -37,15 +37,6 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->arrayNode('cache_db')
-                    ->addDefaultsIfNotSet()
-                    ->ignoreExtraKeys(false)
-                        ->children()
-                            ->scalarNode('sqlite')
-                            ->defaultNull()
-                        ->end()
-                    ->end()
-                ->end()
                 ->scalarNode('command_verbosity')->defaultValue('normal')->end()
                 ->booleanNode('command_decoration')->defaultTrue()->end()
                 ->arrayNode('query')

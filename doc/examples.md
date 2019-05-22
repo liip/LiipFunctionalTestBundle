@@ -1,19 +1,6 @@
 Examples
 ========
 
-Fixtures
---------
-
-The bundle's internal tests show several ways to load fixtures:
-
-- [data with fixtures dependencies](../tests/App/DataFixtures/ORM/LoadDependentUserData.php)
-- [data with dependency injection](../tests/App/DataFixtures/ORM/LoadUserWithServiceData.php)
-- [fixture loading with Alice](../tests/App/DataFixtures/ORM/user.yml)
-- custom provider:
-  - [fixture to load](../tests/App/DataFixtures/ORM/user_with_custom_provider.yml)
-  - [custom provider](../tests/AppConfig/DataFixtures/Faker/Provider/FooProvider.php)
-  - [service declaration](../tests/AppConfig/config.yml)
-
 Unit test
 ---------
 
