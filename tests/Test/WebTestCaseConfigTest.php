@@ -38,9 +38,6 @@ class WebTestCaseConfigTest extends WebTestCase
 {
     use LiipAcmeFixturesTrait;
 
-    /** @var \Symfony\Bundle\FrameworkBundle\Client client */
-    private $client = null;
-
     protected static function getKernelClass(): string
     {
         return AppConfigKernel::class;
@@ -51,16 +48,16 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testIndexAuthenticationArray(): void
     {
-        $this->client = static::makeClient([
+        static::$client = $this->makeClient([
             'username' => 'foobar',
             'password' => '12341234',
         ]);
 
         $path = '/';
 
-        $crawler = $this->client->request('GET', $path);
+        $crawler = static::$client->request('GET', $path);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->assertStatusCode(200, static::$client);
 
         $this->assertSame(1,
             $crawler->filter('html > body')->count());
@@ -83,13 +80,13 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testIndexAuthenticationTrue(): void
     {
-        $this->client = static::makeClient(true);
+        static::$client = $this->makeClient(true);
 
         $path = '/';
 
-        $crawler = $this->client->request('GET', $path);
+        $crawler = static::$client->request('GET', $path);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->assertStatusCode(200, static::$client);
 
         $this->assertSame(1,
             $crawler->filter('html > body')->count());
@@ -120,13 +117,13 @@ class WebTestCaseConfigTest extends WebTestCase
             $loginAs
         );
 
-        $this->client = static::makeClient();
+        static::$client = $this->makeClient();
 
         $path = '/';
 
-        $crawler = $this->client->request('GET', $path);
+        $crawler = static::$client->request('GET', $path);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->assertStatusCode(200, static::$client);
 
         $this->assertSame(1,
             $crawler->filter('html > body')->count());
@@ -158,12 +155,12 @@ class WebTestCaseConfigTest extends WebTestCase
 
         $this->loginAs($user, 'secured_area');
 
-        $this->client = static::makeClient();
+        static::$client = $this->makeClient();
 
         // One another query to load the second user.
         $path = '/user/2';
 
-        $this->client->request('GET', $path);
+        static::$client->request('GET', $path);
     }
 
     /**
@@ -178,11 +175,11 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testAnnotationAndException(): void
     {
-        $this->client = static::makeClient();
+        static::$client = $this->makeClient();
 
         // One query to load the second user
         $path = '/user/1';
 
-        $this->client->request('GET', $path);
+        static::$client->request('GET', $path);
     }
 }
