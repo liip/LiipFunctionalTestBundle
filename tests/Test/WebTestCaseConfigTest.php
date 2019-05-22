@@ -36,9 +36,6 @@ use Liip\Acme\Tests\AppConfig\AppConfigKernel;
  */
 class WebTestCaseConfigTest extends WebTestCase
 {
-    /** @var \Symfony\Bundle\FrameworkBundle\Client client */
-    private $client = null;
-
     protected static function getKernelClass(): string
     {
         return AppConfigKernel::class;
@@ -51,16 +48,16 @@ class WebTestCaseConfigTest extends WebTestCase
     {
         $this->loadFixtures([]);
 
-        $this->client = static::makeClient([
+        $client = $this->makeClient([
             'username' => 'foobar',
             'password' => '12341234',
         ]);
 
         $path = '/';
 
-        $crawler = $this->client->request('GET', $path);
+        $crawler = $client->request('GET', $path);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->assertStatusCode(200, $client);
 
         $this->assertSame(1,
             $crawler->filter('html > body')->count());
@@ -85,13 +82,13 @@ class WebTestCaseConfigTest extends WebTestCase
     {
         $this->loadFixtures([]);
 
-        $this->client = static::makeClient(true);
+        $client = static::makeClient(true);
 
         $path = '/';
 
-        $crawler = $this->client->request('GET', $path);
+        $crawler = $client->request('GET', $path);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->assertStatusCode(200, $client);
 
         $this->assertSame(1,
             $crawler->filter('html > body')->count());
@@ -127,13 +124,13 @@ class WebTestCaseConfigTest extends WebTestCase
             $loginAs
         );
 
-        $this->client = static::makeClient();
+        $client = static::makeClient();
 
         $path = '/';
 
-        $crawler = $this->client->request('GET', $path);
+        $crawler = $client->request('GET', $path);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->assertStatusCode(200, $client);
 
         $this->assertSame(1,
             $crawler->filter('html > body')->count());
@@ -171,12 +168,12 @@ class WebTestCaseConfigTest extends WebTestCase
         $this->loginAs($repository->getReference('user'),
             'secured_area');
 
-        $this->client = static::makeClient();
+        $client = static::makeClient();
 
         // One another query to load the second user.
         $path = '/user/2';
 
-        $this->client->request('GET', $path);
+        $client->request('GET', $path);
     }
 
     /**
@@ -195,12 +192,12 @@ class WebTestCaseConfigTest extends WebTestCase
             'Liip\Acme\Tests\App\DataFixtures\ORM\LoadUserData',
         ]);
 
-        $this->client = static::makeClient();
+        $client = static::makeClient();
 
         // One query to load the second user
         $path = '/user/1';
 
-        $this->client->request('GET', $path);
+        $client->request('GET', $path);
     }
 
     /**
