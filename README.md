@@ -20,6 +20,7 @@ Documentation
 * [Logged client](doc/logged.md)
 * [Query counter](doc/query.md)
 * [Examples](doc/examples.md)
+* [Caveats](doc/caveats.md)
 
 To run tests in parallel:
 * [Paratest](doc/paratest.md)
