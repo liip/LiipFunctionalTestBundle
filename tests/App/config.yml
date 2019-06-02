@@ -75,6 +75,7 @@ security:
             http_basic:
                 realm: "Admin Area"
             provider: chain_provider
+            logout_on_user_change: true
     access_control:
         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
