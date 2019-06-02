@@ -24,7 +24,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ResettableContainerInterface;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -226,68 +225,57 @@ abstract class WebTestCase extends BaseWebTestCase
     /**
      * Creates an instance of a lightweight Http client.
      *
-     * If $authentication is set to 'true' it will use the content of
-     * 'liip_functional_test.authentication' to log in.
+     * $params can be used to pass headers to the client, note that they have
+     * to follow the naming format used in $_SERVER.
+     * Example: 'HTTP_X_REQUESTED_WITH' instead of 'X-Requested-With'
+     *
+     * @param array $params
+     *
+     * @return Client
+     */
+    protected function makeClient(array $params = []): Client
+    {
+        return $this->createClientWithParams($params);
+    }
+
+    /**
+     * Creates an instance of a lightweight Http client.
      *
      * $params can be used to pass headers to the client, note that they have
      * to follow the naming format used in $_SERVER.
      * Example: 'HTTP_X_REQUESTED_WITH' instead of 'X-Requested-With'
      *
-     * @param bool|array $authentication
-     * @param array      $params
+     * @param array $params
      *
      * @return Client
      */
-    protected function makeClient($authentication = false, array $params = []): Client
+    protected function makeAuthenticatedClient(array $params = []): Client
     {
-        if ($authentication) {
-            if (true === $authentication) {
-                $authentication = [
-                    'username' => $this->getContainer()
-                        ->getParameter('liip_functional_test.authentication.username'),
-                    'password' => $this->getContainer()
-                        ->getParameter('liip_functional_test.authentication.password'),
-                ];
-            }
+        $username = $this->getContainer()
+            ->getParameter('liip_functional_test.authentication.username');
+        $password = $this->getContainer()
+            ->getParameter('liip_functional_test.authentication.password');
 
-            $params = array_merge($params, [
-                'PHP_AUTH_USER' => $authentication['username'],
-                'PHP_AUTH_PW' => $authentication['password'],
-            ]);
-        }
+        return $this->createClientWithParams($params, $username, $password);
+    }
 
-        $client = static::createClient(['environment' => $this->environment], $params);
-
-        if ($this->firewallLogins) {
-            // has to be set otherwise "hasPreviousSession" in Request returns false.
-            $options = $client->getContainer()->getParameter('session.storage.options');
-
-            if (!$options || !isset($options['name'])) {
-                throw new \InvalidArgumentException('Missing session.storage.options#name');
-            }
-
-            $session = $client->getContainer()->get('session');
-            // Since the namespace of the session changed in symfony 2.1, instanceof can be used to check the version.
-            if ($session instanceof Session) {
-                $session->setId(uniqid());
-            }
-
-            $client->getCookieJar()->set(new Cookie($options['name'], $session->getId()));
-
-            /** @var $user UserInterface */
-            foreach ($this->firewallLogins as $firewallName => $user) {
-                $token = $this->createUserToken($user, $firewallName);
-
-                $tokenStorage = $client->getContainer()->get('security.token_storage');
-
-                $tokenStorage->setToken($token);
-                $session->set('_security_'.$firewallName, serialize($token));
-            }
-
-            $session->save();
-        }
-
-        return static::$client = $client;
+    /**
+     * Creates an instance of a lightweight Http client and log in user with
+     * username and password params.
+     *
+     * $params can be used to pass headers to the client, note that they have
+     * to follow the naming format used in $_SERVER.
+     * Example: 'HTTP_X_REQUESTED_WITH' instead of 'X-Requested-With'
+     *
+     * @param string $username
+     * @param string $password
+     * @param array  $params
+     *
+     * @return Client
+     */
+    protected function makeClientWithCredentials(string $username, string $password, array $params = []): Client
+    {
+        return $this->createClientWithParams($params, $username, $password);
     }
 
     /**
@@ -353,7 +341,8 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     public function fetchContent(string $path, string $method = 'GET', bool $authentication = false, bool $success = true): string
     {
-        $client = $this->makeClient($authentication);
+        $client = ($authentication) ? $this->makeAuthenticatedClient() : $this->makeClient();
+
         $client->request($method, $path);
 
         $content = $client->getResponse()->getContent();
@@ -376,7 +365,8 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     public function fetchCrawler(string $path, string $method = 'GET', bool $authentication = false, bool $success = true): Crawler
     {
-        $client = $this->makeClient($authentication);
+        $client = ($authentication) ? $this->makeAuthenticatedClient() : $this->makeClient();
+
         $crawler = $client->request($method, $path);
 
         $this->isSuccessful($client->getResponse(), $success);
@@ -443,6 +433,46 @@ abstract class WebTestCase extends BaseWebTestCase
         $this->containers = null;
 
         parent::tearDown();
+    }
+
+    protected function createClientWithParams(array $params, ?string $username = null, ?string $password = null): Client
+    {
+        if ($username && $password) {
+            $params = array_merge($params, [
+                'PHP_AUTH_USER' => $username,
+                'PHP_AUTH_PW' => $password,
+            ]);
+        }
+
+        $client = static::createClient(['environment' => $this->environment], $params);
+
+        if ($this->firewallLogins) {
+            // has to be set otherwise "hasPreviousSession" in Request returns false.
+            $options = $client->getContainer()->getParameter('session.storage.options');
+
+            if (!$options || !isset($options['name'])) {
+                throw new \InvalidArgumentException('Missing session.storage.options#name');
+            }
+
+            $session = $client->getContainer()->get('session');
+            $session->setId(uniqid());
+
+            $client->getCookieJar()->set(new Cookie($options['name'], $session->getId()));
+
+            /** @var $user UserInterface */
+            foreach ($this->firewallLogins as $firewallName => $user) {
+                $token = $this->createUserToken($user, $firewallName);
+
+                $tokenStorage = $client->getContainer()->get('security.token_storage');
+
+                $tokenStorage->setToken($token);
+                $session->set('_security_'.$firewallName, serialize($token));
+            }
+
+            $session->save();
+        }
+
+        return static::$client = $client;
     }
 }
 

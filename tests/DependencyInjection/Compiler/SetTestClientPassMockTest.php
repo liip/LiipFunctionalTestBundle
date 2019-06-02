@@ -26,36 +26,6 @@ use PHPUnit\Framework\TestCase;
 class SetTestClientPassMockTest extends TestCase
 {
     /**
-     * Simulate Symfony 2.8.
-     */
-    public function testSetTestClientPassHasAlias(): void
-    {
-        /* @see http://gianarb.it/blog/symfony-unit-test-controller-with-phpunit#expectations */
-        /** @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
-        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerBuilder')
-            ->getMock();
-
-        $container->expects($this->any())
-            ->method('getParameter')
-            ->will($this->returnValue(true));
-
-        $container->expects($this->any())
-            ->method('hasDefinition')
-            ->will($this->returnValue(false));
-
-        $container->expects($this->once())
-            ->method('hasAlias')
-            ->will($this->returnValue(true));
-
-        $container->expects($this->exactly(2))
-            ->method('setAlias')
-            ->will($this->returnValue(true));
-
-        $setTestClientPass = new SetTestClientPass($container);
-        $setTestClientPass->process($container);
-    }
-
-    /**
      * Simulate a wrong environment.
      */
     public function testSetTestClientPassElse(): void

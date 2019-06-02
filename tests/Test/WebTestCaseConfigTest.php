@@ -46,12 +46,9 @@ class WebTestCaseConfigTest extends WebTestCase
     /**
      * Log in as an user.
      */
-    public function testIndexAuthenticationArray(): void
+    public function testIndexClientWithCredentials(): void
     {
-        static::$client = $this->makeClient([
-            'username' => 'foobar',
-            'password' => '12341234',
-        ]);
+        static::$client = static::makeClientWithCredentials('foobar', '12341234');
 
         $path = '/';
 
@@ -78,9 +75,9 @@ class WebTestCaseConfigTest extends WebTestCase
      * "liip_functional_test.authentication"
      * node from the configuration file.
      */
-    public function testIndexAuthenticationTrue(): void
+    public function testIndexAuthenticatedClient(): void
     {
-        static::$client = $this->makeClient(true);
+        static::$client = static::makeAuthenticatedClient();
 
         $path = '/';
 
