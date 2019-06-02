@@ -341,11 +341,7 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     public function fetchContent(string $path, string $method = 'GET', bool $authentication = false, bool $success = true): string
     {
-        if ($authentication) {
-            $client = $this->makeAuthenticatedClient();
-        } else {
-            $client = $this->makeClient();
-        }
+        $client = ($authentication) ? $this->makeAuthenticatedClient() : $this->makeClient();
 
         $client->request($method, $path);
 
@@ -369,11 +365,7 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     public function fetchCrawler(string $path, string $method = 'GET', bool $authentication = false, bool $success = true): Crawler
     {
-        if ($authentication) {
-            $client = $this->makeAuthenticatedClient();
-        } else {
-            $client = $this->makeClient();
-        }
+        $client = ($authentication) ? $this->makeAuthenticatedClient() : $this->makeClient();
 
         $crawler = $client->request($method, $path);
 
