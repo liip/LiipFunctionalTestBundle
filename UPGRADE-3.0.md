@@ -6,6 +6,7 @@ This is the list of actions that you need to take when upgrading this bundle fro
  * Fixtures loading has been moved to a separate bundle named [LiipTestFixturesBundle][LiipTestFixturesBundle]
    * If you need to load fixtures, follow the [install guide for LiipTestFixturesBundle][LiipTestFixturesBundle installation]
    * If you used configuration `liip_functional_test.cache_db`, change it to `liip_test_fixtures.cache_db`
+   * if you used to stubs `doctrine.dbal.connection_factory.class` you need now to use ` Liip\TestFixturesBundle\Factory\ConnectionFactory` instead of `Liip\FunctionalTestBundle\Factory\ConnectionFactory`
    * And call `use Liip\TestFixturesBundle\Test\FixturesTrait;` in tests classes in order to access to `loadFixtures()` and `loadFixtureFiles()`
    
 [LiipTestFixturesBundle]: https://github.com/liip/LiipTestFixturesBundle
