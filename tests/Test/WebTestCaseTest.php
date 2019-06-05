@@ -22,6 +22,7 @@ use PHPUnit\Framework\AssertionFailedError;
 /**
  * @IgnoreAnnotation("depends")
  * @IgnoreAnnotation("expectedException")
+ * @IgnoreAnnotation("DisableDatabaseCache")
  */
 class WebTestCaseTest extends WebTestCase
 {
@@ -326,7 +327,7 @@ EOF;
         $this->assertTrue($user1->getEnabled());
 
         // Load data from database
-        $em = $this->client->getContainer()
+        $em = self::$client->getContainer()
             ->get('doctrine.orm.entity_manager');
 
         $users = $em->getRepository('LiipFunctionalTestBundle:User')
@@ -414,7 +415,7 @@ EOF;
             $fixtures
         );
 
-        $em = $this->client->getContainer()
+        $em = self::$client->getContainer()
             ->get('doctrine.orm.entity_manager');
 
         $users = $em->getRepository('LiipFunctionalTestBundle:User')
@@ -441,7 +442,7 @@ EOF;
             $fixtures
         );
 
-        $em = $this->client->getContainer()
+        $em = self::$client->getContainer()
             ->get('doctrine.orm.entity_manager');
 
         $users = $em->getRepository('LiipFunctionalTestBundle:User')
@@ -474,7 +475,7 @@ EOF;
             $fixtures
         );
 
-        $em = $this->client->getContainer()
+        $em = self::$client->getContainer()
             ->get('doctrine.orm.entity_manager');
 
         $users = $em->getRepository('LiipFunctionalTestBundle:User')
@@ -552,7 +553,7 @@ EOF;
     public function testLoadFixturesFilesPaths(): void
     {
         $fixtures = $this->loadFixtureFiles([
-            $this->client->getContainer()->get('kernel')->locateResource(
+            self::$client->getContainer()->get('kernel')->locateResource(
                 '@AcmeBundle/DataFixtures/ORM/user.yml'
             ),
         ]);
@@ -574,7 +575,7 @@ EOF;
         $this->assertInternalType('string', $user1->getUsername());
         $this->assertTrue($user1->getEnabled());
 
-        $em = $this->client->getContainer()
+        $em = self::$client->getContainer()
             ->get('doctrine.orm.entity_manager');
 
         $users = $em->getRepository('LiipFunctionalTestBundle:User')
@@ -616,7 +617,7 @@ EOF;
             $fixtures
         );
 
-        $em = $this->client->getContainer()
+        $em = self::$client->getContainer()
             ->get('doctrine.orm.entity_manager');
 
         $users = $em->getRepository('LiipFunctionalTestBundle:User')
@@ -652,14 +653,14 @@ EOF;
 
         $path = '/user/1';
 
-        $this->client->enableProfiler();
+        self::$client->enableProfiler();
 
         /** @var \Symfony\Component\DomCrawler\Crawler $crawler */
-        $crawler = $this->client->request('GET', $path);
+        $crawler = self::$client->request('GET', $path);
 
-        $this->assertStatusCode(200, $this->client);
+        $this->assertStatusCode(200, self::$client);
 
-        if ($profile = $this->client->getProfile()) {
+        if ($profile = self::$client->getProfile()) {
             // One query
             $this->assertSame(1,
                 $profile->getCollector('db')->getQueryCount());

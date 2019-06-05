@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Liip\Acme\Tests\Test;
 
 use Doctrine\Common\Annotations\Annotation\IgnoreAnnotation;
+use Liip\FunctionalTestBundle\Annotations\DisableDatabaseCache;
 use Liip\FunctionalTestBundle\Annotations\QueryCount;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Liip\Acme\Tests\AppConfig\AppConfigKernel;
