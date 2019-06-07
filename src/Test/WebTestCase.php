@@ -571,8 +571,3 @@ abstract class WebTestCase extends BaseWebTestCase
         parent::tearDown();
     }
 }
-
-// Compatibility layer for Symfony 4.3+
-if (class_exists('Symfony\Bundle\FrameworkBundle\KernelBrowser')) {
-    class_alias('Symfony\Bundle\FrameworkBundle\KernelBrowser', 'Symfony\Bundle\FrameworkBundle\Client');
-}
