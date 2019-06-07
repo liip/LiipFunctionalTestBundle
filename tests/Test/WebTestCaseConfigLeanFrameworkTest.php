@@ -35,7 +35,7 @@ class WebTestCaseConfigLeanFrameworkTest extends WebTestCase
 
     public function testAssertStatusCode(): void
     {
-        $client = $this->makeClient();
+        $client = static::makeClient();
 
         $path = '/';
         $client->request('GET', $path);
@@ -45,7 +45,7 @@ class WebTestCaseConfigLeanFrameworkTest extends WebTestCase
 
     public function testAssertValidationErrorsTriggersError(): void
     {
-        $client = $this->makeClient();
+        $client = static::makeClient();
 
         $path = '/form';
         $client->request('GET', $path);
