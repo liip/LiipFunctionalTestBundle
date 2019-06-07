@@ -30,6 +30,9 @@
         "symfony/symfony": "^3.4 || ^4.1",
         "twig/twig": "^2.0"
     },
+    "conflict": {
+        "symfony/framework-bundle": "4.3.0"
+    },
     "suggest": {
         "brianium/paratest": "Required when using paratest to parallelize tests",
         "doctrine/dbal": "Required when using the fixture loading functionality with an ORM and SQLite",
