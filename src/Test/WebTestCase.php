@@ -469,6 +469,6 @@ abstract class WebTestCase extends BaseWebTestCase
             $session->save();
         }
 
-        return static::$client = $client;
+        return $client;
     }
 }
