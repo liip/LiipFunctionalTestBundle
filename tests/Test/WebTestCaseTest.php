@@ -25,10 +25,13 @@ use PHPUnit\Framework\AssertionFailedError;
  */
 class WebTestCaseTest extends WebTestCase
 {
+    /** @var \Symfony\Bundle\FrameworkBundle\Client client */
+    private $client = null;
+
     public function setUp(): void
     {
         static::$class = AppKernel::class;
-        static::$client = $this->makeClient();
+        $this->client = static::makeClient();
     }
 
     public static function getKernelClass()
@@ -51,7 +54,7 @@ class WebTestCaseTest extends WebTestCase
     {
         $this->assertInstanceOf(
             'Symfony\Bundle\FrameworkBundle\Client',
-            $this->makeClient()
+            static::makeClient()
         );
     }
 
@@ -78,7 +81,7 @@ class WebTestCaseTest extends WebTestCase
         $path = '/';
 
         /** @var \Symfony\Component\DomCrawler\Crawler $crawler */
-        $crawler = static::$client->request('GET', $path);
+        $crawler = $this->client->request('GET', $path);
 
         $this->assertSame(1,
             $crawler->filter('html > body')->count());
@@ -107,9 +110,9 @@ class WebTestCaseTest extends WebTestCase
 
         $path = '/';
 
-        static::$client->request('GET', $path);
+        $this->client->request('GET', $path);
 
-        $this->assertStatusCode(200, static::$client);
+        $this->assertStatusCode(200, $this->client);
     }
 
     /**
@@ -121,10 +124,10 @@ class WebTestCaseTest extends WebTestCase
 
         $path = '/';
 
-        static::$client->request('GET', $path);
+        $this->client->request('GET', $path);
 
         try {
-            $this->assertStatusCode(-1, static::$client);
+            $this->assertStatusCode(-1, $this->client);
         } catch (AssertionFailedError $e) {
             $this->assertStringStartsWith(
                 'HTTP/1.1 200 OK',
@@ -151,10 +154,10 @@ class WebTestCaseTest extends WebTestCase
 
         $path = '/user/2';
 
-        static::$client->request('GET', $path);
+        $this->client->request('GET', $path);
 
         try {
-            $this->assertStatusCode(-1, static::$client);
+            $this->assertStatusCode(-1, $this->client);
         } catch (AssertionFailedError $e) {
             $string = <<<'EOF'
 No user found
@@ -177,9 +180,9 @@ EOF;
 
         $path = '/';
 
-        static::$client->request('GET', $path);
+        $this->client->request('GET', $path);
 
-        $this->isSuccessful(static::$client->getResponse());
+        $this->isSuccessful($this->client->getResponse());
     }
 
     /**
@@ -237,11 +240,11 @@ EOF;
 
         $path = '/missing_page';
 
-        static::$client->request('GET', $path);
+        $this->client->request('GET', $path);
 
-        $this->assertStatusCode(404, static::$client);
+        $this->assertStatusCode(404, $this->client);
 
-        $this->isSuccessful(static::$client->getResponse(), false);
+        $this->isSuccessful($this->client->getResponse(), false);
     }
 
     /**
@@ -701,23 +704,23 @@ EOF;
 
         $path = '/form';
 
-        $crawler = static::$client->request('GET', $path);
+        $crawler = $this->client->request('GET', $path);
 
-        $this->assertStatusCode(200, static::$client);
+        $this->assertStatusCode(200, $this->client);
 
         $form = $crawler->selectButton('Submit')->form();
-        $crawler = static::$client->submit($form);
+        $crawler = $this->client->submit($form);
 
-        $this->assertStatusCode(200, static::$client);
+        $this->assertStatusCode(200, $this->client);
 
-        $this->assertValidationErrors(['children[name].data'], static::$client->getContainer());
+        $this->assertValidationErrors(['children[name].data'], $this->client->getContainer());
 
         // Try again with the fields filled out.
         $form = $crawler->selectButton('Submit')->form();
         $form->setValues(['form[name]' => 'foo bar']);
-        $crawler = static::$client->submit($form);
+        $crawler = $this->client->submit($form);
 
-        $this->assertStatusCode(200, static::$client);
+        $this->assertStatusCode(200, $this->client);
 
         $this->assertContains(
             'Name submitted.',
@@ -736,23 +739,23 @@ EOF;
 
         $path = '/form-with-embed';
 
-        $crawler = static::$client->request('GET', $path);
+        $crawler = $this->client->request('GET', $path);
 
-        $this->assertStatusCode(200, static::$client);
+        $this->assertStatusCode(200, $this->client);
 
         $form = $crawler->selectButton('Submit')->form();
-        $crawler = static::$client->submit($form);
+        $crawler = $this->client->submit($form);
 
-        $this->assertStatusCode(200, static::$client);
+        $this->assertStatusCode(200, $this->client);
 
-        $this->assertValidationErrors(['children[name].data'], static::$client->getContainer());
+        $this->assertValidationErrors(['children[name].data'], $this->client->getContainer());
 
         // Try again with the fields filled out.
         $form = $crawler->selectButton('Submit')->form();
         $form->setValues(['form[name]' => 'foo bar']);
-        $crawler = static::$client->submit($form);
+        $crawler = $this->client->submit($form);
 
-        $this->assertStatusCode(200, static::$client);
+        $this->assertStatusCode(200, $this->client);
 
         $this->assertContains(
             'Name submitted.',
@@ -771,16 +774,16 @@ EOF;
 
         $path = '/form';
 
-        $crawler = static::$client->request('GET', $path);
+        $crawler = $this->client->request('GET', $path);
 
-        $this->assertStatusCode(200, static::$client);
+        $this->assertStatusCode(200, $this->client);
 
         $form = $crawler->selectButton('Submit')->form();
-        static::$client->submit($form);
+        $this->client->submit($form);
 
-        $this->assertStatusCode(200, static::$client);
+        $this->assertStatusCode(200, $this->client);
 
-        $this->assertValidationErrors([''], static::$client->getContainer());
+        $this->assertValidationErrors([''], $this->client->getContainer());
     }
 
     /**
@@ -793,14 +796,14 @@ EOF;
 
         $path = '/form';
 
-        $crawler = static::$client->request('GET', $path);
+        $crawler = $this->client->request('GET', $path);
 
         $form = $crawler->selectButton('Submit')->form();
 
-        static::$client->submit($form);
+        $this->client->submit($form);
 
         try {
-            $this->assertStatusCode(-1, static::$client);
+            $this->assertStatusCode(-1, $this->client);
         } catch (AssertionFailedError $e) {
             $string = <<<'EOF'
 Unexpected validation errors:
@@ -823,14 +826,14 @@ EOF;
     {
         $this->loadFixtures([]);
 
-        static::$client = $this->makeClient();
+        $this->client = static::makeClient();
 
         $path = '/json';
 
-        static::$client->request('GET', $path);
+        $this->client->request('GET', $path);
 
         $this->isSuccessful(
-            static::$client->getResponse(),
+            $this->client->getResponse(),
             true,
             'application/json'
         );
@@ -840,6 +843,6 @@ EOF;
     {
         parent::tearDown();
 
-        static::$client = null;
+        $this->client = null;
     }
 }

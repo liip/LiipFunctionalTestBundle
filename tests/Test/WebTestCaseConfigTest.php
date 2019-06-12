@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Liip\Acme\Tests\Test;
 
 use Doctrine\Common\Annotations\Annotation\IgnoreAnnotation;
+use Liip\FunctionalTestBundle\Annotations\DisableDatabaseCache;
 use Liip\FunctionalTestBundle\Annotations\QueryCount;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Liip\Acme\Tests\AppConfig\AppConfigKernel;
@@ -35,6 +36,9 @@ use Liip\Acme\Tests\AppConfig\AppConfigKernel;
  */
 class WebTestCaseConfigTest extends WebTestCase
 {
+    /** @var \Symfony\Bundle\FrameworkBundle\Client client */
+    private $client = null;
+
     protected static function getKernelClass(): string
     {
         return AppConfigKernel::class;
@@ -47,16 +51,16 @@ class WebTestCaseConfigTest extends WebTestCase
     {
         $this->loadFixtures([]);
 
-        static::$client = $this->makeClient([
+        $this->client = static::makeClient([
             'username' => 'foobar',
             'password' => '12341234',
         ]);
 
         $path = '/';
 
-        $crawler = static::$client->request('GET', $path);
+        $crawler = $this->client->request('GET', $path);
 
-        $this->assertStatusCode(200, static::$client);
+        $this->assertStatusCode(200, $this->client);
 
         $this->assertSame(1,
             $crawler->filter('html > body')->count());
@@ -81,13 +85,13 @@ class WebTestCaseConfigTest extends WebTestCase
     {
         $this->loadFixtures([]);
 
-        static::$client = $this->makeClient(true);
+        $this->client = static::makeClient(true);
 
         $path = '/';
 
-        $crawler = static::$client->request('GET', $path);
+        $crawler = $this->client->request('GET', $path);
 
-        $this->assertStatusCode(200, static::$client);
+        $this->assertStatusCode(200, $this->client);
 
         $this->assertSame(1,
             $crawler->filter('html > body')->count());
@@ -123,13 +127,13 @@ class WebTestCaseConfigTest extends WebTestCase
             $loginAs
         );
 
-        static::$client = $this->makeClient();
+        $this->client = static::makeClient();
 
         $path = '/';
 
-        $crawler = static::$client->request('GET', $path);
+        $crawler = $this->client->request('GET', $path);
 
-        $this->assertStatusCode(200, static::$client);
+        $this->assertStatusCode(200, $this->client);
 
         $this->assertSame(1,
             $crawler->filter('html > body')->count());
@@ -167,12 +171,12 @@ class WebTestCaseConfigTest extends WebTestCase
         $this->loginAs($repository->getReference('user'),
             'secured_area');
 
-        static::$client = $this->makeClient();
+        $this->client = static::makeClient();
 
         // One another query to load the second user.
         $path = '/user/2';
 
-        static::$client->request('GET', $path);
+        $this->client->request('GET', $path);
     }
 
     /**
@@ -190,12 +194,13 @@ class WebTestCaseConfigTest extends WebTestCase
         $this->loadFixtures([
             'Liip\Acme\Tests\App\DataFixtures\ORM\LoadUserData',
         ]);
-        static::$client = $this->makeClient();
+
+        $this->client = static::makeClient();
 
         // One query to load the second user
         $path = '/user/1';
 
-        static::$client->request('GET', $path);
+        $this->client->request('GET', $path);
     }
 
     /**
