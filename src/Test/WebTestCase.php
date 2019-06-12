@@ -40,9 +40,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 abstract class WebTestCase extends BaseWebTestCase
 {
-    /** @var Client|null */
-    protected static $client;
-
     protected $environment = 'test';
 
     protected $containers;
