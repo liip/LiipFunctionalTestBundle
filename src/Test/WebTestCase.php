@@ -36,9 +36,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 abstract class WebTestCase extends BaseWebTestCase
 {
-    /** @var Client|null */
-    protected static $client;
-
     protected $environment = 'test';
 
     protected $containers;
@@ -472,11 +469,6 @@ abstract class WebTestCase extends BaseWebTestCase
             $session->save();
         }
 
-        return static::$client = $client;
+        return $client;
     }
-}
-
-// Compatibility layer for Symfony 4.3+
-if (class_exists('Symfony\Bundle\FrameworkBundle\KernelBrowser')) {
-    class_alias('Symfony\Bundle\FrameworkBundle\KernelBrowser', 'Symfony\Bundle\FrameworkBundle\Client');
 }
