@@ -33,9 +33,6 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-// Compatibility layer for Symfony 4.3+
-class_alias('Symfony\Bundle\FrameworkBundle\KernelBrowser', 'Symfony\Bundle\FrameworkBundle\Client');
-
 /**
  * @author Lea Haensenberger
  * @author Lukas Kahwe Smith <smith@pooteeweet.org>
