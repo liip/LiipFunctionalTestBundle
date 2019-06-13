@@ -24,7 +24,7 @@ class ValidationErrorsConstraint extends Constraint
     /**
      * ValidationErrorsConstraint constructor.
      *
-     * @param $expect
+     * @param array $expect
      */
     public function __construct(array $expect)
     {
