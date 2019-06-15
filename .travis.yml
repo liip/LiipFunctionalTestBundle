@@ -5,6 +5,7 @@ language: php
 php:
   - 7.1
   - 7.2
+  - 7.3
 
 sudo: false
 
@@ -12,17 +13,19 @@ cache:
   directories:
     - $HOME/.composer/cache
 
-services:
-  - mysql
-
 matrix:
   include:
     - php: 7.1
       env: COMPOSER_FLAGS="--prefer-lowest"
-    - php: 7.1
-      env: SYMFONY_VERSION="2.8.*"
     - php: 7.2
       env: SYMFONY_VERSION="3.4.*"
+    - php: 7.2
+      env: SYMFONY_VERSION="^4.1"
+    - php: 7.3
+      env: SYMFONY_VERSION="^4.1"
+  allow_failures:
+    - php: 7.2
+      env: SYMFONY_VERSION="dev-master"
   fast_finish: true
 
 before_install:
@@ -33,10 +36,5 @@ install:
   # use "update" instead of "install" since it allows using the "--prefer-lowest" option
   - composer update $COMPOSER_FLAGS
 
-# http://jubianchi.fr/how-to-test-your-symfony2-project-with-behat-on-travisci.htm
-before_script:
-  - mysql -u root -e 'CREATE DATABASE liip;'
-
-# In phpunit.xml.dist, tests annotated with "@group mysql" are excluded,
-# revert this.
-script: php ./vendor/bin/phpunit --exclude-group ""
+script:
+  - php ./vendor/bin/phpunit
