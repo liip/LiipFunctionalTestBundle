@@ -1,7 +1,7 @@
-Upgrade from 1.x version
+Upgrade from previous version
 ========================
 
-See [Upgrade guide from 1.x to 2.0](../UPGRADE-2.0.md).
+See [Upgrade guide from 1.x to 2.0](../UPGRADE-2.0.md) and [Upgrade guide from 2.x to 3.x](../UPGRADE-3.0.md).
 
 Installation
 ============
@@ -12,7 +12,7 @@ Installation
     following command to download the latest stable version of this bundle:
 
     ```bash
-    $ composer require --dev liip/functional-test-bundle:~2.0@alpha
+    $ composer require --dev liip/functional-test-bundle:^3.0.0
     ```
 
     This command requires you to have Composer installed globally, as explained
