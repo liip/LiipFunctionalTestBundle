@@ -3,54 +3,28 @@
 <!-- https://phpunit.de/manual/3.7/en/appendixes.configuration.html -->
 <phpunit
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/6.1/phpunit.xsd"
-    backupGlobals="false"
-    backupStaticAttributes="false"
-    bootstrap="Tests/App/bootstrap.php"
+    xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/6.5/phpunit.xsd"
+    bootstrap="tests/App/bootstrap.php"
     colors="true"
-    convertErrorsToExceptions="true"
-    convertNoticesToExceptions="true"
-    convertWarningsToExceptions="true"
-    beStrictAboutTestsThatDoNotTestAnything="true"
     beStrictAboutOutputDuringTests="true"
 >
 
     <php>
-        <server name="KERNEL_DIR" value="Tests/App" />
+        <server name="KERNEL_CLASS" value="Liip\Acme\Tests\App\AppKernel" />
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
     </php>
 
     <testsuites>
         <testsuite name="Project Test Suite">
-            <directory>Tests/Command</directory>
-            <directory>Tests/DependencyInjection</directory>
-            <directory>Tests/Test</directory>
+            <directory>tests/Command</directory>
+            <directory>tests/DependencyInjection</directory>
+            <directory>tests/Test</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist>
-            <file>LiipFunctionalTestBundle.php</file>
-            <file>QueryCountClient.php</file>
-            <file>QueryCounter.php</file>
-            <directory>Annotations</directory>
-            <file>Command/RunParatestCommand.php</file>
-            <directory>DependencyInjection</directory>
-            <directory>EventListener</directory>
-            <directory>Exception</directory>
-            <directory>Test</directory>
-            <directory>Utils</directory>
-            <directory>Validator</directory>
-            <exclude>
-                <directory>Tests</directory>
-                <directory>vendor/</directory>
-            </exclude>
+            <directory>src</directory>
         </whitelist>
     </filter>
-
-    <groups>
-        <exclude>
-            <group>mysql</group>
-        </exclude>
-    </groups>
 </phpunit>

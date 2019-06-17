@@ -1,0 +1,9 @@
+{% extends 'AcmeBundle::layout.html.twig' %}
+
+{% block body %}
+    <div>
+        {{ render(controller('Liip\\Acme\\Tests\\App\\Controller\\DefaultController::embeddedAction')) }}
+    </div>
+
+    {{ form(form) }}
+{% endblock %}
