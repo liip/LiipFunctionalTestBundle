@@ -65,7 +65,7 @@ class HttpAssertions extends TestCase
         if ($expectedStatusCode !== $client->getResponse()->getStatusCode()) {
             // Get a more useful error message, if available
             if ($exception = $client->getContainer()->get('liip_functional_test.exception_listener')->getLastException()) {
-                $helpfulErrorMessage = $exception->getMessage();
+                $helpfulErrorMessage = $exception->getMessage()."\n\n".$exception->getTraceAsString();
             } elseif (
                 $client->getContainer()->has('liip_functional_test.validator') &&
                 count($validationErrors = $client->getContainer()->get('liip_functional_test.validator')->getLastErrors())

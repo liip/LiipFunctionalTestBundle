@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Liip\Acme\Tests\Test;
 
 use Doctrine\Common\Annotations\Annotation\IgnoreAnnotation;
-use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Liip\Acme\Tests\App\AppKernel;
+use Liip\FunctionalTestBundle\Test\WebTestCase;
 use PHPUnit\Framework\AssertionFailedError;
 
 /**
@@ -152,11 +152,9 @@ class WebTestCaseTest extends WebTestCase
         try {
             $this->assertStatusCode(-1, $this->client);
         } catch (AssertionFailedError $e) {
-            $string = <<<'EOF'
-No route found for "GET /9999"
-Failed asserting that 404 matches expected -1.
-EOF;
-            $this->assertSame($string, $e->getMessage());
+            $this->assertContains('No route found for "GET /9999"', $e->getMessage());
+            $this->assertContains('Symfony\Component\HttpKernel\EventListener\RouterListener->onKernelRequest(', $e->getMessage());
+            $this->assertContains('Failed asserting that 404 matches expected -1.', $e->getMessage());
 
             return;
         }
