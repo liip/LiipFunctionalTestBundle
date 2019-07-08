@@ -5,46 +5,25 @@ checks:
 
 filter:
   excluded_paths:
-    - Tests/*
+    - tests/*
   paths:
-    - Annotations/*
-    - Command/RunParatestCommand.php
-    - DependencyInjection/*
-    - DependencyInjection/Compiler/*
-    - EventListener/*
-    - Exception/*
-    - Factory/*
-    - Test/*
-    - Utils/*
-    - Validator/*
-    - LiipFunctionalTestBundle.php
-    - QueryCountClient.php
-    - QueryCounter.php
+    - src/
 
 build:
   environment:
     php:
-      version: 5.6
+      version: 7.2
   dependencies:
     override:
       -
-        command: 'composer require --dev "symfony/symfony:2.8.*" --no-update'
+        command: 'composer require --dev "symfony/symfony:3.4.*" --no-update'
       -
         command: 'composer update --no-interaction -vv --profile --no-progress'
         idle_timeout: 900
-  # Run after dependencies
-  project_setup:
-    before:
-      - mysql -e 'CREATE DATABASE liip;'
-
-    override: []
-    after: []
   tests:
     override:
-      # in phpunit.xml.dist, tests annotated with "@group mysql" are
-      # excluded, revert this
       -
-        command: 'php ./vendor/bin/phpunit --coverage-clover=coverage-clover  --exclude-group ""'
+        command: 'php ./vendor/bin/phpunit --coverage-clover=coverage-clover'
         coverage:
           file: 'coverage-clover'
           format: 'php-clover'
