@@ -30,7 +30,6 @@ class ValidationErrorsConstraint extends Constraint
     {
         $this->expect = $expect;
         sort($this->expect);
-        parent::__construct();
     }
 
     /**

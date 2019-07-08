@@ -67,7 +67,7 @@ class WebTestCaseTest extends WebTestCase
             ]
         );
 
-        $this->assertInternalType('string', $path);
+        $this->assertIsString($path);
 
         $this->assertSame($path, '/user/1?get_parameter=abc');
     }
@@ -152,9 +152,9 @@ class WebTestCaseTest extends WebTestCase
         try {
             $this->assertStatusCode(-1, $this->client);
         } catch (AssertionFailedError $e) {
-            $this->assertContains('No route found for "GET /9999"', $e->getMessage());
-            $this->assertContains('Symfony\Component\HttpKernel\EventListener\RouterListener->onKernelRequest(', $e->getMessage());
-            $this->assertContains('Failed asserting that 404 matches expected -1.', $e->getMessage());
+            $this->assertStringContainsString('No route found for "GET /9999"', $e->getMessage());
+            $this->assertStringContainsString('Symfony\Component\HttpKernel\EventListener\RouterListener->onKernelRequest(', $e->getMessage());
+            $this->assertStringContainsString('Failed asserting that 404 matches expected -1.', $e->getMessage());
 
             return;
         }
@@ -211,9 +211,9 @@ class WebTestCaseTest extends WebTestCase
 
         $content = $this->fetchContent($path);
 
-        $this->assertInternalType('string', $content);
+        $this->assertIsString($content);
 
-        $this->assertContains(
+        $this->assertStringContainsString(
             '<h1>LiipFunctionalTestBundle</h1>',
             $content
         );
@@ -285,7 +285,7 @@ EOF;
 
         $this->assertStatusCode(200, $this->client);
 
-        $this->assertContains(
+        $this->assertStringContainsString(
             'Name submitted.',
             $crawler->filter('div.flash-notice')->text()
         );
@@ -318,7 +318,7 @@ EOF;
 
         $this->assertStatusCode(200, $this->client);
 
-        $this->assertContains(
+        $this->assertStringContainsString(
             'Name submitted.',
             $crawler->filter('div.flash-notice')->text()
         );
@@ -326,8 +326,6 @@ EOF;
 
     /**
      * @depends testForm
-     *
-     * @expectedException \PHPUnit\Framework\ExpectationFailedException
      */
     public function testFormWithException(): void
     {
@@ -341,6 +339,8 @@ EOF;
         $this->client->submit($form);
 
         $this->assertStatusCode(200, $this->client);
+
+        $this->expectException(\PHPUnit\Framework\ExpectationFailedException::class);
 
         $this->assertValidationErrors([''], $this->client->getContainer());
     }

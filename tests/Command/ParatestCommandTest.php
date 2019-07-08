@@ -47,12 +47,12 @@ class ParatestCommandTest extends WebTestCase
             'options' => 'Tests/Test/WebTestCaseTest.php',
         ]);
 
-        $this->assertContains('Running phpunit in 3 processes with vendor/bin/phpunit', $content);
-        $this->assertContains('Initial schema created', $content);
-        $this->assertNotContains('Error : Install paratest first', $content);
-        $this->assertContains('Done...Running test.', $content);
+        $this->assertStringContainsString('Running phpunit in 3 processes with vendor/bin/phpunit', $content);
+        $this->assertStringContainsString('Initial schema created', $content);
+        $this->assertStringNotContainsString('Error : Install paratest first', $content);
+        $this->assertStringContainsString('Done...Running test.', $content);
 
-        $this->assertContains(
+        $this->assertStringContainsString(
             'OK (22 tests, 69 assertions)',
             $content
         );

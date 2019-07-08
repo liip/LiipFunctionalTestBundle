@@ -145,8 +145,6 @@ class WebTestCaseConfigTest extends WebTestCase
      *
      * There will be 2 queries, in the configuration the limit is 1,
      * an Exception will be thrown.
-     *
-     * @expectedException \Liip\FunctionalTestBundle\Exception\AllowedQueriesExceededException
      */
     public function testAllowedQueriesExceededException(): void
     {
@@ -160,6 +158,8 @@ class WebTestCaseConfigTest extends WebTestCase
         // One another query to load the second user.
         $path = '/user/2';
 
+        $this->expectException(\Liip\FunctionalTestBundle\Exception\AllowedQueriesExceededException::class);
+
         $this->client->request('GET', $path);
     }
 
@@ -170,8 +170,6 @@ class WebTestCaseConfigTest extends WebTestCase
      *
      * There will be 1 query, in the annotation the limit is 0,
      * an Exception will be thrown.
-     *
-     * @expectedException \Liip\FunctionalTestBundle\Exception\AllowedQueriesExceededException
      */
     public function testAnnotationAndException(): void
     {
@@ -179,6 +177,8 @@ class WebTestCaseConfigTest extends WebTestCase
 
         // One query to load the second user
         $path = '/user/1';
+
+        $this->expectException(\Liip\FunctionalTestBundle\Exception\AllowedQueriesExceededException::class);
 
         $this->client->request('GET', $path);
     }

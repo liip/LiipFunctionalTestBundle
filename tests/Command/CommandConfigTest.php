@@ -42,10 +42,10 @@ class CommandConfigTest extends WebTestCase
         $this->assertInstanceOf(CommandTester::class, $this->commandTester);
 
         // Test values from configuration
-        $this->assertContains('Environment: test', $this->commandTester->getDisplay());
-        $this->assertContains('Verbosity level: VERY_VERBOSE', $this->commandTester->getDisplay());
+        $this->assertStringContainsString('Environment: test', $this->commandTester->getDisplay());
+        $this->assertStringContainsString('Verbosity level: VERY_VERBOSE', $this->commandTester->getDisplay());
 
-        $this->assertInternalType('boolean', $this->getDecorated());
+        $this->assertIsBool($this->getDecorated());
         $this->assertFalse($this->getDecorated());
     }
 }

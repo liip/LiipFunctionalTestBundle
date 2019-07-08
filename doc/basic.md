@@ -103,7 +103,7 @@ Get the content of an URL:
 $content = $this->fetchContent('/contact');
 
 // `filter()` can't be used since the output is HTML code, check the content directly
-$this->assertContains(
+$this->assertStringContainsString(
     '<h1>LiipFunctionalTestBundle</h1>',
     $content
 );
