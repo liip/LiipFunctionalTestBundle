@@ -54,11 +54,6 @@ abstract class WebTestCase extends BaseWebTestCase
     private $firewallLogins = [];
 
     /**
-     * @var array
-     */
-    private $excludedDoctrineTables = [];
-
-    /**
      * Creates a mock object of a service identified by its id.
      *
      * @param string $id
@@ -407,14 +402,6 @@ abstract class WebTestCase extends BaseWebTestCase
     public static function assertValidationErrors(array $expected, ContainerInterface $container): void
     {
         HttpAssertions::assertValidationErrors($expected, $container);
-    }
-
-    /**
-     * @param array $excludedDoctrineTables
-     */
-    public function setExcludedDoctrineTables(array $excludedDoctrineTables): void
-    {
-        $this->excludedDoctrineTables = $excludedDoctrineTables;
     }
 
     protected function tearDown(): void
