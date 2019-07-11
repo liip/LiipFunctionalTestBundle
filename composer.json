@@ -35,8 +35,7 @@
     },
     "suggest": {
         "brianium/paratest": "Required when using paratest to parallelize tests",
-        "doctrine/dbal": "Required when using the fixture loading functionality with an ORM and SQLite",
-        "doctrine/orm": "Required when using the fixture loading functionality with an ORM and SQLite"
+        "liip/test-fixtures-bundle": "Efficient loading of Doctrine fixtures in functional test-cases for Symfony applications"
     },
     "autoload": {
         "psr-4": {
