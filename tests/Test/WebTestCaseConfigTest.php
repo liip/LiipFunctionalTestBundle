@@ -22,13 +22,6 @@ use Liip\Acme\Tests\AppConfig\AppConfigKernel;
 /**
  * Tests that configuration has been loaded and users can be logged in.
  *
- * Use Tests/AppConfig/AppConfigKernel.php instead of
- * Tests/App/AppKernel.php.
- * So it must be loaded in a separate process.
- *
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- *
  * Avoid conflict with PHPUnit annotation when reading QueryCount
  * annotation:
  *
