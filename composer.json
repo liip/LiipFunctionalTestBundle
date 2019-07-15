@@ -22,7 +22,6 @@
     },
     "require-dev": {
         "doctrine/doctrine-bundle": "^1.8",
-        "doctrine/doctrine-fixtures-bundle": "^3.0.2",
         "doctrine/orm": "^2.6",
         "phpunit/phpunit": "^6.1 || ^7.0",
         "symfony/monolog-bundle": "^3.1",
