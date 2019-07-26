@@ -61,8 +61,6 @@ class ExampleFunctionalTest extends WebTestCase
      */
     public function testUserFooIndex(): void
     {
-        $this->loadFixtures(['Liip\FooBundle\Tests\Fixtures\LoadUserData']);
-
         $client = $this->createClient();
         $crawler = $client->request('GET', '/users/foo');
         $this->assertStatusCode(200, $client);
@@ -75,8 +73,6 @@ class ExampleFunctionalTest extends WebTestCase
      */
     public function testBasicAuthentication(): void
     {
-        $this->loadFixtures(['Liip\FooBundle\Tests\Fixtures\LoadUserData']);
-
         $content = $this->fetchContent('/users/foo', 'GET', true);
         $this->assertSame('Hello foo!', $content);
 
