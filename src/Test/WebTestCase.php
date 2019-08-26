@@ -49,6 +49,11 @@ abstract class WebTestCase extends BaseWebTestCase
     protected $decorated;
 
     /**
+     * @var array|null
+     */
+    private $inputs = null;
+
+    /**
      * @var array
      */
     private $firewallLogins = [];
@@ -92,15 +97,24 @@ abstract class WebTestCase extends BaseWebTestCase
 
         $application = new Application($kernel);
 
+        $options = [
+            'interactive' => false,
+            'decorated' => $this->getDecorated(),
+            'verbosity' => $this->getVerbosityLevel(),
+        ];
+
         $command = $application->find($name);
         $commandTester = new CommandTester($command);
+
+        if (null !== $inputs = $this->getInputs()) {
+            $commandTester->setInputs($inputs);
+            $options['interactive'] = true;
+            $this->inputs = null;
+        }
+
         $commandTester->execute(
             array_merge(['command' => $command->getName()], $params),
-            [
-                'interactive' => false,
-                'decorated' => $this->getDecorated(),
-                'verbosity' => $this->getVerbosityLevel(),
-            ]
+            $options
         );
 
         return $commandTester;
@@ -146,6 +160,16 @@ abstract class WebTestCase extends BaseWebTestCase
     public function setVerbosityLevel($level): void
     {
         $this->verbosityLevel = $level;
+    }
+
+    protected function setInputs(array $inputs): void
+    {
+        $this->inputs = $inputs;
+    }
+
+    protected function getInputs(): ?array
+    {
+        return $this->inputs;
     }
 
     /**
