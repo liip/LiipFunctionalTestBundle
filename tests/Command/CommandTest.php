@@ -33,6 +33,7 @@ class CommandTest extends WebTestCase
         // Test default values
         $this->assertContains('Environment: test', $this->commandTester->getDisplay());
         $this->assertContains('Verbosity level: NORMAL', $this->commandTester->getDisplay());
+        $this->assertFalse($this->commandTester->getInput()->isInteractive());
 
         $this->assertInternalType('boolean', $this->getDecorated());
         $this->assertTrue($this->getDecorated());
@@ -45,6 +46,17 @@ class CommandTest extends WebTestCase
 
         $this->assertContains('Environment: test', $this->commandTester->getDisplay());
         $this->assertContains('Verbosity level: NORMAL', $this->commandTester->getDisplay());
+    }
+
+    public function testRunCommandWithInputs(): void
+    {
+        $this->setInputs(['foo']);
+        $this->assertSame(['foo'], $this->getInputs());
+
+        $this->commandTester = $this->runCommand('liipfunctionaltestbundle:test');
+
+        $this->assertNull($this->getInputs());
+        $this->assertTrue($this->commandTester->getInput()->isInteractive());
     }
 
     public function testRunCommandWithoutOptionsAndNotReuseKernel(): void
