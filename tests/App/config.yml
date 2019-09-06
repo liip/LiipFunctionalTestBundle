@@ -84,5 +84,7 @@ services:
         autoconfigure: true
     Liip\Acme\Tests\App\Command\TestCommand:
         tags: ['console.command']
+    Liip\Acme\Tests\App\Command\TestInteractiveCommand:
+        tags: ['console.command']
     Liip\Acme\Tests\App\Command\TestStatusCodeCommand:
         tags: ['console.command']

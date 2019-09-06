@@ -53,10 +53,21 @@ class CommandTest extends WebTestCase
         $this->setInputs(['foo']);
         $this->assertSame(['foo'], $this->getInputs());
 
-        $this->commandTester = $this->runCommand('liipfunctionaltestbundle:test');
+        $this->commandTester = $this->runCommand('liipfunctionaltestbundle:test:interactive');
 
         $this->assertNull($this->getInputs());
         $this->assertTrue($this->commandTester->getInput()->isInteractive());
+        $this->assertContains('Value of answer: foo', $this->commandTester->getDisplay());
+
+        // Run command again
+        $this->assertNull($this->getInputs());
+
+        $this->commandTester = $this->runCommand('liipfunctionaltestbundle:test:interactive');
+
+        $this->assertNull($this->getInputs());
+        $this->assertFalse($this->commandTester->getInput()->isInteractive());
+        // The default value is shown
+        $this->assertContains('Value of answer: AcmeDemoBundle', $this->commandTester->getDisplay());
     }
 
     public function testRunCommandWithoutOptionsAndNotReuseKernel(): void
