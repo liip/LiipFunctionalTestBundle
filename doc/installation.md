@@ -21,8 +21,14 @@ Installation
 
  2. Enable the Bundle
 
-    Add the following line in the `app/AppKernel.php` file to enable this bundle only
+    Add the following line in the `app/AppKernel.php` file under the registerBundle function to enable this bundle only
     for the `test` environment:
+
+    ```php
+    $bundles[] = new Liip\FunctionalTestBundle\LiipFunctionalTestBundle();
+    ````
+   
+    See below for full description
 
     ```php
     <?php
