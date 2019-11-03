@@ -77,7 +77,7 @@ class ExampleFunctionalTest extends WebTestCase
         $this->assertSame('Hello foo!', $content);
 
         // check if the logout button is shown
-        $this->assertContains('logout', $content);
+        $this->assertStringContainsString('logout', $content);
     }
 
     public function test404Page(): void
@@ -88,7 +88,7 @@ class ExampleFunctionalTest extends WebTestCase
     public function testLoginPage(): void
     {
         $content = $this->fetchContent('/', 'GET', false);
-        $this->assertContains('login', $content);
+        $this->assertStringContainsString('login', $content);
     }
 
     public function testValidationErrors(): void
