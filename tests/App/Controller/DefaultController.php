@@ -45,9 +45,7 @@ class DefaultController extends Controller
             ->find($userId);
 
         if (!$user) {
-            throw $this->createNotFoundException(
-                'No user found'
-            );
+            throw $this->createNotFoundException('No user found');
         }
 
         return $this->render(

@@ -146,9 +146,7 @@ abstract class WebTestCase extends BaseWebTestCase
             $verbosity = '\Symfony\Component\Console\Output\StreamOutput::VERBOSITY_'.$level;
 
             if (!defined($verbosity)) {
-                throw new \OutOfBoundsException(
-                    sprintf('The set value "%s" for verbosityLevel is not valid. Accepted are: "quiet", "normal", "verbose", "very_verbose" and "debug".', $level)
-                );
+                throw new \OutOfBoundsException(sprintf('The set value "%s" for verbosityLevel is not valid. Accepted are: "quiet", "normal", "verbose", "very_verbose" and "debug".', $level));
             }
 
             $this->verbosityLevel = constant($verbosity);
@@ -198,9 +196,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
         // Check the local decorated flag
         if (false === is_bool($this->decorated)) {
-            throw new \OutOfBoundsException(
-                sprintf('`WebTestCase::decorated` has to be `bool`. "%s" given.', gettype($this->decorated))
-            );
+            throw new \OutOfBoundsException(sprintf('`WebTestCase::decorated` has to be `bool`. "%s" given.', gettype($this->decorated)));
         }
 
         return $this->decorated;
