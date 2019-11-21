@@ -21,7 +21,7 @@ Installation
 
  2. Enable the Bundle
 
-    Add the following line in the `app/AppKernel.php` file under the registerBundles function to enable this bundle only
+    Add the following line in the `app/AppKernel.php` file in the `registerBundles` function to enable this bundle only
     for the `test` environment:
 
     ```php
