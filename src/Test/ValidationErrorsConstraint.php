@@ -76,9 +76,7 @@ class ValidationErrorsConstraint extends Constraint
             }
         }
 
-        throw new ExpectationFailedException(
-            $description."\n".implode("\n", $lines)
-        );
+        throw new ExpectationFailedException($description."\n".implode("\n", $lines));
     }
 
     /**

@@ -40,9 +40,7 @@ final class QueryCounter
         }
 
         if ($actualQueryCount > $maxQueryCount) {
-            throw new AllowedQueriesExceededException(
-                "Allowed amount of queries ($maxQueryCount) exceeded (actual: $actualQueryCount)."
-            );
+            throw new AllowedQueriesExceededException("Allowed amount of queries ($maxQueryCount) exceeded (actual: $actualQueryCount).");
         }
     }
 
