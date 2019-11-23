@@ -13,14 +13,21 @@ declare(strict_types=1);
 
 namespace Liip\Acme\Tests\App\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Kernel;
 
-class TestCommand extends ContainerAwareCommand
+class TestCommand extends Command
 {
     private $container;
+
+    public function __construct(ContainerInterface $container)
+    {
+        parent::__construct();
+        $this->container = $container;
+    }
 
     protected function configure(): void
     {
@@ -28,17 +35,6 @@ class TestCommand extends ContainerAwareCommand
 
         $this->setName('liipfunctionaltestbundle:test')
             ->setDescription('Test command');
-    }
-
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     */
-    protected function initialize(InputInterface $input, OutputInterface $output): void
-    {
-        parent::initialize($input, $output);
-
-        $this->container = $this->getContainer();
     }
 
     /**

@@ -13,31 +13,18 @@ declare(strict_types=1);
 
 namespace Liip\Acme\Tests\App\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class TestStatusCodeCommand extends ContainerAwareCommand
+class TestStatusCodeCommand extends Command
 {
-    private $container;
-
     protected function configure(): void
     {
         parent::configure();
 
         $this->setName('liipfunctionaltestbundle:test-status-code')
             ->setDescription('Test command');
-    }
-
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     */
-    protected function initialize(InputInterface $input, OutputInterface $output): void
-    {
-        parent::initialize($input, $output);
-
-        $this->container = $this->getContainer();
     }
 
     /**
