@@ -13,14 +13,14 @@ declare(strict_types=1);
 
 namespace Liip\Acme\Tests\App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class DefaultController extends Controller
+class DefaultController extends AbstractController
 {
     /**
      * @return Response

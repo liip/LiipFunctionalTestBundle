@@ -13,10 +13,14 @@ declare(strict_types=1);
 
 namespace Liip\Acme\Tests\App\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * User.
+ *
+ * @ORM\Entity()
+ * @ORM\Table("liip_user")
  */
 class User implements UserInterface
 {
@@ -25,41 +29,51 @@ class User implements UserInterface
 
     /**
      * @var int
+     * @ORM\Id()
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
 
     /**
      * @var string
+     * @ORM\Column(type="string", length=255)
      */
     protected $name;
 
     /**
      * @var string
+     * @ORM\Column(type="string", length=255)
      */
     private $email;
 
     /**
      * @var string
+     * @ORM\Column(type="string", length=255)
      */
     protected $password;
 
     /**
      * @var string
+     * @ORM\Column(type="string", length=255)
      */
     protected $salt;
 
     /**
      * @var string
+     * @ORM\Column(type="string", length=255)
      */
     private $algorithm;
 
     /**
      * @var bool
+     * @ORM\Column(type="boolean")
      */
     private $enabled;
 
     /**
      * @var string
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $confirmationToken;
 

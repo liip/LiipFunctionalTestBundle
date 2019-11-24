@@ -42,12 +42,8 @@ doctrine:
                 connection: default
                 mappings:
                     LiipFunctionalTestBundle:
-                        type: php
+                        type: annotation
                         dir: "%kernel.root_dir%/../App/Entity"
-                        prefix: 'Liip\Acme\Tests\App\Entity'
-                    LiipFunctionalTestBundleYml:
-                        type: "yml"
-                        dir: "%kernel.root_dir%/../App/Resources/config/doctrine"
                         prefix: 'Liip\Acme\Tests\App\Entity'
 
 security:
