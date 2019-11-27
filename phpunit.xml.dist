@@ -11,7 +11,7 @@
 
     <php>
         <server name="KERNEL_CLASS" value="Liip\Acme\Tests\App\AppKernel" />
-        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[total]=999999"/>
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
     </php>
 
     <testsuites>
