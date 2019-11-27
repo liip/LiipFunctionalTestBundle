@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Liip\Acme\Tests\App\Controller;
 
+use Psr\Container\ContainerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -22,13 +23,18 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class DefaultController extends AbstractController
 {
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
     /**
      * @return Response
      */
     public function indexAction(): Response
     {
         return $this->render(
-            'AcmeBundle::layout.html.twig'
+            '@Acme/layout.html.twig'
         );
     }
 

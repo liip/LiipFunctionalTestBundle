@@ -441,6 +441,8 @@ abstract class WebTestCase extends BaseWebTestCase
 
     protected function createClientWithParams(array $params, ?string $username = null, ?string $password = null): Client
     {
+        static::ensureKernelShutdown();
+
         if ($username && $password) {
             $params = array_merge($params, [
                 'PHP_AUTH_USER' => $username,

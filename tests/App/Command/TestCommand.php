@@ -38,10 +38,11 @@ class TestCommand extends Command
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
+     * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // Symfony version check
         $version = Kernel::VERSION_ID;
@@ -62,5 +63,7 @@ class TestCommand extends Command
 
         // Write a line with OutputInterface::VERBOSITY_DEBUG
         $output->writeln('Verbosity level: DEBUG', OutputInterface::VERBOSITY_DEBUG);
+
+        return 0;
     }
 }

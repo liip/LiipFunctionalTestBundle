@@ -7,7 +7,6 @@ framework:
     router:          { resource: "%kernel.root_dir%/../App/routing.yml" }
     form:            true
     csrf_protection: true
-    templating:      { engines: ['twig'] }
     session:
         # handler_id set to null will use default session handler from php.ini
         handler_id:  ~
@@ -84,3 +83,9 @@ services:
         tags: ['console.command']
     Liip\Acme\Tests\App\Command\TestStatusCodeCommand:
         tags: ['console.command']
+    Liip\Acme\Tests\App\Controller\DefaultController:
+
+twig:
+    default_path: '%kernel.root_dir%/Resources/views'
+    exception_controller: ~
+    strict_variables: '%kernel.debug%'
