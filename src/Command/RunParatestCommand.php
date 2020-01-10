@@ -34,8 +34,6 @@ class RunParatestCommand extends Command implements ContainerAwareInterface
 
     private $process;
 
-    private $testDbPath;
-
     private $phpunit;
 
     /**
@@ -55,31 +53,6 @@ class RunParatestCommand extends Command implements ContainerAwareInterface
     {
         $this->phpunit = $this->container->getParameter('liip_functional_test.paratest.phpunit');
         $this->process = $this->container->getParameter('liip_functional_test.paratest.process');
-
-        $this->testDbPath = $this->container->get('kernel')->getCacheDir();
-        $this->output->writeln("Cleaning old dbs in $this->testDbPath ...");
-        $createDirProcess = new Process('mkdir -p '.$this->testDbPath);
-        $createDirProcess->run();
-        $cleanProcess = new Process("rm -fr $this->testDbPath/dbTest.db $this->testDbPath/dbTest*.db*");
-        $cleanProcess->run();
-        $this->output->writeln("Creating Schema in $this->testDbPath ...");
-        $application = new Application($this->container->get('kernel'));
-        $input = new ArrayInput(['doctrine:schema:create', '--env' => 'test']);
-        $application->run($input, $this->output);
-
-        $this->output->writeln('Initial schema created');
-        $input = new ArrayInput([
-            'doctrine:fixtures:load',
-            '-n' => '',
-            '--env' => 'test',
-        ]);
-        $application->run($input, $this->output);
-
-        $this->output->writeln('Initial schema populated, duplicating....');
-        for ($a = 0; $a < $this->process; ++$a) {
-            $test = new Process("cp $this->testDbPath/dbTest.db ".$this->testDbPath."/dbTest$a.db");
-            $test->run();
-        }
     }
 
     /**
@@ -99,7 +72,6 @@ class RunParatestCommand extends Command implements ContainerAwareInterface
             $runProcess = new Process('vendor/bin/paratest '.
                 '-c phpunit.xml.dist '.
                 '--phpunit '.$this->phpunit.' '.
-                '--runner WrapRunner '.
                 '-p '.$this->process.' '.
                 $input->getArgument('options')
             );
