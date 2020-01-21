@@ -27,6 +27,10 @@ if (!class_exists(KernelBrowser::class)) {
     class_alias(Client::class, KernelBrowser::class);
 }
 
+if (!class_exists(Client::class)) {
+    class_alias(KernelBrowser::class, Client::class);
+}
+
 class QueryCountClient extends KernelBrowser
 {
     /*

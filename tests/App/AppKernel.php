@@ -59,4 +59,9 @@ class AppKernel extends Kernel
     {
         return sys_get_temp_dir().'/LiipFunctionalTestBundle/'.(new \ReflectionClass($this))->getShortName().'/var/';
     }
+
+    public function getProjectDir()
+    {
+        return __DIR__;
+    }
 }

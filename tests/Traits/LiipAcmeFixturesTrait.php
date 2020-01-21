@@ -28,13 +28,11 @@ trait LiipAcmeFixturesTrait
 
         $command = $application->find('doctrine:schema:update');
         $commandTester = new CommandTester($command);
-        $return = $commandTester->execute(
-            [
-                'command' => $command->getName(),
-                '--force' => 'true',
-            ]
-        );
-        $this->assertSame(0, $return);
+        $return = $commandTester->execute([
+            '--force' => true,
+        ]);
+
+        $this->assertSame(0, $return, $commandTester->getDisplay());
     }
 
     public function loadTestFixtures(): User

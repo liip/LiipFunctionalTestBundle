@@ -28,7 +28,7 @@ class DefaultController extends AbstractController
     public function indexAction(): Response
     {
         return $this->render(
-            'AcmeBundle::layout.html.twig'
+            'layout.html.twig'
         );
     }
 

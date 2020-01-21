@@ -34,7 +34,7 @@ class TestInteractiveCommand extends Command
      * @param InputInterface  $input
      * @param OutputInterface $output
      */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $helper = $this->getHelper('question');
         $question = new Question('Please enter the input', 'AcmeDemoBundle');
@@ -43,5 +43,7 @@ class TestInteractiveCommand extends Command
 
         $output->writeln(PHP_EOL);
         $output->writeln(sprintf('Value of answer: %s', $answer));
+
+        return 0;
     }
 }
