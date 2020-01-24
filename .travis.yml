@@ -6,6 +6,10 @@ php:
   - 7.1
   - 7.2
   - 7.3
+  - 7.4
+
+env:
+  - SYMFONY_VERSION="^5.0"
 
 sudo: false
 
@@ -16,21 +20,22 @@ cache:
 matrix:
   include:
     - php: 7.1
-      env: COMPOSER_FLAGS="--prefer-lowest"
+      env: SYMFONY_VERSION="3.4.*" COMPOSER_FLAGS="--prefer-lowest"
     - php: 7.2
       env: SYMFONY_VERSION="3.4.*"
     - php: 7.2
-      env: SYMFONY_VERSION="^4.1"
-    - php: 7.3
-      env: SYMFONY_VERSION="^4.1"
-  allow_failures:
+      env: SYMFONY_VERSION="4.1.*" PHPUNIT_VERSION="7.5.*"
     - php: 7.2
-      env: SYMFONY_VERSION="dev-master"
+      env: SYMFONY_VERSION="4.4.*"
+  exclude:
+    - php: 7.1
+      env: SYMFONY_VERSION="^5.0"
   fast_finish: true
 
 before_install:
   - echo "memory_limit = -1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - if [ "$SYMFONY_VERSION" != "" ]; then composer require --no-update symfony/symfony=$SYMFONY_VERSION; fi
+  - if [ "$PHPUNIT_VERSION" != "" ]; then composer require --no-update phpunit/phpunit=$PHPUNIT_VERSION; fi
 
 install:
   # use "update" instead of "install" since it allows using the "--prefer-lowest" option

@@ -4,10 +4,9 @@
 framework:
     secret:          secret
     test: ~
-    router:          { resource: "%kernel.root_dir%/../App/routing.yml" }
+    router:          { resource: "%kernel.project_dir%/routing.yml" }
     form:            true
     csrf_protection: true
-    templating:      { engines: ['twig'] }
     session:
         # handler_id set to null will use default session handler from php.ini
         handler_id:  ~
@@ -43,7 +42,7 @@ doctrine:
                 mappings:
                     LiipFunctionalTestBundle:
                         type: annotation
-                        dir: "%kernel.root_dir%/../App/Entity"
+                        dir: "%kernel.project_dir%/Entity"
                         prefix: 'Liip\Acme\Tests\App\Entity'
 
 security:
@@ -84,3 +83,8 @@ services:
         tags: ['console.command']
     Liip\Acme\Tests\App\Command\TestStatusCodeCommand:
         tags: ['console.command']
+    Liip\Acme\Tests\App\Controller\DefaultController:
+        tags: ['controller.service_arguments']
+
+twig:
+    default_path: '%kernel.project_dir%/Resources/views/'

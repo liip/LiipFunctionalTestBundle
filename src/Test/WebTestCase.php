@@ -17,6 +17,7 @@ use Liip\FunctionalTestBundle\Utils\HttpAssertions;
 use PHPUnit\Framework\MockObject\MockBuilder;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -28,6 +29,10 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\User\UserInterface;
+
+if (!class_exists(Client::class)) {
+    class_alias(KernelBrowser::class, Client::class);
+}
 
 /**
  * @author Lea Haensenberger
