@@ -22,6 +22,7 @@
         "symfony/framework-bundle": "^3.4 || ^4.1 || ^5.0"
     },
     "require-dev": {
+        "brianium/paratest": "^2.2.0 || ^3.1",
         "doctrine/doctrine-bundle": "^1.8 || ^2.0",
         "doctrine/orm": "^2.6",
         "monolog/monolog": "~1.11",
