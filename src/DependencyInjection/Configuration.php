@@ -58,17 +58,6 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
-                ->arrayNode('paratest')
-                    ->addDefaultsIfNotSet()
-                    ->children()
-                        ->scalarNode('process')
-                            ->defaultValue(5)
-                        ->end()
-                        ->scalarNode('phpunit')
-                            ->defaultValue('./bin/phpunit')
-                        ->end()
-                    ->end()
-                ->end()
             ->end()
         ;
 
