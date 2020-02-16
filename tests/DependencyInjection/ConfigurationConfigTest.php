@@ -44,8 +44,6 @@ class ConfigurationConfigTest extends ConfigurationTest
             ['query.max_query_count', 1],
             ['authentication.username', 'foobar'],
             ['authentication.password', '12341234'],
-            ['paratest.process', 3],
-            ['paratest.phpunit', 'vendor/bin/phpunit'],
         ];
     }
 }

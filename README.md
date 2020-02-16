@@ -23,7 +23,6 @@ Documentation
 * [Caveats](doc/caveats.md)
 
 To run tests in parallel:
-* [Paratest](doc/paratest.md)
 * [Fastest](doc/fastest.md)
 
 [Travis Master]: https://travis-ci.org/liip/LiipFunctionalTestBundle

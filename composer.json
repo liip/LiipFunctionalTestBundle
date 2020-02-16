@@ -33,7 +33,6 @@
         "symfony/framework-bundle": "4.3.0"
     },
     "suggest": {
-        "brianium/paratest": "Required when using paratest to parallelize tests",
         "liip/test-fixtures-bundle": "Efficient loading of Doctrine fixtures in functional test-cases for Symfony applications"
     },
     "autoload": {
@@ -51,7 +50,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "3.x-dev"
+            "dev-master": "4.x-dev"
         }
     }
 }

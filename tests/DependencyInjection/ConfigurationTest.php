@@ -60,8 +60,6 @@ class ConfigurationTest extends WebTestCase
             ['query.max_query_count', null],
             ['authentication.username', ''],
             ['authentication.password', ''],
-            ['paratest.process', 5],
-            ['paratest.phpunit', './bin/phpunit'],
         ];
     }
 }
