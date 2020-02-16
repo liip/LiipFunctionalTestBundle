@@ -3,7 +3,7 @@
 ## 4.0
 
 ### Removed
- * Drop support of `paratest:run`
+ * Drop support of `run:paratest`, if you still need it, define the [`paratest:run` command](https://github.com/liip/LiipFunctionalTestBundle/blob/c732089d9ad32372db4cbee1a5a3c3b53bd40ff6/src/Command/RunParatestCommand.php) in your project
 
 ## 3.0
 This new major version introduces a number of breaking changes; see the [upgrade guide](UPGRADE-3.0.md) for more details.
