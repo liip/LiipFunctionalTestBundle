@@ -12,7 +12,7 @@ Installation
     following command to download the latest stable version of this bundle:
 
     ```bash
-    $ composer require --dev liip/functional-test-bundle:^4.0.0-alpha1
+    $ composer require --dev liip/functional-test-bundle:^4.0.0
     ```
 
     This command requires you to have Composer installed globally, as explained
