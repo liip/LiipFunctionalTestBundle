@@ -39,7 +39,7 @@ class ValidationErrorsConstraint extends Constraint
      *
      * @return mixed
      */
-    public function evaluate($other, $description = '', $returnResult = false)
+    public function evaluate($other, $description = '', $returnResult = false): ?bool
     {
         $actual = [];
 
