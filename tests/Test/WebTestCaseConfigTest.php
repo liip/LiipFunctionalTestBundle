@@ -140,6 +140,38 @@ class WebTestCaseConfigTest extends WebTestCase
     }
 
     /**
+     * Log in as the user defined in the Data Fixture.
+     */
+    public function testIndexAuthenticationLoginClient(): void
+    {
+        $this->client = static::makeClient();
+
+        $this->schemaUpdate();
+        $user = $this->loadTestFixtures();
+
+        $this->loginClient($this->client, $user, 'secured_area');
+
+        $path = '/';
+
+        $crawler = $this->client->request('GET', $path);
+
+        $this->assertStatusCode(200, $this->client);
+
+        $this->assertSame(1,
+            $crawler->filter('html > body')->count());
+
+        $this->assertSame(
+            'Logged in as foo bar.',
+            $crawler->filter('p#user')->text()
+        );
+
+        $this->assertSame(
+            'LiipFunctionalTestBundle',
+            $crawler->filter('h1')->text()
+        );
+    }
+
+    /**
      * Log in as the user defined in the Data Fixtures and except an
      * AllowedQueriesExceededException exception.
      *
