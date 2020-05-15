@@ -59,8 +59,10 @@ class WebTestCaseConfigTest extends WebTestCase
 
         $this->assertStatusCode(200, $this->client);
 
-        $this->assertSame(1,
-            $crawler->filter('html > body')->count());
+        $this->assertSame(
+            1,
+            $crawler->filter('html > body')->count()
+        );
 
         $this->assertSame(
             'Logged in as foobar.',
@@ -88,8 +90,10 @@ class WebTestCaseConfigTest extends WebTestCase
 
         $this->assertStatusCode(200, $this->client);
 
-        $this->assertSame(1,
-            $crawler->filter('html > body')->count());
+        $this->assertSame(
+            1,
+            $crawler->filter('html > body')->count()
+        );
 
         $this->assertSame(
             'Logged in as foobar.',
@@ -125,8 +129,10 @@ class WebTestCaseConfigTest extends WebTestCase
 
         $this->assertStatusCode(200, $this->client);
 
-        $this->assertSame(1,
-            $crawler->filter('html > body')->count());
+        $this->assertSame(
+            1,
+            $crawler->filter('html > body')->count()
+        );
 
         $this->assertSame(
             'Logged in as foo bar.',
@@ -157,8 +163,10 @@ class WebTestCaseConfigTest extends WebTestCase
 
         $this->assertStatusCode(200, $this->client);
 
-        $this->assertSame(1,
-            $crawler->filter('html > body')->count());
+        $this->assertSame(
+            1,
+            $crawler->filter('html > body')->count()
+        );
 
         $this->assertSame(
             'Logged in as foo bar.',
