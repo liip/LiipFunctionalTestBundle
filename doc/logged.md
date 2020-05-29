@@ -8,7 +8,7 @@ You have three alternatives to create an already logged in client:
 
 1. Use the `liip_functional_test.authentication` key in the `config_test.yml` file;
 2. Pass an array with login parameters directly when you call the method;
-3. Use the method `WebTestCase::loginAs()`;
+3. Use the method `WebTestCase::loginClient()`;
 
 ### Logging in a user from the `config_test.yml` file
 
@@ -37,22 +37,22 @@ $credentials = array(
 $client = $this->makeClient($credentials);
 ```
 
-### Logging in a user using `WebTestCase::loginAs()`
+### Logging in a user using `WebTestCase::loginClient()`
 
-To use the method `WebTestCase::loginAs()` you have to [return the repository containing all references set in the
+To use the method `WebTestCase::loginClient()` you have to [return the repository containing all references set in the
 fixtures](#referencing-fixtures-in-tests) using the method `getReferenceRepository()` and pass the reference of the `User`
-object to the method `WebTestCase::loginAs()`.
+object to the method `WebTestCase::loginClient()`.
 
 ```php
+$client = $this->makeClient();
 $fixtures = $this->loadFixtures(array(
     'AppBundle\DataFixtures\ORM\LoadUserData'
 ))->getReferenceRepository();
 
-$this->loginAs($fixtures->getReference('account-alpha'), 'main');
-$client = $this->makeClient();
+$this->loginClient($client, $fixtures->getReference('account-alpha'), 'main');
 ```
 
-Remember that `WebTestCase::loginAs()` accepts objects that implement the interface `Symfony\Component\Security\Core\User\UserInterface`. 
+Remember that `WebTestCase::loginClient()` accepts objects that implement the interface `Symfony\Component\Security\Core\User\UserInterface`. 
 
 **If you get the error message *"Missing session.storage.options#name"***, you have to simply add to your
 [`config_test.yml`](https://github.com/liip/LiipFunctionalTestBundle/blob/master/Tests/App/config.yml#L16)

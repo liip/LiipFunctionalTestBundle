@@ -399,9 +399,35 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     public function loginAs(UserInterface $user, string $firewallName): self
     {
+        @trigger_error(sprintf('"%s()" is deprecated, use loginClient() after creating a client.', __METHOD__), E_USER_DEPRECATED);
+
         $this->firewallLogins[$firewallName] = $user;
 
         return $this;
+    }
+
+    public function loginClient(KernelBrowser $client, UserInterface $user, string $firewallName): void
+    {
+        // has to be set otherwise "hasPreviousSession" in Request returns false.
+        $options = $client->getContainer()->getParameter('session.storage.options');
+
+        if (!$options || !isset($options['name'])) {
+            throw new \InvalidArgumentException('Missing session.storage.options#name');
+        }
+
+        $session = $client->getContainer()->get('session');
+        $session->setId(uniqid());
+
+        $client->getCookieJar()->set(new Cookie($options['name'], $session->getId()));
+
+        $token = $this->createUserToken($user, $firewallName);
+
+        $tokenStorage = $client->getContainer()->get('security.token_storage');
+
+        $tokenStorage->setToken($token);
+        $session->set('_security_'.$firewallName, serialize($token));
+
+        $session->save();
     }
 
     /**
