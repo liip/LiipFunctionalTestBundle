@@ -78,8 +78,10 @@ class WebTestCaseTest extends WebTestCase
         /** @var \Symfony\Component\DomCrawler\Crawler $crawler */
         $crawler = static::makeClient()->request('GET', $path);
 
-        $this->assertSame(1,
-            $crawler->filter('html > body')->count());
+        $this->assertSame(
+            1,
+            $crawler->filter('html > body')->count()
+        );
 
         $this->assertSame(
             'Not logged in.',
@@ -189,8 +191,10 @@ class WebTestCaseTest extends WebTestCase
             $crawler
         );
 
-        $this->assertSame(1,
-            $crawler->filter('html > body')->count());
+        $this->assertSame(
+            1,
+            $crawler->filter('html > body')->count()
+        );
 
         $this->assertSame(
             'Not logged in.',

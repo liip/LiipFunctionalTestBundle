@@ -20,7 +20,7 @@ use Liip\FunctionalTestBundle\Test\WebTestCase;
  */
 class ConfigurationTest extends WebTestCase
 {
-    /** @var \Symfony\Component\DependencyInjection\ContainerInterface $clientContainer */
+    /** @var \Symfony\Component\DependencyInjection\ContainerInterface */
     private $clientContainer = null;
 
     public function setUp(): void
