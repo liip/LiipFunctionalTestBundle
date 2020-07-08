@@ -99,7 +99,8 @@ class DefaultController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->get('session')->getFlashBag()->add('notice',
+            $this->get('session')->getFlashBag()->add(
+                'notice',
                 'Name submitted.'
             );
         }
