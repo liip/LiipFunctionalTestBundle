@@ -14,6 +14,14 @@ framework:
         enabled: true
         collect: true
 
+doctrine:
+    # ...
+    dbal:
+        connections:
+            default:
+                # ...
+                profiling: true
+
 liip_functional_test:
     query:
         max_query_count: 50
