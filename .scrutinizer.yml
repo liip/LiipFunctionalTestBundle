@@ -16,7 +16,7 @@ build:
   dependencies:
     override:
       -
-        command: 'composer require --dev "symfony/symfony:3.4.*" --no-update'
+        command: 'composer require --dev "symfony/framework-bundle:4.4.*" --no-update'
       -
         command: 'composer update --no-interaction -vv --profile --no-progress'
         idle_timeout: 900

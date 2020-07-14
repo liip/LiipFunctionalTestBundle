@@ -34,7 +34,7 @@ matrix:
 
 before_install:
   - echo "memory_limit = -1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-  - if [ "$SYMFONY_VERSION" != "" ]; then composer require --no-update symfony/symfony=$SYMFONY_VERSION; fi
+  - if [ "$SYMFONY_VERSION" != "" ]; then composer require --no-update symfony/framework-bundle=$SYMFONY_VERSION; fi
   - if [ "$PHPUNIT_VERSION" != "" ]; then composer require --no-update phpunit/phpunit=$PHPUNIT_VERSION; fi
 
 install:
