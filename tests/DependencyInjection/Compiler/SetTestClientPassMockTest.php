@@ -33,6 +33,7 @@ class SetTestClientPassMockTest extends TestCase
         /* @see http://gianarb.it/blog/symfony-unit-test-controller-with-phpunit#expectations */
         /** @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
         $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerBuilder')
+            ->disableOriginalConstructor()
             ->getMock();
 
         $container->expects($this->any())

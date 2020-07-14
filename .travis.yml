@@ -9,7 +9,7 @@ php:
   - 7.4
 
 env:
-  - SYMFONY_VERSION="^5.0"
+  - SYMFONY_VERSION="^5.1"
 
 sudo: false
 
@@ -19,22 +19,22 @@ cache:
 
 matrix:
   include:
-    - php: 7.1
-      env: SYMFONY_VERSION="3.4.*" COMPOSER_FLAGS="--prefer-lowest"
+#    - php: 7.1
+#      env: SYMFONY_VERSION="3.4.*" COMPOSER_FLAGS="--prefer-lowest"
     - php: 7.2
       env: SYMFONY_VERSION="3.4.*"
     - php: 7.2
-      env: SYMFONY_VERSION="4.1.*" PHPUNIT_VERSION="7.5.*"
+      env: SYMFONY_VERSION="4.4.*" PHPUNIT_VERSION="7.5.*"
     - php: 7.2
       env: SYMFONY_VERSION="4.4.*"
   exclude:
     - php: 7.1
-      env: SYMFONY_VERSION="^5.0"
+      env: SYMFONY_VERSION="^5.1"
   fast_finish: true
 
 before_install:
   - echo "memory_limit = -1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-  - if [ "$SYMFONY_VERSION" != "" ]; then composer require --no-update symfony/symfony=$SYMFONY_VERSION; fi
+  - if [ "$SYMFONY_VERSION" != "" ]; then composer require --no-update symfony/browser-kit=$SYMFONY_VERSION symfony/framework-bundle=$SYMFONY_VERSION symfony/css-selector=$SYMFONY_VERSION symfony/form=$SYMFONY_VERSION symfony/http-kernel=$SYMFONY_VERSION symfony/phpunit-bridge=$SYMFONY_VERSION symfony/security-bundle=$SYMFONY_VERSION symfony/twig-bundle=$SYMFONY_VERSION symfony/validator=$SYMFONY_VERSION symfony/yaml=$SYMFONY_VERSION ; fi
   - if [ "$PHPUNIT_VERSION" != "" ]; then composer require --no-update phpunit/phpunit=$PHPUNIT_VERSION; fi
 
 install:

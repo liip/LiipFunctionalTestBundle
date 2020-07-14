@@ -85,12 +85,10 @@ class DefaultController extends AbstractController
      */
     private function form(Request $request, string $template): Response
     {
-        $object = new \ArrayObject();
-        $object->name = null;
+        $defaultData = ['name' => null];
 
-        $form = $this->createFormBuilder($object)
+        $form = $this->createFormBuilder($defaultData)
             ->add('name', TextType::class, [
-                /* @see http://symfony.com/doc/2.7/book/forms.html#adding-validation */
                 'constraints' => new NotBlank(),
             ])
             ->add('Submit', SubmitType::class)
