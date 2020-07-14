@@ -3,7 +3,7 @@
 # Tests/App/config.yml
 framework:
     secret:          secret
-    test: ~
+    test:            true
     router:          { resource: "%kernel.project_dir%/routing.yml" }
     form:            true
     csrf_protection: true
