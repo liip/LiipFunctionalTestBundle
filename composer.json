@@ -27,6 +27,7 @@
         "monolog/monolog": "~1.11",
         "symfony/css-selector": "^3.4 || ^4.4 || ^5.1",
         "symfony/form": "^3.4 || ^4.4 || ^5.1",
+        "symfony/http-kernel": "^3.4 || ^4.4 || ^5.1",
         "symfony/monolog-bundle": "^3.2",
         "symfony/phpunit-bridge": "^3.4 || ^4.4 || ^5.1",
         "symfony/security-bundle": "^3.4 || ^4.4 || ^5.1",
