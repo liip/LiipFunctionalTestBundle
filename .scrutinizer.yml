@@ -24,6 +24,7 @@ build:
     override:
       -
         command: 'php ./vendor/bin/phpunit --coverage-clover=coverage-clover'
+        idle_timeout: 300
         coverage:
           file: 'coverage-clover'
           format: 'php-clover'
