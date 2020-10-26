@@ -34,7 +34,7 @@
         "symfony/twig-bundle": "^3.4.33 || ^4.4 || ^5.1",
         "symfony/validator": "^3.4.33 || ^4.4 || ^5.1",
         "symfony/yaml": "^3.4.33 || ^4.4 || ^5.1",
-        "twig/twig": "^2.0"
+        "twig/twig": "^2.0 || ^3.0"
     },
     "conflict": {
         "symfony/framework-bundle": "4.3.0"
