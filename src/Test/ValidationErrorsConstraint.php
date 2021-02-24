@@ -23,8 +23,6 @@ class ValidationErrorsConstraint extends Constraint
 
     /**
      * ValidationErrorsConstraint constructor.
-     *
-     * @param array $expect
      */
     public function __construct(array $expect)
     {
@@ -81,8 +79,6 @@ class ValidationErrorsConstraint extends Constraint
 
     /**
      * Returns a string representation of the object.
-     *
-     * @return string
      */
     public function toString(): string
     {

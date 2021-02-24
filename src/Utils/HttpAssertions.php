@@ -27,7 +27,6 @@ class HttpAssertions extends TestCase
      *
      * @param Response $response Response object
      * @param bool     $success  to define whether the response is expected to be successful
-     * @param string   $type
      */
     public static function isSuccessful(Response $response, bool $success = true, string $type = 'text/html'): void
     {
@@ -54,9 +53,6 @@ class HttpAssertions extends TestCase
      * Asserts that the HTTP response code of the last request performed by
      * $client matches the expected code. If not, raises an error with more
      * information.
-     *
-     * @param int    $expectedStatusCode
-     * @param Client $client
      */
     public static function assertStatusCode(int $expectedStatusCode, Client $client): void
     {
@@ -87,8 +83,7 @@ class HttpAssertions extends TestCase
      * Assert that the last validation errors within $container match the
      * expected keys.
      *
-     * @param array              $expected  A flat array of field names
-     * @param ContainerInterface $container
+     * @param array $expected A flat array of field names
      */
     public static function assertValidationErrors(array $expected, ContainerInterface $container): void
     {

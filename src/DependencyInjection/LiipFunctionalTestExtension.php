@@ -22,9 +22,6 @@ class LiipFunctionalTestExtension extends Extension
 {
     /**
      * Loads the services based on your application configuration.
-     *
-     * @param array            $configs
-     * @param ContainerBuilder $container
      */
     public function load(array $configs, ContainerBuilder $container): void
     {
