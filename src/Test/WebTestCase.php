@@ -65,10 +65,6 @@ abstract class WebTestCase extends BaseWebTestCase
 
     /**
      * Creates a mock object of a service identified by its id.
-     *
-     * @param string $id
-     *
-     * @return MockBuilder
      */
     protected function getServiceMockBuilder(string $id): MockBuilder
     {
@@ -80,12 +76,6 @@ abstract class WebTestCase extends BaseWebTestCase
 
     /**
      * Builds up the environment to run the given command.
-     *
-     * @param string $name
-     * @param array  $params
-     * @param bool   $reuseKernel
-     *
-     * @return CommandTester
      */
     protected function runCommand(string $name, array $params = [], bool $reuseKernel = false): CommandTester
     {
@@ -131,8 +121,6 @@ abstract class WebTestCase extends BaseWebTestCase
      * @see \Symfony\Component\Console\Output\OutputInterface for available levels
      *
      * @throws \OutOfBoundsException If the set value isn't accepted
-     *
-     * @return int
      */
     protected function getVerbosityLevel(): int
     {
@@ -189,8 +177,6 @@ abstract class WebTestCase extends BaseWebTestCase
 
     /**
      * Retrieves the flag indicating if the output should be decorated or not.
-     *
-     * @return bool
      */
     protected function getDecorated(): bool
     {
@@ -215,8 +201,6 @@ abstract class WebTestCase extends BaseWebTestCase
     /**
      * Get an instance of the dependency injection container.
      * (this creates a kernel *without* parameters).
-     *
-     * @return ContainerInterface
      */
     protected function getContainer(): ContainerInterface
     {
@@ -245,10 +229,6 @@ abstract class WebTestCase extends BaseWebTestCase
      * $params can be used to pass headers to the client, note that they have
      * to follow the naming format used in $_SERVER.
      * Example: 'HTTP_X_REQUESTED_WITH' instead of 'X-Requested-With'
-     *
-     * @param array $params
-     *
-     * @return Client
      */
     protected function makeClient(array $params = []): Client
     {
@@ -261,10 +241,6 @@ abstract class WebTestCase extends BaseWebTestCase
      * $params can be used to pass headers to the client, note that they have
      * to follow the naming format used in $_SERVER.
      * Example: 'HTTP_X_REQUESTED_WITH' instead of 'X-Requested-With'
-     *
-     * @param array $params
-     *
-     * @return Client
      */
     protected function makeAuthenticatedClient(array $params = []): Client
     {
@@ -283,12 +259,6 @@ abstract class WebTestCase extends BaseWebTestCase
      * $params can be used to pass headers to the client, note that they have
      * to follow the naming format used in $_SERVER.
      * Example: 'HTTP_X_REQUESTED_WITH' instead of 'X-Requested-With'
-     *
-     * @param string $username
-     * @param string $password
-     * @param array  $params
-     *
-     * @return Client
      */
     protected function makeClientWithCredentials(string $username, string $password, array $params = []): Client
     {
@@ -321,11 +291,8 @@ abstract class WebTestCase extends BaseWebTestCase
     /**
      * Extracts the location from the given route.
      *
-     * @param string $route    The name of the route
-     * @param array  $params   Set of parameters
-     * @param int    $absolute
-     *
-     * @return string
+     * @param string $route  The name of the route
+     * @param array  $params Set of parameters
      */
     protected function getUrl(string $route, array $params = [], int $absolute = UrlGeneratorInterface::ABSOLUTE_PATH): string
     {
@@ -353,8 +320,6 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param string $method         The HTTP method to use, defaults to GET
      * @param bool   $authentication Whether to use authentication, defaults to false
      * @param bool   $success        to define whether the response is expected to be successful
-     *
-     * @return string
      */
     public function fetchContent(string $path, string $method = 'GET', bool $authentication = false, bool $success = true): string
     {
@@ -377,8 +342,6 @@ abstract class WebTestCase extends BaseWebTestCase
      * @param string $method         The HTTP method to use, defaults to GET
      * @param bool   $authentication Whether to use authentication, defaults to false
      * @param bool   $success        Whether the response is expected to be successful
-     *
-     * @return Crawler
      */
     public function fetchCrawler(string $path, string $method = 'GET', bool $authentication = false, bool $success = true): Crawler
     {
@@ -392,9 +355,6 @@ abstract class WebTestCase extends BaseWebTestCase
     }
 
     /**
-     * @param UserInterface $user
-     * @param string        $firewallName
-     *
      * @return WebTestCase
      */
     public function loginAs(UserInterface $user, string $firewallName): self
@@ -434,9 +394,6 @@ abstract class WebTestCase extends BaseWebTestCase
      * Asserts that the HTTP response code of the last request performed by
      * $client matches the expected code. If not, raises an error with more
      * information.
-     *
-     * @param int    $expectedStatusCode
-     * @param Client $client
      */
     public static function assertStatusCode(int $expectedStatusCode, Client $client): void
     {
@@ -447,8 +404,7 @@ abstract class WebTestCase extends BaseWebTestCase
      * Assert that the last validation errors within $container match the
      * expected keys.
      *
-     * @param array              $expected  A flat array of field names
-     * @param ContainerInterface $container
+     * @param array $expected A flat array of field names
      */
     public static function assertValidationErrors(array $expected, ContainerInterface $container): void
     {

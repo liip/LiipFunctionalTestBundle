@@ -37,10 +37,6 @@ class TestCommand extends Command
             ->setDescription('Test command');
     }
 
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         // Symfony version check
