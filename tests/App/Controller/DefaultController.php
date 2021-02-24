@@ -22,9 +22,6 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class DefaultController extends AbstractController
 {
-    /**
-     * @return Response
-     */
     public function indexAction(): Response
     {
         return $this->render(
@@ -32,11 +29,6 @@ class DefaultController extends AbstractController
         );
     }
 
-    /**
-     * @param int $userId
-     *
-     * @return Response
-     */
     public function userAction(int $userId): Response
     {
         /** @var \Liip\Acme\Tests\App\Entity\User $user */
@@ -54,21 +46,11 @@ class DefaultController extends AbstractController
         );
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return Response
-     */
     public function formAction(Request $request): Response
     {
         return $this->form($request, 'form.html.twig');
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return Response
-     */
     public function formWithEmbedAction(Request $request): Response
     {
         return $this->form($request, 'form_with_embed.html.twig');
@@ -77,11 +59,6 @@ class DefaultController extends AbstractController
     /**
      * Common form functionality used to test form submissions both
      * with and without an embedded request.
-     *
-     * @param Request $request
-     * @param string  $template
-     *
-     * @return Response
      */
     private function form(Request $request, string $template): Response
     {
@@ -111,8 +88,6 @@ class DefaultController extends AbstractController
 
     /**
      * Used to test a JSON content with corresponding Content-Type.
-     *
-     * @return Response
      */
     public function jsonAction(): Response
     {
@@ -124,8 +99,6 @@ class DefaultController extends AbstractController
 
     /**
      * Used to embed content as a sub-request.
-     *
-     * @return Response
      */
     public function embeddedAction(): Response
     {
