@@ -4,15 +4,19 @@ on: [push, pull_request]
 
 jobs:
   tests:
-    name: Symfony ${{ matrix.symfony-version }} on PHP ${{ matrix.php-version }}
+    name: Symfony ${{ matrix.symfony-version }} on PHP ${{ matrix.php-version }} flags ${{ matrix.composer-flags }}
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
         php-version: ['7.2', '7.3', '7.4', '8.0']
+        composer-flags: ['']
         symfony-version: ['5.1']
         include:
+          - php-version: 7.2
+            symfony-version: "^4.4"
+            composer-flags: "--prefer-lowest"
           - php-version: 7.2
             symfony-version: "^4.4"
           - php-version: 7.3
@@ -56,7 +60,13 @@ jobs:
           composer require --no-update symfony/yaml=${{ matrix.symfony-version }}
 
       - name: Install Composer dependencies
+        if: matrix.composer-flags == ''
         run: composer install
+
+      - name: Install Composer dependencies with options
+        if: matrix.composer-flags != ''
+        # Use "update" instead of "install" since it allows using the "--prefer-lowest" option
+        run: composer update ${{ matrix.composer-flags }}
 
       - name: Run tests
         run: php ./vendor/bin/phpunit --testdox
