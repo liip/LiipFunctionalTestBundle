@@ -25,6 +25,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ResettableContainerInterface;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -62,6 +63,11 @@ abstract class WebTestCase extends BaseWebTestCase
      * @var array
      */
     private $firewallLogins = [];
+
+    /**
+     * @var KernelInterface
+     */
+    protected static $testCaseKernel;
 
     /**
      * Creates a mock object of a service identified by its id.
@@ -209,10 +215,10 @@ abstract class WebTestCase extends BaseWebTestCase
             $options = [
                 'environment' => $this->environment,
             ];
-            $kernel = $this->createKernel($options);
-            $kernel->boot();
+            self::$testCaseKernel = $this->createKernel($options);
+            self::$testCaseKernel->boot();
 
-            $container = $kernel->getContainer();
+            $container = self::$testCaseKernel->getContainer();
             if ($container->has('test.service_container')) {
                 $this->containers[$cacheKey] = $container->get('test.service_container');
             } else {
@@ -419,6 +425,10 @@ abstract class WebTestCase extends BaseWebTestCase
                     $container->reset();
                 }
             }
+        }
+
+        if (self::$testCaseKernel !== null) {
+            self::$testCaseKernel->shutdown();
         }
 
         $this->containers = null;
