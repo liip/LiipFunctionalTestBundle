@@ -38,6 +38,8 @@ if (!class_exists(Client::class)) {
  * @author Lea Haensenberger
  * @author Lukas Kahwe Smith <smith@pooteeweet.org>
  * @author Benjamin Eberlei <kontakt@beberlei.de>
+ *
+ * @method ContainerInterface getContainer()
  */
 abstract class WebTestCase extends BaseWebTestCase
 {
@@ -68,7 +70,7 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     protected function getServiceMockBuilder(string $id): MockBuilder
     {
-        $service = $this->getContainer()->get($id);
+        $service = $this->getDependencyInjectionContainer()->get($id);
         $class = get_class($service);
 
         return $this->getMockBuilder($class)->disableOriginalConstructor();
@@ -87,7 +89,7 @@ abstract class WebTestCase extends BaseWebTestCase
             $kernel = static::$kernel = static::createKernel(['environment' => $this->environment]);
             $kernel->boot();
         } else {
-            $kernel = $this->getContainer()->get('kernel');
+            $kernel = $this->getDependencyInjectionContainer()->get('kernel');
         }
 
         $application = new Application($kernel);
@@ -127,7 +129,7 @@ abstract class WebTestCase extends BaseWebTestCase
         // If `null`, is not yet set
         if (null === $this->verbosityLevel) {
             // Set the global verbosity level that is set as NORMAL by the TreeBuilder in Configuration
-            $level = strtoupper($this->getContainer()->getParameter('liip_functional_test.command_verbosity'));
+            $level = strtoupper($this->getDependencyInjectionContainer()->getParameter('liip_functional_test.command_verbosity'));
             $verbosity = '\Symfony\Component\Console\Output\StreamOutput::VERBOSITY_'.$level;
 
             $this->verbosityLevel = constant($verbosity);
@@ -182,7 +184,7 @@ abstract class WebTestCase extends BaseWebTestCase
     {
         if (null === $this->decorated) {
             // Set the global decoration flag that is set to `true` by the TreeBuilder in Configuration
-            $this->decorated = $this->getContainer()->getParameter('liip_functional_test.command_decoration');
+            $this->decorated = $this->getDependencyInjectionContainer()->getParameter('liip_functional_test.command_decoration');
         }
 
         // Check the local decorated flag
@@ -202,14 +204,13 @@ abstract class WebTestCase extends BaseWebTestCase
      * Get an instance of the dependency injection container.
      * (this creates a kernel *without* parameters).
      */
-    protected function getContainer(): ContainerInterface
+    protected function getDependencyInjectionContainer(): ContainerInterface
     {
         $cacheKey = $this->environment;
         if (empty($this->containers[$cacheKey])) {
-            $options = [
+            $kernel = static::createKernel([
                 'environment' => $this->environment,
-            ];
-            $kernel = $this->createKernel($options);
+            ]);
             $kernel->boot();
 
             $container = $kernel->getContainer();
@@ -221,6 +222,22 @@ abstract class WebTestCase extends BaseWebTestCase
         }
 
         return $this->containers[$cacheKey];
+    }
+
+    /**
+     * Keep support of Symfony < 5.3.
+     */
+    public function __call(string $name, $arguments)
+    {
+        if ('getContainer' === $name) {
+            if (method_exists($this, $name)) {
+                return self::getContainer();
+            }
+
+            return $this->getDependencyInjectionContainer();
+        }
+
+        throw new \Exception("Method {$name} is not supported.");
     }
 
     /**
@@ -244,9 +261,9 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     protected function makeAuthenticatedClient(array $params = []): Client
     {
-        $username = $this->getContainer()
+        $username = $this->getDependencyInjectionContainer()
             ->getParameter('liip_functional_test.authentication.username');
-        $password = $this->getContainer()
+        $password = $this->getDependencyInjectionContainer()
             ->getParameter('liip_functional_test.authentication.password');
 
         return $this->createClientWithParams($params, $username, $password);
@@ -296,7 +313,7 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     protected function getUrl(string $route, array $params = [], int $absolute = UrlGeneratorInterface::ABSOLUTE_PATH): string
     {
-        return $this->getContainer()->get('router')->generate($route, $params, $absolute);
+        return $this->getDependencyInjectionContainer()->get('router')->generate($route, $params, $absolute);
     }
 
     /**
