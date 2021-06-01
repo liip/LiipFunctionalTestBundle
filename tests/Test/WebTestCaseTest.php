@@ -154,7 +154,7 @@ class WebTestCaseTest extends WebTestCase
         try {
             $this->assertStatusCode(-1, $client);
         } catch (AssertionFailedError $e) {
-            $this->assertStringContainsString('No route found for "GET /9999"', $e->getMessage());
+            $this->assertStringContainsString('No route found', $e->getMessage());
             $this->assertStringContainsString('Symfony\Component\HttpKernel\EventListener\RouterListener->onKernelRequest(', $e->getMessage());
             $this->assertStringContainsString('Failed asserting that 404 matches expected -1.', $e->getMessage());
 
