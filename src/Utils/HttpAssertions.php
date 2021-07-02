@@ -56,15 +56,21 @@ class HttpAssertions extends TestCase
      */
     public static function assertStatusCode(int $expectedStatusCode, Client $client): void
     {
+        $container = $client->getContainer();
+
+        if ($container->has('test.service_container')) {
+            $container = $container->get('test.service_container');
+        }
+
         $helpfulErrorMessage = '';
 
         if ($expectedStatusCode !== $client->getResponse()->getStatusCode()) {
             // Get a more useful error message, if available
-            if ($exception = $client->getContainer()->get('liip_functional_test.exception_listener')->getLastException()) {
+            if ($exception = $container->get('liip_functional_test.exception_listener')->getLastException()) {
                 $helpfulErrorMessage = $exception->getMessage()."\n\n".$exception->getTraceAsString();
             } elseif (
-                $client->getContainer()->has('liip_functional_test.validator') &&
-                count($validationErrors = $client->getContainer()->get('liip_functional_test.validator')->getLastErrors())
+                $container->has('liip_functional_test.validator') &&
+                count($validationErrors = $container->get('liip_functional_test.validator')->getLastErrors())
             ) {
                 $helpfulErrorMessage = "Unexpected validation errors:\n";
 
@@ -87,6 +93,10 @@ class HttpAssertions extends TestCase
      */
     public static function assertValidationErrors(array $expected, ContainerInterface $container): void
     {
+        if ($container->has('test.service_container')) {
+            $container = $container->get('test.service_container');
+        }
+
         if (!$container->has('liip_functional_test.validator')) {
             trigger_error(sprintf('Method %s() can not be used as the validation component of the Symfony framework is disabled.', __METHOD__), E_USER_WARNING);
         }
