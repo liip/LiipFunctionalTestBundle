@@ -88,7 +88,9 @@ class DataCollectingValidator implements ValidatorInterface, EventSubscriberInte
 
     public function onKernelRequest(GetResponseEvent $event): void
     {
-        if ($event->isMasterRequest()) {
+        if (method_exists($event, 'isMainRequest') && $event->isMainRequest()) {
+            $this->clearLastErrors();
+        } elseif ($event->isMasterRequest()) {
             $this->clearLastErrors();
         }
     }
