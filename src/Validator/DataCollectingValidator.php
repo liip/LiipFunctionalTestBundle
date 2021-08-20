@@ -88,9 +88,17 @@ class DataCollectingValidator implements ValidatorInterface, EventSubscriberInte
 
     public function onKernelRequest(GetResponseEvent $event): void
     {
-        if (method_exists($event, 'isMainRequest') && $event->isMainRequest()) {
-            $this->clearLastErrors();
-        } elseif ($event->isMasterRequest()) {
+        // The isMainRequest method has been added in Symfony 5.3
+        if (method_exists($event, 'isMainRequest')) {
+            if ($event->isMainRequest()) {
+                $this->clearLastErrors();
+            }
+
+            return;
+        }
+
+        // For Symfony < 5.3, call the legacy method
+        if ($event->isMasterRequest()) {
             $this->clearLastErrors();
         }
     }
