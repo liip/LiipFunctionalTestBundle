@@ -9,7 +9,7 @@
     
     <body>
         <p id="user">
-            {%- if (app.user is null) -%}
+            {%- if not is_granted('IS_AUTHENTICATED_REMEMBERED') -%}
                 Not logged in.
             {%- else -%}
                 Logged in as {{ app.user.username }}.
