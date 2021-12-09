@@ -7,6 +7,7 @@ framework:
     router:          { resource: "%kernel.project_dir%/routing.yml" }
     form:            true
     csrf_protection: true
+    property_access: ~
     session:
         # handler_id set to null will use default session handler from php.ini
         handler_id:  ~

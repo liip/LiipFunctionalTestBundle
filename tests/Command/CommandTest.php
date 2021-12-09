@@ -70,8 +70,17 @@ class CommandTest extends WebTestCase
         $this->assertStringContainsString('Value of answer: AcmeDemoBundle', $this->commandTester->getDisplay());
     }
 
-    public function testRunCommandWithoutOptionsAndNotReuseKernel(): void
+    /**
+     * @dataProvider useEnvProvider
+     */
+    public function testRunCommandWithoutOptionsAndNotReuseKernel(bool $useEnv): void
     {
+        if ($useEnv) {
+            self::$env = 'test';
+        } else {
+            $this->environment = 'test';
+        }
+
         // Run command without options
         $this->commandTester = $this->runCommand('liipfunctionaltestbundle:test');
 
@@ -85,14 +94,29 @@ class CommandTest extends WebTestCase
         $this->assertIsBool($this->getDecorated());
         $this->assertTrue($this->getDecorated());
 
-        // Run command and not reuse kernel
-        $this->environment = 'prod';
+        // Run command and reuse kernel
+        if ($useEnv) {
+            self::$env = 'prod';
+        } else {
+            $this->environment = 'prod';
+        }
+
+        self::ensureKernelShutdown();
+        $this->getContainer();
         $this->commandTester = $this->runCommand('liipfunctionaltestbundle:test', [], true);
 
         $this->assertInstanceOf(CommandTester::class, $this->commandTester);
 
         $this->assertStringContainsString('Environment: prod', $this->commandTester->getDisplay());
         $this->assertStringContainsString('Verbosity level: NORMAL', $this->commandTester->getDisplay());
+    }
+
+    public function useEnvProvider(): array
+    {
+        return [
+            [true],
+            [false],
+        ];
     }
 
     public function testRunCommandWithoutDecoration(): void

@@ -150,10 +150,10 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testIndexAuthenticationLoginClient(): void
     {
-        $this->client = static::makeClient();
-
         $this->schemaUpdate();
         $user = $this->loadTestFixtures();
+
+        $this->client = static::makeClient();
 
         $this->loginClient($this->client, $user, 'secured_area');
 
