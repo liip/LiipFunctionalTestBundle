@@ -25,6 +25,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ResettableContainerInterface;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -40,10 +41,11 @@ if (!class_exists(Client::class)) {
  * @author Benjamin Eberlei <kontakt@beberlei.de>
  *
  * @method ContainerInterface getContainer()
+ * @property string $environment;
  */
 abstract class WebTestCase extends BaseWebTestCase
 {
-    protected $environment = 'test';
+    protected static $env = 'test';
 
     protected $containers;
 
@@ -70,7 +72,7 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     protected function getServiceMockBuilder(string $id): MockBuilder
     {
-        $service = $this->getDependencyInjectionContainer()->get($id);
+        $service = $this->getContainer()->get($id);
         $class = get_class($service);
 
         return $this->getMockBuilder($class)->disableOriginalConstructor();
@@ -83,13 +85,13 @@ abstract class WebTestCase extends BaseWebTestCase
     {
         if (!$reuseKernel) {
             if (null !== static::$kernel) {
-                static::$kernel->shutdown();
+                static::ensureKernelShutdown();
             }
 
-            $kernel = static::$kernel = static::createKernel(['environment' => $this->environment]);
+            $kernel = static::bootKernel(['environment' => self::$env]);
             $kernel->boot();
         } else {
-            $kernel = $this->getDependencyInjectionContainer()->get('kernel');
+            $kernel = $this->getContainer()->get('kernel');
         }
 
         $application = new Application($kernel);
@@ -129,7 +131,7 @@ abstract class WebTestCase extends BaseWebTestCase
         // If `null`, is not yet set
         if (null === $this->verbosityLevel) {
             // Set the global verbosity level that is set as NORMAL by the TreeBuilder in Configuration
-            $level = strtoupper($this->getDependencyInjectionContainer()->getParameter('liip_functional_test.command_verbosity'));
+            $level = strtoupper($this->getContainer()->getParameter('liip_functional_test.command_verbosity'));
             $verbosity = '\Symfony\Component\Console\Output\StreamOutput::VERBOSITY_'.$level;
 
             $this->verbosityLevel = constant($verbosity);
@@ -184,7 +186,7 @@ abstract class WebTestCase extends BaseWebTestCase
     {
         if (null === $this->decorated) {
             // Set the global decoration flag that is set to `true` by the TreeBuilder in Configuration
-            $this->decorated = $this->getDependencyInjectionContainer()->getParameter('liip_functional_test.command_decoration');
+            $this->decorated = $this->getContainer()->getParameter('liip_functional_test.command_decoration');
         }
 
         // Check the local decorated flag
@@ -204,12 +206,12 @@ abstract class WebTestCase extends BaseWebTestCase
      * Get an instance of the dependency injection container.
      * (this creates a kernel *without* parameters).
      */
-    protected function getDependencyInjectionContainer(): ContainerInterface
+    private function getDependencyInjectionContainer(): ContainerInterface
     {
-        $cacheKey = $this->environment;
+        $cacheKey = self::$env;
         if (empty($this->containers[$cacheKey])) {
             $kernel = static::createKernel([
-                'environment' => $this->environment,
+                'environment' => self::$env,
             ]);
             $kernel->boot();
 
@@ -224,20 +226,58 @@ abstract class WebTestCase extends BaseWebTestCase
         return $this->containers[$cacheKey];
     }
 
+    protected static function createKernel(array $options = []): KernelInterface
+    {
+        if (!isset($options['environment'])) {
+            $options['environment'] = self::$env;
+        }
+
+        return parent::createKernel($options);
+    }
+
     /**
      * Keep support of Symfony < 5.3.
      */
     public function __call(string $name, $arguments)
     {
         if ('getContainer' === $name) {
-            if (method_exists($this, $name)) {
-                return self::getContainer();
-            }
-
             return $this->getDependencyInjectionContainer();
         }
 
         throw new \Exception("Method {$name} is not supported.");
+    }
+
+    public function __set($name, $value)
+    {
+        if ($name !== 'environment') {
+            throw new \Exception(sprintf('There is no property with name "%s"', $name));
+        }
+
+        @trigger_error('Setting "environment" property is deprecated, please use self::$env.', \E_USER_DEPRECATED);
+
+        self::$env = $value;
+    }
+
+    public function __isset($name)
+    {
+        if ($name !== 'environment') {
+            throw new \Exception(sprintf('There is no property with name "%s"', $name));
+        }
+
+        @trigger_error('Checking "environment" property is deprecated, please use self::$env.', \E_USER_DEPRECATED);
+
+        return true;
+    }
+
+    public function __get($name)
+    {
+        if ($name !== 'environment') {
+            throw new \Exception(sprintf('There is no property with name "%s"', $name));
+        }
+
+        @trigger_error('Getting "environment" property is deprecated, please use self::$env.', \E_USER_DEPRECATED);
+
+        return self::$env;
     }
 
     /**
@@ -261,9 +301,9 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     protected function makeAuthenticatedClient(array $params = []): Client
     {
-        $username = $this->getDependencyInjectionContainer()
+        $username = $this->getContainer()
             ->getParameter('liip_functional_test.authentication.username');
-        $password = $this->getDependencyInjectionContainer()
+        $password = $this->getContainer()
             ->getParameter('liip_functional_test.authentication.password');
 
         return $this->createClientWithParams($params, $username, $password);
@@ -313,7 +353,7 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     protected function getUrl(string $route, array $params = [], int $absolute = UrlGeneratorInterface::ABSOLUTE_PATH): string
     {
-        return $this->getDependencyInjectionContainer()->get('router')->generate($route, $params, $absolute);
+        return $this->getContainer()->get('router')->generate($route, $params, $absolute);
     }
 
     /**
@@ -452,7 +492,11 @@ abstract class WebTestCase extends BaseWebTestCase
             ]);
         }
 
-        $client = static::createClient(['environment' => $this->environment], $params);
+        if (static::$booted) {
+            static::ensureKernelShutdown();
+        }
+
+        $client = static::createClient(['environment' => self::$env], $params);
 
         if ($this->firewallLogins) {
             // has to be set otherwise "hasPreviousSession" in Request returns false.

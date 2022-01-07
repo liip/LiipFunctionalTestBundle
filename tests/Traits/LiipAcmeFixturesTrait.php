@@ -22,7 +22,7 @@ trait LiipAcmeFixturesTrait
     public function schemaUpdate(): void
     {
         // Create database
-        $kernel = $this->getDependencyInjectionContainer()->get('kernel');
+        $kernel = $this->getContainer()->get('kernel');
 
         $application = new Application($kernel);
 
@@ -46,7 +46,7 @@ trait LiipAcmeFixturesTrait
         $user1->setEnabled(true);
         $user1->setConfirmationToken(null);
 
-        $manager = $this->getDependencyInjectionContainer()->get('doctrine')->getManager();
+        $manager = $this->getContainer()->get('doctrine')->getManager();
         $manager->persist($user1);
 
         $user2 = clone $user1;
