@@ -88,7 +88,7 @@ abstract class WebTestCase extends BaseWebTestCase
                 static::ensureKernelShutdown();
             }
 
-            $kernel = static::bootKernel(['environment' => self::$env]);
+            $kernel = static::bootKernel(['environment' => static::$env]);
             $kernel->boot();
         } else {
             $kernel = $this->getContainer()->get('kernel');
@@ -208,10 +208,10 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     private function getDependencyInjectionContainer(): ContainerInterface
     {
-        $cacheKey = self::$env;
+        $cacheKey = static::$env;
         if (empty($this->containers[$cacheKey])) {
             $kernel = static::createKernel([
-                'environment' => self::$env,
+                'environment' => static::$env,
             ]);
             $kernel->boot();
 
@@ -229,7 +229,7 @@ abstract class WebTestCase extends BaseWebTestCase
     protected static function createKernel(array $options = []): KernelInterface
     {
         if (!isset($options['environment'])) {
-            $options['environment'] = self::$env;
+            $options['environment'] = static::$env;
         }
 
         return parent::createKernel($options);
@@ -253,9 +253,9 @@ abstract class WebTestCase extends BaseWebTestCase
             throw new \Exception(sprintf('There is no property with name "%s"', $name));
         }
 
-        @trigger_error('Setting "environment" property is deprecated, please use self::$env.', \E_USER_DEPRECATED);
+        @trigger_error('Setting "environment" property is deprecated, please use static::$env.', \E_USER_DEPRECATED);
 
-        self::$env = $value;
+        static::$env = $value;
     }
 
     public function __isset($name)
@@ -264,7 +264,7 @@ abstract class WebTestCase extends BaseWebTestCase
             throw new \Exception(sprintf('There is no property with name "%s"', $name));
         }
 
-        @trigger_error('Checking "environment" property is deprecated, please use self::$env.', \E_USER_DEPRECATED);
+        @trigger_error('Checking "environment" property is deprecated, please use static::$env.', \E_USER_DEPRECATED);
 
         return true;
     }
@@ -275,9 +275,9 @@ abstract class WebTestCase extends BaseWebTestCase
             throw new \Exception(sprintf('There is no property with name "%s"', $name));
         }
 
-        @trigger_error('Getting "environment" property is deprecated, please use self::$env.', \E_USER_DEPRECATED);
+        @trigger_error('Getting "environment" property is deprecated, please use static::$env.', \E_USER_DEPRECATED);
 
-        return self::$env;
+        return static::$env;
     }
 
     /**
@@ -496,7 +496,7 @@ abstract class WebTestCase extends BaseWebTestCase
             static::ensureKernelShutdown();
         }
 
-        $client = static::createClient(['environment' => self::$env], $params);
+        $client = static::createClient(['environment' => static::$env], $params);
 
         if ($this->firewallLogins) {
             // has to be set otherwise "hasPreviousSession" in Request returns false.
