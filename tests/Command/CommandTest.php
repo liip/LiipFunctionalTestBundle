@@ -76,7 +76,7 @@ class CommandTest extends WebTestCase
     public function testRunCommandWithoutOptionsAndNotReuseKernel(bool $useEnv): void
     {
         if ($useEnv) {
-            self::$env = 'test';
+            static::$env = 'test';
         } else {
             $this->environment = 'test';
         }
@@ -96,7 +96,7 @@ class CommandTest extends WebTestCase
 
         // Run command and reuse kernel
         if ($useEnv) {
-            self::$env = 'prod';
+            static::$env = 'prod';
         } else {
             $this->environment = 'prod';
         }
