@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Liip\FunctionalTestBundle;
 
+use Symfony\Component\DomCrawler\Crawler;
+
 /**
  * @author Sullivan Senechal <soullivaneuh@gmail.com>
  *
@@ -28,7 +30,7 @@ trait QueryCountClientTrait
         array $server = [],
         string $content = null,
         bool $changeHistory = true
-    ) {
+    ): Crawler {
         $crawler = parent::request($method, $uri, $parameters, $files, $server, $content, $changeHistory);
         $this->checkQueryCount();
 

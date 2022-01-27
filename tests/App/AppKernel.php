@@ -38,22 +38,22 @@ class AppKernel extends Kernel
         $loader->load(__DIR__.'/config.yml');
     }
 
-    public function getCacheDir()
+    public function getCacheDir(): string
     {
         return $this->getBaseDir().'cache';
     }
 
-    public function getLogDir()
+    public function getLogDir(): string
     {
         return $this->getBaseDir().'log';
     }
 
-    protected function getBaseDir()
+    protected function getBaseDir(): string
     {
         return sys_get_temp_dir().'/LiipFunctionalTestBundle/'.(new \ReflectionClass($this))->getShortName().'/var/';
     }
 
-    public function getProjectDir()
+    public function getProjectDir(): string
     {
         return __DIR__;
     }
