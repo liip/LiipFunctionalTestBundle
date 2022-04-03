@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/liip/LiipFunctionalTestBundle.svg?branch=master)](https://travis-ci.com/liip/LiipFunctionalTestBundle)
+[![Build Status](https://github.com/liip/LiipFunctionalTestBundle/actions/workflows/tests.yml/badge.svg)](https://github.com/liip/LiipFunctionalTestBundle/actions/workflows/tests.yml)
 [![Latest Stable Version](https://poser.pugx.org/liip/functional-test-bundle/v/stable)](https://packagist.org/packages/liip/functional-test-bundle)
 [![Latest Unstable Version](https://poser.pugx.org/liip/functional-test-bundle/v/unstable)](https://packagist.org/packages/liip/functional-test-bundle)
 [![Scrutinizer Code Quality][Scrutinizer image]
