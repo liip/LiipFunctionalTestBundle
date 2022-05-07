@@ -201,6 +201,7 @@ class WebTestCaseConfigTest extends WebTestCase
         $this->expectException(\Liip\FunctionalTestBundle\Exception\AllowedQueriesExceededException::class);
 
         $this->client->request('GET', $path);
+        $this->assertStatusCode(200, $this->client);
     }
 
     /**
@@ -221,5 +222,6 @@ class WebTestCaseConfigTest extends WebTestCase
         $this->expectException(\Liip\FunctionalTestBundle\Exception\AllowedQueriesExceededException::class);
 
         $this->client->request('GET', $path);
+        $this->assertStatusCode(200, $this->client);
     }
 }
