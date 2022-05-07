@@ -1,0 +1,15 @@
+name: QA
+
+on: [push, pull_request]
+
+jobs:
+  php-cs-fixer:
+    name: PHP-CS-Fixer
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@master
+      - name: PHP-CS-Fixer
+        uses: docker://jakzal/phpqa:1.58.7-php7.4-alpine
+        with:
+          args: php-cs-fixer --dry-run --diff --no-interaction --ansi fix
