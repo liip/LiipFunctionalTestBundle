@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace Liip\Acme\Tests\Test;
 
 use Doctrine\Common\Annotations\Annotation\IgnoreAnnotation;
+use Liip\Acme\Tests\AppConfig\AppConfigKernel;
 use Liip\Acme\Tests\Traits\LiipAcmeFixturesTrait;
 use Liip\FunctionalTestBundle\Annotations\QueryCount;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
-use Liip\Acme\Tests\AppConfig\AppConfigKernel;
 
 /**
  * Tests that configuration has been loaded and users can be logged in.

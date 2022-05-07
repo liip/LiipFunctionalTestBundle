@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Liip\Acme\Tests\Test;
 
-use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Liip\Acme\Tests\AppConfigLeanFramework\AppConfigLeanFrameworkKernel;
+use Liip\FunctionalTestBundle\Test\WebTestCase;
 
 /**
  * Test Lean Framework - with validator component disabled.

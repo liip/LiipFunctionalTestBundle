@@ -33,7 +33,7 @@ class HttpAssertions extends TestCase
         try {
             $crawler = new Crawler();
             $crawler->addContent($response->getContent(), $type);
-            if (!count($crawler->filter('title'))) {
+            if (!\count($crawler->filter('title'))) {
                 $title = '['.$response->getStatusCode().'] - '.$response->getContent();
             } else {
                 $title = $crawler->filter('title')->text();
@@ -70,7 +70,7 @@ class HttpAssertions extends TestCase
                 $helpfulErrorMessage = $exception->getMessage()."\n\n".$exception->getTraceAsString();
             } elseif (
                 $container->has('liip_functional_test.validator') &&
-                count($validationErrors = $container->get('liip_functional_test.validator')->getLastErrors())
+                \count($validationErrors = $container->get('liip_functional_test.validator')->getLastErrors())
             ) {
                 $helpfulErrorMessage = "Unexpected validation errors:\n";
 
@@ -82,7 +82,7 @@ class HttpAssertions extends TestCase
             }
         }
 
-        self::assertEquals($expectedStatusCode, $client->getResponse()->getStatusCode(), $helpfulErrorMessage);
+        self::assertSame($expectedStatusCode, $client->getResponse()->getStatusCode(), $helpfulErrorMessage);
     }
 
     /**
@@ -98,7 +98,7 @@ class HttpAssertions extends TestCase
         }
 
         if (!$container->has('liip_functional_test.validator')) {
-            trigger_error(sprintf('Method %s() can not be used as the validation component of the Symfony framework is disabled.', __METHOD__), E_USER_WARNING);
+            trigger_error(sprintf('Method %s() can not be used as the validation component of the Symfony framework is disabled.', __METHOD__), \E_USER_WARNING);
         }
 
         self::assertThat(

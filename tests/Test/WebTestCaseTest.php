@@ -24,7 +24,7 @@ use PHPUnit\Framework\AssertionFailedError;
  */
 class WebTestCaseTest extends WebTestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         static::$class = AppKernel::class;
     }

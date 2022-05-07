@@ -41,7 +41,7 @@ class LiipFunctionalTestExtension extends Extension
             // "liip_functional_test.query.max_query_count"
             // instead of an array "liip_functional_test.query"
             // with a "max_query_count" key.
-            if (is_array($value)) {
+            if (\is_array($value)) {
                 foreach ($value as $key2 => $value2) {
                     $container->setParameter($this->getAlias().'.'.$key.
                         '.'.$key2, $value2);
