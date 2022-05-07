@@ -131,7 +131,7 @@ class WebTestCaseTest extends WebTestCase
             );
 
             $this->assertStringEndsWith(
-                'Failed asserting that 200 matches expected -1.',
+                'Failed asserting that 200 is identical to -1.',
                 $e->getMessage()
             );
 
@@ -156,7 +156,7 @@ class WebTestCaseTest extends WebTestCase
         } catch (AssertionFailedError $e) {
             $this->assertStringContainsString('No route found', $e->getMessage());
             $this->assertStringContainsString('Symfony\Component\HttpKernel\EventListener\RouterListener->onKernelRequest(', $e->getMessage());
-            $this->assertStringContainsString('Failed asserting that 404 matches expected -1.', $e->getMessage());
+            $this->assertStringContainsString('Failed asserting that 404 is identical to -1.', $e->getMessage());
 
             return;
         }
@@ -376,7 +376,7 @@ EOF;
 Unexpected validation errors:
 + children[name].data: This value should not be blank.
 
-Failed asserting that 200 matches expected -1.
+Failed asserting that 200 is identical to -1.
 EOF;
             $this->assertSame($string, $e->getMessage());
 
