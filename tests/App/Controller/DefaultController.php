@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Liip\Acme\Tests\App\Controller;
 
+use Liip\Acme\Tests\App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -33,7 +34,7 @@ class DefaultController extends AbstractController
     {
         /** @var \Liip\Acme\Tests\App\Entity\User $user */
         $user = $this->getDoctrine()
-            ->getRepository('LiipFunctionalTestBundle:User')
+            ->getRepository(User::class)
             ->find($userId);
 
         if (!$user) {

@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace Liip\Acme\Tests\Test;
 
 use Doctrine\Common\Annotations\Annotation\IgnoreAnnotation;
+use Liip\Acme\Tests\AppConfig\AppConfigKernel;
 use Liip\Acme\Tests\Traits\LiipAcmeFixturesTrait;
 use Liip\FunctionalTestBundle\Annotations\QueryCount;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
-use Liip\Acme\Tests\AppConfig\AppConfigKernel;
 
 /**
  * Tests that configuration has been loaded and users can be logged in.
@@ -201,6 +201,7 @@ class WebTestCaseConfigTest extends WebTestCase
         $this->expectException(\Liip\FunctionalTestBundle\Exception\AllowedQueriesExceededException::class);
 
         $this->client->request('GET', $path);
+        $this->assertStatusCode(200, $this->client);
     }
 
     /**
@@ -221,5 +222,6 @@ class WebTestCaseConfigTest extends WebTestCase
         $this->expectException(\Liip\FunctionalTestBundle\Exception\AllowedQueriesExceededException::class);
 
         $this->client->request('GET', $path);
+        $this->assertStatusCode(200, $this->client);
     }
 }

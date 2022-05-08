@@ -41,6 +41,7 @@ if (!class_exists(Client::class)) {
  * @author Benjamin Eberlei <kontakt@beberlei.de>
  *
  * @method ContainerInterface getContainer()
+ *
  * @property string $environment;
  */
 abstract class WebTestCase extends BaseWebTestCase
@@ -73,7 +74,7 @@ abstract class WebTestCase extends BaseWebTestCase
     protected function getServiceMockBuilder(string $id): MockBuilder
     {
         $service = $this->getContainer()->get($id);
-        $class = get_class($service);
+        $class = \get_class($service);
 
         return $this->getMockBuilder($class)->disableOriginalConstructor();
     }
@@ -134,19 +135,19 @@ abstract class WebTestCase extends BaseWebTestCase
             $level = strtoupper($this->getContainer()->getParameter('liip_functional_test.command_verbosity'));
             $verbosity = '\Symfony\Component\Console\Output\StreamOutput::VERBOSITY_'.$level;
 
-            $this->verbosityLevel = constant($verbosity);
+            $this->verbosityLevel = \constant($verbosity);
         }
 
         // If string, it is set by the developer, so check that the value is an accepted one
-        if (is_string($this->verbosityLevel)) {
+        if (\is_string($this->verbosityLevel)) {
             $level = strtoupper($this->verbosityLevel);
             $verbosity = '\Symfony\Component\Console\Output\StreamOutput::VERBOSITY_'.$level;
 
-            if (!defined($verbosity)) {
+            if (!\defined($verbosity)) {
                 throw new \OutOfBoundsException(sprintf('The set value "%s" for verbosityLevel is not valid. Accepted are: "quiet", "normal", "verbose", "very_verbose" and "debug".', $level));
             }
 
-            $this->verbosityLevel = constant($verbosity);
+            $this->verbosityLevel = \constant($verbosity);
         }
 
         return $this->verbosityLevel;
@@ -190,8 +191,8 @@ abstract class WebTestCase extends BaseWebTestCase
         }
 
         // Check the local decorated flag
-        if (false === is_bool($this->decorated)) {
-            throw new \OutOfBoundsException(sprintf('`WebTestCase::decorated` has to be `bool`. "%s" given.', gettype($this->decorated)));
+        if (false === \is_bool($this->decorated)) {
+            throw new \OutOfBoundsException(sprintf('`WebTestCase::decorated` has to be `bool`. "%s" given.', \gettype($this->decorated)));
         }
 
         return $this->decorated;
@@ -247,9 +248,9 @@ abstract class WebTestCase extends BaseWebTestCase
         throw new \Exception("Method {$name} is not supported.");
     }
 
-    public function __set($name, $value)
+    public function __set($name, $value): void
     {
-        if ($name !== 'environment') {
+        if ('environment' !== $name) {
             throw new \Exception(sprintf('There is no property with name "%s"', $name));
         }
 
@@ -260,7 +261,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
     public function __isset($name)
     {
-        if ($name !== 'environment') {
+        if ('environment' !== $name) {
             throw new \Exception(sprintf('There is no property with name "%s"', $name));
         }
 
@@ -271,7 +272,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
     public function __get($name)
     {
-        if ($name !== 'environment') {
+        if ('environment' !== $name) {
             throw new \Exception(sprintf('There is no property with name "%s"', $name));
         }
 
@@ -416,7 +417,7 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     public function loginAs(UserInterface $user, string $firewallName): self
     {
-        @trigger_error(sprintf('"%s()" is deprecated, use loginClient() after creating a client.', __METHOD__), E_USER_DEPRECATED);
+        @trigger_error(sprintf('"%s()" is deprecated, use loginClient() after creating a client.', __METHOD__), \E_USER_DEPRECATED);
 
         $this->firewallLogins[$firewallName] = $user;
 

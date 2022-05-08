@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Liip\Acme\Tests\Command;
 
-use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Liip\Acme\Tests\AppConfig\AppConfigKernel;
+use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**

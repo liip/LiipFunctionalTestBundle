@@ -38,15 +38,15 @@ class SetTestClientPassMockTest extends TestCase
 
         $container->expects($this->any())
             ->method('getParameter')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $container->expects($this->any())
             ->method('hasDefinition')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $container->expects($this->any())
             ->method('hasAlias')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         try {
             $setTestClientPass = new SetTestClientPass($container);
@@ -54,7 +54,7 @@ class SetTestClientPassMockTest extends TestCase
         } catch (\Exception $e) {
             $this->assertSame(
                 'The LiipFunctionalTestBundle\'s Query Counter can only be used in the test environment.'.
-                PHP_EOL.
+                \PHP_EOL.
                 'See https://github.com/liip/LiipFunctionalTestBundle#only-in-test-environment',
                 $e->getMessage()
             );
