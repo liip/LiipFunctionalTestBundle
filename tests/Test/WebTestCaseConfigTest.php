@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Liip\Acme\Tests\Test;
 
 use Doctrine\Common\Annotations\Annotation\IgnoreAnnotation;
+use Liip\Acme\Tests\App\Entity\User;
 use Liip\Acme\Tests\AppConfig\AppConfigKernel;
 use Liip\Acme\Tests\Traits\LiipAcmeFixturesTrait;
 use Liip\FunctionalTestBundle\Annotations\QueryCount;
@@ -53,7 +54,7 @@ class WebTestCaseConfigTest extends WebTestCase
     {
         $this->client = static::makeClientWithCredentials('foobar', '12341234');
 
-        $path = '/';
+        $path = '/admin';
 
         $crawler = $this->client->request('GET', $path);
 
@@ -84,7 +85,7 @@ class WebTestCaseConfigTest extends WebTestCase
     {
         $this->client = static::makeAuthenticatedClient();
 
-        $path = '/';
+        $path = '/admin';
 
         $crawler = $this->client->request('GET', $path);
 
@@ -111,7 +112,6 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testIndexAuthenticationLoginAs(): void
     {
-        $this->schemaUpdate();
         $user = $this->loadTestFixtures();
 
         $loginAs = $this->loginAs($user, 'secured_area');
@@ -150,7 +150,6 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testIndexAuthenticationLoginClient(): void
     {
-        $this->schemaUpdate();
         $user = $this->loadTestFixtures();
 
         $this->client = static::makeClient();
@@ -183,25 +182,49 @@ class WebTestCaseConfigTest extends WebTestCase
      * Log in as the user defined in the Data Fixtures and except an
      * AllowedQueriesExceededException exception.
      *
-     * There will be 2 queries, in the configuration the limit is 1,
-     * an Exception will be thrown.
+     * There will be 2 queries:
+     * - the user 1 is loaded from the database when logging in
+     * - the user 2 is loaded by the controller
+     *
+     * In the configuration the limit is 1, an Exception will be thrown.
      */
     public function testAllowedQueriesExceededException(): void
     {
-        $this->schemaUpdate();
         $user = $this->loadTestFixtures();
 
-        $this->loginAs($user, 'secured_area');
+        $this->assertInstanceOf(
+            User::class,
+            $user
+        );
 
         $this->client = static::makeClient();
 
-        // One another query to load the second user.
+        $this->loginClient($this->client, $user, 'secured_area');
+
         $path = '/user/2';
 
         $this->expectException(\Liip\FunctionalTestBundle\Exception\AllowedQueriesExceededException::class);
 
-        $this->client->request('GET', $path);
+        $crawler = $this->client->request('GET', $path);
+
+        // The following code is called if no exception has been thrown, it should help to understand why
         $this->assertStatusCode(200, $this->client);
+        $this->assertSame(
+            'LiipFunctionalTestBundle',
+            $crawler->filter('h1')->text()
+        );
+        $this->assertSame(
+            'Logged in as foo bar.',
+            $crawler->filter('p#user')->text()
+        );
+        $this->assertSame(
+            'Name: alice bob',
+            $crawler->filter('div#content p:nth-child(1)')->text()
+        );
+        $this->assertSame(
+            'Email: alice@example.com',
+            $crawler->filter('div#content p:nth-child(2)')->text()
+        );
     }
 
     /**
@@ -214,6 +237,8 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testAnnotationAndException(): void
     {
+        $user = $this->loadTestFixtures();
+
         $this->client = static::makeClient();
 
         // One query to load the second user
