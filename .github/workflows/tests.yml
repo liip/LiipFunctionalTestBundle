@@ -47,17 +47,21 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Require Symfony
-        run: |
-          composer require --no-update symfony/browser-kit=${{ matrix.symfony-version }}
-          composer require --no-update symfony/framework-bundle=${{ matrix.symfony-version }}
-          composer require --no-update symfony/css-selector=${{ matrix.symfony-version }}
-          composer require --no-update symfony/form=${{ matrix.symfony-version }}
-          composer require --no-update symfony/http-kernel=${{ matrix.symfony-version }}
-          composer require --no-update symfony/phpunit-bridge=${{ matrix.symfony-version }}
-          composer require --no-update symfony/security-bundle=${{ matrix.symfony-version }}
-          composer require --no-update symfony/twig-bundle=${{ matrix.symfony-version }}
-          composer require --no-update symfony/validator=${{ matrix.symfony-version }}
-          composer require --no-update symfony/yaml=${{ matrix.symfony-version }}
+        # non-dev then dev dependencies
+        run: >
+          composer require --no-update 
+          symfony/framework-bundle=${{ matrix.symfony-version }}
+          symfony/browser-kit=${{ matrix.symfony-version }}
+          &&
+          composer require --no-update
+          symfony/css-selector=${{ matrix.symfony-version }}
+          symfony/form=${{ matrix.symfony-version }}
+          symfony/http-kernel=${{ matrix.symfony-version }}    
+          symfony/phpunit-bridge=${{ matrix.symfony-version }}
+          symfony/security-bundle=${{ matrix.symfony-version }}
+          symfony/twig-bundle=${{ matrix.symfony-version }}
+          symfony/validator=${{ matrix.symfony-version }}
+          symfony/yaml=${{ matrix.symfony-version }}
 
       - name: Install Composer dependencies
         if: matrix.composer-flags == ''
