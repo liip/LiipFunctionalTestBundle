@@ -41,7 +41,7 @@ class ConfigurationConfigTest extends ConfigurationTest
         return [
             ['command_verbosity', 'very_verbose'],
             ['command_decoration', false],
-            ['query.max_query_count', 1],
+            ['query.max_query_count', 0],
             ['authentication.username', 'foobar'],
             ['authentication.password', '12341234'],
         ];
