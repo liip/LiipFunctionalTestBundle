@@ -112,7 +112,6 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testIndexAuthenticationLoginAs(): void
     {
-        $this->schemaUpdate();
         $user = $this->loadTestFixtures();
 
         $loginAs = $this->loginAs($user, 'secured_area');
@@ -151,7 +150,6 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testIndexAuthenticationLoginClient(): void
     {
-        $this->schemaUpdate();
         $user = $this->loadTestFixtures();
 
         $this->client = static::makeClient();
@@ -189,7 +187,6 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testAllowedQueriesExceededException(): void
     {
-        $this->schemaUpdate();
         $user = $this->loadTestFixtures();
 
         $this->assertInstanceOf(

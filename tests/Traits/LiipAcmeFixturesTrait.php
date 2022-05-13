@@ -19,7 +19,35 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 trait LiipAcmeFixturesTrait
 {
-    public function schemaUpdate(): void
+    public function loadTestFixtures(): User
+    {
+        $this->resetSchema();
+
+        $user1 = new User();
+        $user1->setId(1);
+        $user1->setName('foo bar');
+        $user1->setEmail('foo@example');
+        $user1->setPassword('12341234');
+        $user1->setAlgorithm('plaintext');
+        $user1->setEnabled(true);
+        $user1->setConfirmationToken(null);
+
+        $manager = $this->getContainer()->get('doctrine')->getManager();
+        $manager->persist($user1);
+
+        $user2 = clone $user1;
+
+        $user2->setId(2);
+        $user2->setName('alice bob');
+        $user2->setEmail('alice@example.com');
+
+        $manager->persist($user2);
+        $manager->flush();
+
+        return $user1;
+    }
+
+    private function resetSchema(): void
     {
         // Create database
         $kernel = $this->getContainer()->get('kernel');
@@ -33,29 +61,10 @@ trait LiipAcmeFixturesTrait
         ]);
 
         $this->assertSame(0, $return, $commandTester->getDisplay());
-    }
-
-    public function loadTestFixtures(): User
-    {
-        $user1 = new User();
-        $user1->setId(1);
-        $user1->setName('foo bar');
-        $user1->setEmail('foo@bar.com');
-        $user1->setPassword('12341234');
-        $user1->setAlgorithm('plaintext');
-        $user1->setEnabled(true);
-        $user1->setConfirmationToken(null);
 
         $manager = $this->getContainer()->get('doctrine')->getManager();
-        $manager->persist($user1);
 
-        $user2 = clone $user1;
-
-        $user2->setId(2);
-
-        $manager->persist($user2);
-        $manager->flush();
-
-        return $user1;
+        $connection = $manager->getConnection();
+        $connection->query('DELETE FROM liip_user');
     }
 }
