@@ -66,12 +66,13 @@ security:
             entity: { class: Liip\Acme\Tests\App\Entity\User, property: id }
     firewalls:
         secured_area:
-            pattern:  ^/
+            pattern:  ^/admin
             anonymous: lazy
             http_basic:
                 realm: "Admin Area"
             provider: chain_provider
     access_control:
+        - { path: ^/admin, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
 services:

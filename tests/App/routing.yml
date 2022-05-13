@@ -2,6 +2,10 @@ liipfunctionaltestbundle_homepage:
     path:  /
     defaults: { _controller: 'Liip\Acme\Tests\App\Controller\DefaultController::indexAction' }
 
+liipfunctionaltestbundle_admin:
+    path:  /admin
+    defaults: { _controller: 'Liip\Acme\Tests\App\Controller\DefaultController::indexAction' }
+
 liipfunctionaltestbundle_user:
     path:  /user/{userId}
     defaults: { _controller: 'Liip\Acme\Tests\App\Controller\DefaultController::userAction' }
