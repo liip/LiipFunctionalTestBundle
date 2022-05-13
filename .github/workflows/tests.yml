@@ -72,5 +72,8 @@ jobs:
         # Use "update" instead of "install" since it allows using the "--prefer-lowest" option
         run: composer update ${{ matrix.composer-flags }}
 
+      - name: Show Composer dependencies
+        run: composer show
+
       - name: Run tests
         run: php ./vendor/bin/phpunit --testdox
