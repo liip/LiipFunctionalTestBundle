@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Liip\Acme\Tests\Test;
 
 use Doctrine\Common\Annotations\Annotation\IgnoreAnnotation;
+use Liip\Acme\Tests\App\Entity\User;
 use Liip\Acme\Tests\AppConfig\AppConfigKernel;
 use Liip\Acme\Tests\Traits\LiipAcmeFixturesTrait;
 use Liip\FunctionalTestBundle\Annotations\QueryCount;
@@ -53,7 +54,7 @@ class WebTestCaseConfigTest extends WebTestCase
     {
         $this->client = static::makeClientWithCredentials('foobar', '12341234');
 
-        $path = '/';
+        $path = '/admin';
 
         $crawler = $this->client->request('GET', $path);
 
@@ -84,7 +85,7 @@ class WebTestCaseConfigTest extends WebTestCase
     {
         $this->client = static::makeAuthenticatedClient();
 
-        $path = '/';
+        $path = '/admin';
 
         $crawler = $this->client->request('GET', $path);
 
@@ -190,6 +191,11 @@ class WebTestCaseConfigTest extends WebTestCase
     {
         $this->schemaUpdate();
         $user = $this->loadTestFixtures();
+
+        $this->assertInstanceOf(
+            User::class,
+            $user
+        );
 
         $this->loginAs($user, 'secured_area');
 
