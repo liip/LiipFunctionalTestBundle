@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Liip\Acme\Tests\App\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Liip\Acme\Tests\App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -30,10 +31,10 @@ class DefaultController extends AbstractController
         );
     }
 
-    public function userAction(int $userId): Response
+    public function userAction(EntityManagerInterface $entityManager, int $userId): Response
     {
         /** @var \Liip\Acme\Tests\App\Entity\User $user */
-        $user = $this->getDoctrine()
+        $user = $entityManager
             ->getRepository(User::class)
             ->find($userId);
 
