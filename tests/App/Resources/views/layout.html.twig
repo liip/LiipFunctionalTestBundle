@@ -12,7 +12,7 @@
             {%- if not is_granted('IS_AUTHENTICATED_REMEMBERED') -%}
                 Not logged in.
             {%- else -%}
-                Logged in as {{ app.user.username }}.
+                Logged in as {{ app.user }}.
             {%- endif -%}
         </p>
 

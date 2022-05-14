@@ -84,6 +84,11 @@ class User implements UserInterface
         );
     }
 
+    public function __toString(): string
+    {
+        return $this->getUserIdentifier();
+    }
+
     /**
      * Set id.
      *
