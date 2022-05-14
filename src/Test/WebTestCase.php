@@ -24,6 +24,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ResettableContainerInterface;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -532,13 +533,20 @@ abstract class WebTestCase extends BaseWebTestCase
     /**
      * Compatibility layer.
      */
-    private function getSession($client)
+    private function getSession(KernelBrowser $client): SessionInterface
     {
         $container = $client->getContainer();
 
+        // Available before Symfony 6
         if ($container->has(SessionInterface::class)) {
             return $container->get(SessionInterface::class);
-        } elseif ($container->has('session')) {
+        }
+        // Preferred since Symfony 5.4
+        elseif ($container->has(RequestStack::class)) {
+            return $container->get(RequestStack::class)->getSession();
+        }
+        // For Symfony 4.4
+        elseif ($container->has('session')) {
             return $container->get('session');
         }
 
