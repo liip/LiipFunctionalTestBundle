@@ -1,0 +1,7 @@
+security:
+    password_hashers:
+        # in_memory users
+        Symfony\Component\Security\Core\User\User: plaintext
+        Symfony\Component\Security\Core\User\InMemoryUser: plaintext
+        # User entity
+        Liip\Acme\Tests\App\Entity\User: plaintext

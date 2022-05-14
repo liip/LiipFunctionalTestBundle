@@ -8,12 +8,6 @@ framework:
     form:            true
     csrf_protection: true
     property_access: ~
-    session:
-        # handler_id set to null will use default session handler from php.ini
-        handler_id:  ~
-        storage_factory_id: session.storage.factory.mock_file
-        # https://groups.google.com/forum/#!topic/symfony2/IB-CpMgo5o0
-        name: MOCKSESSID
     profiler:
         collect: false
 
@@ -47,11 +41,6 @@ doctrine:
                         prefix: 'Liip\Acme\Tests\App\Entity'
 
 security:
-    password_hashers:
-        # in_memory users
-        Symfony\Component\Security\Core\User\User: plaintext
-        # User entity
-        Liip\Acme\Tests\App\Entity\User: plaintext
     providers:
         chain_provider:
             chain:
