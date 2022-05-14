@@ -25,6 +25,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ResettableContainerInterface;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -433,7 +434,7 @@ abstract class WebTestCase extends BaseWebTestCase
             throw new \InvalidArgumentException('Missing session.storage.options#name');
         }
 
-        $session = $client->getContainer()->get('session');
+        $session = $this->getSession($client);
         $session->setId(uniqid());
 
         $client->getCookieJar()->set(new Cookie($options['name'], $session->getId()));
@@ -507,7 +508,7 @@ abstract class WebTestCase extends BaseWebTestCase
                 throw new \InvalidArgumentException('Missing session.storage.options#name');
             }
 
-            $session = $client->getContainer()->get('session');
+            $session = $this->getSession($client);
             $session->setId(uniqid());
 
             $client->getCookieJar()->set(new Cookie($options['name'], $session->getId()));
@@ -526,5 +527,21 @@ abstract class WebTestCase extends BaseWebTestCase
         }
 
         return $client;
+    }
+
+    /**
+     * Compatibility layer.
+     */
+    private function getSession($client)
+    {
+        $container = $client->getContainer();
+
+        if ($container->has(SessionInterface::class)) {
+            return $container->get(SessionInterface::class);
+        } elseif ($container->has('session')) {
+            return $container->get('session');
+        }
+
+        throw new \Exception('Session is not available.');
     }
 }

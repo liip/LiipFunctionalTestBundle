@@ -74,16 +74,17 @@ class DefaultController extends AbstractController
 
         $form->handleRequest($request);
 
+        $flashMessage = null;
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->get('session')->getFlashBag()->add(
-                'notice',
-                'Name submitted.'
-            );
+            $flashMessage = 'Name submitted.';
         }
 
         return $this->render(
             $template,
-            ['form' => $form->createView()]
+            [
+                'form' => $form->createView(),
+                'flash_message' => $flashMessage,
+            ]
         );
     }
 
