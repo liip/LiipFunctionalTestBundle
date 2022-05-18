@@ -24,7 +24,6 @@ use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ResettableContainerInterface;
 use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -428,6 +427,16 @@ abstract class WebTestCase extends BaseWebTestCase
 
     public function loginClient(KernelBrowser $client, UserInterface $user, string $firewallName): void
     {
+        // Available since Symfony 5.1
+        if (method_exists($client, 'loginUser')) {
+            // TODO: on next minor release:
+            // trigger deprecation if Symfony ≥ 5.1 → https://symfony.com/doc/5.4/testing.html#logging-in-users-authentication
+
+            $client->loginUser($user);
+
+            return;
+        }
+
         // has to be set otherwise "hasPreviousSession" in Request returns false.
         $options = $client->getContainer()->getParameter('session.storage.options');
 
@@ -518,6 +527,16 @@ abstract class WebTestCase extends BaseWebTestCase
             foreach ($this->firewallLogins as $firewallName => $user) {
                 $token = $this->createUserToken($user, $firewallName);
 
+                // Available since Symfony 5.1
+                if (method_exists($client, 'loginUser')) {
+                    // TODO: on next minor release:
+                    // trigger deprecation if Symfony ≥ 5.1 → https://symfony.com/doc/5.4/testing.html#logging-in-users-authentication
+
+                    $client->loginUser($user);
+
+                    continue;
+                }
+
                 $tokenStorage = $client->getContainer()->get('security.token_storage');
 
                 $tokenStorage->setToken($token);
@@ -540,10 +559,6 @@ abstract class WebTestCase extends BaseWebTestCase
         // Available before Symfony 6
         if ($container->has(SessionInterface::class)) {
             return $container->get(SessionInterface::class);
-        }
-        // Preferred since Symfony 5.4
-        elseif ($container->has(RequestStack::class)) {
-            return $container->get(RequestStack::class)->getSession();
         }
         // For Symfony 4.4
         elseif ($container->has('session')) {

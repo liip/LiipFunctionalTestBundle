@@ -109,6 +109,8 @@ class WebTestCaseConfigTest extends WebTestCase
 
     /**
      * Log in as the user defined in the Data Fixture.
+     *
+     * loginAs() is deprecated but we test if for Backward Compatibility.
      */
     public function testIndexAuthenticationLoginAs(): void
     {
