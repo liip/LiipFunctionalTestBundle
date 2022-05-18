@@ -1,3 +1,0 @@
-services:
-  phpcsfixer: true
-  yamllint: true
