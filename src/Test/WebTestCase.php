@@ -519,7 +519,7 @@ abstract class WebTestCase extends BaseWebTestCase
             }
 
             $session = $this->getSession($client);
-            $session->setId(uniqid());
+            $session->start();
 
             $client->getCookieJar()->set(new Cookie($options['name'], $session->getId()));
 
