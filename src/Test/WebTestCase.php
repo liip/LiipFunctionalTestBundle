@@ -343,6 +343,17 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     protected function createUserToken(UserInterface $user, string $firewallName): TokenInterface
     {
+        // Since Symfony 6.0, UsernamePasswordToken only has 3 arguments
+        $usernamePasswordTokenClass = new \ReflectionClass(UsernamePasswordToken::class);
+
+        if (3 === $usernamePasswordTokenClass->getConstructor()->getNumberOfParameters()) {
+            return new UsernamePasswordToken(
+                $user,
+                $firewallName,
+                $user->getRoles()
+            );
+        }
+
         return new UsernamePasswordToken(
             $user,
             null,
