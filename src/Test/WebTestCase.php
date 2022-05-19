@@ -301,6 +301,8 @@ abstract class WebTestCase extends BaseWebTestCase
      * $params can be used to pass headers to the client, note that they have
      * to follow the naming format used in $_SERVER.
      * Example: 'HTTP_X_REQUESTED_WITH' instead of 'X-Requested-With'
+     *
+     * @deprecated
      */
     protected function makeClient(array $params = []): Client
     {
@@ -313,6 +315,8 @@ abstract class WebTestCase extends BaseWebTestCase
      * $params can be used to pass headers to the client, note that they have
      * to follow the naming format used in $_SERVER.
      * Example: 'HTTP_X_REQUESTED_WITH' instead of 'X-Requested-With'
+     *
+     * @deprecated
      */
     protected function makeAuthenticatedClient(array $params = []): Client
     {
@@ -331,6 +335,8 @@ abstract class WebTestCase extends BaseWebTestCase
      * $params can be used to pass headers to the client, note that they have
      * to follow the naming format used in $_SERVER.
      * Example: 'HTTP_X_REQUESTED_WITH' instead of 'X-Requested-With'
+     *
+     * @deprecated
      */
     protected function makeClientWithCredentials(string $username, string $password, array $params = []): Client
     {
@@ -451,6 +457,9 @@ abstract class WebTestCase extends BaseWebTestCase
         return $this;
     }
 
+    /**
+     * @deprecated
+     */
     public function loginClient(KernelBrowser $client, UserInterface $user, string $firewallName): void
     {
         // Available since Symfony 5.1

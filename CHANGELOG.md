@@ -1,5 +1,13 @@
 # Changelog
 
+## 5.0
+
+## Removed 
+
+## 4.6
+
+Deprecated […] methods, use loginUser() from Symfony instead https://symfony.com/doc/5.4/testing.html#logging-in-users-authentication
+
 ## 4.0
 
 ### Removed
