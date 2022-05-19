@@ -24,7 +24,11 @@ use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ResettableContainerInterface;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpFoundation\Exception\SessionNotFoundException;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -445,7 +449,6 @@ abstract class WebTestCase extends BaseWebTestCase
         }
 
         $session = $this->getSession($client);
-        $session->setId(uniqid());
 
         $client->getCookieJar()->set(new Cookie($options['name'], $session->getId()));
 
@@ -519,7 +522,6 @@ abstract class WebTestCase extends BaseWebTestCase
             }
 
             $session = $this->getSession($client);
-            $session->start();
 
             $client->getCookieJar()->set(new Cookie($options['name'], $session->getId()));
 
@@ -556,15 +558,35 @@ abstract class WebTestCase extends BaseWebTestCase
     {
         $container = $client->getContainer();
 
+        // Preferred since Symfony 5.4
+        if ($container->has(RequestStack::class)) {
+            /** @var RequestStack $requestStack */
+            $requestStack = $container->get(RequestStack::class);
+
+            // see https://github.com/symfony/symfony-docs/pull/14898/files#diff-29ab32502d95be802fed1001850b76c9624912cf4c299101d3ecaf17b0352562R37
+            try {
+                $session = $requestStack->getSession();
+            } catch (SessionNotFoundException $e) {
+                $requestStack->push(new Request());
+                $session = new Session();
+                $session->start();
+            }
+
+            return $session;
+        }
         // Available before Symfony 6
         if ($container->has(SessionInterface::class)) {
-            return $container->get(SessionInterface::class);
+            /** @var SessionInterface $session */
+            $session = $container->get(SessionInterface::class);
         }
-        // For Symfony 4.4
-        elseif ($container->has('session')) {
-            return $container->get('session');
+        // Fallback for Symfony 4.4
+        else {
+            /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
+            $session = $container->get('session');
         }
 
-        throw new \Exception('Session is not available.');
+        $session->start();
+
+        return $session;
     }
 }
