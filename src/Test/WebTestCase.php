@@ -253,6 +253,9 @@ abstract class WebTestCase extends BaseWebTestCase
         throw new \Exception("Method {$name} is not supported.");
     }
 
+    /**
+     * @deprecated
+     */
     public function __set($name, $value): void
     {
         if ('environment' !== $name) {
@@ -264,6 +267,9 @@ abstract class WebTestCase extends BaseWebTestCase
         static::$env = $value;
     }
 
+    /**
+     * @deprecated
+     */
     public function __isset($name)
     {
         if ('environment' !== $name) {
@@ -275,6 +281,9 @@ abstract class WebTestCase extends BaseWebTestCase
         return true;
     }
 
+    /**
+     * @deprecated
+     */
     public function __get($name)
     {
         if ('environment' !== $name) {
@@ -429,6 +438,8 @@ abstract class WebTestCase extends BaseWebTestCase
     }
 
     /**
+     * @deprecated
+     *
      * @return WebTestCase
      */
     public function loginAs(UserInterface $user, string $firewallName): self
@@ -444,8 +455,14 @@ abstract class WebTestCase extends BaseWebTestCase
     {
         // Available since Symfony 5.1
         if (method_exists($client, 'loginUser')) {
-            // TODO: on next minor release:
-            // trigger deprecation if Symfony ≥ 5.1 → https://symfony.com/doc/5.4/testing.html#logging-in-users-authentication
+            @trigger_error(
+                sprintf(
+                    '"%s()" is deprecated, use loginUser() from Symfony instead %s',
+                    __METHOD__,
+                    'https://symfony.com/doc/5.4/testing.html#logging-in-users-authentication'
+                ),
+                \E_USER_DEPRECATED
+            );
 
             $client->loginUser($user);
 
@@ -509,6 +526,9 @@ abstract class WebTestCase extends BaseWebTestCase
         parent::tearDown();
     }
 
+    /**
+     * @deprecated
+     */
     protected function createClientWithParams(array $params, ?string $username = null, ?string $password = null): Client
     {
         if ($username && $password) {
@@ -542,8 +562,14 @@ abstract class WebTestCase extends BaseWebTestCase
 
                 // Available since Symfony 5.1
                 if (method_exists($client, 'loginUser')) {
-                    // TODO: on next minor release:
-                    // trigger deprecation if Symfony ≥ 5.1 → https://symfony.com/doc/5.4/testing.html#logging-in-users-authentication
+                    @trigger_error(
+                        sprintf(
+                            '"%s()" is deprecated, use loginUser() from Symfony instead %s',
+                            __METHOD__,
+                            'https://symfony.com/doc/5.4/testing.html#logging-in-users-authentication'
+                        ),
+                        \E_USER_DEPRECATED
+                    );
 
                     $client->loginUser($user);
 
