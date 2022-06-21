@@ -84,6 +84,11 @@ class User implements UserInterface
         );
     }
 
+    public function __toString(): string
+    {
+        return $this->getUserIdentifier();
+    }
+
     /**
      * Set id.
      *
@@ -279,12 +284,17 @@ class User implements UserInterface
     // Functions required for compatibility with UserInterface
     // @see http://symfony.com/doc/2.3/cookbook/security/custom_provider.html
 
-    public function getRoles()
+    public function getRoles(): array
     {
         return ['ROLE_ADMIN'];
     }
 
     public function getUsername()
+    {
+        return $this->getName();
+    }
+
+    public function getUserIdentifier(): string
     {
         return $this->getName();
     }

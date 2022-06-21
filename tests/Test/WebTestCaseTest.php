@@ -29,7 +29,7 @@ class WebTestCaseTest extends WebTestCase
         static::$class = AppKernel::class;
     }
 
-    public static function getKernelClass()
+    public static function getKernelClass(): string
     {
         return AppKernel::class;
     }

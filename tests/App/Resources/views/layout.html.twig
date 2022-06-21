@@ -12,17 +12,17 @@
             {%- if not is_granted('IS_AUTHENTICATED_REMEMBERED') -%}
                 Not logged in.
             {%- else -%}
-                Logged in as {{ app.user.username }}.
+                Logged in as {{ app.user }}.
             {%- endif -%}
         </p>
 
         <h1>LiipFunctionalTestBundle</h1>
         
-        {% for flash_message in app.session.flashbag.get('notice') %}
+        {% if flash_message|default(false) %}
             <div class="flash-notice">
                 {{ flash_message }}
             </div>
-        {% endfor %}
+        {% endif %}
         
         <div id="content">{% block body %}{% endblock %}</div>
     </body>

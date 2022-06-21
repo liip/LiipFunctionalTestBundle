@@ -24,7 +24,12 @@ use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ResettableContainerInterface;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpFoundation\Exception\SessionNotFoundException;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -248,6 +253,9 @@ abstract class WebTestCase extends BaseWebTestCase
         throw new \Exception("Method {$name} is not supported.");
     }
 
+    /**
+     * @deprecated
+     */
     public function __set($name, $value): void
     {
         if ('environment' !== $name) {
@@ -259,6 +267,9 @@ abstract class WebTestCase extends BaseWebTestCase
         static::$env = $value;
     }
 
+    /**
+     * @deprecated
+     */
     public function __isset($name)
     {
         if ('environment' !== $name) {
@@ -270,6 +281,9 @@ abstract class WebTestCase extends BaseWebTestCase
         return true;
     }
 
+    /**
+     * @deprecated
+     */
     public function __get($name)
     {
         if ('environment' !== $name) {
@@ -287,6 +301,8 @@ abstract class WebTestCase extends BaseWebTestCase
      * $params can be used to pass headers to the client, note that they have
      * to follow the naming format used in $_SERVER.
      * Example: 'HTTP_X_REQUESTED_WITH' instead of 'X-Requested-With'
+     *
+     * @deprecated
      */
     protected function makeClient(array $params = []): Client
     {
@@ -299,6 +315,8 @@ abstract class WebTestCase extends BaseWebTestCase
      * $params can be used to pass headers to the client, note that they have
      * to follow the naming format used in $_SERVER.
      * Example: 'HTTP_X_REQUESTED_WITH' instead of 'X-Requested-With'
+     *
+     * @deprecated
      */
     protected function makeAuthenticatedClient(array $params = []): Client
     {
@@ -317,6 +335,8 @@ abstract class WebTestCase extends BaseWebTestCase
      * $params can be used to pass headers to the client, note that they have
      * to follow the naming format used in $_SERVER.
      * Example: 'HTTP_X_REQUESTED_WITH' instead of 'X-Requested-With'
+     *
+     * @deprecated
      */
     protected function makeClientWithCredentials(string $username, string $password, array $params = []): Client
     {
@@ -338,6 +358,17 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     protected function createUserToken(UserInterface $user, string $firewallName): TokenInterface
     {
+        // Since Symfony 6.0, UsernamePasswordToken only has 3 arguments
+        $usernamePasswordTokenClass = new \ReflectionClass(UsernamePasswordToken::class);
+
+        if (3 === $usernamePasswordTokenClass->getConstructor()->getNumberOfParameters()) {
+            return new UsernamePasswordToken(
+                $user,
+                $firewallName,
+                $user->getRoles()
+            );
+        }
+
         return new UsernamePasswordToken(
             $user,
             null,
@@ -413,6 +444,8 @@ abstract class WebTestCase extends BaseWebTestCase
     }
 
     /**
+     * @deprecated
+     *
      * @return WebTestCase
      */
     public function loginAs(UserInterface $user, string $firewallName): self
@@ -424,8 +457,28 @@ abstract class WebTestCase extends BaseWebTestCase
         return $this;
     }
 
+    /**
+     * @deprecated
+     */
     public function loginClient(KernelBrowser $client, UserInterface $user, string $firewallName): void
     {
+        // Available since Symfony 5.1
+        if (method_exists($client, 'loginUser')) {
+            // TODO: enable this on the next minor release
+//            @trigger_error(
+//                sprintf(
+//                    '"%s()" is deprecated, use loginUser() from Symfony 5.1+ instead %s',
+//                    __METHOD__,
+//                    'https://symfony.com/doc/5.4/testing.html#logging-in-users-authentication'
+//                ),
+//                \E_USER_DEPRECATED
+//            );
+
+            $client->loginUser($user);
+
+            return;
+        }
+
         // has to be set otherwise "hasPreviousSession" in Request returns false.
         $options = $client->getContainer()->getParameter('session.storage.options');
 
@@ -433,8 +486,7 @@ abstract class WebTestCase extends BaseWebTestCase
             throw new \InvalidArgumentException('Missing session.storage.options#name');
         }
 
-        $session = $client->getContainer()->get('session');
-        $session->setId(uniqid());
+        $session = $this->getSession($client);
 
         $client->getCookieJar()->set(new Cookie($options['name'], $session->getId()));
 
@@ -484,6 +536,9 @@ abstract class WebTestCase extends BaseWebTestCase
         parent::tearDown();
     }
 
+    /**
+     * @deprecated
+     */
     protected function createClientWithParams(array $params, ?string $username = null, ?string $password = null): Client
     {
         if ($username && $password) {
@@ -507,14 +562,30 @@ abstract class WebTestCase extends BaseWebTestCase
                 throw new \InvalidArgumentException('Missing session.storage.options#name');
             }
 
-            $session = $client->getContainer()->get('session');
-            $session->setId(uniqid());
+            $session = $this->getSession($client);
 
             $client->getCookieJar()->set(new Cookie($options['name'], $session->getId()));
 
             /** @var $user UserInterface */
             foreach ($this->firewallLogins as $firewallName => $user) {
                 $token = $this->createUserToken($user, $firewallName);
+
+                // Available since Symfony 5.1
+                if (method_exists($client, 'loginUser')) {
+                    // TODO: enable this on the next minor release
+//                    @trigger_error(
+//                        sprintf(
+//                            '"%s()" is deprecated, use loginUser() from Symfony 5.1+ instead %s',
+//                            __METHOD__,
+//                            'https://symfony.com/doc/5.4/testing.html#logging-in-users-authentication'
+//                        ),
+//                        \E_USER_DEPRECATED
+//                    );
+
+                    $client->loginUser($user);
+
+                    continue;
+                }
 
                 $tokenStorage = $client->getContainer()->get('security.token_storage');
 
@@ -526,5 +597,44 @@ abstract class WebTestCase extends BaseWebTestCase
         }
 
         return $client;
+    }
+
+    /**
+     * Compatibility layer.
+     */
+    private function getSession(KernelBrowser $client): SessionInterface
+    {
+        $container = $client->getContainer();
+
+        // Preferred since Symfony 5.4
+        if ($container->has(RequestStack::class)) {
+            /** @var RequestStack $requestStack */
+            $requestStack = $container->get(RequestStack::class);
+
+            // see https://github.com/symfony/symfony-docs/pull/14898/files#diff-29ab32502d95be802fed1001850b76c9624912cf4c299101d3ecaf17b0352562R37
+            try {
+                $session = $requestStack->getSession();
+            } catch (SessionNotFoundException $e) {
+                $requestStack->push(new Request());
+                $session = new Session();
+                $session->start();
+            }
+
+            return $session;
+        }
+        // Available before Symfony 6
+        if ($container->has(SessionInterface::class)) {
+            /** @var SessionInterface $session */
+            $session = $container->get(SessionInterface::class);
+        }
+        // Fallback for Symfony 4.4
+        else {
+            /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
+            $session = $container->get('session');
+        }
+
+        $session->start();
+
+        return $session;
     }
 }

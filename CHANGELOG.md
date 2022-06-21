@@ -1,5 +1,23 @@
 # Changelog
 
+## 5.0
+
+Removed features deprecated in [4.6](#4.6) and [4.0](#4.0)
+
+## 4.7
+
+Deprecations from [4.6](#4.6) will now trigger an `E_USER_DEPRECATED` deprecation
+
+## 4.6
+
+Deprecated the following methods, use [loginUser() from Symfony 5.1+](https://symfony.com/doc/5.4/testing.html#logging-in-users-authentication) instead of:
+- `makeClient`
+- `makeAuthenticatedClient`
+- `makeClientWithCredentials`
+- `loginAs`
+- `loginClient`
+- `createClientWithParams`
+
 ## 4.0
 
 ### Removed
