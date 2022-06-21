@@ -464,14 +464,15 @@ abstract class WebTestCase extends BaseWebTestCase
     {
         // Available since Symfony 5.1
         if (method_exists($client, 'loginUser')) {
-            @trigger_error(
-                sprintf(
-                    '"%s()" is deprecated, use loginUser() from Symfony instead %s',
-                    __METHOD__,
-                    'https://symfony.com/doc/5.4/testing.html#logging-in-users-authentication'
-                ),
-                \E_USER_DEPRECATED
-            );
+            // TODO: enable this on the next minor release
+//            @trigger_error(
+//                sprintf(
+//                    '"%s()" is deprecated, use loginUser() from Symfony 5.1+ instead %s',
+//                    __METHOD__,
+//                    'https://symfony.com/doc/5.4/testing.html#logging-in-users-authentication'
+//                ),
+//                \E_USER_DEPRECATED
+//            );
 
             $client->loginUser($user);
 
@@ -571,14 +572,15 @@ abstract class WebTestCase extends BaseWebTestCase
 
                 // Available since Symfony 5.1
                 if (method_exists($client, 'loginUser')) {
-                    @trigger_error(
-                        sprintf(
-                            '"%s()" is deprecated, use loginUser() from Symfony instead %s',
-                            __METHOD__,
-                            'https://symfony.com/doc/5.4/testing.html#logging-in-users-authentication'
-                        ),
-                        \E_USER_DEPRECATED
-                    );
+                    // TODO: enable this on the next minor release
+//                    @trigger_error(
+//                        sprintf(
+//                            '"%s()" is deprecated, use loginUser() from Symfony 5.1+ instead %s',
+//                            __METHOD__,
+//                            'https://symfony.com/doc/5.4/testing.html#logging-in-users-authentication'
+//                        ),
+//                        \E_USER_DEPRECATED
+//                    );
 
                     $client->loginUser($user);
 
