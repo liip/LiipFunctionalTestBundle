@@ -10,9 +10,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['7.2', '7.3', '7.4', '8.0']
+        php-version: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.2']
         composer-flags: ['']
-        symfony-version: ['^5.3']
+        symfony-version: ['^5.4']
         include:
           - php-version: 7.2
             symfony-version: "^4.4"
