@@ -1,8 +1,8 @@
 # Changelog
 
-## 5.0
+## 5.0 (to be released)
 
-Removed features deprecated in [4.6](#4.6) and [4.0](#4.0)
+Removed features deprecated in [4.6](#4.6)
 
 ## 4.7
 
