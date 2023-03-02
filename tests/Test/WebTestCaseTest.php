@@ -17,6 +17,7 @@ use Doctrine\Common\Annotations\Annotation\IgnoreAnnotation;
 use Liip\Acme\Tests\App\AppKernel;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use PHPUnit\Framework\AssertionFailedError;
+use function method_exists;
 
 /**
  * @IgnoreAnnotation("depends")
@@ -242,9 +243,14 @@ class WebTestCaseTest extends WebTestCase
      */
     public function testIsSuccessfulException(): void
     {
-        $response = $this->getMockBuilder('Symfony\Component\HttpFoundation\Response')
-            ->disableOriginalConstructor()
-            ->setMethods(['getContent'])
+        $mockBuilder = $this->getMockBuilder('Symfony\Component\HttpFoundation\Response')
+            ->disableOriginalConstructor();
+        if (method_exists($mockBuilder, 'setMethods')) {
+            $mockBuilder->setMethods(['getContent']);
+        } else { // phpunit 10
+            $mockBuilder->onlyMethods(['getContent']);
+        }
+        $response = $mockBuilder
             ->getMock();
 
         $response->expects($this->any())
