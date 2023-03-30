@@ -15,6 +15,10 @@ use Doctrine\Common\Annotations\AnnotationRegistry;
 
 $loader = require __DIR__.'/../../vendor/autoload.php';
 
-AnnotationRegistry::registerLoader([$loader, 'loadClass']);
+// This method only exist on doctrine/annotations:^1.3,
+// it is missing but not needed with doctrine/annotations:^2.0
+if (method_exists(AnnotationRegistry::class, 'registerLoader')) {
+    AnnotationRegistry::registerLoader([$loader, 'loadClass']);
+}
 
 return $loader;
