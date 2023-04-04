@@ -64,6 +64,8 @@ jobs:
           symfony/validator=${{ matrix.symfony-version }}
           symfony/yaml=${{ matrix.symfony-version }}
 
+      # This is needed to fix builds where the `annotation_reader` service may not be set up if
+      # the Annotations package is not in the production dependencies
       - name: Require Annotations v1 to require for PHP 7
         if: startsWith(matrix.php-version, '7.')
         run: composer require --no-update "doctrine/annotations:^1.8.0"
