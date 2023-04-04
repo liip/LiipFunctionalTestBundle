@@ -65,6 +65,14 @@ jobs:
           symfony/validator=${{ matrix.symfony-version }}
           symfony/yaml=${{ matrix.symfony-version }}
 
+      - name: Require Annotations v1 to require for PHP 7
+        if: startsWith(matrix.php-version, '7.')
+        run: composer require --no-update "doctrine/annotations:^1.8.0"
+
+      - name: Require Annotations v1/v2 to require for PHP 8+
+        if: startsWith(matrix.php-version, '7.') != true
+        run: composer require --no-update "doctrine/annotations:^1.8.0|^2.0"
+
       - name: Install Composer dependencies
         if: matrix.composer-flags == ''
         run: composer install
