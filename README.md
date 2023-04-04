@@ -21,6 +21,3 @@ Documentation
 
 To run tests in parallel:
 * [Fastest](doc/fastest.md)
-
-[Travis Master]: https://travis-ci.org/liip/LiipFunctionalTestBundle
-[Travis Master image]: https://travis-ci.org/liip/LiipFunctionalTestBundle.svg?branch=master
