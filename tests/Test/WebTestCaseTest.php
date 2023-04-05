@@ -16,8 +16,8 @@ namespace Liip\Acme\Tests\Test;
 use Doctrine\Common\Annotations\Annotation\IgnoreAnnotation;
 use Liip\Acme\Tests\App\AppKernel;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
-use PHPUnit\Framework\AssertionFailedError;
 use function method_exists;
+use PHPUnit\Framework\AssertionFailedError;
 
 /**
  * @IgnoreAnnotation("depends")
