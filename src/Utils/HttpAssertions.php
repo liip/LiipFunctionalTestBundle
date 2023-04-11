@@ -98,7 +98,10 @@ class HttpAssertions extends TestCase
         }
 
         if (!$container->has('liip_functional_test.validator')) {
-            trigger_error(sprintf('Method %s() can not be used as the validation component of the Symfony framework is disabled.', __METHOD__), \E_USER_WARNING);
+            self::fail(sprintf(
+                'Method %s() can not be used as the validation component of the Symfony framework is disabled.',
+                __METHOD__
+            ));
         }
 
         self::assertThat(
