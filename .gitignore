@@ -5,3 +5,5 @@ vendor
 # Ignore files created during tests
 /cov/
 !.gitkeep
+
+/.phpunit.cache/
