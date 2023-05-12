@@ -3,6 +3,7 @@
 ## 5.0 (to be released)
 
 Removed features deprecated in [4.6](#4.6)
+Drop support for php 7.2, 7.3
 
 ## 4.7
 

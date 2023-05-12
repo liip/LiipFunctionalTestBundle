@@ -111,7 +111,7 @@ class CommandTest extends WebTestCase
         $this->assertStringContainsString('Verbosity level: NORMAL', $this->commandTester->getDisplay());
     }
 
-    public function useEnvProvider(): array
+    public static function useEnvProvider(): array
     {
         return [
             [true],

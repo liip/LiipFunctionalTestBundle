@@ -14,14 +14,14 @@ declare(strict_types=1);
 namespace Liip\Acme\Tests\DependencyInjection;
 
 use Liip\FunctionalTestBundle\Test\WebTestCase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Test default configuration.
  */
 class ConfigurationTest extends WebTestCase
 {
-    /** @var \Symfony\Component\DependencyInjection\ContainerInterface */
-    private $clientContainer = null;
+    private ?ContainerInterface $clientContainer = null;
 
     protected function setUp(): void
     {
@@ -52,7 +52,7 @@ class ConfigurationTest extends WebTestCase
         );
     }
 
-    public function parametersProvider(): array
+    public static function parametersProvider(): array
     {
         return [
             ['command_verbosity', 'normal'],
