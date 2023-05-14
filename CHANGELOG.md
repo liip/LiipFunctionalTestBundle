@@ -2,11 +2,15 @@
 
 ## 5.0 (to be released)
 
-Removed features deprecated in [4.6](#4.6)
+Removed features deprecated in [4.6](#46)
+
+## 4.10
+
+Drop support for php 7.2, 7.3
 
 ## 4.7
 
-Deprecations from [4.6](#4.6) will now trigger an `E_USER_DEPRECATED` deprecation
+Deprecations from [4.6](#46) will now trigger an `E_USER_DEPRECATED` deprecation
 
 ## 4.6
 

@@ -36,7 +36,7 @@ class ConfigurationConfigTest extends ConfigurationTest
     /**
      * Override values to be tested.
      */
-    public function parametersProvider(): array
+    public static function parametersProvider(): array
     {
         return [
             ['command_verbosity', 'very_verbose'],
