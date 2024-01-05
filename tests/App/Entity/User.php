@@ -22,6 +22,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Entity()
  * @ORM\Table("liip_user")
  */
+#[
+    ORM\Entity(),
+    ORM\Table(name: "liip_user"),
+]
 class User implements UserInterface
 {
     // Properties which will be serialized have to be "protected"
@@ -32,48 +36,57 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\Column(type: "integer")]
     protected $id;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255)
      */
+    #[ORM\Column(type: "string", length: 255)]
     protected $name;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255)
      */
+    #[ORM\Column(type: "string", length: 255)]
     private $email;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255)
      */
+    #[ORM\Column(type: "string", length: 255)]
     protected $password;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255)
      */
+    #[ORM\Column(type: "string", length: 255)]
     protected $salt;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255)
      */
+    #[ORM\Column(type: "string", length: 255)]
     private $algorithm;
 
     /**
      * @var bool
      * @ORM\Column(type="boolean")
      */
+    #[ORM\Column(type: "boolean")]
     private $enabled;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255, nullable=true)
      */
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
     private $confirmationToken;
 
     public function __construct()

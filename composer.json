@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": "^7.4 || ^8.0 || ^8.1 || ^8.2",
         "phpunit/phpunit": "^9.6 || ^10.0",
         "symfony/browser-kit": "^5.4 || ^6.4 || ^7.0",
         "symfony/framework-bundle": "^5.4 || ^6.4 || ^7.0"
