@@ -1,6 +1,0 @@
-security:
-    encoders:
-        # in_memory users
-        Symfony\Component\Security\Core\User\User: plaintext
-        # User entity
-        Liip\Acme\Tests\App\Entity\User: plaintext
