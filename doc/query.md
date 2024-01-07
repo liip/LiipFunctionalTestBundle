@@ -1,6 +1,9 @@
 Query Counter
 =============
 
+> [!IMPORTANT]
+> The Query Counter is not compatible with Symfony 7+.
+
 To catch pages that use way too many database queries, you can enable the query
 counter for tests. This will check the profiler for each request made in the
 test using the client, and fail the test if the number of queries executed is
