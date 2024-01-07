@@ -16,7 +16,6 @@ namespace Liip\Acme\Tests\Test;
 use Doctrine\Common\Annotations\Annotation\IgnoreAnnotation;
 use Liip\Acme\Tests\App\AppKernel;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
-use function method_exists;
 use PHPUnit\Framework\AssertionFailedError;
 
 /**
@@ -243,25 +242,16 @@ class WebTestCaseTest extends WebTestCase
      */
     public function testIsSuccessfulException(): void
     {
-        $mockBuilder = $this->getMockBuilder('Symfony\Component\HttpFoundation\Response')
-            ->disableOriginalConstructor();
-        if (method_exists($mockBuilder, 'setMethods')) {
-            $mockBuilder->setMethods(['getContent']);
-        } else { // phpunit 10
-            $mockBuilder->onlyMethods(['getContent']);
-        }
-        $response = $mockBuilder
-            ->getMock();
+        $path = '/exception';
 
-        $response->expects($this->any())
-            ->method('getContent')
-            ->will($this->throwException(new \Exception('foo')));
+        $client = static::makeClient();
+        $client->request('GET', $path);
 
         try {
-            $this->isSuccessful($response);
+            $this->isSuccessful($client->getResponse());
         } catch (AssertionFailedError $e) {
             $string = <<<'EOF'
-The Response was not successful: foo
+The Response was not successful: foo (500 Internal Server Error)
 Failed asserting that false is true.
 EOF;
             $this->assertSame($string, $e->getMessage());

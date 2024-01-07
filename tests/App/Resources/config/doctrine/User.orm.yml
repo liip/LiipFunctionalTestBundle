@@ -1,0 +1,19 @@
+Liip\Acme\Tests\App\Entity\User:
+  type: entity
+  table: 'liip_user'
+  id:
+    id:
+      type: integer
+      id: true
+      generator:
+        strategy: AUTO
+  fields:
+    name:
+      type: string
+      length: '255'
+    email:
+      type: string
+      length: '255'
+    salt:
+      type: string
+      length: '255'

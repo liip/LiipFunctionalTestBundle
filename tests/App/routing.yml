@@ -25,3 +25,7 @@ liipfunctionaltestbundle_json:
     defaults: { _controller: 'Liip\Acme\Tests\App\Controller\DefaultController::jsonAction' }
     requirements:
         userId: \d+
+
+liipfunctionaltestbundle_exception:
+    path:  /exception
+    defaults: { _controller: 'Liip\Acme\Tests\App\Controller\DefaultController::exceptionAction' }

@@ -19,6 +19,7 @@ use Liip\Acme\Tests\AppConfig\AppConfigKernel;
 use Liip\Acme\Tests\Traits\LiipAcmeFixturesTrait;
 use Liip\FunctionalTestBundle\Annotations\QueryCount;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
+use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * Tests that configuration has been loaded and users can be logged in.
@@ -52,6 +53,8 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testIndexClientWithCredentials(): void
     {
+        $this->skipTestIfSymfonyHasVersion7();
+
         $this->client = static::makeClientWithCredentials('foobar', '12341234');
 
         $path = '/admin';
@@ -83,6 +86,8 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testIndexAuthenticatedClient(): void
     {
+        $this->skipTestIfSymfonyHasVersion7();
+
         $this->client = static::makeAuthenticatedClient();
 
         $path = '/admin';
@@ -114,6 +119,8 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testIndexAuthenticationLoginAs(): void
     {
+        $this->skipTestIfSymfonyHasVersion7();
+
         $user = $this->loadTestFixtures();
 
         $loginAs = $this->loginAs($user, 'secured_area');
@@ -152,6 +159,8 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testIndexAuthenticationLoginClient(): void
     {
+        $this->skipTestIfSymfonyHasVersion7();
+
         $user = $this->loadTestFixtures();
 
         $this->client = static::makeClient();
@@ -192,6 +201,8 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testAllowedQueriesExceededException(): void
     {
+        $this->skipTestIfSymfonyHasVersion7();
+
         $user = $this->loadTestFixtures();
 
         $this->assertInstanceOf(
@@ -239,7 +250,9 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testAnnotationAndException(): void
     {
-        $user = $this->loadTestFixtures();
+        $this->skipTestIfSymfonyHasVersion7();
+
+        $this->loadTestFixtures();
 
         $this->client = static::makeClient();
 
@@ -250,5 +263,12 @@ class WebTestCaseConfigTest extends WebTestCase
 
         $this->client->request('GET', $path);
         $this->assertStatusCode(200, $this->client);
+    }
+
+    private function skipTestIfSymfonyHasVersion7(): void
+    {
+        if (Kernel::MAJOR_VERSION >= 7) {
+            $this->markTestSkipped('The QueryCount is not compatible with Symfony 7+');
+        }
     }
 }

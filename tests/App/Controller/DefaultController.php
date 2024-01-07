@@ -107,4 +107,9 @@ class DefaultController extends AbstractController
     {
         return new Response('Embedded Content', Response::HTTP_OK);
     }
+
+    public function exceptionAction(): Response
+    {
+        throw new \Exception('foo');
+    }
 }
