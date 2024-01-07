@@ -27,10 +27,6 @@ trait LiipAcmeFixturesTrait
         $user1->setId(1);
         $user1->setName('foo bar');
         $user1->setEmail('foo@example');
-        $user1->setPassword('12341234');
-        $user1->setAlgorithm('plaintext');
-        $user1->setEnabled(true);
-        $user1->setConfirmationToken(null);
 
         $manager = $this->getContainer()->get('doctrine')->getManager();
         $manager->persist($user1);

@@ -35,11 +35,7 @@ class AppKernel extends Kernel
 
     public function registerContainerConfiguration(LoaderInterface $loader): void
     {
-        if (phpversion() >= '8.1') {
-            $loader->load(__DIR__.'/config_php8.yml');
-        } else {
-            $loader->load(__DIR__.'/config.yml');
-        }
+        $loader->load(__DIR__.'/config.yml');
 
         if (Kernel::MAJOR_VERSION >= 5) {
             $loader->load(__DIR__.'/security_5.yml');
