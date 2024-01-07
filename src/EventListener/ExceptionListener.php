@@ -43,7 +43,7 @@ final class ExceptionListener implements EventSubscriberInterface
 
     public function clearLastException(GetResponseEvent $event): void
     {
-        if (HttpKernelInterface::MASTER_REQUEST === $event->getRequestType()) {
+        if (HttpKernelInterface::MAIN_REQUEST === $event->getRequestType()) {
             $this->lastException = null;
         }
     }
