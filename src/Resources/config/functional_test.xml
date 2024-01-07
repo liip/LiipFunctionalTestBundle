@@ -21,7 +21,7 @@
 
         <service id="liip_functional_test.query.counter" class="Liip\FunctionalTestBundle\QueryCounter">
             <argument>%liip_functional_test.query.max_query_count%</argument>
-            <argument type="service" id="annotation_reader" />
+            <argument type="service" id="annotation_reader" on-invalid="null" />
         </service>
     </services>
 </container>
