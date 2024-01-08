@@ -48,3 +48,5 @@ find src/*/*/Tests/ -name "*Test.php" | vendor/bin/fastest "vendor/bin/phpunit -
 ```
 
 Otherwise you'll have to adapt the paths.
+
+← [Caveats](./caveats.md)
