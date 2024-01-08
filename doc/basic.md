@@ -233,3 +233,5 @@ $this->isSuccessful($client->getResponse());
 > [!TIP]
 > Consider hard-coding the URLs in the test: it will ensure that if a route is changed,
 > the test will fail, so you'll know that there is a Breaking Change.
+
+← [Installation](./installation.md) • [Command test](./command.md) →

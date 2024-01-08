@@ -45,3 +45,5 @@ class MyTestCase extends WebTestCase {
     }
 }
 ```
+
+← [Basic usage](./basic.md) • [Logged client](./logged.md) →

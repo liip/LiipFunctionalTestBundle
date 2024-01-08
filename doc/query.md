@@ -88,3 +88,5 @@ Caveats
        // ...
    }
    ```
+
+← [Logged client](./logged.md) • [Examples](./examples.md) →

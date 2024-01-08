@@ -94,3 +94,5 @@ security:
 ### Final notes
 
 For more details, you can check the implementation of `WebTestCase` in that bundle.
+
+← [Command test](./command.md) • [Query counter](./query.md) →

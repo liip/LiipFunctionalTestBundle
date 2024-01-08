@@ -54,3 +54,5 @@ Set path to this file in your PHPUnit configuration file (eg. `phpunit.xml.dist`
     …
 >
 ``` 
+
+← [Examples](./examples.md) • [Fastest](./fastest.md) →
