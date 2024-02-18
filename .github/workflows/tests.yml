@@ -10,9 +10,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Symfony 6.3 requires PHP >= 8.0, it will be installed on PHP >= 8.0
+        # Symfony 6.4 requires PHP >= 8.0, it will be installed on PHP >= 8.0
         # Symfony 7.0 requires PHP >= 8.2, it will be installed on PHP >= 8.2
-        php-version: ['8.1', '8.2']
+        php-version: ['8.1', '8.2', '8.3']
         composer-flags: ['']
         symfony-version: ['^6.4']
         include:
@@ -26,6 +26,8 @@ jobs:
           - php-version: 8.2
             symfony-version: "^6.4"
           - php-version: 8.2
+            symfony-version: "^7.0"
+          - php-version: 8.3
             symfony-version: "^7.0"
 
     steps:
