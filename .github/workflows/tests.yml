@@ -80,7 +80,7 @@ jobs:
           symfony/twig-bundle=${{ matrix.symfony-version }}
           symfony/validator=${{ matrix.symfony-version }}
           symfony/yaml=${{ matrix.symfony-version }}
-          phpunit/phpunit=${{ phpunit-version }}
+          phpunit/phpunit=${{ matrix.phpunit-version }}
 
       # This is needed to fix builds where the `annotation_reader` service may not be set up if
       # the Annotations package is not in the production dependencies
