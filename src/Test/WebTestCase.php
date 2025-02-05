@@ -85,6 +85,26 @@ abstract class WebTestCase extends BaseWebTestCase
     }
 
     /**
+     * Mock service in the container.
+     */
+    protected function setServiceMock(
+        ContainerInterface $container,
+        string $serviceId,
+        object $mock
+    ): void
+    {
+        $containerRef = new \ReflectionObject($container);
+
+        if ($containerRef->hasProperty('services')) {
+            $servicesProperty = $containerRef->getProperty('services');
+            $servicesProperty->setAccessible(true);
+            $services = $servicesProperty->getValue($container);
+            $services[$serviceId] = $mock;
+            $servicesProperty->setValue($container, $services);
+        }
+    }
+
+    /**
      * Builds up the environment to run the given command.
      */
     protected function runCommand(string $name, array $params = [], bool $reuseKernel = false): CommandTester

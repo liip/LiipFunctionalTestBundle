@@ -17,6 +17,8 @@ use Doctrine\Common\Annotations\Annotation\IgnoreAnnotation;
 use Liip\Acme\Tests\App\AppKernel;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\MockObject\MockObject;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * @IgnoreAnnotation("depends")
@@ -397,5 +399,19 @@ EOF;
             true,
             'application/json'
         );
+    }
+
+    public function testSetServiceMock()
+    {
+        $mockedServiceClass = RequestStack::class;
+        $mockedServiceName = 'request_stack';
+
+        $kernel = static::bootKernel();
+        $container = $kernel->getContainer();
+        $mock = $this->getMockBuilder('\stdClass')->getMock();
+
+        $this->assertInstanceOf($mockedServiceClass, $container->get($mockedServiceName));
+        $this->setServiceMock($container, $mockedServiceName, $mock);
+        $this->assertInstanceOf(MockObject::class, $kernel->getContainer()->get($mockedServiceName));
     }
 }
