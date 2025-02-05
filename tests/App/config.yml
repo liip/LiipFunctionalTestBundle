@@ -2,6 +2,7 @@
 
 # Tests/App/config.yml
 framework:
+    annotations: ~
     secret:          secret
     test:            true
     router:          { resource: "%kernel.project_dir%/routing.yml" }
