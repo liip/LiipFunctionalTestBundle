@@ -401,7 +401,7 @@ EOF;
         );
     }
 
-    public function testSetServiceMock()
+    public function testSetServiceMock(): void
     {
         $mockedServiceClass = RequestStack::class;
         $mockedServiceName = 'request_stack';

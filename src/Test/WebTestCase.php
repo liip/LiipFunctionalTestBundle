@@ -91,8 +91,7 @@ abstract class WebTestCase extends BaseWebTestCase
         ContainerInterface $container,
         string $serviceId,
         object $mock
-    ): void
-    {
+    ): void {
         $containerRef = new \ReflectionObject($container);
 
         if ($containerRef->hasProperty('services')) {
