@@ -29,3 +29,7 @@ liipfunctionaltestbundle_json:
 liipfunctionaltestbundle_exception:
     path:  /exception
     defaults: { _controller: 'Liip\Acme\Tests\App\Controller\DefaultController::exceptionAction' }
+
+liipfunctionaltestbundle_service:
+    path:  /service
+    defaults: { _controller: 'Liip\Acme\Tests\App\Controller\DefaultController::serviceAction' }

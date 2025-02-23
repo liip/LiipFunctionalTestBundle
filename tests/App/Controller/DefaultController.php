@@ -15,6 +15,7 @@ namespace Liip\Acme\Tests\App\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Liip\Acme\Tests\App\Entity\User;
+use Liip\Acme\Tests\App\Service\Service;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -111,5 +112,10 @@ class DefaultController extends AbstractController
     public function exceptionAction(): Response
     {
         throw new \Exception('foo');
+    }
+
+    public function serviceAction(Service $service): Response
+    {
+        return new Response($service->get());
     }
 }
