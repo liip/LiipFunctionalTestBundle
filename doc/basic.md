@@ -234,4 +234,57 @@ $this->isSuccessful($client->getResponse());
 > Consider hard-coding the URLs in the test: it will ensure that if a route is changed,
 > the test will fail, so you'll know that there is a Breaking Change.
 
+#### Mock services
+
+##### setServiceMock()
+
+Mock a service:
+
+```php
+// mock a service
+$client = static::createClient();
+$mock = $this->getServiceMockBuilder(SomeService::class)->getMock();
+$mock->expects($this->once())->method('get')->willReturn('mocked service');
+$this->setServiceMock(static::$kernel->getContainer(), SomeService::class, $mock);
+
+// the service is mocked
+$client->request('GET', '/service');
+$this->assertSame('mocked service', $client->getResponse()->getContent());
+```
+
+There are some additional conditions to be aware of when mocking services:
+
+- The service you want to mock must be public.
+You can set all services to be public in the configuration of the test environment in the `services.yaml` file:
+```yaml
+when@test:
+  services:
+    _defaults:
+      public: true
+      autowire: true
+      autoconfigure: true
+```
+
+- The service must be mocked before any dependent services are used.
+Otherwise, you must restart the kernel to mock the service.
+```php
+...
+// run some tests with the original service
+$client->request('GET', '/service');
+$this->assertSame('non mocked output', $client->getResponse()->getContent());
+
+// kernel reboot is required to mock the service if the service is already loaded
+// because the service we want to mock is already injected into the dependent services
+static::ensureKernelShutdown();
+// boot the kernel again
+$client = static::createClient();
+
+// mock the service as shown above
+...
+```
+
+- When mocking a service for command testing,
+you must set the `$reuseKernel` argument to `true` in the `runCommand` method call.
+See example code [here](./command.md#service-mock).
+
 ← [Installation](./installation.md) • [Command test](./command.md) →

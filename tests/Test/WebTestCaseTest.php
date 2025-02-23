@@ -15,9 +15,12 @@ namespace Liip\Acme\Tests\Test;
 
 use Doctrine\Common\Annotations\Annotation\IgnoreAnnotation;
 use Liip\Acme\Tests\App\AppKernel;
+use Liip\Acme\Tests\App\Service\DependencyService;
+use Liip\Acme\Tests\App\Service\Service;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Rule\InvokedCount;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
@@ -401,7 +404,7 @@ EOF;
         );
     }
 
-    public function testSetServiceMock(): void
+    public function testSetServiceMockCommand(): void
     {
         $mockedServiceClass = RequestStack::class;
         $mockedServiceName = 'request_stack';
@@ -413,5 +416,76 @@ EOF;
         $this->assertInstanceOf($mockedServiceClass, $container->get($mockedServiceName));
         $this->setServiceMock($container, $mockedServiceName, $mock);
         $this->assertInstanceOf(MockObject::class, $kernel->getContainer()->get($mockedServiceName));
+    }
+
+    public function provideSetServiceMockClientData()
+    {
+        return [
+            'no mock' => [
+                'dependency service result',
+                null,
+            ],
+            'mock service dependency' => [
+                'mocked dependency service result',
+                DependencyService::class,
+            ],
+            'mock controller dependency' => [
+                'mocked service result',
+                Service::class,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider provideSetServiceMockClientData
+     */
+    public function testSetServiceMockClient(string $expectedOutput, ?string $mockedServiceName): void
+    {
+        $client = static::createClient();
+
+        // mock the service
+        if ($mockedServiceName) {
+            $mock = $this->getServiceMockBuilder($mockedServiceName)->getMock();
+            $mock->expects($this->once())->method('get')->willReturn($expectedOutput);
+            $this->setServiceMock(static::$kernel->getContainer(), $mockedServiceName, $mock);
+        }
+
+        $client->request('GET', '/service');
+        $this->assertSame($expectedOutput, $client->getResponse()->getContent());
+    }
+
+    public function provideSetServiceMockKernelRebootData()
+    {
+        return [
+            'no kernel reboot' => [false, $this->never(), 'dependency service result'],
+            'reboot kernel' => [true, $this->once(), 'mocked result'],
+        ];
+    }
+
+    /**
+     * @dataProvider  provideSetServiceMockKernelRebootData
+     */
+    public function testSetServiceMockKernelReboot(
+        bool $rebootKernel,
+        InvokedCount $expectedCallCnt,
+        string $expectedOutput
+    ): void {
+        // use the real service
+        $client = static::createClient();
+        $client->request('GET', '/service');
+        $this->assertSame('dependency service result', $client->getResponse()->getContent());
+
+        if ($rebootKernel) {
+            static::ensureKernelShutdown();
+            $client = static::createClient();
+        }
+
+        // mock the service
+        $mock = $this->getServiceMockBuilder(Service::class)->getMock();
+        $mock->expects($expectedCallCnt)->method('get')->willReturn('mocked result');
+        $this->setServiceMock(static::$kernel->getContainer(), Service::class, $mock);
+
+        $client->request('GET', '/service');
+        $this->assertSame($expectedOutput, $client->getResponse()->getContent());
     }
 }

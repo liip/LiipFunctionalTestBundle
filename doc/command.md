@@ -46,7 +46,8 @@ class MyTestCase extends WebTestCase {
 }
 ```
 
-If you need to mock a service in your command, you can use the `setServiceMock` method.
+### Service mock
+
 It is important to set the `$reuseKernel` argument to `true` in the `runCommand` method call
 if you want to keep your services mocked in the command.
 
