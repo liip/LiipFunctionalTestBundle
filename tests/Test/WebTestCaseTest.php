@@ -418,7 +418,7 @@ EOF;
         $this->assertInstanceOf(MockObject::class, $kernel->getContainer()->get($mockedServiceName));
     }
 
-    public function provideSetServiceMockClientData()
+    public static function provideSetServiceMockClientData(): array
     {
         return [
             'no mock' => [
@@ -454,7 +454,7 @@ EOF;
         $this->assertSame($expectedOutput, $client->getResponse()->getContent());
     }
 
-    public function provideSetServiceMockKernelRebootData()
+    public static function provideSetServiceMockKernelRebootData(): array
     {
         return [
             'no kernel reboot' => [false, $this->never(), 'dependency service result'],
@@ -463,7 +463,7 @@ EOF;
     }
 
     /**
-     * @dataProvider  provideSetServiceMockKernelRebootData
+     * @dataProvider provideSetServiceMockKernelRebootData
      */
     public function testSetServiceMockKernelReboot(
         bool $rebootKernel,

@@ -33,3 +33,4 @@ liipfunctionaltestbundle_exception:
 liipfunctionaltestbundle_service:
     path:  /service
     defaults: { _controller: 'Liip\Acme\Tests\App\Controller\DefaultController::serviceAction' }
+    
