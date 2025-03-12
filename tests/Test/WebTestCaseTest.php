@@ -20,7 +20,6 @@ use Liip\Acme\Tests\App\Service\Service;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\MockObject\Rule\InvokedCount;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
@@ -457,8 +456,9 @@ EOF;
     public static function provideSetServiceMockKernelRebootData(): array
     {
         return [
-            'no kernel reboot' => [false, $this->never(), 'dependency service result'],
-            'reboot kernel' => [true, $this->once(), 'mocked result'],
+            // do a kernel reboot, expects 'get' method call on mock, expected output
+            'no kernel reboot' => [false, false, 'dependency service result'],
+            'reboot kernel' => [true, true, 'mocked result'],
         ];
     }
 
@@ -467,7 +467,7 @@ EOF;
      */
     public function testSetServiceMockKernelReboot(
         bool $rebootKernel,
-        InvokedCount $expectedCallCnt,
+        bool $expectedMethodCall,
         string $expectedOutput
     ): void {
         // use the real service
@@ -482,7 +482,9 @@ EOF;
 
         // mock the service
         $mock = $this->getServiceMockBuilder(Service::class)->getMock();
-        $mock->expects($expectedCallCnt)->method('get')->willReturn('mocked result');
+        $mock->expects($expectedMethodCall ? $this->once() : $this->never())
+            ->method('get')
+            ->willReturn('mocked result');
         $this->setServiceMock(static::$kernel->getContainer(), Service::class, $mock);
 
         $client->request('GET', '/service');
