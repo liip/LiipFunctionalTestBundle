@@ -68,6 +68,11 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
+
+    Liip\Acme\Tests\App\Service\:
+        resource: './Service/'
+        public: true
+
     Liip\Acme\Tests\App\Command\TestCommand:
         tags: ['console.command']
     Liip\Acme\Tests\App\Command\TestInteractiveCommand:
