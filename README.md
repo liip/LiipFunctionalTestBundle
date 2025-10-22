@@ -18,6 +18,7 @@ Documentation
 * [Query counter](doc/query.md)
 * [Examples](doc/examples.md)
 * [Caveats](doc/caveats.md)
+* [Contributing](doc/contributing.md)
 
 To run tests in parallel:
 * [Fastest](doc/fastest.md)

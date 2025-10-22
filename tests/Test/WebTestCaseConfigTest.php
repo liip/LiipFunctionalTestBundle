@@ -29,6 +29,7 @@ use Symfony\Component\HttpKernel\Kernel;
  * So it must be loaded in a separate process.
  *
  * @runTestsInSeparateProcesses
+ *
  * @preserveGlobalState disabled
  *
  * Avoid conflict with PHPUnit annotation when reading QueryCount
@@ -41,7 +42,7 @@ class WebTestCaseConfigTest extends WebTestCase
     use LiipAcmeFixturesTrait;
 
     /** @var \Symfony\Bundle\FrameworkBundle\Client client */
-    private $client = null;
+    private $client;
 
     protected static function getKernelClass(): string
     {

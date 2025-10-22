@@ -34,7 +34,7 @@ class DefaultController extends AbstractController
 
     public function userAction(EntityManagerInterface $entityManager, int $userId): Response
     {
-        /** @var \Liip\Acme\Tests\App\Entity\User $user */
+        /** @var User $user */
         $user = $entityManager
             ->getRepository(User::class)
             ->find($userId);

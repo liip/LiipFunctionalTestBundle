@@ -38,7 +38,7 @@ class TestInteractiveCommand extends Command
         $answer = $helper->ask($input, $output, $question);
 
         $output->writeln(\PHP_EOL);
-        $output->writeln(sprintf('Value of answer: %s', $answer));
+        $output->writeln(\sprintf('Value of answer: %s', $answer));
 
         return 0;
     }

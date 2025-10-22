@@ -61,5 +61,9 @@
         "branch-alias": {
             "dev-master": "4.x-dev"
         }
+    },
+    "scripts": {
+        "docker-run-qa": "docker run -t --rm --volume .:/app --workdir /app jakzal/phpqa:1.113.8-php8.4-alpine",
+        "php-cs-fixer": "@docker-run-qa php-cs-fixer fix --config=./.qa/.php-cs-fixer.dist.php --diff --no-interaction --ansi"
     }
 }

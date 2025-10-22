@@ -55,7 +55,7 @@ final class QueryCounter
         }
 
         foreach (debug_backtrace() as $step) {
-            if ('test' === substr($step['function'], 0, 4)) { //TODO: handle tests with the @test annotation
+            if (str_starts_with($step['function'], 'test')) { // TODO: handle tests with the @test annotation
                 $annotations = $this->annotationReader->getMethodAnnotations(
                     new \ReflectionMethod($step['class'], $step['function'])
                 );

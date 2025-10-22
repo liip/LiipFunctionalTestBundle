@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   tests:
-    name: Symfony ${{ matrix.symfony-version }} on PHP ${{ matrix.php-version }} and PHPUnit ${{ matrix.phpunit-version }} flags ${{ matrix.composer-flags }}
+    name: Symfony ${{ matrix.symfony-version }} - 🐘 ${{ matrix.php-version }} - PHPUnit ${{ matrix.phpunit-version }} - 🏳️ ${{ matrix.composer-flags || 'Ø' }}
     runs-on: ubuntu-latest
 
     strategy:
@@ -106,5 +106,5 @@ jobs:
       - name: Show Composer dependencies
         run: composer show
 
-      - name: Run tests
+      - name: 🧪 Run tests
         run: php ./vendor/bin/phpunit --testdox

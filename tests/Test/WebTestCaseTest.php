@@ -262,9 +262,9 @@ class WebTestCaseTest extends WebTestCase
             $this->isSuccessful($client->getResponse());
         } catch (AssertionFailedError $e) {
             $string = <<<'EOF'
-The Response was not successful: foo (500 Internal Server Error)
-Failed asserting that false is true.
-EOF;
+                The Response was not successful: foo (500 Internal Server Error)
+                Failed asserting that false is true.
+                EOF;
             $this->assertSame($string, $e->getMessage());
 
             return;
@@ -380,11 +380,11 @@ EOF;
             $this->assertStatusCode(-1, $client);
         } catch (AssertionFailedError $e) {
             $string = <<<'EOF'
-Unexpected validation errors:
-+ children[name].data: This value should not be blank.
+                Unexpected validation errors:
+                + children[name].data: This value should not be blank.
 
-Failed asserting that 200 is identical to -1.
-EOF;
+                Failed asserting that 200 is identical to -1.
+                EOF;
             $this->assertSame($string, $e->getMessage());
 
             return;

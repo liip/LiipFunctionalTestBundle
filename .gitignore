@@ -8,3 +8,5 @@ vendor
 !.gitkeep
 
 /.phpunit.cache/
+
+.php-cs-fixer.cache
