@@ -89,11 +89,6 @@ jobs:
           symfony/yaml=${{ matrix.symfony-version }}
           phpunit/phpunit=${{ matrix.phpunit-version }}
 
-      # This is needed to fix builds where the `annotation_reader` service may not be set up if
-      # the Annotations package is not in the production dependencies
-      - name: Require Annotations v1/v2 to require for PHP 8+
-        run: composer require --no-update "doctrine/annotations:^1.8.0|^2.0"
-
       - name: Install Composer dependencies
         if: matrix.composer-flags == ''
         run: composer install
