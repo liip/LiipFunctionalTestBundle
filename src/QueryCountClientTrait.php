@@ -28,7 +28,7 @@ trait QueryCountClientTrait
         array $parameters = [],
         array $files = [],
         array $server = [],
-        string $content = null,
+        ?string $content = null,
         bool $changeHistory = true
     ): Crawler {
         $crawler = parent::request($method, $uri, $parameters, $files, $server, $content, $changeHistory);

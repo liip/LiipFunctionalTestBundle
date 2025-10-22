@@ -17,7 +17,7 @@ jobs:
         symfony-version: ['^6.4']
         phpunit-version: ['^9.6']
         include:
-          - php-version: 7.4
+          - php-version: 8.0
             symfony-version: "^5.4"
             phpunit-version: '^9.6'
             composer-flags: "--prefer-lowest"
@@ -48,6 +48,9 @@ jobs:
           - php-version: 8.4
             symfony-version: "^7.0"
             phpunit-version: "^11.0"
+          - php-version: 8.4
+            symfony-version: "^7.0"
+            phpunit-version: "^12.0"
 
     steps:
       - name: Checkout
@@ -88,12 +91,7 @@ jobs:
 
       # This is needed to fix builds where the `annotation_reader` service may not be set up if
       # the Annotations package is not in the production dependencies
-      - name: Require Annotations v1 to require for PHP 7
-        if: startsWith(matrix.php-version, '7.')
-        run: composer require --no-update "doctrine/annotations:^1.8.0"
-
       - name: Require Annotations v1/v2 to require for PHP 8+
-        if: startsWith(matrix.php-version, '7.') != true
         run: composer require --no-update "doctrine/annotations:^1.8.0|^2.0"
 
       - name: Install Composer dependencies

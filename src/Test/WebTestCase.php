@@ -366,7 +366,7 @@ abstract class WebTestCase extends BaseWebTestCase
      * Create User Token.
      *
      * Factory method for creating a User Token object for the firewall based on
-     * the user object provided. By default it will be a Username/Password
+     * the user object provided. By default, it will be a Username/Password
      * Token based on the user's credentials, but may be overridden for custom
      * tokens in your applications.
      *
@@ -464,8 +464,6 @@ abstract class WebTestCase extends BaseWebTestCase
 
     /**
      * @deprecated
-     *
-     * @return WebTestCase
      */
     public function loginAs(UserInterface $user, string $firewallName): self
     {
@@ -631,7 +629,7 @@ abstract class WebTestCase extends BaseWebTestCase
             // see https://github.com/symfony/symfony-docs/pull/14898/files#diff-29ab32502d95be802fed1001850b76c9624912cf4c299101d3ecaf17b0352562R37
             try {
                 $session = $requestStack->getSession();
-            } catch (SessionNotFoundException $e) {
+            } catch (SessionNotFoundException) {
                 $requestStack->push(new Request());
                 $session = new Session();
                 $session->start();

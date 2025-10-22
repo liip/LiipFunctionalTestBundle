@@ -140,7 +140,7 @@ class MyControllerTest extends WebTestCase
 
 ##### fetchCrawler()
 
-Get a [Crawler](http://api.symfony.com/master/Symfony/Component/DomCrawler/Crawler.html) instance from an URL:
+Get a [Crawler](http://api.symfony.com/master/Symfony/Component/DomCrawler/Crawler.html) instance from a URL:
 
 ```php
 $crawler = $this->fetchCrawler('/contact');
@@ -176,7 +176,7 @@ class MyControllerTest extends WebTestCase
 
 ##### fetchContent()
 
-Get the content of an URL:
+Get the content of a URL:
 
 ```php
 $content = $this->fetchContent('/contact');
@@ -213,7 +213,7 @@ class MyControllerTest extends WebTestCase
 
 ##### getURL()
 
-Generate an URL from a route:
+Generate a URL from a route:
 
 ```php
 $path = $this->getUrl(

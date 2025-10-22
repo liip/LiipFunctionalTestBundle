@@ -47,6 +47,6 @@ You can use the following command:
 find src/*/*/Tests/ -name "*Test.php" | vendor/bin/fastest "vendor/bin/phpunit -c app/phpunit.xml.dist {};"
 ```
 
-Otherwise you'll have to adapt the paths.
+Otherwise, you'll have to adapt the paths.
 
 ← [Caveats](./caveats.md)

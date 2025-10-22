@@ -29,6 +29,13 @@ class CommandConfigTest extends WebTestCase
 {
     private $commandTester;
 
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        restore_exception_handler();
+    }
+
     protected static function getKernelClass(): string
     {
         return AppConfigKernel::class;

@@ -49,7 +49,7 @@ class SetTestClientPassMockTest extends TestCase
             ->willReturn(false);
 
         try {
-            $setTestClientPass = new SetTestClientPass($container);
+            $setTestClientPass = new SetTestClientPass();
             $setTestClientPass->process($container);
         } catch (\Exception $e) {
             $this->assertSame(

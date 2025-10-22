@@ -4,6 +4,9 @@
 
 Removed features deprecated in [4.6](#46)
 
+## 4.14
+Drop support for PHP 7.4 (it does not support Attributes, which are obligatory for compatibility with PHPUnit 12)
+
 ## 4.10
 
 Drop support for php 7.2, 7.3

@@ -45,11 +45,7 @@ final class QueryCounter
     {
         $maxQueryCount = $this->getMaxQueryAnnotation();
 
-        if (null !== $maxQueryCount) {
-            return $maxQueryCount;
-        }
-
-        return $this->defaultMaxCount;
+        return $maxQueryCount ?? $this->defaultMaxCount;
     }
 
     private function getMaxQueryAnnotation(): ?int

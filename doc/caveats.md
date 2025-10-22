@@ -45,11 +45,11 @@ AnnotationRegistry::registerLoader([$loader, 'loadClass']);
 AnnotationReader::addGlobalIgnoredName('group');
 ```
 
-Set path to this file in your PHPUnit configuration file (eg. `phpunit.xml.dist`):
+Set path to this file in your PHPUnit configuration file (e.g. `phpunit.xml.dist`):
 
 ```xml
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/6.5/phpunit.xsd"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd"
     bootstrap="tests/bootstrap.php"
     …
 >

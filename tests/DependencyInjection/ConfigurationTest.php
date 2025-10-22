@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Liip\Acme\Tests\DependencyInjection;
 
 use Liip\FunctionalTestBundle\Test\WebTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -29,13 +30,21 @@ class ConfigurationTest extends WebTestCase
         $this->clientContainer = $client->getContainer();
     }
 
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        restore_exception_handler();
+    }
+
     /**
      * @dataProvider parametersProvider
      *
      * @param string $node  Array key from parametersProvider
-     * @param string $value Array value from parametersProvider
+     * @param mixed  $value Array value from parametersProvider
      */
-    public function testParameter($node, $value): void
+    #[DataProvider('parametersProvider')]
+    public function testParameter(string $node, $value): void
     {
         $name = 'liip_functional_test.'.$node;
 

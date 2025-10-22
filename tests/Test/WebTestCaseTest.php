@@ -19,6 +19,7 @@ use Liip\Acme\Tests\App\Service\DependencyService;
 use Liip\Acme\Tests\App\Service\Service;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -31,6 +32,13 @@ class WebTestCaseTest extends WebTestCase
     protected function setUp(): void
     {
         static::$class = AppKernel::class;
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        restore_exception_handler();
     }
 
     public static function getKernelClass(): string
@@ -69,7 +77,7 @@ class WebTestCaseTest extends WebTestCase
 
         $this->assertIsString($path);
 
-        $this->assertSame($path, '/user/1?get_parameter=abc');
+        $this->assertSame('/user/1?get_parameter=abc', $path);
     }
 
     /**
@@ -79,7 +87,6 @@ class WebTestCaseTest extends WebTestCase
     {
         $path = '/';
 
-        /** @var \Symfony\Component\DomCrawler\Crawler $crawler */
         $crawler = static::makeClient()->request('GET', $path);
 
         $this->assertSame(
@@ -438,6 +445,7 @@ EOF;
     /**
      * @dataProvider provideSetServiceMockClientData
      */
+    #[DataProvider('provideSetServiceMockClientData')]
     public function testSetServiceMockClient(string $expectedOutput, ?string $mockedServiceName): void
     {
         $client = static::createClient();
@@ -465,6 +473,7 @@ EOF;
     /**
      * @dataProvider provideSetServiceMockKernelRebootData
      */
+    #[DataProvider('provideSetServiceMockKernelRebootData')]
     public function testSetServiceMockKernelReboot(
         bool $rebootKernel,
         bool $expectedMethodCall,
