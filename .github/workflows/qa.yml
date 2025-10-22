@@ -16,7 +16,7 @@ jobs:
       - name: PHP-CS-Fixer
         uses: docker://jakzal/phpqa:1.113.8-php8.4-alpine
         with:
-          args: php-cs-fixer --dry-run --diff --no-interaction --ansi fix
+          args: php-cs-fixer fix --config=./.qa/.php-cs-fixer.dist.php --dry-run --diff --no-interaction --ansi --show-progress none
 
   composer-validate:
     name: Composer validate
