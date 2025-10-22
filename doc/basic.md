@@ -153,7 +153,7 @@ $this->assertSame(
 ```
 
 > [!TIP]
-> Use the crawler returned by `request()` from Symfony's `WebTestCase`:
+> Use the crawler returned by `request()` or `assertSelectorCount()` from Symfony's `WebTestCase`:
 
 ```php
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -170,6 +170,13 @@ class MyControllerTest extends WebTestCase
             1,
             $crawler->filter('html > body')->count()
         );
+        
+        // or
+        $client = static::createClient();
+        $client->request('GET', '/contact');
+        
+        // There is one <body> tag
+        self::assertSelectorCount(1, 'html > body');
     }
 }
 ```
