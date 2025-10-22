@@ -196,7 +196,7 @@ $this->assertStringContainsString(
 ```
 
 > [!TIP]
-> Call `getResponse()->getContent()` from Symfony's `WebTestCase`:
+> Call `getResponse()->getContent()` or use `assertSelectorTextContains()` from Symfony's `WebTestCase`:
 
 ```php
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -212,6 +212,9 @@ class MyControllerTest extends WebTestCase
             '<h1>LiipFunctionalTestBundle</h1>',
             $client->getResponse()->getContent()
         );
+        
+        //or
+        self::assertSelectorTextContains('h1', 'LiipFunctionalTestBundle');
     }
 }
 ```
