@@ -66,7 +66,7 @@ abstract class WebTestCase extends BaseWebTestCase
     /**
      * @var array|null
      */
-    private $inputs = null;
+    private $inputs;
 
     /**
      * @var array
@@ -79,7 +79,7 @@ abstract class WebTestCase extends BaseWebTestCase
     protected function getServiceMockBuilder(string $id): MockBuilder
     {
         $service = $this->getContainer()->get($id);
-        $class = \get_class($service);
+        $class = $service::class;
 
         return $this->getMockBuilder($class)->disableOriginalConstructor();
     }
@@ -168,7 +168,7 @@ abstract class WebTestCase extends BaseWebTestCase
             $verbosity = '\Symfony\Component\Console\Output\StreamOutput::VERBOSITY_'.$level;
 
             if (!\defined($verbosity)) {
-                throw new \OutOfBoundsException(sprintf('The set value "%s" for verbosityLevel is not valid. Accepted are: "quiet", "normal", "verbose", "very_verbose" and "debug".', $level));
+                throw new \OutOfBoundsException(\sprintf('The set value "%s" for verbosityLevel is not valid. Accepted are: "quiet", "normal", "verbose", "very_verbose" and "debug".', $level));
             }
 
             $this->verbosityLevel = \constant($verbosity);
@@ -196,8 +196,6 @@ abstract class WebTestCase extends BaseWebTestCase
      * Set verbosity for Symfony 3.4+.
      *
      * @see https://github.com/symfony/symfony/pull/24425
-     *
-     * @param $level
      */
     private function setVerbosityLevelEnv($level): void
     {
@@ -216,7 +214,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
         // Check the local decorated flag
         if (false === \is_bool($this->decorated)) {
-            throw new \OutOfBoundsException(sprintf('`WebTestCase::decorated` has to be `bool`. "%s" given.', \gettype($this->decorated)));
+            throw new \OutOfBoundsException(\sprintf('`WebTestCase::decorated` has to be `bool`. "%s" given.', \gettype($this->decorated)));
         }
 
         return $this->decorated;
@@ -278,7 +276,7 @@ abstract class WebTestCase extends BaseWebTestCase
     public function __set($name, $value): void
     {
         if ('environment' !== $name) {
-            throw new \Exception(sprintf('There is no property with name "%s"', $name));
+            throw new \Exception(\sprintf('There is no property with name "%s"', $name));
         }
 
         @trigger_error('Setting "environment" property is deprecated, please use static::$env.', \E_USER_DEPRECATED);
@@ -292,7 +290,7 @@ abstract class WebTestCase extends BaseWebTestCase
     public function __isset($name)
     {
         if ('environment' !== $name) {
-            throw new \Exception(sprintf('There is no property with name "%s"', $name));
+            throw new \Exception(\sprintf('There is no property with name "%s"', $name));
         }
 
         @trigger_error('Checking "environment" property is deprecated, please use static::$env.', \E_USER_DEPRECATED);
@@ -306,7 +304,7 @@ abstract class WebTestCase extends BaseWebTestCase
     public function __get($name)
     {
         if ('environment' !== $name) {
-            throw new \Exception(sprintf('There is no property with name "%s"', $name));
+            throw new \Exception(\sprintf('There is no property with name "%s"', $name));
         }
 
         @trigger_error('Getting "environment" property is deprecated, please use static::$env.', \E_USER_DEPRECATED);
@@ -467,7 +465,7 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     public function loginAs(UserInterface $user, string $firewallName): self
     {
-        @trigger_error(sprintf('"%s()" is deprecated, use loginClient() after creating a client.', __METHOD__), \E_USER_DEPRECATED);
+        @trigger_error(\sprintf('"%s()" is deprecated, use loginClient() after creating a client.', __METHOD__), \E_USER_DEPRECATED);
 
         $this->firewallLogins[$firewallName] = $user;
 
@@ -482,7 +480,7 @@ abstract class WebTestCase extends BaseWebTestCase
         // Available since Symfony 5.1
         if (method_exists($client, 'loginUser')) {
             @trigger_error(
-                sprintf(
+                \sprintf(
                     '"%s()" is deprecated, use loginUser() from Symfony 5.1+ instead %s',
                     __METHOD__,
                     'https://symfony.com/doc/5.4/testing.html#logging-in-users-authentication'
@@ -582,14 +580,14 @@ abstract class WebTestCase extends BaseWebTestCase
 
             $client->getCookieJar()->set(new Cookie($options['name'], $session->getId()));
 
-            /** @var $user UserInterface */
+            /** @var UserInterface $user */
             foreach ($this->firewallLogins as $firewallName => $user) {
                 $token = $this->createUserToken($user, $firewallName);
 
                 // Available since Symfony 5.1
                 if (method_exists($client, 'loginUser')) {
                     @trigger_error(
-                        sprintf(
+                        \sprintf(
                             '"%s()" is deprecated, use loginUser() from Symfony 5.1+ instead %s',
                             __METHOD__,
                             'https://symfony.com/doc/5.4/testing.html#logging-in-users-authentication'

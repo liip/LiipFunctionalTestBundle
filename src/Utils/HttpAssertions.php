@@ -69,13 +69,13 @@ class HttpAssertions extends TestCase
             if ($exception = $container->get('liip_functional_test.exception_listener')->getLastException()) {
                 $helpfulErrorMessage = $exception->getMessage()."\n\n".$exception->getTraceAsString();
             } elseif (
-                $container->has('liip_functional_test.validator') &&
-                \count($validationErrors = $container->get('liip_functional_test.validator')->getLastErrors())
+                $container->has('liip_functional_test.validator')
+                && \count($validationErrors = $container->get('liip_functional_test.validator')->getLastErrors())
             ) {
                 $helpfulErrorMessage = "Unexpected validation errors:\n";
 
                 foreach ($validationErrors as $error) {
-                    $helpfulErrorMessage .= sprintf("+ %s: %s\n", $error->getPropertyPath(), $error->getMessage());
+                    $helpfulErrorMessage .= \sprintf("+ %s: %s\n", $error->getPropertyPath(), $error->getMessage());
                 }
             } else {
                 $helpfulErrorMessage = substr((string) $client->getResponse(), 0, 200);
@@ -98,7 +98,7 @@ class HttpAssertions extends TestCase
         }
 
         if (!$container->has('liip_functional_test.validator')) {
-            self::fail(sprintf(
+            self::fail(\sprintf(
                 'Method %s() can not be used as the validation component of the Symfony framework is disabled.',
                 __METHOD__
             ));
