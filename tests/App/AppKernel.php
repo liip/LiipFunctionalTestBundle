@@ -14,13 +14,17 @@ declare(strict_types=1);
 namespace Liip\Acme\Tests\App;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\HttpKernel\Kernel;
 
 class AppKernel extends Kernel
 {
+    /**
+     * @return Bundle[]
+     */
     public function registerBundles(): array
     {
-        $bundles = [
+        return [
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Symfony\Bundle\SecurityBundle\SecurityBundle(),
             new \Symfony\Bundle\TwigBundle\TwigBundle(),
@@ -29,8 +33,6 @@ class AppKernel extends Kernel
             new \Liip\FunctionalTestBundle\LiipFunctionalTestBundle(),
             new \Liip\Acme\Tests\App\AcmeBundle(),
         ];
-
-        return $bundles;
     }
 
     public function registerContainerConfiguration(LoaderInterface $loader): void

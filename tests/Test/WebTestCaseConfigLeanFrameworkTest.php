@@ -28,6 +28,13 @@ use Liip\FunctionalTestBundle\Test\WebTestCase;
  */
 class WebTestCaseConfigLeanFrameworkTest extends WebTestCase
 {
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        restore_exception_handler();
+    }
+
     protected static function getKernelClass(): string
     {
         return AppConfigLeanFrameworkKernel::class;

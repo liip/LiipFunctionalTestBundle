@@ -24,7 +24,7 @@ class MyTestCase extends WebTestCase {
 }
 ```
 
-Depending where your tests are running, you might want to disable the output
+Depending on where your tests are running, you might want to disable the output
 decorator:
 ```yaml
 # app/config/config_test.yml

@@ -4,7 +4,7 @@ Create an already logged client
 > [!TIP]
 > Some methods provided by this bundle have been implemented in Symfony. Alternative ways will be shown below.
 
-The `WebTestCase` provides a conveniency method to create an already logged in client using the first parameter of
+The `WebTestCase` provides a convenience method to create an already logged in client using the first parameter of
 `WebTestCase::makeClient()`.
 
 You have three alternatives to create an already logged in client:
@@ -77,14 +77,14 @@ framework:
 ### Recommendations to use already logged in clients
 
 As [recommended by the Symfony Cookbook](http://symfony.com/doc/current/cookbook/testing/http_authentication.html) in
-the chapter about Testing, it is a good idea to to use HTTP Basic Auth for you tests. You can configure the
+the chapter about Testing, it is a good idea to use HTTP Basic Auth for you tests. You can configure the
 authentication method in your `config_test.yml`:
 
 ```yaml
 # The best practice in symfony is to put a HTTP basic auth
 # for the firewall in test env, so that not to have to
 # make a request to the login form every single time.
-# http://symfony.com/doc/current/cookbook/testing/http_authentication.html
+# https://symfony.com/doc/current/cookbook/testing/http_authentication.html
 security:
     firewalls:
         NAME_OF_YOUR_FIREWALL:

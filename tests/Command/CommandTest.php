@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Liip\Acme\Tests\Command;
 
 use Liip\FunctionalTestBundle\Test\WebTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -73,6 +74,7 @@ class CommandTest extends WebTestCase
     /**
      * @dataProvider useEnvProvider
      */
+    #[DataProvider('useEnvProvider')]
     public function testRunCommandWithoutOptionsAndNotReuseKernel(bool $useEnv): void
     {
         if ($useEnv) {
@@ -272,5 +274,6 @@ class CommandTest extends WebTestCase
         parent::tearDown();
 
         unset($this->commandTester);
+        restore_exception_handler();
     }
 }
