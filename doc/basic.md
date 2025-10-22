@@ -2,7 +2,7 @@ Basic usage
 ===========
 
 > [!TIP]
-> Some methods provided by this bundle have been implemented in Symfony. Alternative ways will be shown below.
+> Some methods provided by this bundle have been [implemented in Symfony](https://symfony.com/doc/current/testing.html#application-tests). Alternative ways will be shown below.
 
 Use `$this->makeClient` to create a Client object. Client is a Symfony class
 that can simulate HTTP requests to your controllers and then inspect the
@@ -77,7 +77,7 @@ $this->isSuccessful($client->getResponse());
 ```
 
 > [!TIP]
-> Call `assertResponseIsSuccessful()` from Symfony's `WebTestCase`:
+> Call `assertResponseIsSuccessful()` from Symfony's `WebTestCase` ([documentation](https://symfony.com/doc/current/testing.html#response-assertions)):
 
 ```php
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -119,7 +119,7 @@ $this->assertStatusCode(302, $client);
 ```
 
 > [!TIP]
-> Call `assertResponseStatusCodeSame()` from Symfony's `WebTestCase`:
+> Call `assertResponseStatusCodeSame()` from Symfony's `WebTestCase` ([documentation](https://symfony.com/doc/current/testing.html#response-assertions)):
 
 ```php
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -153,7 +153,7 @@ $this->assertSame(
 ```
 
 > [!TIP]
-> Use the crawler returned by `request()` or `assertSelectorCount()` from Symfony's `WebTestCase`:
+> Use the crawler returned by `request()` or `assertSelectorCount()` from Symfony's `WebTestCase` ([documentation](https://symfony.com/doc/current/testing.html#crawler-assertions)):
 
 ```php
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -196,7 +196,7 @@ $this->assertStringContainsString(
 ```
 
 > [!TIP]
-> Call `getResponse()->getContent()` or use `assertSelectorTextContains()` from Symfony's `WebTestCase`:
+> Call `getResponse()->getContent()` or use `assertSelectorText*()` from Symfony's `WebTestCase` ([documentation](https://symfony.com/doc/current/testing.html#crawler-assertions)):
 
 ```php
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
