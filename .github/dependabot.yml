@@ -1,0 +1,15 @@
+version: 2
+
+# inspired by https://github.com/ergebnis/phpstan-rules/blob/main/.github/dependabot.yaml
+
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+    open-pull-requests-limit: 15
+    commit-message:
+      include: "scope"
+      prefix: "github-actions"
