@@ -93,8 +93,8 @@ jobs:
           phpunit/phpunit=${{ matrix.phpunit-version }}
 
       # This is needed to fix builds where the `annotation_reader` service may not be set up if
-      # the Annotations package is not in the production dependencies
-      - name: Require Annotations v1/v2 to require for PHP 8+
+      # the doctrine/annotations package is not in the production dependencies
+      - name: Move doctrine/annotations v1/v2 to require (non-dev) for PHP 8+
         run: composer require --no-update "doctrine/annotations:^1.8.0|^2.0"
 
       - name: Install Composer dependencies
