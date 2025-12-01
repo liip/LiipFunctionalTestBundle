@@ -11,6 +11,7 @@
     <php>
         <server name="KERNEL_CLASS" value="Liip\Acme\Tests\App\AppKernel"/>
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
+        <env name="APP_RUNTIME_MODE" value="web=1"/>
     </php>
     <testsuites>
         <testsuite name="Project Test Suite">
