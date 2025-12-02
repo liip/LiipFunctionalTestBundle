@@ -43,7 +43,7 @@ class WebTestCaseConfigLeanFrameworkTest extends WebTestCase
 
     public function testAssertValidationErrorsTriggersError(): void
     {
-        $client = static::makeClient();
+        $client = static::createClientWithParams();
 
         $path = '/form';
         $client->request('GET', $path);

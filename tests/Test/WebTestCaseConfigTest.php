@@ -52,13 +52,13 @@ class WebTestCaseConfigTest extends WebTestCase
      */
     public function testIndexClientWithCredentials(): void
     {
-        $this->client = static::makeClientWithCredentials('foobar', '12341234');
+        $this->client = static::createClientWithParams([], 'foobar', '12341234');
 
         $path = '/admin';
 
         $crawler = $this->client->request('GET', $path);
 
-        $this->assertStatusCode(200, $this->client);
+        self::assertResponseStatusCodeSame(200);
 
         $this->assertSame(
             1,

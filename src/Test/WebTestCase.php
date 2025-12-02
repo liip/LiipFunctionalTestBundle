@@ -23,11 +23,9 @@ use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ResettableContainerInterface;
-use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Exception\SessionNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -261,22 +259,6 @@ abstract class WebTestCase extends BaseWebTestCase
      * $params can be used to pass headers to the client, note that they have
      * to follow the naming format used in $_SERVER.
      * Example: 'HTTP_X_REQUESTED_WITH' instead of 'X-Requested-With'
-     *
-     * @deprecated
-     */
-    protected function makeClient(array $params = []): Client
-    {
-        return $this->createClientWithParams($params);
-    }
-
-    /**
-     * Creates an instance of a lightweight Http client.
-     *
-     * $params can be used to pass headers to the client, note that they have
-     * to follow the naming format used in $_SERVER.
-     * Example: 'HTTP_X_REQUESTED_WITH' instead of 'X-Requested-With'
-     *
-     * @deprecated
      */
     protected function makeAuthenticatedClient(array $params = []): Client
     {
@@ -285,21 +267,6 @@ abstract class WebTestCase extends BaseWebTestCase
         $password = $this->getContainer()
             ->getParameter('liip_functional_test.authentication.password');
 
-        return $this->createClientWithParams($params, $username, $password);
-    }
-
-    /**
-     * Creates an instance of a lightweight Http client and log in user with
-     * username and password params.
-     *
-     * $params can be used to pass headers to the client, note that they have
-     * to follow the naming format used in $_SERVER.
-     * Example: 'HTTP_X_REQUESTED_WITH' instead of 'X-Requested-With'
-     *
-     * @deprecated
-     */
-    protected function makeClientWithCredentials(string $username, string $password, array $params = []): Client
-    {
         return $this->createClientWithParams($params, $username, $password);
     }
 
@@ -349,71 +316,6 @@ abstract class WebTestCase extends BaseWebTestCase
     }
 
     /**
-     * Checks the success state of a response.
-     *
-     * @param Response $response Response object
-     * @param bool     $success  to define whether the response is expected to be successful
-     * @param string   $type
-     */
-    public function isSuccessful(Response $response, $success = true, $type = 'text/html'): void
-    {
-        HttpAssertions::isSuccessful($response, $success, $type);
-    }
-
-    /**
-     * Executes a request on the given url and returns the response contents.
-     *
-     * This method also asserts the request was successful.
-     *
-     * @param string $path           path of the requested page
-     * @param string $method         The HTTP method to use, defaults to GET
-     * @param bool   $authentication Whether to use authentication, defaults to false
-     * @param bool   $success        to define whether the response is expected to be successful
-     */
-    public function fetchContent(string $path, string $method = 'GET', bool $authentication = false, bool $success = true): string
-    {
-        $client = ($authentication) ? $this->makeAuthenticatedClient() : $this->makeClient();
-
-        $client->request($method, $path);
-
-        $content = $client->getResponse()->getContent();
-        $this->isSuccessful($client->getResponse(), $success);
-
-        return $content;
-    }
-
-    /**
-     * Executes a request on the given url and returns a Crawler object.
-     *
-     * This method also asserts the request was successful.
-     *
-     * @param string $path           path of the requested page
-     * @param string $method         The HTTP method to use, defaults to GET
-     * @param bool   $authentication Whether to use authentication, defaults to false
-     * @param bool   $success        Whether the response is expected to be successful
-     */
-    public function fetchCrawler(string $path, string $method = 'GET', bool $authentication = false, bool $success = true): Crawler
-    {
-        $client = ($authentication) ? $this->makeAuthenticatedClient() : $this->makeClient();
-
-        $crawler = $client->request($method, $path);
-
-        $this->isSuccessful($client->getResponse(), $success);
-
-        return $crawler;
-    }
-
-    /**
-     * Asserts that the HTTP response code of the last request performed by
-     * $client matches the expected code. If not, raises an error with more
-     * information.
-     */
-    public static function assertStatusCode(int $expectedStatusCode, Client $client): void
-    {
-        HttpAssertions::assertStatusCode($expectedStatusCode, $client);
-    }
-
-    /**
      * Assert that the last validation errors within $container match the
      * expected keys.
      *
@@ -439,10 +341,7 @@ abstract class WebTestCase extends BaseWebTestCase
         parent::tearDown();
     }
 
-    /**
-     * @deprecated
-     */
-    protected function createClientWithParams(array $params, ?string $username = null, ?string $password = null): Client
+    protected function createClientWithParams(array $params = [], ?string $username = null, ?string $password = null): Client
     {
         if ($username && $password) {
             $params = array_merge($params, [

@@ -26,7 +26,7 @@ class ConfigurationTest extends WebTestCase
 
     protected function setUp(): void
     {
-        $client = static::makeClient();
+        $client = static::createClientWithParams();
         $this->clientContainer = $client->getContainer();
     }
 
