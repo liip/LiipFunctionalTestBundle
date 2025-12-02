@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Liip\Acme\Tests\Traits;
 
+use Doctrine\DBAL\Connection;
 use Liip\Acme\Tests\App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -62,7 +63,15 @@ trait LiipAcmeFixturesTrait
 
         $manager = $this->getContainer()->get('doctrine')->getManager();
 
+        /** @var Connection $connection */
         $connection = $manager->getConnection();
+
+        // Doctrine DBAL 3.x deprecated query() in favor of executeQuery()
+        if (method_exists($connection, 'executeQuery')) {
+            $connection->executeQuery('DELETE FROM liip_user');
+
+            return;
+        }
         $connection->query('DELETE FROM liip_user');
     }
 }
