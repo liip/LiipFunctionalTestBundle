@@ -54,9 +54,11 @@ trait LiipAcmeFixturesTrait
         $commandTester = new CommandTester($command);
         $return = $commandTester->execute([
             '--force' => true,
+            '--complete' => true,
         ]);
 
         $this->assertSame(0, $return, $commandTester->getDisplay());
+        $this->assertStringNotContainsString('No Metadata Classes to process', $commandTester->getDisplay());
 
         $manager = $this->getContainer()->get('doctrine')->getManager();
 
