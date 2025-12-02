@@ -13,13 +13,26 @@ declare(strict_types=1);
 
 namespace Liip\Acme\Tests\App\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+#[
+    ORM\Entity,
+    ORM\Table(name: 'liip_user'),
+]
 class User implements UserInterface
 {
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
+
+    #[ORM\Column(type: 'string', length: 255)]
     private string $name;
+
+    #[ORM\Column(type: 'string', length: 255)]
     private string $email;
+
+    #[ORM\Column(type: 'string', length: 255)]
     private string $salt;
 
     public function __construct()
