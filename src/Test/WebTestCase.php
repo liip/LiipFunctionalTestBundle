@@ -55,9 +55,6 @@ abstract class WebTestCase extends BaseWebTestCase
 
     protected $containers;
 
-    // 5 * 1024 * 1024 KB
-    protected $maxMemory = 5242880;
-
     // RUN COMMAND
     protected $verbosityLevel;
 
@@ -259,60 +256,6 @@ abstract class WebTestCase extends BaseWebTestCase
     }
 
     /**
-     * Keep support of Symfony < 5.3.
-     */
-    public function __call(string $name, $arguments)
-    {
-        if ('getContainer' === $name) {
-            return $this->getDependencyInjectionContainer();
-        }
-
-        throw new \Exception("Method {$name} is not supported.");
-    }
-
-    /**
-     * @deprecated
-     */
-    public function __set($name, $value): void
-    {
-        if ('environment' !== $name) {
-            throw new \Exception(\sprintf('There is no property with name "%s"', $name));
-        }
-
-        @trigger_error('Setting "environment" property is deprecated, please use static::$env.', \E_USER_DEPRECATED);
-
-        static::$env = $value;
-    }
-
-    /**
-     * @deprecated
-     */
-    public function __isset($name)
-    {
-        if ('environment' !== $name) {
-            throw new \Exception(\sprintf('There is no property with name "%s"', $name));
-        }
-
-        @trigger_error('Checking "environment" property is deprecated, please use static::$env.', \E_USER_DEPRECATED);
-
-        return true;
-    }
-
-    /**
-     * @deprecated
-     */
-    public function __get($name)
-    {
-        if ('environment' !== $name) {
-            throw new \Exception(\sprintf('There is no property with name "%s"', $name));
-        }
-
-        @trigger_error('Getting "environment" property is deprecated, please use static::$env.', \E_USER_DEPRECATED);
-
-        return static::$env;
-    }
-
-    /**
      * Creates an instance of a lightweight Http client.
      *
      * $params can be used to pass headers to the client, note that they have
@@ -458,60 +401,6 @@ abstract class WebTestCase extends BaseWebTestCase
         $this->isSuccessful($client->getResponse(), $success);
 
         return $crawler;
-    }
-
-    /**
-     * @deprecated
-     */
-    public function loginAs(UserInterface $user, string $firewallName): self
-    {
-        @trigger_error(\sprintf('"%s()" is deprecated, use loginClient() after creating a client.', __METHOD__), \E_USER_DEPRECATED);
-
-        $this->firewallLogins[$firewallName] = $user;
-
-        return $this;
-    }
-
-    /**
-     * @deprecated
-     */
-    public function loginClient(KernelBrowser $client, UserInterface $user, string $firewallName): void
-    {
-        // Available since Symfony 5.1
-        if (method_exists($client, 'loginUser')) {
-            @trigger_error(
-                \sprintf(
-                    '"%s()" is deprecated, use loginUser() from Symfony 5.1+ instead %s',
-                    __METHOD__,
-                    'https://symfony.com/doc/5.4/testing.html#logging-in-users-authentication'
-                ),
-                \E_USER_DEPRECATED
-            );
-
-            $client->loginUser($user);
-
-            return;
-        }
-
-        // has to be set otherwise "hasPreviousSession" in Request returns false.
-        $options = $client->getContainer()->getParameter('session.storage.options');
-
-        if (!$options || !isset($options['name'])) {
-            throw new \InvalidArgumentException('Missing session.storage.options#name');
-        }
-
-        $session = $this->getSession($client);
-
-        $client->getCookieJar()->set(new Cookie($options['name'], $session->getId()));
-
-        $token = $this->createUserToken($user, $firewallName);
-
-        $tokenStorage = $client->getContainer()->get('security.token_storage');
-
-        $tokenStorage->setToken($token);
-        $session->set('_security_'.$firewallName, serialize($token));
-
-        $session->save();
     }
 
     /**

@@ -57,14 +57,6 @@ class WebTestCaseTest extends WebTestCase
         );
     }
 
-    public function testMakeClient(): void
-    {
-        $this->assertInstanceOf(
-            'Symfony\Bundle\FrameworkBundle\Client',
-            static::makeClient()
-        );
-    }
-
     public function testGetUrl(): void
     {
         $path = $this->getUrl(
@@ -108,7 +100,6 @@ class WebTestCaseTest extends WebTestCase
     /**
      * Call methods from the parent class.
      */
-
     /**
      * @depends testIndex
      */

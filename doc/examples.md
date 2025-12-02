@@ -103,4 +103,4 @@ class ExampleFunctionalTest extends WebTestCase
 }
 ```
 
-← [Query counter](./query.md) • [Caveats](./caveats.md) →
+← [Examples](./examples.md) • [Caveats](./caveats.md) →

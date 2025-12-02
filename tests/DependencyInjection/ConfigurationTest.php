@@ -66,7 +66,6 @@ class ConfigurationTest extends WebTestCase
         return [
             ['command_verbosity', 'normal'],
             ['command_decoration', true],
-            ['query.max_query_count', null],
             ['authentication.username', ''],
             ['authentication.password', ''],
         ];

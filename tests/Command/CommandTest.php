@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Liip\Acme\Tests\Command;
 
 use Liip\FunctionalTestBundle\Test\WebTestCase;
-use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -71,17 +70,9 @@ class CommandTest extends WebTestCase
         $this->assertStringContainsString('Value of answer: AcmeDemoBundle', $this->commandTester->getDisplay());
     }
 
-    /**
-     * @dataProvider useEnvProvider
-     */
-    #[DataProvider('useEnvProvider')]
-    public function testRunCommandWithoutOptionsAndNotReuseKernel(bool $useEnv): void
+    public function testRunCommandWithoutOptionsAndNotReuseKernel(): void
     {
-        if ($useEnv) {
-            static::$env = 'test';
-        } else {
-            $this->environment = 'test';
-        }
+        static::$env = 'test';
 
         // Run command without options
         $this->commandTester = $this->runCommand('liipfunctionaltestbundle:test');
@@ -97,11 +88,7 @@ class CommandTest extends WebTestCase
         $this->assertTrue($this->getDecorated());
 
         // Run command and reuse kernel
-        if ($useEnv) {
-            static::$env = 'prod';
-        } else {
-            $this->environment = 'prod';
-        }
+        static::$env = 'prod';
 
         self::ensureKernelShutdown();
         $this->getContainer();
@@ -111,14 +98,6 @@ class CommandTest extends WebTestCase
 
         $this->assertStringContainsString('Environment: prod', $this->commandTester->getDisplay());
         $this->assertStringContainsString('Verbosity level: NORMAL', $this->commandTester->getDisplay());
-    }
-
-    public static function useEnvProvider(): array
-    {
-        return [
-            [true],
-            [false],
-        ];
     }
 
     public function testRunCommandWithoutDecoration(): void

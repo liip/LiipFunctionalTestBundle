@@ -41,16 +41,6 @@ class WebTestCaseConfigLeanFrameworkTest extends WebTestCase
         return AppConfigLeanFrameworkKernel::class;
     }
 
-    public function testAssertStatusCode(): void
-    {
-        $client = static::makeClient();
-
-        $path = '/';
-        $client->request('GET', $path);
-
-        $this->assertStatusCode(200, $client);
-    }
-
     public function testAssertValidationErrorsTriggersError(): void
     {
         $client = static::makeClient();

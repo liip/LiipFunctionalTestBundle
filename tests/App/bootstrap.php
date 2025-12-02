@@ -11,14 +11,6 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-use Doctrine\Common\Annotations\AnnotationRegistry;
-
 $loader = require __DIR__.'/../../vendor/autoload.php';
-
-// This method only exist on doctrine/annotations:^1.3,
-// it is missing but not needed with doctrine/annotations:^2.0
-if (method_exists(AnnotationRegistry::class, 'registerLoader')) {
-    AnnotationRegistry::registerLoader([$loader, 'loadClass']);
-}
 
 return $loader;
