@@ -36,8 +36,8 @@ doctrine:
                 connection: default
                 mappings:
                     LiipFunctionalTestBundle:
-                        type: "yml"
-                        dir: "%kernel.project_dir%/Resources/config/doctrine"
+                        type: "attribute"
+                        dir: "%kernel.project_dir%/Entity"
                         prefix: 'Liip\Acme\Tests\App\Entity'
                         is_bundle: false
 
