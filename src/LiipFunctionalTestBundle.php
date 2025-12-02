@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Liip\FunctionalTestBundle;
 
 use Liip\FunctionalTestBundle\DependencyInjection\Compiler\OptionalValidatorPass;
-use Liip\FunctionalTestBundle\DependencyInjection\Compiler\SetTestClientPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -22,7 +21,6 @@ class LiipFunctionalTestBundle extends Bundle
 {
     public function build(ContainerBuilder $container): void
     {
-        $container->addCompilerPass(new SetTestClientPass());
         $container->addCompilerPass(new OptionalValidatorPass());
     }
 }

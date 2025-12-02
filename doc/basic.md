@@ -4,14 +4,10 @@ Basic usage
 > [!TIP]
 > Some methods provided by this bundle have been [implemented in Symfony](https://symfony.com/doc/current/testing.html#application-tests). Alternative ways will be shown below.
 
-Use `$this->makeClient` to create a Client object. Client is a Symfony class
+Use `$this->createClientWithParams()` to create a Client object. Client is a Symfony class
 that can simulate HTTP requests to your controllers and then inspect the
 results. It is covered by the [functional tests](http://symfony.com/doc/current/book/testing.html#functional-tests)
 section of the Symfony documentation.
-
-After making a request, use `assertStatusCode` to verify the HTTP status code.
-If it fails it will display the last exception message or validation errors
-encountered by the Client object.
 
 If you are expecting validation errors, test them with `assertValidationErrors`.
 
@@ -22,119 +18,27 @@ class MyControllerTest extends WebTestCase
 {
     public function testContact()
     {
-        $client = $this->makeClient();
+        $client = $this->createClient();
         $crawler = $client->request('GET', '/contact');
-        $this->assertStatusCode(200, $client);
+        self::assertResponseStatusCodeSame(200);
 
         $form = $crawler->selectButton('Submit')->form();
         $crawler = $client->submit($form);
 
         // We should get a validation error for the empty fields.
-        $this->assertStatusCode(200, $client);
+        self::assertResponseStatusCodeSame(200);
         $this->assertValidationErrors(['data.email', 'data.message'], $client->getContainer());
 
         // Try again with with the fields filled out.
         $form = $crawler->selectButton('Submit')->form();
         $form->setValues(['contact[email]' => 'nobody@example.com', 'contact[message]' => 'Hello']);
         $client->submit($form);
-        $this->assertStatusCode(302, $client);
-    }
-}
-```
-
-> [!TIP]
-> Instead of calling `$this->makeClient`, consider calling `createClient()` from Symfony's `WebTestCase`:
-
-```php
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-
-class MyControllerTest extends WebTestCase
-{
-    public function testContact()
-    {
-        $client = static::createClient();
-        $client->request('GET', '/contact');
-
-        // …
+        self::assertResponseStatusCodeSame(302);
     }
 }
 ```
 
 ### Methods
-
-#### Check HTTP status codes
-
-##### isSuccessful()
-
-Check that the request succeeded:
-
-```php
-$client = $this->makeClient();
-$client->request('GET', '/contact');
-
-// Successful HTTP request
-$this->isSuccessful($client->getResponse());
-```
-
-> [!TIP]
-> Call `assertResponseIsSuccessful()` from Symfony's `WebTestCase` ([documentation](https://symfony.com/doc/current/testing.html#response-assertions)):
-
-```php
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-
-class MyControllerTest extends WebTestCase
-{
-    public function testContact()
-    {
-        $client = static::createClient();
-        $client->request('GET', '/contact');
-
-        self::assertResponseIsSuccessful();
-    }
-}
-```
-
-Add `false` as the second argument in order to check that the request failed:
-
-```php
-$client = $this->makeClient();
-$client->request('GET', '/error');
-
-// Request returned an error
-$this->isSuccessful($client->getResponse(), false);
-```
-
-In order to test more specific status codes, use `assertStatusCode()`:
-
-##### assertStatusCode()
-
-Check the HTTP status code from the request:
-
-```php
-$client = $this->makeClient();
-$client->request('GET', '/contact');
-
-// Standard response for successful HTTP request
-$this->assertStatusCode(302, $client);
-```
-
-> [!TIP]
-> Call `assertResponseStatusCodeSame()` from Symfony's `WebTestCase` ([documentation](https://symfony.com/doc/current/testing.html#response-assertions)):
-
-```php
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-
-class MyControllerTest extends WebTestCase
-{
-    public function testContact()
-    {
-        $client = static::createClient();
-        $client->request('GET', '/contact');
-
-        self::assertResponseStatusCodeSame(302);
-    }
-}
-```
 
 #### Get Crawler or content
 
@@ -177,44 +81,6 @@ class MyControllerTest extends WebTestCase
         
         // There is one <body> tag
         self::assertSelectorCount(1, 'html > body');
-    }
-}
-```
-
-##### fetchContent()
-
-Get the content of a URL:
-
-```php
-$content = $this->fetchContent('/contact');
-
-// `filter()` can't be used since the output is HTML code, check the content directly
-$this->assertStringContainsString(
-    '<h1>LiipFunctionalTestBundle</h1>',
-    $content
-);
-```
-
-> [!TIP]
-> Call `getResponse()->getContent()` or use `assertSelectorText*()` from Symfony's `WebTestCase` ([documentation](https://symfony.com/doc/current/testing.html#crawler-assertions)):
-
-```php
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-
-class MyControllerTest extends WebTestCase
-{
-    public function testContact()
-    {
-        $client = static::createClient();
-        $client->request('GET', '/contact');
-
-        $this->assertStringContainsString(
-            '<h1>LiipFunctionalTestBundle</h1>',
-            $client->getResponse()->getContent()
-        );
-        
-        //or
-        self::assertSelectorTextContains('h1', 'LiipFunctionalTestBundle');
     }
 }
 ```

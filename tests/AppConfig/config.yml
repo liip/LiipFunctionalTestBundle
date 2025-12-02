@@ -9,9 +9,6 @@ framework:
 liip_functional_test:
     command_verbosity: "very_verbose"
     command_decoration: false
-    query:
-        # TODO: it should be 1
-        max_query_count: 0
     authentication:
         username: "foobar"
         password: "12341234"

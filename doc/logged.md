@@ -1,20 +1,10 @@
 Create an already logged client
 ===============================
 
-> [!TIP]
-> Some methods provided by this bundle have been implemented in Symfony. Alternative ways will be shown below.
-
-The `WebTestCase` provides a convenience method to create an already logged in client using the first parameter of
-`WebTestCase::makeClient()`.
-
-You have three alternatives to create an already logged in client:
+You have two alternatives to create an already logged in client:
 
 1. Use the `liip_functional_test.authentication` key in the `config_test.yml` file;
 2. Pass an array with login parameters directly when you call the method;
-3. Use the method `WebTestCase::loginClient()`;
-
-> [!TIP]
-> Since Symfony 5.1, [`loginUser()`](https://symfony.com/doc/5.x/testing.html#logging-in-users-authentication) can be used.
 
 ### Logging in a user from the `config_test.yml` file
 
@@ -95,4 +85,4 @@ security:
 
 For more details, you can check the implementation of `WebTestCase` in that bundle.
 
-← [Command test](./command.md) • [Query counter](./query.md) →
+← [Command test](./command.md) • [Examples](./examples.md) →

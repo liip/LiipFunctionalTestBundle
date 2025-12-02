@@ -15,7 +15,6 @@ Documentation
 * [Basic usage](doc/basic.md)
 * [Command test](doc/command.md)
 * [Logged client](doc/logged.md)
-* [Query counter](doc/query.md)
 * [Examples](doc/examples.md)
 * [Caveats](doc/caveats.md)
 * [Contributing](doc/contributing.md)

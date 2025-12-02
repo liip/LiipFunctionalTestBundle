@@ -18,7 +18,6 @@ use Liip\Acme\Tests\App\AppKernel;
 use Liip\Acme\Tests\App\Service\DependencyService;
 use Liip\Acme\Tests\App\Service\Service;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
-use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -57,14 +56,6 @@ class WebTestCaseTest extends WebTestCase
         );
     }
 
-    public function testMakeClient(): void
-    {
-        $this->assertInstanceOf(
-            'Symfony\Bundle\FrameworkBundle\Client',
-            static::makeClient()
-        );
-    }
-
     public function testGetUrl(): void
     {
         $path = $this->getUrl(
@@ -87,7 +78,7 @@ class WebTestCaseTest extends WebTestCase
     {
         $path = '/';
 
-        $crawler = static::makeClient()->request('GET', $path);
+        $crawler = static::createClientWithParams()->request('GET', $path);
 
         $this->assertSame(
             1,
@@ -103,174 +94,6 @@ class WebTestCaseTest extends WebTestCase
             'LiipFunctionalTestBundle',
             $crawler->filter('h1')->text()
         );
-    }
-
-    /**
-     * Call methods from the parent class.
-     */
-
-    /**
-     * @depends testIndex
-     */
-    public function testIndexAssertStatusCode(): void
-    {
-        $path = '/';
-
-        $client = static::makeClient();
-
-        $client->request('GET', $path);
-
-        $this->assertStatusCode(200, $client);
-    }
-
-    /**
-     * Check the failure message returned by assertStatusCode().
-     */
-    public function testAssertStatusCodeFail(): void
-    {
-        $path = '/';
-
-        $client = static::makeClient();
-        $client->request('GET', $path);
-
-        try {
-            $this->assertStatusCode(-1, $client);
-        } catch (AssertionFailedError $e) {
-            $this->assertStringStartsWith(
-                'HTTP/1.1 200 OK',
-                $e->getMessage()
-            );
-
-            $this->assertStringEndsWith(
-                'Failed asserting that 200 is identical to -1.',
-                $e->getMessage()
-            );
-
-            return;
-        }
-
-        $this->fail('Test failed.');
-    }
-
-    /**
-     * Check the failure message returned by assertStatusCode().
-     */
-    public function testAssertStatusCodeException(): void
-    {
-        $path = '/9999';
-
-        $client = static::makeClient();
-        $client->request('GET', $path);
-
-        try {
-            $this->assertStatusCode(-1, $client);
-        } catch (AssertionFailedError $e) {
-            $this->assertStringContainsString('No route found', $e->getMessage());
-            $this->assertStringContainsString('Symfony\Component\HttpKernel\EventListener\RouterListener->onKernelRequest(', $e->getMessage());
-            $this->assertStringContainsString('Failed asserting that 404 is identical to -1.', $e->getMessage());
-
-            return;
-        }
-
-        $this->fail('Test failed.');
-    }
-
-    /**
-     * @depends testIndex
-     */
-    public function testIndexIsSuccesful(): void
-    {
-        $path = '/';
-
-        $client = static::makeClient();
-        $client->request('GET', $path);
-
-        $this->isSuccessful($client->getResponse());
-    }
-
-    /**
-     * @depends testIndex
-     */
-    public function testIndexFetchCrawler(): void
-    {
-        $path = '/';
-
-        $crawler = $this->fetchCrawler($path);
-
-        $this->assertInstanceOf(
-            'Symfony\Component\DomCrawler\Crawler',
-            $crawler
-        );
-
-        $this->assertSame(
-            1,
-            $crawler->filter('html > body')->count()
-        );
-
-        $this->assertSame(
-            'Not logged in.',
-            $crawler->filter('p#user')->text()
-        );
-
-        $this->assertSame(
-            'LiipFunctionalTestBundle',
-            $crawler->filter('h1')->text()
-        );
-    }
-
-    /**
-     * @depends testIndex
-     */
-    public function testIndexFetchContent(): void
-    {
-        $path = '/';
-
-        $content = $this->fetchContent($path);
-
-        $this->assertIsString($content);
-
-        $this->assertStringContainsString(
-            '<h1>LiipFunctionalTestBundle</h1>',
-            $content
-        );
-    }
-
-    public function test404Error(): void
-    {
-        $path = '/missing_page';
-
-        $client = static::makeClient();
-        $client->request('GET', $path);
-
-        $this->assertStatusCode(404, $client);
-
-        $this->isSuccessful($client->getResponse(), false);
-    }
-
-    /**
-     * Throw an Exception in the try/catch block and check the failure message
-     * returned by assertStatusCode().
-     */
-    public function testIsSuccessfulException(): void
-    {
-        $path = '/exception';
-
-        $client = static::makeClient();
-        $client->request('GET', $path);
-
-        try {
-            $this->isSuccessful($client->getResponse());
-        } catch (AssertionFailedError $e) {
-            $string = <<<'EOF'
-                The Response was not successful: foo (500 Internal Server Error)
-                Failed asserting that false is true.
-                EOF;
-            $this->assertSame($string, $e->getMessage());
-
-            return;
-        }
-
-        $this->fail('Test failed.');
     }
 
     /**
@@ -280,15 +103,15 @@ class WebTestCaseTest extends WebTestCase
     {
         $path = '/form';
 
-        $client = static::makeClient();
+        $client = static::createClientWithParams();
         $crawler = $client->request('GET', $path);
 
-        $this->assertStatusCode(200, $client);
+        self::assertResponseStatusCodeSame(200);
 
         $form = $crawler->selectButton('Submit')->form();
         $crawler = $client->submit($form);
 
-        $this->assertStatusCode(200, $client);
+        self::assertResponseStatusCodeSame(200);
 
         $this->assertValidationErrors(['children[name].data'], $client->getContainer());
 
@@ -297,7 +120,7 @@ class WebTestCaseTest extends WebTestCase
         $form->setValues(['form[name]' => 'foo bar']);
         $crawler = $client->submit($form);
 
-        $this->assertStatusCode(200, $client);
+        self::assertResponseStatusCodeSame(200);
 
         $this->assertStringContainsString(
             'Name submitted.',
@@ -314,15 +137,15 @@ class WebTestCaseTest extends WebTestCase
     {
         $path = '/form-with-embed';
 
-        $client = static::makeClient();
+        $client = static::createClientWithParams();
         $crawler = $client->request('GET', $path);
 
-        $this->assertStatusCode(200, $client);
+        self::assertResponseStatusCodeSame(200);
 
         $form = $crawler->selectButton('Submit')->form();
         $crawler = $client->submit($form);
 
-        $this->assertStatusCode(200, $client);
+        self::assertResponseStatusCodeSame(200);
 
         $this->assertValidationErrors(['children[name].data'], $client->getContainer());
 
@@ -331,7 +154,7 @@ class WebTestCaseTest extends WebTestCase
         $form->setValues(['form[name]' => 'foo bar']);
         $crawler = $client->submit($form);
 
-        $this->assertStatusCode(200, $client);
+        self::assertResponseStatusCodeSame(200);
 
         $this->assertStringContainsString(
             'Name submitted.',
@@ -346,68 +169,19 @@ class WebTestCaseTest extends WebTestCase
     {
         $path = '/form';
 
-        $client = static::makeClient();
+        $client = static::createClientWithParams();
         $crawler = $client->request('GET', $path);
 
-        $this->assertStatusCode(200, $client);
+        self::assertResponseStatusCodeSame(200);
 
         $form = $crawler->selectButton('Submit')->form();
         $client->submit($form);
 
-        $this->assertStatusCode(200, $client);
+        self::assertResponseStatusCodeSame(200);
 
         $this->expectException(\PHPUnit\Framework\ExpectationFailedException::class);
 
         $this->assertValidationErrors([''], $client->getContainer());
-    }
-
-    /**
-     * Check the failure message returned by assertStatusCode()
-     * when an invalid form is submitted.
-     */
-    public function testFormWithExceptionAssertStatusCode(): void
-    {
-        $path = '/form';
-
-        $client = static::makeClient();
-        $crawler = $client->request('GET', $path);
-
-        $form = $crawler->selectButton('Submit')->form();
-
-        $client->submit($form);
-
-        try {
-            $this->assertStatusCode(-1, $client);
-        } catch (AssertionFailedError $e) {
-            $string = <<<'EOF'
-                Unexpected validation errors:
-                + children[name].data: This value should not be blank.
-
-                Failed asserting that 200 is identical to -1.
-                EOF;
-            $this->assertSame($string, $e->getMessage());
-
-            return;
-        }
-
-        $this->fail('Test failed.');
-    }
-
-    /**
-     * Call isSuccessful() with "application/json" content type.
-     */
-    public function testJsonIsSuccessful(): void
-    {
-        $path = '/json';
-
-        $client = static::makeClient();
-        $client->request('GET', $path);
-
-        $this->isSuccessful(
-            $client->getResponse(),
-            true,
-            'application/json'
-        );
     }
 
     public function testSetServiceMockCommand(): void

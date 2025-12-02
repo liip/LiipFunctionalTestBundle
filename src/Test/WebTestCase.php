@@ -23,11 +23,9 @@ use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ResettableContainerInterface;
-use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Exception\SessionNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -54,9 +52,6 @@ abstract class WebTestCase extends BaseWebTestCase
     protected static $env = 'test';
 
     protected $containers;
-
-    // 5 * 1024 * 1024 KB
-    protected $maxMemory = 5242880;
 
     // RUN COMMAND
     protected $verbosityLevel;
@@ -259,81 +254,11 @@ abstract class WebTestCase extends BaseWebTestCase
     }
 
     /**
-     * Keep support of Symfony < 5.3.
-     */
-    public function __call(string $name, $arguments)
-    {
-        if ('getContainer' === $name) {
-            return $this->getDependencyInjectionContainer();
-        }
-
-        throw new \Exception("Method {$name} is not supported.");
-    }
-
-    /**
-     * @deprecated
-     */
-    public function __set($name, $value): void
-    {
-        if ('environment' !== $name) {
-            throw new \Exception(\sprintf('There is no property with name "%s"', $name));
-        }
-
-        @trigger_error('Setting "environment" property is deprecated, please use static::$env.', \E_USER_DEPRECATED);
-
-        static::$env = $value;
-    }
-
-    /**
-     * @deprecated
-     */
-    public function __isset($name)
-    {
-        if ('environment' !== $name) {
-            throw new \Exception(\sprintf('There is no property with name "%s"', $name));
-        }
-
-        @trigger_error('Checking "environment" property is deprecated, please use static::$env.', \E_USER_DEPRECATED);
-
-        return true;
-    }
-
-    /**
-     * @deprecated
-     */
-    public function __get($name)
-    {
-        if ('environment' !== $name) {
-            throw new \Exception(\sprintf('There is no property with name "%s"', $name));
-        }
-
-        @trigger_error('Getting "environment" property is deprecated, please use static::$env.', \E_USER_DEPRECATED);
-
-        return static::$env;
-    }
-
-    /**
      * Creates an instance of a lightweight Http client.
      *
      * $params can be used to pass headers to the client, note that they have
      * to follow the naming format used in $_SERVER.
      * Example: 'HTTP_X_REQUESTED_WITH' instead of 'X-Requested-With'
-     *
-     * @deprecated
-     */
-    protected function makeClient(array $params = []): Client
-    {
-        return $this->createClientWithParams($params);
-    }
-
-    /**
-     * Creates an instance of a lightweight Http client.
-     *
-     * $params can be used to pass headers to the client, note that they have
-     * to follow the naming format used in $_SERVER.
-     * Example: 'HTTP_X_REQUESTED_WITH' instead of 'X-Requested-With'
-     *
-     * @deprecated
      */
     protected function makeAuthenticatedClient(array $params = []): Client
     {
@@ -342,21 +267,6 @@ abstract class WebTestCase extends BaseWebTestCase
         $password = $this->getContainer()
             ->getParameter('liip_functional_test.authentication.password');
 
-        return $this->createClientWithParams($params, $username, $password);
-    }
-
-    /**
-     * Creates an instance of a lightweight Http client and log in user with
-     * username and password params.
-     *
-     * $params can be used to pass headers to the client, note that they have
-     * to follow the naming format used in $_SERVER.
-     * Example: 'HTTP_X_REQUESTED_WITH' instead of 'X-Requested-With'
-     *
-     * @deprecated
-     */
-    protected function makeClientWithCredentials(string $username, string $password, array $params = []): Client
-    {
         return $this->createClientWithParams($params, $username, $password);
     }
 
@@ -406,125 +316,6 @@ abstract class WebTestCase extends BaseWebTestCase
     }
 
     /**
-     * Checks the success state of a response.
-     *
-     * @param Response $response Response object
-     * @param bool     $success  to define whether the response is expected to be successful
-     * @param string   $type
-     */
-    public function isSuccessful(Response $response, $success = true, $type = 'text/html'): void
-    {
-        HttpAssertions::isSuccessful($response, $success, $type);
-    }
-
-    /**
-     * Executes a request on the given url and returns the response contents.
-     *
-     * This method also asserts the request was successful.
-     *
-     * @param string $path           path of the requested page
-     * @param string $method         The HTTP method to use, defaults to GET
-     * @param bool   $authentication Whether to use authentication, defaults to false
-     * @param bool   $success        to define whether the response is expected to be successful
-     */
-    public function fetchContent(string $path, string $method = 'GET', bool $authentication = false, bool $success = true): string
-    {
-        $client = ($authentication) ? $this->makeAuthenticatedClient() : $this->makeClient();
-
-        $client->request($method, $path);
-
-        $content = $client->getResponse()->getContent();
-        $this->isSuccessful($client->getResponse(), $success);
-
-        return $content;
-    }
-
-    /**
-     * Executes a request on the given url and returns a Crawler object.
-     *
-     * This method also asserts the request was successful.
-     *
-     * @param string $path           path of the requested page
-     * @param string $method         The HTTP method to use, defaults to GET
-     * @param bool   $authentication Whether to use authentication, defaults to false
-     * @param bool   $success        Whether the response is expected to be successful
-     */
-    public function fetchCrawler(string $path, string $method = 'GET', bool $authentication = false, bool $success = true): Crawler
-    {
-        $client = ($authentication) ? $this->makeAuthenticatedClient() : $this->makeClient();
-
-        $crawler = $client->request($method, $path);
-
-        $this->isSuccessful($client->getResponse(), $success);
-
-        return $crawler;
-    }
-
-    /**
-     * @deprecated
-     */
-    public function loginAs(UserInterface $user, string $firewallName): self
-    {
-        @trigger_error(\sprintf('"%s()" is deprecated, use loginClient() after creating a client.', __METHOD__), \E_USER_DEPRECATED);
-
-        $this->firewallLogins[$firewallName] = $user;
-
-        return $this;
-    }
-
-    /**
-     * @deprecated
-     */
-    public function loginClient(KernelBrowser $client, UserInterface $user, string $firewallName): void
-    {
-        // Available since Symfony 5.1
-        if (method_exists($client, 'loginUser')) {
-            @trigger_error(
-                \sprintf(
-                    '"%s()" is deprecated, use loginUser() from Symfony 5.1+ instead %s',
-                    __METHOD__,
-                    'https://symfony.com/doc/5.4/testing.html#logging-in-users-authentication'
-                ),
-                \E_USER_DEPRECATED
-            );
-
-            $client->loginUser($user);
-
-            return;
-        }
-
-        // has to be set otherwise "hasPreviousSession" in Request returns false.
-        $options = $client->getContainer()->getParameter('session.storage.options');
-
-        if (!$options || !isset($options['name'])) {
-            throw new \InvalidArgumentException('Missing session.storage.options#name');
-        }
-
-        $session = $this->getSession($client);
-
-        $client->getCookieJar()->set(new Cookie($options['name'], $session->getId()));
-
-        $token = $this->createUserToken($user, $firewallName);
-
-        $tokenStorage = $client->getContainer()->get('security.token_storage');
-
-        $tokenStorage->setToken($token);
-        $session->set('_security_'.$firewallName, serialize($token));
-
-        $session->save();
-    }
-
-    /**
-     * Asserts that the HTTP response code of the last request performed by
-     * $client matches the expected code. If not, raises an error with more
-     * information.
-     */
-    public static function assertStatusCode(int $expectedStatusCode, Client $client): void
-    {
-        HttpAssertions::assertStatusCode($expectedStatusCode, $client);
-    }
-
-    /**
      * Assert that the last validation errors within $container match the
      * expected keys.
      *
@@ -550,10 +341,7 @@ abstract class WebTestCase extends BaseWebTestCase
         parent::tearDown();
     }
 
-    /**
-     * @deprecated
-     */
-    protected function createClientWithParams(array $params, ?string $username = null, ?string $password = null): Client
+    protected function createClientWithParams(array $params = [], ?string $username = null, ?string $password = null): Client
     {
         if ($username && $password) {
             $params = array_merge($params, [

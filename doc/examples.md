@@ -93,7 +93,7 @@ class ExampleFunctionalTest extends WebTestCase
 
     public function testValidationErrors(): void
     {
-        $client = $this->makeClient(true);
+        $client = $this->createClientWithParams();
         $crawler = $client->request('GET', '/users/1/edit');
 
         $client->submit($crawler->selectButton('Save')->form());
@@ -103,4 +103,4 @@ class ExampleFunctionalTest extends WebTestCase
 }
 ```
 
-← [Query counter](./query.md) • [Caveats](./caveats.md) →
+← [Examples](./examples.md) • [Caveats](./caveats.md) →
