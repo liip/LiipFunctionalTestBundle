@@ -25,7 +25,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * @IgnoreAnnotation("depends")
- * @IgnoreAnnotation("expectedException")
  */
 class WebTestCaseTest extends WebTestCase
 {
