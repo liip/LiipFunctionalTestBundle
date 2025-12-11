@@ -37,9 +37,6 @@
         "symfony/yaml": "^5.4 || ^6.4 || ^7.0 || ^8.0",
         "twig/twig": "^2.0 || ^3.8"
     },
-    "conflict": {
-        "symfony/framework-bundle": "4.3.0"
-    },
     "suggest": {
         "doctrine/annotations": "Required to use the @QueryCount(…) annotation",
         "liip/test-fixtures-bundle": "Efficient loading of Doctrine fixtures in functional test-cases for Symfony applications"
