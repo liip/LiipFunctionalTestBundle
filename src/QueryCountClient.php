@@ -13,33 +13,28 @@ declare(strict_types=1);
 
 namespace Liip\FunctionalTestBundle;
 
-use Symfony\Bundle\FrameworkBundle\Client;
-use Symfony\Bundle\FrameworkBundle\DependencyInjection\Compiler\CompilerDebugDumpPass;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-
-// Symfony <4 BC
-if (class_exists(CompilerDebugDumpPass::class)) {
-    class_alias(QueryCountClientSymfony3Trait::class, QueryCountClientTrait::class);
-}
-
-// Symfony <4.3.1 BC
-if (!class_exists(KernelBrowser::class)) {
-    class_alias(Client::class, KernelBrowser::class);
-}
-
-if (!class_exists(Client::class)) {
-    class_alias(KernelBrowser::class, Client::class);
-}
+use Symfony\Component\DomCrawler\Crawler;
 
 class QueryCountClient extends KernelBrowser
 {
-    /*
-     * We use trait only because of Client::request signature strict type mismatch between Symfony 3 and 4.
-     */
-    use QueryCountClientTrait;
-
     /** @var QueryCounter */
     private $queryCounter;
+
+    public function request(
+        string $method,
+        string $uri,
+        array $parameters = [],
+        array $files = [],
+        array $server = [],
+        ?string $content = null,
+        bool $changeHistory = true
+    ): Crawler {
+        $crawler = parent::request($method, $uri, $parameters, $files, $server, $content, $changeHistory);
+        $this->checkQueryCount();
+
+        return $crawler;
+    }
 
     public function setQueryCounter(QueryCounter $queryCounter): void
     {
