@@ -65,6 +65,37 @@ class WebTestCaseTest extends WebTestCase
         );
     }
 
+    public function testSetEnvironment(): void
+    {
+        if (method_exists($this, 'expectUserDeprecationMessage')) {
+            $this->expectUserDeprecationMessage('Setting "environment" property is deprecated, please use static::$env.');
+        } else {
+            $this->markTestSkipped('expectUserDeprecationMessage is not available.');
+        }
+
+        $this->environment = 'test';
+    }
+
+    public function testIssetEnvironment(): void
+    {
+        if (method_exists($this, 'expectUserDeprecationMessage')) {
+            $this->expectUserDeprecationMessage('Checking "environment" property is deprecated, please use static::$env.');
+        }
+
+        self::assertTrue(isset($this->environment));
+    }
+
+    public function testGetEnvironment(): void
+    {
+        if (method_exists($this, 'expectUserDeprecationMessage')) {
+            $this->expectUserDeprecationMessage('Getting "environment" property is deprecated, please use static::$env.');
+        }
+
+        $this->assertIsString(
+            $this->environment,
+        );
+    }
+
     public function testGetUrl(): void
     {
         $path = $this->getUrl(
