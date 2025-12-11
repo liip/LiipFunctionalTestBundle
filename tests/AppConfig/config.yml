@@ -9,9 +9,10 @@ framework:
 liip_functional_test:
     command_verbosity: "very_verbose"
     command_decoration: false
+    # this is necessary to enable the query counter,
+    # so that the @QueryCount(x) annotation works
     query:
-        # TODO: it should be 1
-        max_query_count: 0
+      max_query_count: 1000
     authentication:
         username: "foobar"
         password: "12341234"
