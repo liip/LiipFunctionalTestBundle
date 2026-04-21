@@ -36,16 +36,13 @@ class SetTestClientPassMockTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $container->expects($this->any())
-            ->method('getParameter')
+        $container->method('getParameter')
             ->willReturn(true);
 
-        $container->expects($this->any())
-            ->method('hasDefinition')
+        $container->method('hasDefinition')
             ->willReturn(false);
 
-        $container->expects($this->any())
-            ->method('hasAlias')
+        $container->method('hasAlias')
             ->willReturn(false);
 
         try {
