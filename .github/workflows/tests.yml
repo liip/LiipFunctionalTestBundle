@@ -60,6 +60,15 @@ jobs:
           - php-version: 8.5
             symfony-version: "^8.0"
             phpunit-version: "^12.0"
+          - php-version: 8.4
+            symfony-version: "^7.0"
+            phpunit-version: "^13.0"
+          - php-version: 8.4
+            symfony-version: "^8.0"
+            phpunit-version: "^13.0"
+          - php-version: 8.5
+            symfony-version: "^8.0"
+            phpunit-version: "^13.0"
 
     steps:
       - name: Checkout
