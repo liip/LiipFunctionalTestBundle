@@ -4,7 +4,7 @@
 
 Removed features deprecated in [4.6](#46)
 
-## 4.15
+## 4.16
 Added support for PHPUnit 13
 
 ## 4.14
