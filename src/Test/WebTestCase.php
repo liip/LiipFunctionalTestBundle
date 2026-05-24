@@ -279,7 +279,11 @@ abstract class WebTestCase extends BaseWebTestCase
             throw new \Exception(\sprintf('There is no property with name "%s"', $name));
         }
 
-        @trigger_error('Setting "environment" property is deprecated, please use static::$env.', \E_USER_DEPRECATED);
+        trigger_deprecation(
+            'liip/functional-test-bundle',
+            '4.5.1',
+            'Setting "environment" property is deprecated, please use static::$env.',
+        );
 
         static::$env = $value;
     }
@@ -293,7 +297,11 @@ abstract class WebTestCase extends BaseWebTestCase
             throw new \Exception(\sprintf('There is no property with name "%s"', $name));
         }
 
-        @trigger_error('Checking "environment" property is deprecated, please use static::$env.', \E_USER_DEPRECATED);
+        trigger_deprecation(
+            'liip/functional-test-bundle',
+            '4.5.1',
+            'Checking "environment" property is deprecated, please use static::$env.',
+        );
 
         return true;
     }
@@ -307,7 +315,11 @@ abstract class WebTestCase extends BaseWebTestCase
             throw new \Exception(\sprintf('There is no property with name "%s"', $name));
         }
 
-        @trigger_error('Getting "environment" property is deprecated, please use static::$env.', \E_USER_DEPRECATED);
+        trigger_deprecation(
+            'liip/functional-test-bundle',
+            '4.5.1',
+            'Getting "environment" property is deprecated, please use static::$env.',
+        );
 
         return static::$env;
     }
@@ -465,7 +477,11 @@ abstract class WebTestCase extends BaseWebTestCase
      */
     public function loginAs(UserInterface $user, string $firewallName): self
     {
-        @trigger_error(\sprintf('"%s()" is deprecated, use loginClient() after creating a client.', __METHOD__), \E_USER_DEPRECATED);
+        trigger_deprecation(
+            'liip/functional-test-bundle',
+            '4.2.0',
+            '"loginAs()" is deprecated, use "loginClient()" after creating a client.',
+        );
 
         $this->firewallLogins[$firewallName] = $user;
 
@@ -479,13 +495,11 @@ abstract class WebTestCase extends BaseWebTestCase
     {
         // Available since Symfony 5.1
         if (method_exists($client, 'loginUser')) {
-            @trigger_error(
-                \sprintf(
-                    '"%s()" is deprecated, use loginUser() from Symfony 5.1+ instead %s',
-                    __METHOD__,
-                    'https://symfony.com/doc/5.4/testing.html#logging-in-users-authentication'
-                ),
-                \E_USER_DEPRECATED
+            trigger_deprecation(
+                'liip/functional-test-bundle',
+                '4.7.0',
+                '"loginClient()" is deprecated, use "loginUser()" from Symfony 5.1+ instead %s',
+                'https://symfony.com/doc/5.1/testing.html#logging-in-users-authentication'
             );
 
             $client->loginUser($user);
@@ -586,13 +600,11 @@ abstract class WebTestCase extends BaseWebTestCase
 
                 // Available since Symfony 5.1
                 if (method_exists($client, 'loginUser')) {
-                    @trigger_error(
-                        \sprintf(
-                            '"%s()" is deprecated, use loginUser() from Symfony 5.1+ instead %s',
-                            __METHOD__,
-                            'https://symfony.com/doc/5.4/testing.html#logging-in-users-authentication'
-                        ),
-                        \E_USER_DEPRECATED
+                    trigger_deprecation(
+                        'liip/functional-test-bundle',
+                        '4.7.0',
+                        '"createClientWithParams()" is deprecated, use "loginUser()" from Symfony 5.1+ instead %s',
+                        'https://symfony.com/doc/5.1/testing.html#logging-in-users-authentication'
                     );
 
                     $client->loginUser($user);
