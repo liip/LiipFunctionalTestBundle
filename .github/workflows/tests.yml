@@ -17,13 +17,10 @@ jobs:
         symfony-version: ['^6.4']
         phpunit-version: ['^9.6']
         include:
-          - php-version: 8.0
-            symfony-version: "^5.4"
-            phpunit-version: '^9.6'
-            composer-flags: "--prefer-lowest"
           - php-version: 8.1
             symfony-version: "^5.4"
             phpunit-version: "^10.0"
+            composer-flags: "--prefer-lowest"
           - php-version: 8.1
             symfony-version: "^6.4"
             phpunit-version: "^10.0"
