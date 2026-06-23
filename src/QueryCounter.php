@@ -16,6 +16,7 @@ namespace Liip\FunctionalTestBundle;
 use Doctrine\Common\Annotations\Reader;
 use Liip\FunctionalTestBundle\Annotations\QueryCount;
 use Liip\FunctionalTestBundle\Exception\AllowedQueriesExceededException;
+use Symfony\Component\HttpKernel\Kernel;
 
 final class QueryCounter
 {
@@ -50,8 +51,16 @@ final class QueryCounter
 
     private function getMaxQueryAnnotation(): ?int
     {
+        if (Kernel::MAJOR_VERSION >= 7) {
+            trigger_error('The annotationReader is not available and it can’t be enabled on Symfony 7+, @QueryCount is not supported', \E_USER_WARNING);
+
+            return null;
+        }
+
         if (null === $this->annotationReader) {
-            @trigger_error('The annotationReader is not available', \E_USER_ERROR);
+            trigger_error('The annotationReader is not available', \E_USER_ERROR);
+
+            return null;
         }
 
         foreach (debug_backtrace() as $step) {

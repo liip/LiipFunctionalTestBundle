@@ -52,7 +52,7 @@ class QueryCountClient extends KernelBrowser
             echo "\n".
                 'Profiler is disabled, it must be enabled for the '.
                 'Query Counter. '.
-                'See https://github.com/liip/LiipFunctionalTestBundle#query-counter'.
+                'See https://github.com/liip/LiipFunctionalTestBundle/blob/master/doc/query.md'.
                 "\n";
             // @codeCoverageIgnoreEnd
         }

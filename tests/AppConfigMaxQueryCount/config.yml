@@ -1,0 +1,5 @@
+# inherits configuration from ../AppConfig/config.yml
+
+liip_functional_test:
+    query:
+        max_query_count: 0
