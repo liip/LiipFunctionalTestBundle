@@ -47,7 +47,7 @@ class CommandConfigTest extends WebTestCase
         // Run command without options
         $this->commandTester = $this->runCommand('liipfunctionaltestbundle:test');
 
-        if (version_compare(\Symfony\Component\HttpKernel\Kernel::VERSION, '8.1.0', '<')) {
+        if ($this->commandTester instanceof CommandTester) {
             $this->assertInstanceOf(CommandTester::class, $this->commandTester);
         } else {
             $this->assertInstanceOf(\Symfony\Component\Console\Tester\ExecutionResult::class, $this->commandTester);

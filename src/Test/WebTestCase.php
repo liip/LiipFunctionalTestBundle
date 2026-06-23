@@ -37,7 +37,7 @@ if (!class_exists(Client::class)) {
     class_alias(KernelBrowser::class, Client::class);
 }
 
-if (version_compare(\Symfony\Component\HttpKernel\Kernel::VERSION, '8.1.0', '<')) {
+if (!method_exists(\Symfony\Bundle\FrameworkBundle\Test\WebTestCase::class, 'runCommand')) {
     if (!class_exists(BaseWebTestCase::class, false)) {
         class_alias(LegacyWebTestCase::class, BaseWebTestCase::class);
     }
