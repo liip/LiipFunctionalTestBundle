@@ -277,10 +277,10 @@ class CommandTest extends WebTestCase
 
     private function assertCommandResultType($result): void
     {
-        if (class_exists(\Symfony\Component\Console\Tester\ExecutionResult::class)) {
-            $this->assertInstanceOf(\Symfony\Component\Console\Tester\ExecutionResult::class, $result);
-        } else {
+        if (version_compare(\Symfony\Component\HttpKernel\Kernel::VERSION, '8.1.0', '<')) {
             $this->assertInstanceOf(CommandTester::class, $result);
+        } else {
+            $this->assertInstanceOf(\Symfony\Component\Console\Tester\ExecutionResult::class, $result);
         }
     }
 
