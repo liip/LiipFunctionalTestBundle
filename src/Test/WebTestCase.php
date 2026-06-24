@@ -16,11 +16,8 @@ namespace Liip\FunctionalTestBundle\Test;
 use Liip\FunctionalTestBundle\Utils\HttpAssertions;
 use PHPUnit\Framework\MockObject\MockBuilder;
 use Symfony\Bundle\FrameworkBundle\Client;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
-use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ResettableContainerInterface;
 use Symfony\Component\DomCrawler\Crawler;
@@ -40,6 +37,16 @@ if (!class_exists(Client::class)) {
     class_alias(KernelBrowser::class, Client::class);
 }
 
+if (!method_exists(\Symfony\Bundle\FrameworkBundle\Test\WebTestCase::class, 'runCommand')) {
+    if (!class_exists(BaseWebTestCase::class, false)) {
+        class_alias(LegacyWebTestCase::class, BaseWebTestCase::class);
+    }
+} else {
+    if (!class_exists(BaseWebTestCase::class, false)) {
+        class_alias(ModernWebTestCase::class, BaseWebTestCase::class);
+    }
+}
+
 /**
  * @author Lea Haensenberger
  * @author Lukas Kahwe Smith <smith@pooteeweet.org>
@@ -51,6 +58,8 @@ if (!class_exists(Client::class)) {
  */
 abstract class WebTestCase extends BaseWebTestCase
 {
+    public static ?self $activeInstance = null;
+
     protected static $env = 'test';
 
     protected $containers;
@@ -66,7 +75,7 @@ abstract class WebTestCase extends BaseWebTestCase
     /**
      * @var array|null
      */
-    private $inputs;
+    protected $inputs;
 
     /**
      * @var array
@@ -101,47 +110,6 @@ abstract class WebTestCase extends BaseWebTestCase
             $services[$serviceId] = $mock;
             $servicesProperty->setValue($container, $services);
         }
-    }
-
-    /**
-     * Builds up the environment to run the given command.
-     */
-    protected function runCommand(string $name, array $params = [], bool $reuseKernel = false): CommandTester
-    {
-        if (!$reuseKernel) {
-            if (null !== static::$kernel) {
-                static::ensureKernelShutdown();
-            }
-
-            $kernel = static::bootKernel(['environment' => static::$env]);
-            $kernel->boot();
-        } else {
-            $kernel = $this->getContainer()->get('kernel');
-        }
-
-        $application = new Application($kernel);
-
-        $options = [
-            'interactive' => false,
-            'decorated' => $this->getDecorated(),
-            'verbosity' => $this->getVerbosityLevel(),
-        ];
-
-        $command = $application->find($name);
-        $commandTester = new CommandTester($command);
-
-        if (null !== $inputs = $this->getInputs()) {
-            $commandTester->setInputs($inputs);
-            $options['interactive'] = true;
-            $this->inputs = null;
-        }
-
-        $commandTester->execute(
-            array_merge(['command' => $command->getName()], $params),
-            $options
-        );
-
-        return $commandTester;
     }
 
     /**
@@ -535,8 +503,17 @@ abstract class WebTestCase extends BaseWebTestCase
         HttpAssertions::assertValidationErrors($expected, $container);
     }
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        self::$activeInstance = $this;
+    }
+
     protected function tearDown(): void
     {
+        self::$activeInstance = null;
+
         if (null !== $this->containers) {
             foreach ($this->containers as $container) {
                 if ($container instanceof ResettableContainerInterface) {

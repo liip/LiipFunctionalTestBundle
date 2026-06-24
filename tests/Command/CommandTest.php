@@ -34,7 +34,9 @@ class CommandTest extends WebTestCase
         // Test default values
         $this->assertStringContainsString('Environment: test', $this->commandTester->getDisplay());
         $this->assertStringContainsString('Verbosity level: NORMAL', $this->commandTester->getDisplay());
-        $this->assertFalse($this->commandTester->getInput()->isInteractive());
+        if ($this->commandTester instanceof CommandTester) {
+            $this->assertFalse($this->commandTester->getInput()->isInteractive());
+        }
 
         $this->assertIsBool($this->getDecorated());
         $this->assertTrue($this->getDecorated());
@@ -42,8 +44,8 @@ class CommandTest extends WebTestCase
         // Run command and reuse kernel
         $this->commandTester = $this->runCommand('liipfunctionaltestbundle:test', [], true);
 
-        $this->assertInstanceOf(CommandTester::class, $this->commandTester);
-        $this->assertSame(0, $this->commandTester->getStatusCode());
+        $this->assertCommandResultType($this->commandTester);
+        $this->assertSame(0, $this->getStatusCode($this->commandTester));
 
         $this->assertStringContainsString('Environment: test', $this->commandTester->getDisplay());
         $this->assertStringContainsString('Verbosity level: NORMAL', $this->commandTester->getDisplay());
@@ -57,7 +59,9 @@ class CommandTest extends WebTestCase
         $this->commandTester = $this->runCommand('liipfunctionaltestbundle:test:interactive');
 
         $this->assertNull($this->getInputs());
-        $this->assertTrue($this->commandTester->getInput()->isInteractive());
+        if ($this->commandTester instanceof CommandTester) {
+            $this->assertTrue($this->commandTester->getInput()->isInteractive());
+        }
         $this->assertStringContainsString('Value of answer: foo', $this->commandTester->getDisplay());
 
         // Run command again
@@ -66,7 +70,9 @@ class CommandTest extends WebTestCase
         $this->commandTester = $this->runCommand('liipfunctionaltestbundle:test:interactive');
 
         $this->assertNull($this->getInputs());
-        $this->assertFalse($this->commandTester->getInput()->isInteractive());
+        if ($this->commandTester instanceof CommandTester) {
+            $this->assertFalse($this->commandTester->getInput()->isInteractive());
+        }
         // The default value is shown
         $this->assertStringContainsString('Value of answer: AcmeDemoBundle', $this->commandTester->getDisplay());
     }
@@ -86,8 +92,8 @@ class CommandTest extends WebTestCase
         // Run command without options
         $this->commandTester = $this->runCommand('liipfunctionaltestbundle:test');
 
-        $this->assertInstanceOf(CommandTester::class, $this->commandTester);
-        $this->assertSame(0, $this->commandTester->getStatusCode());
+        $this->assertCommandResultType($this->commandTester);
+        $this->assertSame(0, $this->getStatusCode($this->commandTester));
 
         // Test default values
         $this->assertStringContainsString('Environment: test', $this->commandTester->getDisplay());
@@ -107,7 +113,7 @@ class CommandTest extends WebTestCase
         $this->getContainer();
         $this->commandTester = $this->runCommand('liipfunctionaltestbundle:test', [], true);
 
-        $this->assertInstanceOf(CommandTester::class, $this->commandTester);
+        $this->assertCommandResultType($this->commandTester);
 
         $this->assertStringContainsString('Environment: prod', $this->commandTester->getDisplay());
         $this->assertStringContainsString('Verbosity level: NORMAL', $this->commandTester->getDisplay());
@@ -128,8 +134,8 @@ class CommandTest extends WebTestCase
 
         $this->commandTester = $this->runCommand('liipfunctionaltestbundle:test');
 
-        $this->assertInstanceOf(CommandTester::class, $this->commandTester);
-        $this->assertSame(0, $this->commandTester->getStatusCode());
+        $this->assertCommandResultType($this->commandTester);
+        $this->assertSame(0, $this->getStatusCode($this->commandTester));
 
         $this->assertStringContainsString('Verbosity level: NORMAL', $this->commandTester->getDisplay());
 
@@ -148,8 +154,8 @@ class CommandTest extends WebTestCase
 
         $this->commandTester = $this->runCommand('liipfunctionaltestbundle:test');
 
-        $this->assertInstanceOf(CommandTester::class, $this->commandTester);
-        $this->assertSame(0, $this->commandTester->getStatusCode());
+        $this->assertCommandResultType($this->commandTester);
+        $this->assertSame(0, $this->getStatusCode($this->commandTester));
 
         $this->assertEmpty($this->commandTester->getDisplay());
         $this->assertStringNotContainsString('Verbosity level: NORMAL', $this->commandTester->getDisplay());
@@ -168,9 +174,9 @@ class CommandTest extends WebTestCase
         $this->assertFalse($this->getDecorated());
 
         $this->commandTester = $this->runCommand('liipfunctionaltestbundle:test');
-        $this->assertSame(0, $this->commandTester->getStatusCode());
+        $this->assertSame(0, $this->getStatusCode($this->commandTester));
 
-        $this->assertInstanceOf(CommandTester::class, $this->commandTester);
+        $this->assertCommandResultType($this->commandTester);
 
         $this->assertStringContainsString('Verbosity level: NORMAL', $this->commandTester->getDisplay());
         $this->assertStringNotContainsString('Verbosity level: VERBOSE', $this->commandTester->getDisplay());
@@ -185,9 +191,9 @@ class CommandTest extends WebTestCase
 
         $this->isDecorated(false);
         $this->commandTester = $this->runCommand('liipfunctionaltestbundle:test');
-        $this->assertSame(0, $this->commandTester->getStatusCode());
+        $this->assertSame(0, $this->getStatusCode($this->commandTester));
 
-        $this->assertInstanceOf(CommandTester::class, $this->commandTester);
+        $this->assertCommandResultType($this->commandTester);
 
         $this->assertStringContainsString('Verbosity level: NORMAL', $this->commandTester->getDisplay());
         $this->assertStringNotContainsString('Verbosity level: VERBOSE', $this->commandTester->getDisplay());
@@ -201,9 +207,9 @@ class CommandTest extends WebTestCase
         $this->assertSame(OutputInterface::VERBOSITY_VERBOSE, $this->getVerbosityLevel());
 
         $this->commandTester = $this->runCommand('liipfunctionaltestbundle:test');
-        $this->assertSame(0, $this->commandTester->getStatusCode());
+        $this->assertSame(0, $this->getStatusCode($this->commandTester));
 
-        $this->assertInstanceOf(CommandTester::class, $this->commandTester);
+        $this->assertCommandResultType($this->commandTester);
 
         $this->assertStringContainsString('Verbosity level: NORMAL', $this->commandTester->getDisplay());
         $this->assertStringContainsString('Verbosity level: VERBOSE', $this->commandTester->getDisplay());
@@ -221,9 +227,9 @@ class CommandTest extends WebTestCase
         $this->assertFalse($this->getDecorated());
 
         $this->commandTester = $this->runCommand('liipfunctionaltestbundle:test');
-        $this->assertSame(0, $this->commandTester->getStatusCode());
+        $this->assertSame(0, $this->getStatusCode($this->commandTester));
 
-        $this->assertInstanceOf(CommandTester::class, $this->commandTester);
+        $this->assertCommandResultType($this->commandTester);
 
         $this->assertStringContainsString('Verbosity level: NORMAL', $this->commandTester->getDisplay());
         $this->assertStringContainsString('Verbosity level: VERBOSE', $this->commandTester->getDisplay());
@@ -241,9 +247,9 @@ class CommandTest extends WebTestCase
         $this->assertFalse($this->getDecorated());
 
         $this->commandTester = $this->runCommand('liipfunctionaltestbundle:test');
-        $this->assertSame(0, $this->commandTester->getStatusCode());
+        $this->assertSame(0, $this->getStatusCode($this->commandTester));
 
-        $this->assertInstanceOf(CommandTester::class, $this->commandTester);
+        $this->assertCommandResultType($this->commandTester);
 
         $this->assertStringContainsString('Verbosity level: NORMAL', $this->commandTester->getDisplay());
         $this->assertStringContainsString('Verbosity level: VERBOSE', $this->commandTester->getDisplay());
@@ -255,9 +261,9 @@ class CommandTest extends WebTestCase
     {
         $this->commandTester = $this->runCommand('liipfunctionaltestbundle:test-status-code');
 
-        $this->assertInstanceOf(CommandTester::class, $this->commandTester);
+        $this->assertCommandResultType($this->commandTester);
 
-        $this->assertSame(10, $this->commandTester->getStatusCode());
+        $this->assertSame(10, $this->getStatusCode($this->commandTester));
     }
 
     public function testRunCommandVerbosityOutOfBound(): void
@@ -267,6 +273,20 @@ class CommandTest extends WebTestCase
         $this->expectException(\OutOfBoundsException::class);
 
         $this->runCommand('liipfunctionaltestbundle:test');
+    }
+
+    private function assertCommandResultType($result): void
+    {
+        if ($result instanceof CommandTester) {
+            $this->assertInstanceOf(CommandTester::class, $result);
+        } else {
+            $this->assertInstanceOf(\Symfony\Component\Console\Tester\ExecutionResult::class, $result);
+        }
+    }
+
+    private function getStatusCode($result): int
+    {
+        return ($result instanceof CommandTester) ? $result->getStatusCode() : $result->statusCode;
     }
 
     protected function tearDown(): void
